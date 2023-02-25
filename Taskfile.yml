@@ -1,0 +1,49 @@
+version: '3'
+
+env:
+  VERSION:
+    sh: git describe --tags --always # or: git log -n 1 --format=%h
+  BINARY_TITLE: cachemeshpoc
+
+output: prefixed
+
+tasks:
+
+  java-clean:
+    dir: ./java
+    cmds:
+      - mvn clean
+
+  clean:
+    deps:
+      - java-clean
+
+  java-build:
+    dir: ./java
+    cmds:
+      - mvn package
+
+  build:
+    deps:
+      - java-build
+
+  java-run:
+    dir: ./java
+    deps:
+      - java-build
+    cmds:
+      - java -cp $(mvn dependency:build-classpath | grep '\.jar'):target/cachemeshpoc-0.0.1.jar com.github.qiang.cachemeshpoc.Main {{.CLI_ARGS}}
+
+
+  run:
+    deps:
+      - java-run
+
+  java-test:
+    dir: ./java
+    cmds:
+      - mvn test
+
+  test:
+    deps:
+      - java-test

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "github.com/qiangyt/cachemeshpoc/grpc";
+option java_multiple_files = true;
+option java_package = "com.github.qiangyt.cachemeshpoc.grpc";
+option java_outer_classname = "CacheMeshProto";
+option objc_class_prefix = "PCPs";
+
+package cachemeshpoc;
+
+// The service definition.
+service CacheMesh {
+  rpc GetSingle (GetSingleRequest) returns (GetSingleReply) {}
+}
+
+message GetSingleRequest {
+  string key = 1;
+}
+
+message GetSingleReply {
+  bytes value = 1;
+}

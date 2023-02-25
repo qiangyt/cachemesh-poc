@@ -1,62 +1,57 @@
 package com.github.qiangyt.cachemeshpoc.route;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.qiangyt.cachemeshpoc.util.Hashing;
 
 // based on github.com/redis/jedis: redis.clients.jedis.providers.ShardedConnectionProvider
 public class ConsistentHash {
 
-	private final TreeMap<Long, Peer> nodes = new TreeMap<>();
+	private static final Logger LOG = LoggerFactory.getLogger(ConsistentHash.class);
 
-	//private final Map<String, ConnectionPool> resources = new HashMap<>();
+	private final TreeMap<Long, Node> nodes = new TreeMap<>();
 
 	private final Hashing algo;
 
-	public ConsistentHash(List<Peer> shards, Hashing algo) {
+	public ConsistentHash(List<Node> nodes, Hashing algo) {
 		this.algo = algo;
-		initialize(shards);
+		initialize(nodes);
 	}
 
-	private void initialize(List<Peer> shards) {
-		for (int i = 0; i < shards.size(); i++) {
-			Peer shard = shards.get(i);
-			for (int n = 0; n < 160; n++) {
-				Long hash = this.algo.hash("SHARD-" + i + "-NODE-" + n);
-				nodes.put(hash, shard);
-				//setupNodeIfNotExist(shard);
-			}
+	private void initialize(List<Node> nodes) {
+		for (var node: nodes) {
+			join(node);
 		}
 	}
 
-	/*private ConnectionPool setupNodeIfNotExist(final HostAndPort node) {
-		String nodeKey = node.toString();
-		ConnectionPool existingPool = resources.get(nodeKey);
-		if (existingPool != null)
-			return existingPool;
+	public void join(Node node) {
+		for (int n = 0; n < 160; n++) {
+			String key = String.format("node-%d-%s", this.nodes.size(), n);
+			long hash = hash(key);
+			nodes.put(hash, node);
+		}
+	}
 
-		ConnectionPool nodePool = poolConfig == null ? new ConnectionPool(node, clientConfig)
-				: new ConnectionPool(node, clientConfig, poolConfig);
-		resources.put(nodeKey, nodePool);
-		return nodePool;
-	}*/
+	public long hash(String key) {
+		return this.algo.hash(key);
+	}
 
 	public Hashing getHashingAlgo() {
-		return algo;
+		return this.algo;
 	}
 
-	public Peer getNode(Long hash) {
-		return hash != null ? getNodeFromHash(hash) : null;
+	public Node getNode(String key) {
+		long hash = this.hash(key);
+		return key != null ? getNode(hash) : null;
 	}
 
-	private Peer getNodeFromHash(Long hash) {
-		SortedMap<Long, Peer> tail = nodes.tailMap(hash);
+	private Node getNode(long hash) {
+		var nodes = this.nodes;
+		var tail = nodes.tailMap(hash);
 		if (tail.isEmpty()) {
 			return nodes.get(nodes.firstKey());
 		}

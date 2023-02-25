@@ -5,10 +5,12 @@ import io.grpc.InsecureServerCredentials;
 import io.grpc.Server;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CacheMeshServer {
-  private static final Logger LOG = Logger.getLogger(CacheMeshServer.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(CacheMeshServer.class);
 
   private Server server;
 

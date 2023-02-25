@@ -1,39 +1,20 @@
 package com.github.qiangyt.cachemeshpoc.util;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
 
 // Based on github.com/redis/jedis: redis.clients.jedis.util.Hashing
 public interface Hashing {
-  Hashing MURMUR_HASH = new MurmurHash();
-  ThreadLocal<MessageDigest> md5Holder = new ThreadLocal<>();
 
-  Hashing MD5 = new Hashing() {
-    @Override
-    public long hash(String key) {
-      return hash(SafeEncoder.encode(key));
+  public static final Hashing DEFAULT = MurmurHash.DEFAULT;
+
+  default long hash(String key) {
+		if (key == null) {
+      throw new IllegalArgumentException("null value cannot be sent to redis");
     }
-
-    @Override
-    public long hash(byte[] key) {
-      try {
-        if (md5Holder.get() == null) {
-          md5Holder.set(MessageDigest.getInstance("MD5"));
-        }
-      } catch (NoSuchAlgorithmException e) {
-        throw new IllegalStateException("++++ no md5 algorithm found");
-      }
-      MessageDigest md5 = md5Holder.get();
-
-      md5.reset();
-      md5.update(key);
-      byte[] bKey = md5.digest();
-      return ((long) (bKey[3] & 0xFF) << 24) | ((long) (bKey[2] & 0xFF) << 16)
-          | ((long) (bKey[1] & 0xFF) << 8) | (long) (bKey[0] & 0xFF);
-    }
-  };
-
-  long hash(String key);
+    var keyBytes = key.getBytes(StandardCharsets.UTF_8);
+    return hash(keyBytes);
+	}
 
   long hash(byte[] key);
+
 }

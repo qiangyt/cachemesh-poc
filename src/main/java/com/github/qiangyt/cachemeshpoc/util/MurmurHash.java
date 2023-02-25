@@ -24,6 +24,9 @@ import java.nio.ByteOrder;
  * </p>
  */
 public class MurmurHash implements Hashing {
+
+	public static final MurmurHash DEFAULT = new MurmurHash();
+
   /**
    * Hashes bytes in an array.
    * @param data The bytes to hash.
@@ -142,8 +145,4 @@ public class MurmurHash implements Hashing {
     return hash64A(key, 0x1234ABCD);
   }
 
-  @Override
-  public long hash(String key) {
-    return hash(SafeEncoder.encode(key));
-  }
 }

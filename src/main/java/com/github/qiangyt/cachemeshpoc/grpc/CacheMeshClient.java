@@ -1,17 +1,15 @@
 package com.github.qiangyt.cachemeshpoc.grpc;
 
 import io.grpc.Channel;
-import io.grpc.Grpc;
-import io.grpc.InsecureChannelCredentials;
-import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class CacheMeshClient {
-  private static final Logger LOG = Logger.getLogger(CacheMeshClient.class.getName());
+
+	private static final Logger LOG = LoggerFactory.getLogger(CacheMeshClient.class);
 
   private final CacheMeshGrpc.CacheMeshBlockingStub stub;
 
@@ -27,7 +25,7 @@ public class CacheMeshClient {
     try {
       resp = stub.getSingle(req);
     } catch (StatusRuntimeException e) {
-      LOG.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+      LOG.warn("RPC failed: {0}", e.getStatus());
       return;
     }
     LOG.info("Response: " + resp.getValue().toStringUtf8());

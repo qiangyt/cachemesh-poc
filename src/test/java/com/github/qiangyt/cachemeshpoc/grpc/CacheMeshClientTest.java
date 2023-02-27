@@ -33,7 +33,7 @@ public class CacheMeshClientTest {
           // }
           }));
 
-  private CacheMeshClient client;
+  private GrpcRemoteCache client;
 
   @Before
   public void setUp() throws Exception {
@@ -43,7 +43,7 @@ public class CacheMeshClientTest {
 
     var channel = this.grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
-    this.client = new CacheMeshClient(channel);
+    this.client = new GrpcRemoteCache(channel);
   }
 
   @Test

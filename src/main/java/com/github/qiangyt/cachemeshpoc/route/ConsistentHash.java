@@ -13,26 +13,46 @@ public class ConsistentHash {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConsistentHash.class);
 
-	private final TreeMap<Long, Node> nodes = new TreeMap<>();
+	private final TreeMap<Long, VirtualNode> ring = new TreeMap<>();
+
+	private final List<Node> nodes;
 
 	private final Hashing algo;
 
 	public ConsistentHash(List<Node> nodes, Hashing algo) {
+		this.nodes = nodes;
 		this.algo = algo;
-		initialize(nodes);
+		join(nodes);
 	}
 
-	private void initialize(List<Node> nodes) {
+	public List<Node> nodes() {
+		return this.nodes;
+	}
+
+	public void join(List<Node> nodes) {
+		LOG.info("got {} nodes to join", nodes.size());
+
 		for (var node: nodes) {
 			join(node);
 		}
 	}
 
 	public void join(Node node) {
-		for (int n = 0; n < 160; n++) {
-			String key = String.format("node-%d-%s", this.nodes.size(), n);
-			long hash = hash(key);
-			nodes.put(hash, node);
+		LOG.info("node {} is joining", node);
+
+		boolean debug = LOG.isDebugEnabled();
+		var rg = this.ring;
+		String nodeKey = node.getKey();
+
+		for (int i = 0; i < 160; i++) {
+			String virtualNodeKey = String.format("%s-%d", nodeKey, i);
+			Long h = hash(virtualNodeKey);
+			var virtualNode = new VirtualNode(node, i, virtualNodeKey, h);
+
+			if (debug) {
+				LOG.debug("node {} virtual nodes {}: key={}, hash={}", node, i, virtualNodeKey, h);
+			}
+			rg.put(h, virtualNode);
 		}
 	}
 
@@ -40,20 +60,20 @@ public class ConsistentHash {
 		return this.algo.hash(key);
 	}
 
-	public Hashing getHashingAlgo() {
+	public Hashing algo() {
 		return this.algo;
 	}
 
-	public Node getNode(String key) {
-		long hash = this.hash(key);
-		return key != null ? getNode(hash) : null;
+	public VirtualNode virtualNode(String key) {
+		long h = hash(key);
+		return key != null ? virtualNode(h) : null;
 	}
 
-	private Node getNode(long hash) {
-		var nodes = this.nodes;
-		var tail = nodes.tailMap(hash);
+	public VirtualNode virtualNode(long hash) {
+		var r = this.ring;
+		var tail = r.tailMap(hash);
 		if (tail.isEmpty()) {
-			return nodes.get(nodes.firstKey());
+			return r.get(r.firstKey());
 		}
 		return tail.get(tail.firstKey());
 	}

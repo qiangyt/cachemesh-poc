@@ -51,7 +51,7 @@ public class CacheMeshServer {
   }
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    final CacheMeshServer server = new CacheMeshServer();
+    final var server = new CacheMeshServer();
     server.start();
     server.blockUntilShutdown();
   }

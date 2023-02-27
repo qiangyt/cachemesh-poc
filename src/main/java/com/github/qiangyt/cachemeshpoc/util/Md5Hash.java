@@ -15,7 +15,7 @@ public class Md5Hash implements Hashing {
 			try {
 				return MessageDigest.getInstance("MD5");
 			} catch (NoSuchAlgorithmException e) {
-				throw new IllegalStateException("++++ no md5 algorithm found");
+				throw new IllegalStateException("md5 algorithm not available");
 			}
 		}
 
@@ -23,12 +23,13 @@ public class Md5Hash implements Hashing {
 
 	@Override
 	public long hash(byte[] key) {
-		MessageDigest d = TLS.get();
+		var d = TLS.get();
 		d.reset();
 		d.update(key);
 		byte[] bKey = d.digest();
+
 		return ((long) (bKey[3] & 0xFF) << 24) | ((long) (bKey[2] & 0xFF) << 16)
-				| ((long) (bKey[1] & 0xFF) << 8) | (long) (bKey[0] & 0xFF);
+			 | ((long) (bKey[1] & 0xFF) << 8) | (long) (bKey[0] & 0xFF);
 	}
 
 }

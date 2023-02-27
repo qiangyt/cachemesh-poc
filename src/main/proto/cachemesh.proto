@@ -11,12 +11,27 @@ package cachemeshpoc;
 // The service definition.
 service CacheMesh {
   rpc GetSingle (GetSingleRequest) returns (GetSingleReply) {}
+	rpc SetSingle (SetSingleRequest) returns (SetSingleReply) {}
 }
 
 message GetSingleRequest {
-  string key = 1;
+  string cache = 1;
+  string key = 2;
+	long version = 3;
 }
 
 message GetSingleReply {
+  string key = 1;
   bytes value = 1;
+	long version = 3;
+}
+
+message SetSingleRequest {
+  string cache = 1;
+  string key = 2;
+	bytes value = 3;
+}
+
+message SetSingleReply {
+	long version = 1;
 }

@@ -2,7 +2,7 @@ package com.github.qiangyt.cachemeshpoc;
 
 import java.util.concurrent.TimeUnit;
 
-import com.github.qiangyt.cachemeshpoc.grpc.GrpcRemoteCache;
+import com.github.qiangyt.cachemeshpoc.remote.grpc.GrpcRemoteCache;
 
 import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;

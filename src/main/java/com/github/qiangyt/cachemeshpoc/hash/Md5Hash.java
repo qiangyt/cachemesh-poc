@@ -1,4 +1,4 @@
-package com.github.qiangyt.cachemeshpoc.util;
+package com.github.qiangyt.cachemeshpoc.hash;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

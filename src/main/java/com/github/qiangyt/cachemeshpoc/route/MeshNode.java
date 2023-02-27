@@ -1,10 +1,10 @@
 package com.github.qiangyt.cachemeshpoc.route;
 
-import com.github.qiangyt.cachemeshpoc.RemoteCache;
+import com.github.qiangyt.cachemeshpoc.remote.RemoteCache;
 
 // Based on github.com/redis/jedis: redis.clients.jedis.HostAndPort
 @lombok.Getter
-public class Node {
+public class MeshNode {
 
 	private final RemoteCache remoteCache;
 	private final String host;
@@ -12,7 +12,7 @@ public class Node {
 	private final String key;
 	private final int hashCode;
 
-	public Node(RemoteCache remoteCache, String host, int port) {
+	public MeshNode(RemoteCache remoteCache, String host, int port) {
 		this.remoteCache = remoteCache;
 		this.host = host;
 		this.port = port;
@@ -28,10 +28,10 @@ public class Node {
 		if (obj == this) {
 			return true;
 		}
-		if (!(obj instanceof Node)) {
+		if (!(obj instanceof MeshNode)) {
 			return false;
 		}
-		Node other = (Node) obj;
+		MeshNode other = (MeshNode) obj;
 		return this.key.equals(other.key);
 	}
 
@@ -52,10 +52,10 @@ public class Node {
 	 *               mandatory.
 	 * @return parsed Peer
 	 */
-	public static Node from(String str) {
+	public static MeshNode from(String str) {
 		int lastColon = str.lastIndexOf(":");
 		String host = str.substring(0, lastColon);
 		int port = Integer.parseInt(str.substring(lastColon + 1));
-		return new Node(host, port);
+		return null;//new MeshNode(host, port);
 	}
 }

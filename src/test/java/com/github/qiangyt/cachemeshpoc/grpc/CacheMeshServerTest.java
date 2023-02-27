@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import com.github.qiangyt.cachemeshpoc.remote.grpc.GrpcService;
+
 @RunWith(JUnit4.class)
 public class CacheMeshServerTest {
 
@@ -20,7 +22,7 @@ public class CacheMeshServerTest {
   public void greeterImpl_replyMessage() throws Exception {
     String serverName = InProcessServerBuilder.generateName();
 
-    this.grpcCleanup.register(InProcessServerBuilder.forName(serverName).directExecutor().addService(new CacheMeshImpl()).build().start());
+    this.grpcCleanup.register(InProcessServerBuilder.forName(serverName).directExecutor().addService(new GrpcService()).build().start());
 
     var stub = CacheMeshGrpc.newBlockingStub(this.grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build()));
 

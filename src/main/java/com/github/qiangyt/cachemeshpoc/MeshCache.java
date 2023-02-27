@@ -2,22 +2,9 @@ package com.github.qiangyt.cachemeshpoc;
 
 public interface MeshCache<V> extends AutoCloseable {
 
-	public static interface Manager {
-		<V> MeshCache<V> get(String name, Class<V> valueClass);
+	String getName();
 
-		void registerAlways(String name, LocalCache.Builder localBuilder, RemoteCache.Builder remoteBuilder);
-
-		void registerIfAbsent(String name, LocalCache.Builder localBuilder, RemoteCache.Builder remoteBuilder);
-
-		<V> MeshCache<V> create(String name, LocalCache.Builder localBuilder, RemoteCache.Builder remoteBuilder);
-
-		<V> MeshCache<V> resolve(String name, LocalCache.Builder localBuilder,
-		RemoteCache.Builder remoteBuilder);
-	}
-
-	String name();
-
-	Class<V> valueClass();
+	Class<V> getValueClass();
 
 	V getSingle(String key);
 

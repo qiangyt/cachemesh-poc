@@ -6,7 +6,7 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.qiangyt.cachemeshpoc.util.Hashing;
+import com.github.qiangyt.cachemeshpoc.hash.Hashing;
 
 // based on github.com/redis/jedis: redis.clients.jedis.providers.ShardedConnectionProvider
 public class ConsistentHash {
@@ -15,21 +15,13 @@ public class ConsistentHash {
 
 	private final TreeMap<Long, VirtualNode> ring = new TreeMap<>();
 
-	private final List<Node> nodes;
-
 	private final Hashing algo;
 
-	public ConsistentHash(List<Node> nodes, Hashing algo) {
-		this.nodes = nodes;
+	public ConsistentHash(Hashing algo) {
 		this.algo = algo;
-		join(nodes);
 	}
 
-	public List<Node> nodes() {
-		return this.nodes;
-	}
-
-	public void join(List<Node> nodes) {
+	public void join(List<MeshNode> nodes) {
 		LOG.info("got {} nodes to join", nodes.size());
 
 		for (var node: nodes) {
@@ -37,7 +29,7 @@ public class ConsistentHash {
 		}
 	}
 
-	public void join(Node node) {
+	public void join(MeshNode node) {
 		LOG.info("node {} is joining", node);
 
 		boolean debug = LOG.isDebugEnabled();

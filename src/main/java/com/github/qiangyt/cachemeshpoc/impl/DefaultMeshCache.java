@@ -1,85 +1,90 @@
 package com.github.qiangyt.cachemeshpoc.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.github.qiangyt.cachemeshpoc.LocalCache;
 import com.github.qiangyt.cachemeshpoc.MeshCache;
-import com.github.qiangyt.cachemeshpoc.RemoteCache;
-import com.github.qiangyt.cachemeshpoc.caffeine.CaffeineLocalCacheBuilder;
-import com.github.qiangyt.cachemeshpoc.route.ConsistentHash;
-import com.github.qiangyt.cachemeshpoc.route.Node;
-import com.github.qiangyt.cachemeshpoc.util.Hashing;
-import com.github.qiangyt.cachemeshpoc.util.MurmurHash;
+import com.github.qiangyt.cachemeshpoc.local.LocalCache;
+import com.github.qiangyt.cachemeshpoc.local.LocalEntry;
+import com.github.qiangyt.cachemeshpoc.local.caffeine.CaffeineLocalCacheBuilder;
+import com.github.qiangyt.cachemeshpoc.route.MeshRouter;
+import com.github.qiangyt.cachemeshpoc.serde.Serderializer;
 
-public class DefaultMeshCache<V> extends AbstractCache<V> {
+public class DefaultMeshCache<V> implements MeshCache<V> {
 
-	private final LocalCache<V> local;
+	@lombok.Getter
+	private final String name;
 
-	private final ConsistentHash consistentHash;
-	private final Node selfNode;
+	@lombok.Getter
+	private final Class<V> valueClass;
 
-	public DefaultMeshCache(String name, Class<V> valueClass, Node selfNode, List<Node> otherNodes) {
-		super(name, valueClass);
-		this.local = new CaffeineLocalCacheBuilder().build(name, valueClass);
+	private final LocalCache<V> localCache;
 
-		var nodes = new ArrayList<Node>(otherNodes);
-		nodes.add(selfNode);
-		this.consistentHash = new ConsistentHash(nodes, MurmurHash.DEFAULT);
+	private final MeshRouter router;
 
-		this.selfNode = selfNode;
+	private final Serderializer serder;
+
+	public DefaultMeshCache(String name, Class<V> valueClass, MeshRouter router, Serderializer serder) {
+		this.name = name;
+		this.valueClass = valueClass;
+		this.localCache = new CaffeineLocalCacheBuilder().build(name, valueClass);
+		this.router = router;
+		this.serder = serder;
 	}
 
 	@Override
 	public V getSingle(String key) {
-		var localEntry = this.local.getSingle(key);
+		var localEntry = this.localCache.getSingle(key);
 
-		long hash = this.consistentHash.hash(key);
-		var virtualNode = this.consistentHash.virtualNode(hash);
-		var node = virtualNode.getRealNode();
-
-		if (this.selfNode == node) {
+		var node = this.router.findNode(key);
+		if (this.router.isSelfNode(node)) {
 			if (localEntry == null) {
 				return null;
 			}
-			return localEntry.value();
+			return localEntry.getValue();
 		}
 
 		long version;
 		if (localEntry == null) {
 			version = 0;
 		} else {
-			version = localEntry.version();
+			version = localEntry.getVersion();
 		}
 
 		var remote = node.getRemoteCache();
-		var resp = remote.getSingle(key, version);
+		var resp = remote.getSingle(this.name, key, version);
 
-		switch(resp.status()) {
+		switch (resp.getStatus()) {
 			case Changed: {
-				return localEntry.value();
+				return localEntry.getValue();
 			}
 			case NoChange: {
-				return localEntry.value();
+				return localEntry.getValue();
 			}
 			case NotFound: {
 				return null;
 			}
 			default: {
-				throw new IllegalStateException("unexpected status: " + resp.status());
+				throw new IllegalStateException("unexpected status: " + resp.getStatus());
 			}
 		}
 	}
 
 	@Override
 	public void setSingle(String key, V value) {
+		var node = this.router.findNode(key);
+		if (this.router.isSelfNode(node)) {
+			var entry = new LocalEntry<V>();
+			entry.setKey(key);
+			entry.setValue(value);
+			this.localCache.setSingle(entry);
+			return;
+		}
 
+		var remote = node.getRemoteCache();
+		remote.setSingle(this.name, key, serder.serialize(value));
 	}
 
 	@Override
 	public void close() throws Exception {
-		this.remote.close();
-		this.local.close();
+		this.localCache.close();
 	}
 
 }

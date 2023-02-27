@@ -1,4 +1,4 @@
-package com.github.qiangyt.cachemeshpoc.grpc;
+package com.github.qiangyt.cachemeshpoc.remote.grpc;
 
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
@@ -9,19 +9,29 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CacheMeshServer {
-	private static final Logger LOG = LoggerFactory.getLogger(CacheMeshServer.class);
+public class GrpcServer {
+
+	private static final Logger LOG = LoggerFactory.getLogger(GrpcServer.class);
 
   private Server server;
 
-  private void start() throws IOException {
-    /* The port on which the server should run */
-    int port = 50051;
-    this.server = Grpc.newServerBuilderForPort(port, InsecureServerCredentials.create())
-											.addService(new CacheMeshImpl())
-											.build()
-											.start();
-		LOG.info("Server started, listening on " + port);
+	@lombok.Getter
+	private final GrpcConfig config;
+
+	private final GrpcService service;
+
+	public GrpcServer(GrpcConfig config, GrpcService service) {
+		this.config = config;
+		this.service = service;
+
+		this.server = Grpc.newServerBuilderForPort(this.config.getPort(), InsecureServerCredentials.create())
+											.addService(this.service)
+											.build();
+	}
+
+  public void start() throws IOException {
+    this.server.start();
+		LOG.info("server started, listening on " + this.config.getPort());
 
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
@@ -29,7 +39,7 @@ public class CacheMeshServer {
         // Use stderr here since the logger may have been reset by its JVM shutdown hook.
         System.err.println("*** shutting down gRPC server since JVM is shutting down");
         try {
-          CacheMeshServer.this.stop();
+          GrpcServer.this.stop();
         } catch (InterruptedException e) {
           e.printStackTrace(System.err);
         }
@@ -38,22 +48,16 @@ public class CacheMeshServer {
     });
   }
 
-  private void stop() throws InterruptedException {
+  public void stop() throws InterruptedException {
     if (this.server != null) {
       this.server.shutdown().awaitTermination(30, TimeUnit.SECONDS);
     }
   }
 
-  private void blockUntilShutdown() throws InterruptedException {
+  public void blockUntilShutdown() throws InterruptedException {
     if (server != null) {
       this.server.awaitTermination();
     }
-  }
-
-  public static void main(String[] args) throws IOException, InterruptedException {
-    final var server = new CacheMeshServer();
-    server.start();
-    server.blockUntilShutdown();
   }
 
 }

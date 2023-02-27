@@ -1,37 +1,45 @@
 syntax = "proto3";
 
-option go_package = "github.com/qiangyt/cachemeshpoc/grpc";
+option go_package = "github.com/qiangyt/cachemeshpoc/remote/grpc";
 option java_multiple_files = true;
-option java_package = "com.github.qiangyt.cachemeshpoc.grpc";
+option java_package = "com.github.qiangyt.cachemeshpoc.remote.grpc";
 option java_outer_classname = "CacheMeshProto";
-option objc_class_prefix = "PCPs";
+option objc_class_prefix = "CMP";
 
 package cachemeshpoc;
 
 // The service definition.
 service CacheMesh {
-  rpc GetSingle (GetSingleRequest) returns (GetSingleReply) {}
-	rpc SetSingle (SetSingleRequest) returns (SetSingleReply) {}
+  rpc GetSingle (GetSingleRequest) returns (GetSingleResponse) {}
+  rpc SetSingle (SetSingleRequest) returns (SetSingleResponse) {}
 }
 
 message GetSingleRequest {
   string cache = 1;
   string key = 2;
-	long version = 3;
+	int64 version = 3;
 }
 
-message GetSingleReply {
-  string key = 1;
-  bytes value = 1;
-	long version = 3;
+enum ValueStatus {
+	NotFound = 0;
+	Changed = 1;
+	NoChange = 2;
+	Redirect = 3;
+}
+
+message GetSingleResponse {
+  ValueStatus status = 1;
+  bytes value = 2;
+  int64 version = 3;
 }
 
 message SetSingleRequest {
   string cache = 1;
   string key = 2;
-	bytes value = 3;
+  bytes value = 3;
 }
 
-message SetSingleReply {
-	long version = 1;
+message SetSingleResponse {
+	ValueStatus status = 1;
+  int64 version = 2;
 }

@@ -3,6 +3,8 @@ package qiangyt.cachemeshpoc.hash;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import qiangyt.cachemeshpoc.err.CacheMeshInternalException;
+
 // Based on github.com/redis/jedis: redis.clients.jedis.util.Hashing
 public class Md5Hash implements Hashing {
 
@@ -15,7 +17,7 @@ public class Md5Hash implements Hashing {
 			try {
 				return MessageDigest.getInstance("MD5");
 			} catch (NoSuchAlgorithmException e) {
-				throw new IllegalStateException("md5 algorithm not available");
+				throw new CacheMeshInternalException(e, "md5 algorithm not available");
 			}
 		}
 

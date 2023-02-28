@@ -1,6 +1,6 @@
 package qiangyt.cachemeshpoc.remote.grpc;
 
-import qiangyt.cachemeshpoc.CacheMeshException;
+import qiangyt.cachemeshpoc.err.CacheMeshServiceException;
 import qiangyt.cachemeshpoc.remote.GetSingleResult;
 import qiangyt.cachemeshpoc.remote.RemoteValueStatus;
 
@@ -12,7 +12,7 @@ public class GrpcResponses {
 			case Changed: return RemoteValueStatus.Changed;
 			case NoChange: return RemoteValueStatus.NoChange;
 			case Redirect: return RemoteValueStatus.Redirect;
-			default: throw new CacheMeshException("unrecognized remote value status: %d", status);
+			default: throw new CacheMeshServiceException("unrecognized remote value status: %d", status);
 		}
 	}
 

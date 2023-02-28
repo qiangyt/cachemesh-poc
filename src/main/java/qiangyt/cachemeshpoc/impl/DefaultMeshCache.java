@@ -1,6 +1,7 @@
 package qiangyt.cachemeshpoc.impl;
 
 import qiangyt.cachemeshpoc.MeshCache;
+import qiangyt.cachemeshpoc.err.CacheMeshServiceException;
 import qiangyt.cachemeshpoc.local.LocalCache;
 import qiangyt.cachemeshpoc.local.LocalEntry;
 import qiangyt.cachemeshpoc.local.caffeine.CaffeineLocalCacheBuilder;
@@ -62,7 +63,7 @@ public class DefaultMeshCache<V> implements MeshCache<V> {
 				return null;
 			}
 			default: {
-				throw new IllegalStateException("unexpected status: " + resp.getStatus());
+				throw new CacheMeshServiceException("unexpected status: %s", resp.getStatus());
 			}
 		}
 	}

@@ -6,9 +6,6 @@ import java.nio.charset.StandardCharsets;
 public interface Hashing {
 
   default long hash(String key) {
-		if (key == null) {
-      throw new IllegalArgumentException("hash key cannot be null");
-    }
     var keyBytes = key.getBytes(StandardCharsets.UTF_8);
     return hash(keyBytes);
 	}

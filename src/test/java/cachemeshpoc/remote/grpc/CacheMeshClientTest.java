@@ -1,4 +1,4 @@
-package cachemeshpoc.grpc;
+package cachemeshpoc.remote.grpc;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.AdditionalAnswers.delegatesTo;
@@ -17,8 +17,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 
-import cachemeshpoc.remote.grpc.GrpcClient;
-
 @RunWith(JUnit4.class)
 public class CacheMeshClientTest {
 
@@ -28,11 +26,11 @@ public class CacheMeshClientTest {
   private final CacheMeshGrpc.CacheMeshImplBase serviceImpl =
       mock(CacheMeshGrpc.CacheMeshImplBase.class, delegatesTo(
           new CacheMeshGrpc.CacheMeshImplBase() {
-          // @Override
-          // public void getSingle(GetSingleRequest request, StreamObserver<GetSingleReply> respObserver) {
-          //   respObserver.onNext(GetSingleReply.getDefaultInstance());
-          //   respObserver.onCompleted();
-          // }
+          @Override
+          public void resolveSingle(ResolveSingleRequest request, StreamObserver<ResolveSingleResponse> respObserver) {
+             respObserver.onNext(ResolveSingleResponse.getDefaultInstance());
+             respObserver.onCompleted();
+           }
           }));
 
   private GrpcClient client;
@@ -45,16 +43,20 @@ public class CacheMeshClientTest {
 
     var channel = this.grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
-    this.client = new GrpcClient(channel);
+		GrpcConfig serverConfig = new GrpcConfig(34567, "localhost");
+    this.client = new GrpcClient(serverConfig, channel);
   }
 
   @Test
-  public void getSingle_messageDeliveredToServer() {
-    var reqCaptor = ArgumentCaptor.forClass(GetSingleRequest.class);
+  public void resolveSingle_messageDeliveredToServer() {
+    var reqCaptor = ArgumentCaptor.forClass(ResolveSingleRequest.class);
 
-    this.client.getSingle("test name");
+    this.client.resolveSingle("test", "key", 123);
 
-    verify(serviceImpl).getSingle(reqCaptor.capture(), ArgumentMatchers.<StreamObserver<GetSingleReply>>any());
-    assertEquals("test name", reqCaptor.getValue().getKey());
+    verify(serviceImpl).resolveSingle(reqCaptor.capture(), ArgumentMatchers.<StreamObserver<ResolveSingleResponse>>any());
+
+		assertEquals("test", reqCaptor.getValue().getCacheName());
+		assertEquals("key", reqCaptor.getValue().getKey());
+		assertEquals(123, reqCaptor.getValue().getVersion());
   }
 }

@@ -1,11 +1,11 @@
-package qiangyt.cachemeshpoc.impl;
+package cachemeshpoc.impl;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import qiangyt.cachemeshpoc.MeshCache;
-import qiangyt.cachemeshpoc.MeshCacheBuilder;
-import qiangyt.cachemeshpoc.MeshCacheManager;
+import cachemeshpoc.MeshCache;
+import cachemeshpoc.MeshCacheBuilder;
+import cachemeshpoc.MeshCacheManager;
 
 public class DefaultMeshCacheManager implements MeshCacheManager {
 

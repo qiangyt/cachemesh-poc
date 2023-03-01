@@ -50,7 +50,7 @@
 						<manifest>
 							<!--<addClasspath>true</addClasspath>-->
 							<!--<classpathPrefix>lib/</classpathPrefix>-->
-							<mainClass>qiangyt.cachemeshpoc.Main</mainClass>
+							<mainClass>cachemeshpoc.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

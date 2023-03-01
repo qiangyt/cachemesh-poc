@@ -1,9 +1,9 @@
-package cachemeshpoc.serde;
+package cachemeshpoc.json;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import cachemeshpoc.json.JacksonHelper;
+import cachemeshpoc.Serderializer;
 
 @lombok.Getter
 public class JsonSerderializer implements Serderializer {

@@ -1,4 +1,4 @@
-package cachemeshpoc.serde;
+package cachemeshpoc;
 
 public interface Serderializer {
 

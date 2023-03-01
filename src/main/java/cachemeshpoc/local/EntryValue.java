@@ -1,6 +1,6 @@
 package cachemeshpoc.local;
 
-import cachemeshpoc.serde.Serderializer;
+import cachemeshpoc.Serderializer;
 
 @lombok.Builder
 public class EntryValue {

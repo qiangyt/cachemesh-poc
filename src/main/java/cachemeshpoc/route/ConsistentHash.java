@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cachemeshpoc.MeshAddress;
 import cachemeshpoc.hash.Hashing;
 
 // based on github.com/redis/jedis: redis.clients.jedis.providers.ShardedConnectionProvider
@@ -21,7 +22,7 @@ public class ConsistentHash {
 		this.algo = algo;
 	}
 
-	public void join(List<MeshNode> nodes) {
+	public void join(List<MeshAddress> nodes) {
 		LOG.info("got {} nodes to join", nodes.size());
 
 		for (var node: nodes) {
@@ -29,7 +30,7 @@ public class ConsistentHash {
 		}
 	}
 
-	public void join(MeshNode node) {
+	public void join(MeshAddress node) {
 		LOG.info("node {} is joining", node);
 
 		boolean debug = LOG.isDebugEnabled();

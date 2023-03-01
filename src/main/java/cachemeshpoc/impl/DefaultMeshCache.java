@@ -1,20 +1,17 @@
 package cachemeshpoc.impl;
 
 import cachemeshpoc.MeshCache;
+import cachemeshpoc.Serderializer;
 import cachemeshpoc.err.CacheMeshServiceException;
 import cachemeshpoc.local.LocalCache;
 import cachemeshpoc.local.EntryValue;
 import cachemeshpoc.local.caffeine.CaffeineLocalCacheBuilder;
 import cachemeshpoc.route.MeshRouter;
-import cachemeshpoc.serde.Serderializer;
 
 public class DefaultMeshCache<V> implements MeshCache<V> {
 
 	@lombok.Getter
-	private final String name;
-
-	@lombok.Getter
-	private final Class<V> valueClass;
+	private final MeshCacheConfig<V> config;
 
 	private final LocalCache localCache;
 
@@ -22,8 +19,8 @@ public class DefaultMeshCache<V> implements MeshCache<V> {
 
 	private final Serderializer serder;
 
-	public DefaultMeshCache(String name, Class<V> valueClass, MeshRouter router, Serderializer serder) {
-		this.name = name;
+	public DefaultMeshCache(MeshCacheConfig<V> config, MeshRouter router, Serderializer serder) {
+		this.config = config;
 		this.valueClass = valueClass;
 		this.localCache = new CaffeineLocalCacheBuilder().build(name);
 		this.router = router;

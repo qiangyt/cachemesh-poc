@@ -1,4 +1,4 @@
-package cachemeshpoc.route;
+package cachemeshpoc;
 
 import cachemeshpoc.remote.RemoteCache;
 

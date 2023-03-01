@@ -1,13 +1,28 @@
 package qiangyt.cachemeshpoc.local;
 
-public interface LocalCache<V> extends AutoCloseable {
+import java.util.Collection;
+import java.util.Map;
 
-	String getName();
+public interface LocalCache extends AutoCloseable {
 
-	Class<V> getValueClass();
+	LocalCacheConfig getConfig();
 
-	LocalEntry<V> getSingle(String key);
+	void invalidateSingle(String key);
 
-	void setSingle(LocalEntry<V> entry);
+	void invalidateMultiple(Collection<String> keys);
+
+	ResolveResult resolveSingle(EntryHead head);
+
+	EntryValue getSingle(String key);
+
+	void putSingle(String key, EntryValue value);
+
+	Collection<ResolveResult> resolveMultiple(Collection<EntryHead> keys);
+
+	Map<String, EntryValue> getMultiple(Collection<String> keys);
+
+	void putMultiple(Collection<Entry> entries);
+
+	Collection<String> getAllKeys();
 
 }

@@ -17,7 +17,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 
-import qiangyt.cachemeshpoc.remote.grpc.GrpcRemoteCache;
+import qiangyt.cachemeshpoc.remote.grpc.GrpcClient;
 
 @RunWith(JUnit4.class)
 public class CacheMeshClientTest {
@@ -35,7 +35,7 @@ public class CacheMeshClientTest {
           // }
           }));
 
-  private GrpcRemoteCache client;
+  private GrpcClient client;
 
   @Before
   public void setUp() throws Exception {
@@ -45,7 +45,7 @@ public class CacheMeshClientTest {
 
     var channel = this.grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
-    this.client = new GrpcRemoteCache(channel);
+    this.client = new GrpcClient(channel);
   }
 
   @Test

@@ -13,7 +13,7 @@ public class GrpcRemoteCacheBuilder extends GrpcConfigBuilder implements RemoteC
 	public RemoteCache build() {
 		var cfg = buildConfig();
 		var ch = Grpc.newChannelBuilder(cfg.getTarget(), InsecureChannelCredentials.create()).build();
-		return new GrpcRemoteCache(cfg, ch);
+		return new GrpcClient(cfg, ch);
 	}
 
 }

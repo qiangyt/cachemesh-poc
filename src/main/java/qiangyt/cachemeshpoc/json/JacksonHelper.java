@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import qiangyt.cachemeshpoc.err.CacheMeshInternalException;
 import qiangyt.cachemeshpoc.err.CacheMeshRequestException;
 import qiangyt.cachemeshpoc.util.StringHelper;
 

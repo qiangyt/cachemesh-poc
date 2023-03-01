@@ -10,12 +10,12 @@ package cachemeshpoc;
 
 // The service definition.
 service CacheMesh {
-  rpc GetSingle (GetSingleRequest) returns (GetSingleResponse) {}
-  rpc SetSingle (SetSingleRequest) returns (SetSingleResponse) {}
+  rpc ResolveSingle (ResolveSingleRequest) returns (ResolveSingleResponse) {}
+  rpc PutSingle (PutSingleRequest) returns (PutSingleResponse) {}
 }
 
-message GetSingleRequest {
-  string cache = 1;
+message ResolveSingleRequest {
+  string cacheName = 1;
   string key = 2;
 	int64 version = 3;
 }
@@ -27,19 +27,19 @@ enum ValueStatus {
 	Redirect = 3;
 }
 
-message GetSingleResponse {
+message ResolveSingleResponse {
   ValueStatus status = 1;
   bytes value = 2;
   int64 version = 3;
 }
 
-message SetSingleRequest {
-  string cache = 1;
+message PutSingleRequest {
+  string cacheName = 1;
   string key = 2;
   bytes value = 3;
 }
 
-message SetSingleResponse {
+message PutSingleResponse {
 	ValueStatus status = 1;
   int64 version = 2;
 }

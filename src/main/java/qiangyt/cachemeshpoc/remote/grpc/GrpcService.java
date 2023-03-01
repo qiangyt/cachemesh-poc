@@ -1,9 +1,8 @@
 package qiangyt.cachemeshpoc.remote.grpc;
 
 import io.grpc.stub.StreamObserver;
-
+import qiangyt.cachemeshpoc.local.EntryValue;
 import qiangyt.cachemeshpoc.local.LocalCacheManager;
-import qiangyt.cachemeshpoc.local.LocalEntry;
 import qiangyt.cachemeshpoc.route.MeshRouter;
 import qiangyt.cachemeshpoc.serde.Serderializer;
 import com.google.protobuf.ByteString;
@@ -23,93 +22,69 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 	}
 
 	@Override
-	public void getSingle(GetSingleRequest req, StreamObserver<GetSingleResponse> respObserver) {
+	public void resolveSingle(ResolveSingleRequest req, StreamObserver<ResolveSingleResponse> respObserver) {
 		String key = req.getKey();
+
+		var builder = ResolveSingleResponse.newBuilder();
+
 		var node = this.router.findNode(key);
 		if (!this.router.isSelfNode(node)) {
 			// TODO: redirect to which
-			var resp = GetSingleResponse.newBuilder().setStatus(ValueStatus.Redirect).build();
-			respObserver.onNext(resp);
-			respObserver.onCompleted();
-			return;
+			builder.setStatus(ValueStatus.Redirect);
+		} else {
+			var localCache = this.localCacheManager.get(req.getCacheName());
+			if (localCache == null) {
+				builder.setStatus(ValueStatus.NotFound);
+			} else {
+				var value = localCache.getSingle(key);
+				if (value == null) {
+					builder.setStatus(ValueStatus.NotFound);
+				} else {
+					long localVersion = value.getVersion();
+					if (req.getVersion() <= localVersion) {
+						builder.setStatus(ValueStatus.NoChange);
+					} else {
+						builder.setStatus(ValueStatus.Changed);
+
+						byte[] valueBytes = value.getBytes(this.serder);
+						builder.setVersion(localVersion).setValue(ByteString.copyFrom(valueBytes));
+					}
+				}
+			}
 		}
 
-		String cacheName = req.getCache();
-		var localCache = this.localCacheManager.get(cacheName, null);
-		if (localCache == null) {
-			var resp = GetSingleResponse.newBuilder().setStatus(ValueStatus.NotFound).build();
-			respObserver.onNext(resp);
-			respObserver.onCompleted();
-			return;
-		}
-
-		var localEntry = localCache.getSingle(key);
-		if (localEntry == null) {
-			var resp = GetSingleResponse.newBuilder().setStatus(ValueStatus.NotFound).build();
-			respObserver.onNext(resp);
-			respObserver.onCompleted();
-			return;
-		}
-
-		long version = req.getVersion();
-		long localVersion = localEntry.getVersion();
-		if (version <= localVersion) {
-			var resp = GetSingleResponse.newBuilder().setStatus(ValueStatus.NoChange).build();
-			respObserver.onNext(resp);
-			respObserver.onCompleted();
-			return;
-		}
-
-		byte[] valueBytes = this.serder.serialize(localEntry.getValue());
-
-		var resp = GetSingleResponse.newBuilder()
-				.setStatus(ValueStatus.Changed)
-				.setVersion(localVersion)
-				.setValue(ByteString.copyFrom(valueBytes))
-				.build();
-		respObserver.onNext(resp);
-		respObserver.onCompleted();
+		GrpcResponses.complete(respObserver, builder.build());
 	}
 
 	@Override
-	public void setSingle(SetSingleRequest req, StreamObserver<SetSingleResponse> respObserver) {
+	public void putSingle(PutSingleRequest req, StreamObserver<PutSingleResponse> respObserver) {
 		String key = req.getKey();
+
+		var builder = PutSingleResponse.newBuilder();
+
 		var node = this.router.findNode(key);
 		if (!this.router.isSelfNode(node)) {
 			// TODO: redirect to which
-			var resp = SetSingleResponse.newBuilder().setStatus(ValueStatus.Redirect).build();
-			respObserver.onNext(resp);
-			respObserver.onCompleted();
-			return;
-		}
-
-		String cacheName = req.getCache();
-		var localCache = this.localCacheManager.resolve(cacheName, null);// TODO
-
-		var newLocalEntry = new LocalEntry<Object>();// TODO
-		newLocalEntry.setKey(req.getKey());
-
-		byte[] valueBytes = req.getValue().toByteArray();
-		var valueObj = this.serder.deserialize(valueBytes, localCache.getValueClass());
-		newLocalEntry.setValue(valueObj);
-
-		long version;
-		var exisitingLocalEntry = localCache.getSingle(key);
-		if (exisitingLocalEntry != null) {
-			version = exisitingLocalEntry.getVersion();
+			builder.setStatus(ValueStatus.Redirect);
 		} else {
-			version = 1;
+			builder.setStatus(ValueStatus.Changed);
+
+			var localCache = this.localCacheManager.resolve(req.getCacheName());
+
+			long version;
+			var oldValue = localCache.getSingle(key);
+			if (oldValue != null) {
+				version = oldValue.getVersion() + 1;
+			} else {
+				version = 1;
+			}
+			builder.setVersion(version);
+
+			var newValue = EntryValue.builder().bytes(req.getValue().toByteArray()).version(version).build();
+			localCache.putSingle(key, newValue);
 		}
-		newLocalEntry.setVersion(version);
 
-		localCache.setSingle(newLocalEntry);
-
-		var resp = SetSingleResponse.newBuilder()
-				.setStatus(ValueStatus.Changed)
-				.setVersion(version)
-				.build();
-		respObserver.onNext(resp);
-		respObserver.onCompleted();
+		GrpcResponses.complete(respObserver, builder.build());
 	}
 
 }

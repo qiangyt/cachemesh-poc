@@ -1,10 +1,17 @@
 package qiangyt.cachemeshpoc.remote.grpc;
 
+import io.grpc.stub.StreamObserver;
 import qiangyt.cachemeshpoc.err.CacheMeshServiceException;
-import qiangyt.cachemeshpoc.remote.GetSingleResult;
+import qiangyt.cachemeshpoc.remote.ResolveSingleResult;
 import qiangyt.cachemeshpoc.remote.RemoteValueStatus;
 
 public class GrpcResponses {
+
+	public static <V> void complete(StreamObserver<V> observer, V response) {
+		observer.onNext(response);
+		observer.onCompleted();
+		return;
+	}
 
 	public static RemoteValueStatus convertValueStatus(ValueStatus status) {
 		switch(status) {
@@ -16,8 +23,8 @@ public class GrpcResponses {
 		}
 	}
 
-	public static GetSingleResult getSingle(GetSingleResponse resp) {
-		return GetSingleResult.builder()
+	public static ResolveSingleResult resolveSingle(ResolveSingleResponse resp) {
+		return ResolveSingleResult.builder()
 				.status(convertValueStatus(resp.getStatus()))
 				.value(resp.getValue() == null ? null : resp.getValue().toByteArray())
 				.version(resp.getVersion())

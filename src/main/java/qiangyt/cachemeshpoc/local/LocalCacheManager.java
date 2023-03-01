@@ -2,14 +2,10 @@ package qiangyt.cachemeshpoc.local;
 
 public interface LocalCacheManager {
 
-	<V> LocalCache<V> get(String name, Class<V> valueClass);
+	void register(LocalCache cache);
 
-	void registerAlways(String name, LocalCacheBuilder builder);
+	LocalCache get(String cacheName);
 
-	void registerIfAbsent(String name, LocalCacheBuilder builder);
-
-	<V> LocalCache<V> create(String name, LocalCacheBuilder builder);
-
-	<V> LocalCache<V> resolve(String name, LocalCacheBuilder builder);
+	LocalCache resolve(String cacheName);
 
 }

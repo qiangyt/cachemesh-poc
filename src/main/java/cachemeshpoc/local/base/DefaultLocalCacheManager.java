@@ -19,7 +19,8 @@ public class DefaultLocalCacheManager implements Manager {
 		this.defaultBuilder = defaultBuilder;
 	}
 
-	@Override @SuppressWarnings("unchecked")
+	@Override
+	@SuppressWarnings("unchecked")
 	public void register(LocalCache<?> cache) {
 		String cacheName = cache.getConfig().getName();
 
@@ -29,24 +30,37 @@ public class DefaultLocalCacheManager implements Manager {
 			var newType = cache.getConfig().getValueClass();
 			if (prevType.equals(newType) == false) {
 				throw new CacheMeshInternalException("cannot merge 2 caches with different value types: %s <--> %s",
-							prevType, newType);
+						prevType, newType);
 			}
 
 			Collection<Entry<Object>> entries = Entry.fromMap(prev.getMultiple(prev.getAllKeys()));
-			((LocalCache<Object>)cache).putMultiple(entries);
+			((LocalCache<Object>) cache).putMultiple(entries);
 		}
 
-		this.caches.put(cacheName, ((LocalCache<Object>)cache));
+		this.caches.put(cacheName, ((LocalCache<Object>) cache));
 	}
 
-	@Override @SuppressWarnings("unchecked")
+	@Override
+	@SuppressWarnings("unchecked")
 	public <T> LocalCache<T> get(String cacheName) {
-		return (LocalCache<T>)this.caches.get(cacheName);
+		return (LocalCache<T>) this.caches.get(cacheName);
 	}
 
-	@Override @SuppressWarnings("unchecked")
+	@Override
+	@SuppressWarnings("unchecked")
 	public <T> LocalCache<T> resolve(String cacheName) {
-		return (LocalCache<T>)this.caches.computeIfAbsent(cacheName, k -> this.defaultBuilder.build(cacheName));
+		return (LocalCache<T>) this.caches.computeIfAbsent(cacheName, k -> this.defaultBuilder.build(cacheName));
+	}
+
+	@Override
+	public void close() throws Exception {
+		for (var cache : this.caches.values()) {
+			try {
+				cache.close();
+			} catch (Exception e) {
+				// TODO
+			}
+		}
 	}
 
 }

@@ -10,6 +10,8 @@ public class JsonSerderializer implements Serderializer {
 
 	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
+	public static final JsonSerderializer DEFAULT = new JsonSerderializer();
+
 	private final JacksonHelper jackson;
 
 	private final Charset charset;
@@ -29,10 +31,10 @@ public class JsonSerderializer implements Serderializer {
 		return s.getBytes(StandardCharsets.UTF_8);
 	}
 
-	@Override
-	public <T> T deserialize(byte[] bytes, Class<T> clazz) {
+	@Override @SuppressWarnings("unchecked")
+	public <T> T deserialize(byte[] bytes, Class<?> clazz) {
 		String s = new String(bytes, StandardCharsets.UTF_8);
-		return this.jackson.from(s, clazz);
+		return (T)this.jackson.from(s, clazz);
 	}
 
 }

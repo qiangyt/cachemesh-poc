@@ -28,7 +28,7 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 		var builder = ResolveSingleResponse.newBuilder();
 
 		var node = this.router.findNode(key);
-		if (!this.router.isSelfNode(node)) {
+		if (!this.router.isMyNode(node)) {
 			// TODO: redirect to which
 			builder.setStatus(ValueStatus.Redirect);
 		} else {
@@ -63,7 +63,7 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 		var builder = PutSingleResponse.newBuilder();
 
 		var node = this.router.findNode(key);
-		if (!this.router.isSelfNode(node)) {
+		if (!this.router.isMyNode(node)) {
 			// TODO: redirect to which
 			builder.setStatus(ValueStatus.Redirect);
 		} else {

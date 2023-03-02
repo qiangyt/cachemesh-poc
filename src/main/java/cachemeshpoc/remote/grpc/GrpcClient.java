@@ -7,10 +7,10 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cachemeshpoc.remote.Result;
-import cachemeshpoc.remote.RemoteCache;
+import cachemeshpoc.MeshResult;
+import cachemeshpoc.RawCache;
 
-public class GrpcClient implements RemoteCache {
+public class GrpcClient implements RawCache {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GrpcClient.class);
 
@@ -35,7 +35,7 @@ public class GrpcClient implements RemoteCache {
 	}
 
 	@Override
-	public Result resolveSingle(String cacheName, String key, long version) {
+	public MeshResult resolveSingle(String cacheName, String key, long version) {
 		var req = GrpcRequests.resolveSingle(cacheName, key, version);
 
 		var resp = this.stub.resolveSingle(req);

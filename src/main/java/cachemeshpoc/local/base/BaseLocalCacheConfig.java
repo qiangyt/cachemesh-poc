@@ -1,11 +1,11 @@
 package cachemeshpoc.local.base;
 
-import cachemeshpoc.local.LocalCacheConfig;
+import cachemeshpoc.local.LocalCache.Config;
 
 @lombok.Getter
 @lombok.ToString
 @lombok.experimental.SuperBuilder
-public abstract class BaseLocalCacheConfig implements LocalCacheConfig {
+public abstract class BaseLocalCacheConfig implements Config {
 
 	private final String name;
 

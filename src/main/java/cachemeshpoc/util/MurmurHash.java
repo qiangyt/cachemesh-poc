@@ -9,7 +9,7 @@
  * for the specific language governing permissions and limitations under the License.
  */
 
-package cachemeshpoc.hash;
+package cachemeshpoc.util;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

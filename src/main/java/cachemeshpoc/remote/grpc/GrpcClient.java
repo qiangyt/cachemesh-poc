@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cachemeshpoc.remote.ResolveSingleResult;
+import cachemeshpoc.remote.Result;
 import cachemeshpoc.remote.RemoteCache;
 
 public class GrpcClient implements RemoteCache {
@@ -35,7 +35,7 @@ public class GrpcClient implements RemoteCache {
 	}
 
 	@Override
-	public ResolveSingleResult resolveSingle(String cacheName, String key, long version) {
+	public Result resolveSingle(String cacheName, String key, long version) {
 		var req = GrpcRequests.resolveSingle(cacheName, key, version);
 
 		var resp = this.stub.resolveSingle(req);

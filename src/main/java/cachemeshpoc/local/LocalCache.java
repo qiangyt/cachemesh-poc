@@ -3,25 +3,44 @@ package cachemeshpoc.local;
 import java.util.Collection;
 import java.util.Map;
 
-public interface LocalCache extends AutoCloseable {
+import cachemeshpoc.local.Entry.Head;
+import cachemeshpoc.local.Entry.Value;
 
-	LocalCacheConfig getConfig();
+public interface LocalCache<T> extends AutoCloseable {
+
+	public static interface Config {
+		String getName();
+		Class<?> getValueClass();
+	}
+
+	public static interface Builder {
+		<T> LocalCache<T> build(String cacheName);
+	}
+
+	public static interface Manager {
+		void register(LocalCache<?> cache);
+		<T> LocalCache<T> get(String cacheName);
+		<T> LocalCache<T> resolve(String cacheName);
+	}
+
+
+	Config getConfig();
 
 	void invalidateSingle(String key);
 
 	void invalidateMultiple(Collection<String> keys);
 
-	ResolveResult resolveSingle(EntryHead head);
+	Result<T> resolveSingle(Head head);
 
-	EntryValue getSingle(String key);
+	Value<T> getSingle(String key);
 
-	void putSingle(String key, EntryValue value);
+	void putSingle(String key, Value<T> value);
 
-	Collection<ResolveResult> resolveMultiple(Collection<EntryHead> keys);
+	Collection<Result<T>> resolveMultiple(Collection<Head> keys);
 
-	Map<String, EntryValue> getMultiple(Collection<String> keys);
+	Map<String, Value<T>> getMultiple(Collection<String> keys);
 
-	void putMultiple(Collection<Entry> entries);
+	void putMultiple(Collection<Entry<T>> entries);
 
 	Collection<String> getAllKeys();
 

@@ -1,23 +1,22 @@
 package cachemeshpoc.remote.grpc;
 
 import io.grpc.stub.StreamObserver;
+import cachemeshpoc.MeshRouter;
 import cachemeshpoc.Serderializer;
-import cachemeshpoc.local.EntryValue;
-import cachemeshpoc.local.LocalCacheManager;
-import cachemeshpoc.route.MeshRouter;
+import cachemeshpoc.local.LocalCache;
 
 import com.google.protobuf.ByteString;
 
 public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 
-	private final LocalCacheManager localCacheManager;
+	private final LocalCache.Manager sideCaches;
 
 	private final MeshRouter router;
 
 	private final Serderializer serder;
 
-	public GrpcService(LocalCacheManager localCacheManager, MeshRouter router, Serderializer serder) {
-		this.localCacheManager = localCacheManager;
+	public GrpcService(LocalCache.Manager sideCaches, MeshRouter router, Serderializer serder) {
+		this.sideCaches = sideCaches;
 		this.router = router;
 		this.serder = serder;
 	}
@@ -33,7 +32,7 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 			// TODO: redirect to which
 			builder.setStatus(ValueStatus.Redirect);
 		} else {
-			var localCache = this.localCacheManager.get(req.getCacheName());
+			var localCache = this.sideCaches.get(req.getCacheName());
 			if (localCache == null) {
 				builder.setStatus(ValueStatus.NotFound);
 			} else {
@@ -70,7 +69,7 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 		} else {
 			builder.setStatus(ValueStatus.Changed);
 
-			var localCache = this.localCacheManager.resolve(req.getCacheName());
+			var localCache = this.sideCaches.resolve(req.getCacheName());
 
 			long version;
 			var oldValue = localCache.getSingle(key);

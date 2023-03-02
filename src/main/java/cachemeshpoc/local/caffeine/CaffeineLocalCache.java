@@ -6,14 +6,14 @@ import java.util.Map;
 import com.github.benmanes.caffeine.cache.Cache;
 
 import cachemeshpoc.local.Entry;
-import cachemeshpoc.local.EntryValue;
+import cachemeshpoc.local.Entry.Value;
 import cachemeshpoc.local.base.BaseLocalCache;
 
-public class CaffeineLocalCache extends BaseLocalCache {
+public class CaffeineLocalCache<T> extends BaseLocalCache<T> {
 
-	private final Cache<String, EntryValue> caffeine;
+	private final Cache<String, Value<T>> caffeine;
 
-	public CaffeineLocalCache(CaffeineLocalCacheConfig config, Cache<String, EntryValue> caffeine) {
+	public CaffeineLocalCache(CaffeineLocalCacheConfig config, Cache<String, Value<T>> caffeine) {
 		super(config);
 		this.caffeine = caffeine;
 	}
@@ -29,22 +29,22 @@ public class CaffeineLocalCache extends BaseLocalCache {
 	}
 
 	@Override
-	public EntryValue getSingle(String key) {
+	public Value<T> getSingle(String key) {
 		return this.caffeine.getIfPresent(key);
 	}
 
 	@Override
-	public void putSingle(String key, EntryValue value) {
+	public void putSingle(String key, Value<T> value) {
 		this.caffeine.put(key, value);
 	}
 
 	@Override
-	public Map<String, EntryValue> getMultiple(Collection<String> keys) {
+	public Map<String, Value<T>> getMultiple(Collection<String> keys) {
 		return this.caffeine.getAllPresent(keys);
 	}
 
 	@Override
-	public void putMultiple(Collection<Entry> entries) {
+	public void putMultiple(Collection<Entry<T>> entries) {
 		this.caffeine.putAll(Entry.toMap(entries));
 	}
 

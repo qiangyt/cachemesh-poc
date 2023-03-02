@@ -3,10 +3,25 @@ package cachemeshpoc;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import cachemeshpoc.remote.grpc.url.Handler;
+import cachemeshpoc.remote.url.Handler;
+import cachemeshpoc.util.ConsistentHash;
 
 @lombok.Getter
-public class MeshNode {
+public class MeshNode implements ConsistentHash.Node {
+
+
+	public static enum Protocol {
+
+		//resp3,
+
+		grpc;
+
+		static Protocol Default() {
+			return grpc;
+		}
+
+	}
+
 
 	static {
 		Handler.registerHandler();
@@ -21,7 +36,7 @@ public class MeshNode {
 		var url = new URL(urlText);
 
 		String protocol = url.getProtocol();
-		if (MeshProtocol.valueOf(protocol)==null) {
+		if (Protocol.valueOf(protocol)==null) {
 			throw new MalformedURLException("unsupported meshcache protocol: " + protocol);
 		}
 

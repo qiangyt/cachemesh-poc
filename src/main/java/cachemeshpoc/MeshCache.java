@@ -2,9 +2,19 @@ package cachemeshpoc;
 
 public interface MeshCache<V> extends AutoCloseable {
 
-	String getName();
+	@lombok.Data
+	@lombok.Builder
+	public class Config<V> {
 
-	Class<V> getValueClass();
+		private String name;
+
+		private Class<V> valueClass;
+
+		private Serderializer serder;
+
+	}
+
+	Config<V> getConfig();
 
 	V getSingle(String key);
 

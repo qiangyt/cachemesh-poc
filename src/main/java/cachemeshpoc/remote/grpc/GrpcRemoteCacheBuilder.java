@@ -5,9 +5,9 @@ import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
 
 import cachemeshpoc.remote.RemoteCache;
-import cachemeshpoc.remote.RemoteCacheBuilder;
+import cachemeshpoc.remote.RemoteCache.Builder;
 
-public class GrpcRemoteCacheBuilder extends GrpcConfigBuilder implements RemoteCacheBuilder {
+public class GrpcRemoteCacheBuilder extends GrpcConfigBuilder implements Builder {
 
 	@Override
 	public RemoteCache build() {

@@ -1,4 +1,4 @@
-package cachemeshpoc.hash;
+package cachemeshpoc.util;
 
 import java.nio.charset.StandardCharsets;
 

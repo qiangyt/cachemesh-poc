@@ -1,4 +1,4 @@
-package cachemeshpoc.remote.grpc.url;
+package cachemeshpoc.remote.url;
 
 import java.io.IOException;
 import java.net.URL;

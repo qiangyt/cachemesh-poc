@@ -1,53 +1,52 @@
 package cachemeshpoc.impl;
 
 import cachemeshpoc.MeshCache;
+import cachemeshpoc.MeshRouter;
 import cachemeshpoc.Serderializer;
 import cachemeshpoc.err.CacheMeshServiceException;
 import cachemeshpoc.local.LocalCache;
 import cachemeshpoc.local.EntryValue;
 import cachemeshpoc.local.caffeine.CaffeineLocalCacheBuilder;
-import cachemeshpoc.route.MeshRouter;
 
 public class DefaultMeshCache<V> implements MeshCache<V> {
 
 	@lombok.Getter
-	private final MeshCacheConfig<V> config;
+	private final MeshCache.Config<V> config;
 
-	private final LocalCache localCache;
+	private final LocalCache nodeCache;
 
 	private final MeshRouter router;
 
 	private final Serderializer serder;
 
-	public DefaultMeshCache(MeshCacheConfig<V> config, MeshRouter router, Serderializer serder) {
+	public DefaultMeshCache(MeshCache.Config<V> config, MeshRouter router, Serderializer serder) {
 		this.config = config;
-		this.valueClass = valueClass;
-		this.localCache = new CaffeineLocalCacheBuilder().build(name);
+		this.nodeCache = new CaffeineLocalCacheBuilder().build(config.getName());
+		this.nearCache = new CaffeineLocalCacheBuilder().build(config.getName());
 		this.router = router;
 		this.serder = serder;
 	}
 
 	@Override
 	public V getSingle(String key) {
-		var localValue = this.localCache.getSingle(key);
-
 		var node = this.router.findNode(key);
 		if (this.router.isSelfNode(node)) {
-			if (localValue == null) {
+			var nodeValue = this.nodeCache.getSingle(key);
+			if (nodeValue == null) {
 				return null;
 			}
-
-			return localValue.getObject(this.serder, this.valueClass);
+			return nodeValue.getObject(this.serder, this.config.getValueClass());
 		}
 
+		var nearValue = this.nearCache.getSingle(key);
 		long ver;
-		if (localValue == null) {
+		if (nearValue == null) {
 			ver = 0;
 		} else {
-			ver = localValue.getVersion();
+			ver = nearValue.getVersion();
 		}
 
-		var resp = node.getRemoteCache().resolveSingle(this.name, key, ver);
+		var resp = node.getRemoteCache().resolveSingle(this.config.getName(), key, ver);
 
 		switch (resp.getStatus()) {
 			case Changed: {

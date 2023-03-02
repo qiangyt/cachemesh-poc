@@ -2,8 +2,8 @@ package cachemeshpoc.remote.grpc;
 
 import io.grpc.stub.StreamObserver;
 import cachemeshpoc.err.CacheMeshServiceException;
-import cachemeshpoc.remote.ResolveSingleResult;
-import cachemeshpoc.remote.RemoteValueStatus;
+import cachemeshpoc.remote.Result;
+import cachemeshpoc.remote.Result.Status;
 
 public class GrpcResponses {
 
@@ -13,22 +13,19 @@ public class GrpcResponses {
 		return;
 	}
 
-	public static RemoteValueStatus convertValueStatus(ValueStatus status) {
+	public static Status convertStatus(ValueStatus status) {
 		switch(status) {
-			case NotFound: return RemoteValueStatus.NotFound;
-			case Changed: return RemoteValueStatus.Changed;
-			case NoChange: return RemoteValueStatus.NoChange;
-			case Redirect: return RemoteValueStatus.Redirect;
+			case NotFound: return Status.NOT_FOUND;
+			case Changed: return Status.CHANGED;
+			case NoChange: return Status.NO_CHANGE;
+			case Redirect: return Status.REDIRECTED;
 			default: throw new CacheMeshServiceException("unrecognized remote value status: %d", status);
 		}
 	}
 
-	public static ResolveSingleResult resolveSingle(ResolveSingleResponse resp) {
-		return ResolveSingleResult.builder()
-				.status(convertValueStatus(resp.getStatus()))
-				.value(resp.getValue() == null ? null : resp.getValue().toByteArray())
-				.version(resp.getVersion())
-				.build();
+	public static Result resolveSingle(ResolveSingleResponse resp) {
+		byte[] v = resp.getValue() == null ? null : resp.getValue().toByteArray();
+		return new Result(convertStatus(resp.getStatus()), v, resp.getVersion());
 	}
 
 }

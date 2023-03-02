@@ -6,18 +6,18 @@ import java.util.function.Function;
 
 import cachemeshpoc.local.Entry;
 import cachemeshpoc.local.LocalCache;
-import cachemeshpoc.local.LocalCacheConfig;
-import cachemeshpoc.local.ResolveResult;
-import cachemeshpoc.local.ValueStatus;
-import cachemeshpoc.local.EntryHead;
-import cachemeshpoc.local.EntryValue;
+import cachemeshpoc.local.Result;
+import cachemeshpoc.local.Entry.Head;
+import cachemeshpoc.local.Entry.Status;
+import cachemeshpoc.local.Entry.Value;
 
-public abstract class BaseLocalCache implements LocalCache {
+
+public abstract class BaseLocalCache<T> implements LocalCache<T> {
 
 	@lombok.Getter
-	private final LocalCacheConfig config;
+	private final Config config;
 
-	protected BaseLocalCache(LocalCacheConfig config) {
+	protected BaseLocalCache(Config config) {
 		this.config = config;
 	}
 
@@ -27,40 +27,35 @@ public abstract class BaseLocalCache implements LocalCache {
 	}
 
 	@Override
-	public ResolveResult resolveSingle(EntryHead head) {
+	public Result<T> resolveSingle(Head head) {
 		return resolveSingle(head, this::getSingle);
 	}
 
-	ResolveResult resolveSingle(EntryHead head, Function<String, EntryValue> resolver) {
-		var value = resolver.apply(head.getKey());
-		if (value == null) {
-			return ResolveResult.NOT_FOUND;
+	@SuppressWarnings("unchecked")
+	Result<T> resolveSingle(Head head, Function<String, Value<T>> resolver) {
+		var v = resolver.apply(head.getKey());
+		if (v == null) {
+			return (Result<T>)Result.NOT_FOUND;
 		}
 
-		if (value.getVersion() <= head.getVersion()) {
-			//removeSingle(existingHead);
-			return ResolveResult.NO_CHANGE;
+		if (v.getVersion() == head.getVersion()) {
+			return (Result<T>)Result.NO_CHANGE;
 		}
 
-		return ResolveResult.builder()
-				.status(ValueStatus.Changed).value(value).build();
+		return new Result<T>(Status.CHANGED, v);
 	}
 
 	@Override
-	public Collection<ResolveResult> resolveMultiple(Collection<EntryHead> heads) {
-		var entryMap = getMultiple(EntryHead.keys(heads));
+	public Collection<Result<T>> resolveMultiple(Collection<Head> heads) {
+		var entryMap = getMultiple(Head.extractKeys(heads));
 
-		var r = new ArrayList<ResolveResult>(heads.size());
-		for (var head: heads) {
-			var s = resolveSingle(head, entryMap::get);
-			r.add(s);
-		}
-
+		var r = new ArrayList<Result<T>>(heads.size());
+		heads.forEach(head -> r.add(resolveSingle(head, entryMap::get)));
 		return r;
 	}
 
 	@Override
-	public void putMultiple(Collection<Entry> entries) {
+	public void putMultiple(Collection<Entry<T>> entries) {
 		entries.forEach(entry -> putSingle(entry.getKey(), entry.getValue()));
 	}
 

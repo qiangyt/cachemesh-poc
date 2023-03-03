@@ -1,90 +1,44 @@
 package cachemeshpoc.remote.grpc;
 
 import io.grpc.stub.StreamObserver;
-import cachemeshpoc.MeshRouter;
-import cachemeshpoc.Serderializer;
-import cachemeshpoc.local.LocalCache;
+import cachemeshpoc.SideCacheManager;
+import cachemeshpoc.GetResult.Status;
 
 import com.google.protobuf.ByteString;
 
 public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 
-	private final LocalCache.Manager sideCaches;
+	private final SideCacheManager sideCacheManager;
 
-	private final MeshRouter router;
-
-	private final Serderializer serder;
-
-	public GrpcService(LocalCache.Manager sideCaches, MeshRouter router, Serderializer serder) {
-		this.sideCaches = sideCaches;
-		this.router = router;
-		this.serder = serder;
+	public GrpcService(SideCacheManager sideCacheManager) {
+		this.sideCacheManager = sideCacheManager;
 	}
 
 	@Override
-	public void resolveSingle(ResolveSingleRequest req, StreamObserver<ResolveSingleResponse> respObserver) {
-		String key = req.getKey();
-
-		var builder = ResolveSingleResponse.newBuilder();
-
-		var node = this.router.findNode(key);
-		if (!this.router.isMyNode(node)) {
-			// TODO: redirect to which
-			builder.setStatus(ValueStatus.Redirect);
+	public void getSingle(GetSingleRequest req, StreamObserver<GetSingleResponse> respObserver) {
+		var cache = this.sideCacheManager.get(req.getCacheName());
+		var respBuilder = GetSingleResponse.newBuilder();
+		if (cache == null) {
+			respBuilder.setStatus(GrpcResponses.convertStatus(Status.NOT_FOUND));
 		} else {
-			var localCache = this.sideCaches.get(req.getCacheName());
-			if (localCache == null) {
-				builder.setStatus(ValueStatus.NotFound);
-			} else {
-				var value = localCache.getSingle(key);
-				if (value == null) {
-					builder.setStatus(ValueStatus.NotFound);
-				} else {
-					long localVersion = value.getVersion();
-					if (req.getVersion() <= localVersion) {
-						builder.setStatus(ValueStatus.NoChange);
-					} else {
-						builder.setStatus(ValueStatus.Changed);
+			var resp = cache.getSingle(req.getKey(), req.getVersh());
 
-						byte[] valueBytes = value.getBytes(this.serder);
-						builder.setVersion(localVersion).setValue(ByteString.copyFrom(valueBytes));
-					}
-				}
-			}
+			respBuilder.setStatus(GrpcResponses.convertStatus(resp.getStatus()));
+			respBuilder.setValue(ByteString.copyFrom(resp.getBytes()));
+			respBuilder.setVersh(resp.getVersh());
 		}
 
-		GrpcResponses.complete(respObserver, builder.build());
+		GrpcResponses.complete(respObserver, respBuilder.build());
 	}
 
 	@Override
 	public void putSingle(PutSingleRequest req, StreamObserver<PutSingleResponse> respObserver) {
-		String key = req.getKey();
+		var cache = this.sideCacheManager.resolve(req.getCacheName());
 
-		var builder = PutSingleResponse.newBuilder();
-
-		var node = this.router.findNode(key);
-		if (!this.router.isMyNode(node)) {
-			// TODO: redirect to which
-			builder.setStatus(ValueStatus.Redirect);
-		} else {
-			builder.setStatus(ValueStatus.Changed);
-
-			var localCache = this.sideCaches.resolve(req.getCacheName());
-
-			long version;
-			var oldValue = localCache.getSingle(key);
-			if (oldValue != null) {
-				version = oldValue.getVersion() + 1;
-			} else {
-				version = 1;
-			}
-			builder.setVersion(version);
-
-			var newValue = EntryValue.builder().bytes(req.getValue().toByteArray()).version(version).build();
-			localCache.putSingle(key, newValue);
-		}
-
-		GrpcResponses.complete(respObserver, builder.build());
+		var versh = cache.putSingle(req.getKey(), req.getValue().toByteArray());
+		var respBuilder = PutSingleResponse.newBuilder();
+		respBuilder.setVersh(versh);
+		GrpcResponses.complete(respObserver, respBuilder.build());
 	}
 
 }

@@ -4,11 +4,11 @@ import com.google.protobuf.ByteString;
 
 public class GrpcRequests {
 
-	public static ResolveSingleRequest resolveSingle(String cacheName, String key, long version) {
-		return ResolveSingleRequest.newBuilder()
+	public static GetSingleRequest getSingle(String cacheName, String key, long versh) {
+		return GetSingleRequest.newBuilder()
 				.setCacheName(cacheName)
 				.setKey(key)
-				.setVersion(version)
+				.setVersh(versh)
 				.build();
 	}
 

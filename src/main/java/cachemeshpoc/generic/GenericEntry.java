@@ -1,4 +1,4 @@
-package cachemeshpoc.local;
+package cachemeshpoc.generic;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,11 +7,11 @@ import java.util.Map;
 
 @lombok.Getter
 @lombok.ToString
-public class Entry<T> {
+public class GenericEntry<T> {
 
 	public enum Status {
 		NOT_FOUND,
-		CHANGED,
+		OK,
 		NO_CHANGE;
 	}
 
@@ -20,11 +20,11 @@ public class Entry<T> {
 	public static class Head {
 
 		private final String key;
-		private final long version;
+		private final long versh;
 
-		public Head(String key, long version) {
+		public Head(String key, long versh) {
 			this.key = key;
-			this.version = version;
+			this.versh = versh;
 		}
 
 		public static Collection<String> extractKeys(Collection<Head> heads) {
@@ -42,11 +42,11 @@ public class Entry<T> {
 
 		private final T data;
 
-		private final long version;
+		private final long versh;
 
-		public Value(T data, long version) {
+		public Value(T data, long versh) {
 			this.data = data;
-			this.version = version;
+			this.versh = versh;
 		}
 
 	}
@@ -56,16 +56,16 @@ public class Entry<T> {
 
 	private final Value<T> value;
 
-	public Entry(String key, Value<T> value) {
+	public GenericEntry(String key, Value<T> value) {
 		this.key = key;
 		this.value = value;
 	}
 
-	public Entry(Map.Entry<String, Value<T>> mapEntry) {
+	public GenericEntry(Map.Entry<String, Value<T>> mapEntry) {
 		this(mapEntry.getKey(), mapEntry.getValue());;
 	}
 
-	public static <T> Map<String, Value<T>> toMap(Iterable<Entry<T>> entries) {
+	public static <T> Map<String, Value<T>> toMap(Iterable<GenericEntry<T>> entries) {
 		var r = new HashMap<String, Value<T>>();
 		for (var entry: entries) {
 			r.put(entry.getKey(), entry.getValue());
@@ -73,10 +73,10 @@ public class Entry<T> {
 		return r;
 	}
 
-	public static <T> Collection<Entry<T>> fromMap(Map<String, Value<T>> entryMap) {
-		var r = new ArrayList<Entry<T>>(entryMap.size());
+	public static <T> Collection<GenericEntry<T>> fromMap(Map<String, Value<T>> entryMap) {
+		var r = new ArrayList<GenericEntry<T>>(entryMap.size());
 		for (var mapEntry: entryMap.entrySet()) {
-			r.add(new Entry<T>(mapEntry));
+			r.add(new GenericEntry<T>(mapEntry));
 		}
 		return r;
 	}

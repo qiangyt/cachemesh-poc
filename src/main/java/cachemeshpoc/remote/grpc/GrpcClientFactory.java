@@ -1,15 +1,11 @@
 package cachemeshpoc.remote.grpc;
 
-
-import cachemeshpoc.RawCache;
-import cachemeshpoc.RawCache.Builder;
 import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
 
-public class GrpcRemoteCacheBuilder extends GrpcConfigBuilder implements Builder {
+public class GrpcClientFactory extends GrpcConfigBuilder {
 
-	@Override
-	public RawCache build() {
+	public GrpcClient create() {
 		var cfg = buildConfig();
 		var ch = Grpc.newChannelBuilder(cfg.getTarget(), InsecureChannelCredentials.create()).build();
 		return new GrpcClient(cfg, ch);

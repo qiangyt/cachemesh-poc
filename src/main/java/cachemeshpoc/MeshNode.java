@@ -3,10 +3,6 @@ package cachemeshpoc;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import cachemeshpoc.err.CacheMeshInternalException;
-import cachemeshpoc.err.CacheMeshServiceException;
-import cachemeshpoc.local.LocalCache;
-import cachemeshpoc.local.Entry.Value;
 import cachemeshpoc.remote.url.Handler;
 import cachemeshpoc.util.ConsistentHash;
 
@@ -35,18 +31,15 @@ public class MeshNode implements ConsistentHash.Node, AutoCloseable {
 	private final String key;
 	private final int hashCode;
 
-	private final LocalCache.Manager nearCaches;
-
-	private final RawCache rawCache;
+	private final CombinedCacheManager cacheManager;
 
 
-	public MeshNode(URL url, LocalCache.Manager nearCaches, RawCache rawCache) {
+	public MeshNode(URL url, CombinedCacheManager cacheManager) {
 		this.url = url;
 		this.key = url.toExternalForm();
 		this.hashCode = this.key.hashCode();
 
-		this.nearCaches = nearCaches;
-		this.rawCache = rawCache;
+		this.cacheManager = cacheManager;
 	}
 
 	public static MeshNode parse(String urlText) throws MalformedURLException {
@@ -57,9 +50,8 @@ public class MeshNode implements ConsistentHash.Node, AutoCloseable {
 			throw new MalformedURLException("unsupported meshcache protocol: " + protocol);
 		}
 
-		return new MeshNode(url, null, null);// TODO
+		return new MeshNode(url, null);// TODO
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -90,67 +82,21 @@ public class MeshNode implements ConsistentHash.Node, AutoCloseable {
 		return this.key;
 	}
 
-
-
+	@SuppressWarnings("unchecked")
 	public <V> V getSingle(String cacheName, String key) {
-		LocalCache<V> nearCache = this.nearCaches.resolve(cacheName);
-		var nearValue = nearCache.getSingle(key);
-		long nearVersion = (nearValue == null) ? 0 : nearValue.getVersion();
-
-		var resp = this.rawCache.resolveSingle(cacheName, key, nearVersion);
-
-		switch (resp.getStatus()) {
-
-			case NOT_FOUND: {
-				if (nearValue != null) {
-					nearCache.invalidateSingle(key);
-				}
-				return null;
-			}
-
-			case NO_CHANGE: {
-				return nearValue.getData();
-			}
-
-			case REDIRECTED: {
-				throw new CacheMeshInternalException("TODO");
-			}
-
-			case OK: {
-				var cfg = nearCache.getConfig();
-				V data = cfg.getSerder().deserialize(resp.getBytes(), cfg.getValueClass());
-				nearCache.putSingle(key, new Value<>(data, resp.getVersion()));
-				return data;
-			}
-			default: {
-				throw new CacheMeshServiceException("unexpected status: %s", resp.getStatus());
-			}
-		}
+		var cache = this.cacheManager.resolve(cacheName, null);
+		return (V)cache.getSingle(key);
 	}
 
 
 	public <V> void setSingle(String cacheName, String key, V value) {
-		var nearCache = this.nearCaches.resolve(cacheName);
-
-		var bytes = nearCache.getConfig().getSerder().serialize(value);
-		long version = this.rawCache.putSingle(cacheName, key, bytes);
-
-		nearCache.putSingle(key, new Value<>(value, version));
+		var cache = this.cacheManager.resolve(cacheName, null);
+		cache.putSingle(key, value);
 	}
 
 	@Override
 	public void close() throws Exception {
-		try {
-			this.rawCache.close();
-		} catch (Exception e) {
-			//TODO
-		}
-
-		try {
-			this.nearCaches.close();
-		} catch (Exception e) {
-			//TODO
-		}
+		this.cacheManager.close();
 	}
 
 }

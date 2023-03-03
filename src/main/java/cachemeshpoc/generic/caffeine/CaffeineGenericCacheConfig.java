@@ -1,15 +1,11 @@
-package cachemeshpoc.local.caffeine;
+package cachemeshpoc.generic.caffeine;
 
 import java.time.Duration;
 
-import cachemeshpoc.Serderializer;
-import cachemeshpoc.json.JsonSerderializer;
-import cachemeshpoc.local.base.BaseLocalCacheConfig;
-
 @lombok.Getter
 @lombok.ToString
-@lombok.experimental.SuperBuilder
-public class CaffeineLocalCacheConfig extends BaseLocalCacheConfig {
+@lombok.Builder
+public class CaffeineGenericCacheConfig {
 
 	public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
 	private final int maximumSize;
@@ -20,16 +16,11 @@ public class CaffeineLocalCacheConfig extends BaseLocalCacheConfig {
 	public static final Duration DEFAULT_REFRESH_AFTER_WRITE = Duration.ofMinutes(1);
 	private final Duration refreshAfterWrite;//(Duration.ofMinutes(1))
 
-	private final Serderializer serder;
-
-	public static CaffeineLocalCacheConfig buildDefault(String name) {
+	public static CaffeineGenericCacheConfig buildDefault() {
 		return builder()
-				.name(name)
-				.valueClass(null)
 				.maximumSize(DEFAULT_MAXIMUM_SIZE)
 				.expireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE)
 				.refreshAfterWrite(DEFAULT_REFRESH_AFTER_WRITE)
-				.serder(JsonSerderializer.DEFAULT)
 				.build();
 	}
 

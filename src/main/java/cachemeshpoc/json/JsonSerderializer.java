@@ -31,8 +31,7 @@ public class JsonSerderializer implements Serderializer {
 		return s.getBytes(StandardCharsets.UTF_8);
 	}
 
-	@Override @SuppressWarnings("unchecked")
-	public <T> T deserialize(byte[] bytes, Class<?> clazz) {
+	public <T> T deserialize(byte[] bytes, Class<T> clazz) {
 		String s = new String(bytes, StandardCharsets.UTF_8);
 		return (T)this.jackson.from(s, clazz);
 	}

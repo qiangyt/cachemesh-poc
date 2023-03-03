@@ -1,54 +1,50 @@
 package cachemeshpoc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import cachemeshpoc.local.LocalCache;
-import cachemeshpoc.local.Entry.Head;
-import cachemeshpoc.MeshResult.Status;
+import cachemeshpoc.GetResult.Status;
 import cachemeshpoc.err.CacheMeshInternalException;
+import cachemeshpoc.generic.GenericCache;
+import cachemeshpoc.generic.GenericEntry.Head;
+import cachemeshpoc.generic.GenericEntry.Value;
+import cachemeshpoc.util.Hashing;
 
-public class SideCache implements RawCache {
+public class SideCache implements NodeCache {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SideCache.class);
+	@lombok.Getter
+	private final String name;
 
-	private final LocalCache.Manager localCaches;
+	private final GenericCache<byte[]> local;
 
-	public SideCache(LocalCache.Manager localCaches) {
-		this.localCaches = localCaches;
+	private final Hashing hashing;
+
+	public SideCache(String name, GenericCache<byte[]> local, Hashing hashing) {
+		this.name = name;
+		this.local = local;
+		this.hashing = hashing;
 	}
 
 	@Override
-	public void close() throws Exception {
-		this.localCaches.close();
-	}
+	public GetResult getSingle(String key, long versh) {
+		var r = this.local.getSingle(new Head(key, versh));
 
-	@Override
-	public MeshResult resolveSingle(String cacheName, String key, long version) {
-		var localCache = this.localCaches.get(cacheName);
-		if (localCache == null) {
-			return MeshResult.NOT_FOUND;
-		}
-
-		var localResult = localCache.resolveSingle(new Head(key, version));
-
-		switch(localResult.getStatus()) {
-			case NOT_FOUND: return MeshResult.NOT_FOUND;
-			case NO_CHANGE: return MeshResult.NO_CHANGE;
-			case CHANGED: {
-				var value = localResult.getValue();
-				return new MeshResult(Status.OK, (byte[])value.getData(), value.getVersion());
+		var s = r.getStatus();
+		switch(s) {
+			case NOT_FOUND: return GetResult.NOT_FOUND;
+			case NO_CHANGE: return GetResult.NO_CHANGE;
+			case OK: {
+				var v = r.getValue();
+				return new GetResult(Status.OK, v.getData(), v.getVersh());
 			}
 			default: {
-				throw new CacheMeshInternalException("Unexpected local cache result status: %s", localResult.getStatus());
+				throw new CacheMeshInternalException("Unexpected local cache result status: %s", s);
 			}
 		}
 	}
 
 	@Override
-	public long putSingle(String cacheName, String key, byte[] bytes) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'putSingle'");
+	public long putSingle(String key, byte[] bytes) {
+		long versh = this.hashing.hash(bytes);
+		this.local.putSingle(key, new Value<byte[]>(bytes, versh));
+		return versh;
 	}
 
 }

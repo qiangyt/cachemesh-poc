@@ -7,10 +7,9 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cachemeshpoc.MeshResult;
-import cachemeshpoc.RawCache;
+import cachemeshpoc.GetResult;
 
-public class GrpcClient implements RawCache {
+public class GrpcClient implements AutoCloseable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GrpcClient.class);
 
@@ -34,11 +33,10 @@ public class GrpcClient implements RawCache {
 		LOG.info("Shutdown: done");
 	}
 
-	@Override
-	public MeshResult resolveSingle(String cacheName, String key, long version) {
-		var req = GrpcRequests.resolveSingle(cacheName, key, version);
+	public GetResult getSingle(String cacheName, String key, long versh) {
+		var req = GrpcRequests.getSingle(cacheName, key, versh);
 
-		var resp = this.stub.resolveSingle(req);
+		var resp = this.stub.getSingle(req);
 		/*try {
 			resp = stub.getSingle(req);
 		} catch (StatusRuntimeException e) {
@@ -46,14 +44,13 @@ public class GrpcClient implements RawCache {
 			return null;
 		} */
 
-		return GrpcResponses.resolveSingle(resp);
+		return GrpcResponses.getSingle(resp);
 	}
 
-	@Override
 	public long putSingle(String cacheName, String key, byte[] value) {
 		var req = GrpcRequests.putSingle(cacheName, key, value);
 		var resp = this.stub.putSingle(req);
-		return resp.getVersion();
+		return resp.getVersh();
 	}
 
 }

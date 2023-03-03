@@ -27,8 +27,8 @@ public class CacheMeshClientTest {
       mock(CacheMeshGrpc.CacheMeshImplBase.class, delegatesTo(
           new CacheMeshGrpc.CacheMeshImplBase() {
           @Override
-          public void resolveSingle(ResolveSingleRequest request, StreamObserver<ResolveSingleResponse> respObserver) {
-             respObserver.onNext(ResolveSingleResponse.getDefaultInstance());
+          public void getSingle(GetSingleRequest request, StreamObserver<GetSingleResponse> respObserver) {
+             respObserver.onNext(GetSingleResponse.getDefaultInstance());
              respObserver.onCompleted();
            }
           }));
@@ -48,15 +48,15 @@ public class CacheMeshClientTest {
   }
 
   @Test
-  public void resolveSingle_messageDeliveredToServer() {
-    var reqCaptor = ArgumentCaptor.forClass(ResolveSingleRequest.class);
+  public void getSingle_messageDeliveredToServer() {
+    var reqCaptor = ArgumentCaptor.forClass(GetSingleRequest.class);
 
-    this.client.resolveSingle("test", "key", 123);
+    this.client.getSingle("test", "key", 123);
 
-    verify(serviceImpl).resolveSingle(reqCaptor.capture(), ArgumentMatchers.<StreamObserver<ResolveSingleResponse>>any());
+    verify(serviceImpl).getSingle(reqCaptor.capture(), ArgumentMatchers.<StreamObserver<GetSingleResponse>>any());
 
 		assertEquals("test", reqCaptor.getValue().getCacheName());
 		assertEquals("key", reqCaptor.getValue().getKey());
-		assertEquals(123, reqCaptor.getValue().getVersion());
+		assertEquals(123, reqCaptor.getValue().getVersh());
   }
 }

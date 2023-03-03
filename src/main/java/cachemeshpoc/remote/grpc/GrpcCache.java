@@ -3,9 +3,9 @@ package cachemeshpoc.remote.grpc;
 import cachemeshpoc.GetResult;
 import cachemeshpoc.NodeCache;
 
+@lombok.Getter
 public class GrpcCache implements NodeCache {
 
-	@lombok.Getter
 	private final String name;
 
 	private final GrpcClient client;

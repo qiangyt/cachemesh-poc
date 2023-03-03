@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemeshpoc.CacheEntry;
-
 @lombok.Getter
 @lombok.ToString
 public abstract class BaseLocalCache<T> implements LocalCache<T> {
@@ -38,7 +36,7 @@ public abstract class BaseLocalCache<T> implements LocalCache<T> {
 	}
 
 	@Override
-	public void putMultiple(Collection<CacheEntry<T>> entries) {
+	public void putMultiple(Collection<Entry<T>> entries) {
 		entries.forEach(entry -> putSingle(entry.getKey(), entry.getValue()));
 	}
 

@@ -11,17 +11,12 @@ public class MeshRouter implements AutoCloseable {
 
 	private final ConsistentHash<MeshNode> consistentHash;
 
-	private final MeshNode myNode;
-
 	private final Map<String, MeshNode> nodes = new HashMap<>();
 
-	public MeshRouter(MeshNode myNode, List<MeshNode> otherNodes) {
+	public MeshRouter(List<MeshNode> otherNodes) {
 		otherNodes.forEach(this::joinNode);
-		joinNode(myNode);
 
 		this.consistentHash = new ConsistentHash<>(MurmurHash.DEFAULT);
-
-		this.myNode = myNode;
 	}
 
 	public void joinNode(MeshNode newNode) {
@@ -33,10 +28,6 @@ public class MeshRouter implements AutoCloseable {
 		long hash = this.consistentHash.hash(key);
 		var virtualNode = this.consistentHash.virtualNodeFor(hash);
 		return virtualNode.getRealNode();
-	}
-
-	public boolean isMyNode(MeshNode node) {
-		return (this.myNode == node);
 	}
 
 	@Override

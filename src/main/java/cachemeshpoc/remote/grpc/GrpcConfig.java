@@ -1,6 +1,7 @@
 package cachemeshpoc.remote.grpc;
 
 @lombok.Getter
+@lombok.ToString
 ////@lombok.NoArgsConstructor
 //@lombok.Builder(buildMethodName = "buildConfig")
 ////@lombok.experimental.SuperBuilder

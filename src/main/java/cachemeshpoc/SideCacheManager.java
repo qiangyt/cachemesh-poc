@@ -9,8 +9,10 @@ public class SideCacheManager {
 
 	private final ConcurrentHashMap<String, SideCache> caches = new ConcurrentHashMap<>();
 
+	@lombok.Getter
 	private final LocalCacheManager localCacheManager;
 
+	@lombok.Getter
 	private final Hashing hashing;
 
 	public SideCacheManager(LocalCacheManager localCacheManager, Hashing hashing) {

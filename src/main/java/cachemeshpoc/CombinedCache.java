@@ -12,6 +12,7 @@ public class CombinedCache<T> {
 
 	private final NodeCache nodeCache;
 
+	@lombok.Getter
 	private final Serderializer serder;
 
 	public CombinedCache(Class<T> valueClass, LocalCache<VershedValue> nearCache, NodeCache nodeCache, Serderializer serder) {
@@ -42,7 +43,9 @@ public class CombinedCache<T> {
 			}
 			case OK: {
 				var obj = this.serder.deserialize(r.getBytes(), this.valueClass);
-				this.nearCache.putSingle(key, new VershedValue(obj, r.getVersh()));
+				nearValue = new VershedValue(obj, r.getVersh());
+				this.nearCache.putSingle(key, nearValue);
+
 				return obj;
 			}
 			default: {

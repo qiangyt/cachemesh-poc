@@ -8,10 +8,13 @@ public class CombinedCacheManager implements AutoCloseable {
 
 	private final ConcurrentHashMap<String, CombinedCache<?>> caches = new ConcurrentHashMap<>();
 
+	@lombok.Getter
 	private final LocalCacheManager nearCacheManager;
 
+	@lombok.Getter
 	private final NodeCache.Manager nodeCacheManager;
 
+	@lombok.Getter
 	private final Serderializer serder;
 
 	public CombinedCacheManager(LocalCacheManager nearCacheManager, NodeCache.Manager nodeCacheManager, Serderializer serder) {

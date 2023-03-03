@@ -2,14 +2,15 @@ package cachemeshpoc.local;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import cachemeshpoc.CacheEntry;
 import cachemeshpoc.err.CacheMeshInternalException;
+import cachemeshpoc.local.LocalCache.Entry;
 import cachemeshpoc.local.LocalCache.Factory;
 
 public class LocalCacheManager implements AutoCloseable {
 
 	private final ConcurrentHashMap<String, LocalCache<?>> caches = new ConcurrentHashMap<>();
 
+	@lombok.Getter
 	private final Factory factory;
 
 	public LocalCacheManager(Factory factory) {
@@ -30,7 +31,7 @@ public class LocalCacheManager implements AutoCloseable {
 			}
 
 			if (mergeWithOld) {
-				var oldEntries = CacheEntry.fromMap(old.getMultiple(old.getAllKeys()));
+				var oldEntries = Entry.fromMap(old.getMultiple(old.getAllKeys()));
 				newCache.putMultiple(oldEntries);
 			}
 		}

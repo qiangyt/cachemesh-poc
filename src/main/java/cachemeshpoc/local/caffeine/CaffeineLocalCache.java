@@ -6,7 +6,6 @@ import java.util.Map;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import cachemeshpoc.CacheEntry;
 import cachemeshpoc.local.BaseLocalCache;
 
 public class CaffeineLocalCache<T> extends BaseLocalCache<T> {
@@ -62,8 +61,8 @@ public class CaffeineLocalCache<T> extends BaseLocalCache<T> {
 	}
 
 	@Override
-	public void putMultiple(Collection<CacheEntry<T>> entries) {
-		this.caffeine.putAll(CacheEntry.toMap(entries));
+	public void putMultiple(Collection<Entry<T>> entries) {
+		this.caffeine.putAll(Entry.toMap(entries));
 	}
 
 	@Override

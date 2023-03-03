@@ -2,6 +2,7 @@ package cachemeshpoc.remote.grpc;
 
 @lombok.Getter
 @lombok.Setter
+@lombok.ToString
 public class GrpcConfigBuilder {
 
 	private int port;

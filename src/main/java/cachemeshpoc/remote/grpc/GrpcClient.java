@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.protobuf.ByteString;
+
 import cachemeshpoc.GetResult;
 
 public class GrpcClient implements AutoCloseable {
@@ -34,7 +36,11 @@ public class GrpcClient implements AutoCloseable {
 	}
 
 	public GetResult getSingle(String cacheName, String key, long versh) {
-		var req = GrpcRequests.getSingle(cacheName, key, versh);
+		var req = GetSingleRequest.newBuilder()
+					.setCacheName(cacheName)
+					.setKey(key)
+					.setVersh(versh)
+					.build();
 
 		var resp = this.stub.getSingle(req);
 		/*try {
@@ -44,11 +50,16 @@ public class GrpcClient implements AutoCloseable {
 			return null;
 		} */
 
-		return GrpcResponses.getSingle(resp);
+		byte[] v = resp.getValue() == null ? null : resp.getValue().toByteArray();
+		return new GetResult(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersh());
 	}
 
 	public long putSingle(String cacheName, String key, byte[] value) {
-		var req = GrpcRequests.putSingle(cacheName, key, value);
+		var req = PutSingleRequest.newBuilder()
+					.setCacheName(cacheName)
+					.setKey(key)
+					.setValue(ByteString.copyFrom(value))
+					.build();
 		var resp = this.stub.putSingle(req);
 		return resp.getVersh();
 	}

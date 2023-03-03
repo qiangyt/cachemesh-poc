@@ -7,6 +7,7 @@ public class SideCache implements NodeCache {
 
 	private final LocalCache<VershedValue> local;
 
+	@lombok.Getter
 	private final Hashing hashing;
 
 	public SideCache(LocalCache<VershedValue> local, Hashing hashing) {

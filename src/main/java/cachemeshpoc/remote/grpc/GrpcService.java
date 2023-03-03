@@ -19,16 +19,16 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 		var cache = this.sideCacheManager.get(req.getCacheName());
 		var respBuilder = GetSingleResponse.newBuilder();
 		if (cache == null) {
-			respBuilder.setStatus(GrpcResponses.convertStatus(ResultStatus.NOT_FOUND));
+			respBuilder.setStatus(GrpcHelper.convertStatus(ResultStatus.NOT_FOUND));
 		} else {
 			var resp = cache.getSingle(req.getKey(), req.getVersh());
 
-			respBuilder.setStatus(GrpcResponses.convertStatus(resp.getStatus()));
+			respBuilder.setStatus(GrpcHelper.convertStatus(resp.getStatus()));
 			respBuilder.setValue(ByteString.copyFrom(resp.getBytes()));
 			respBuilder.setVersh(resp.getVersh());
 		}
 
-		GrpcResponses.complete(respObserver, respBuilder.build());
+		GrpcHelper.complete(respObserver, respBuilder.build());
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 		var versh = cache.putSingle(req.getKey(), req.getValue().toByteArray());
 		var respBuilder = PutSingleResponse.newBuilder();
 		respBuilder.setVersh(versh);
-		GrpcResponses.complete(respObserver, respBuilder.build());
+		GrpcHelper.complete(respObserver, respBuilder.build());
 	}
 
 }

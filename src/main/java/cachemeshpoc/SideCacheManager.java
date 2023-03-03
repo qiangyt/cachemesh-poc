@@ -2,18 +2,18 @@ package cachemeshpoc;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import cachemeshpoc.generic.GenericCacheManager;
+import cachemeshpoc.local.LocalCacheManager;
 import cachemeshpoc.util.Hashing;
 
 public class SideCacheManager {
 
 	private final ConcurrentHashMap<String, SideCache> caches = new ConcurrentHashMap<>();
 
-	private final GenericCacheManager localCacheManager;
+	private final LocalCacheManager localCacheManager;
 
 	private final Hashing hashing;
 
-	public SideCacheManager(GenericCacheManager localCacheManager, Hashing hashing) {
+	public SideCacheManager(LocalCacheManager localCacheManager, Hashing hashing) {
 		this.localCacheManager = localCacheManager;
 		this.hashing = hashing;
 	}

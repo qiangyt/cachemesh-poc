@@ -2,19 +2,19 @@ package cachemeshpoc;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import cachemeshpoc.generic.GenericCacheManager;
+import cachemeshpoc.local.LocalCacheManager;
 
 public class CombinedCacheManager implements AutoCloseable {
 
 	private final ConcurrentHashMap<String, CombinedCache<?>> caches = new ConcurrentHashMap<>();
 
-	private final GenericCacheManager nearCacheManager;
+	private final LocalCacheManager nearCacheManager;
 
 	private final NodeCache.Manager nodeCacheManager;
 
 	private final Serderializer serder;
 
-	public CombinedCacheManager(GenericCacheManager nearCacheManager, NodeCache.Manager nodeCacheManager, Serderializer serder) {
+	public CombinedCacheManager(LocalCacheManager nearCacheManager, NodeCache.Manager nodeCacheManager, Serderializer serder) {
 		this.nearCacheManager = nearCacheManager;
 		this.nodeCacheManager = nodeCacheManager;
 		this.serder = serder;

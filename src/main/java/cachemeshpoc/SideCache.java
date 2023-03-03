@@ -1,10 +1,9 @@
 package cachemeshpoc;
 
-import cachemeshpoc.GetResult.Status;
 import cachemeshpoc.err.CacheMeshInternalException;
-import cachemeshpoc.generic.GenericCache;
-import cachemeshpoc.generic.GenericEntry.Head;
-import cachemeshpoc.generic.GenericEntry.Value;
+import cachemeshpoc.local.LocalCache;
+import cachemeshpoc.local.CacheEntry.Head;
+import cachemeshpoc.local.CacheEntry.Value;
 import cachemeshpoc.util.Hashing;
 
 public class SideCache implements NodeCache {
@@ -12,11 +11,11 @@ public class SideCache implements NodeCache {
 	@lombok.Getter
 	private final String name;
 
-	private final GenericCache<byte[]> local;
+	private final LocalCache<byte[]> local;
 
 	private final Hashing hashing;
 
-	public SideCache(String name, GenericCache<byte[]> local, Hashing hashing) {
+	public SideCache(String name, LocalCache<byte[]> local, Hashing hashing) {
 		this.name = name;
 		this.local = local;
 		this.hashing = hashing;
@@ -32,7 +31,7 @@ public class SideCache implements NodeCache {
 			case NO_CHANGE: return GetResult.NO_CHANGE;
 			case OK: {
 				var v = r.getValue();
-				return new GetResult(Status.OK, v.getData(), v.getVersh());
+				return new GetResult(ResultStatus.OK, v.getData(), v.getVersh());
 			}
 			default: {
 				throw new CacheMeshInternalException("Unexpected local cache result status: %s", s);

@@ -1,18 +1,18 @@
 package cachemeshpoc;
 
 import cachemeshpoc.err.CacheMeshInternalException;
-import cachemeshpoc.generic.GenericCache;
-import cachemeshpoc.generic.GenericEntry.Value;
+import cachemeshpoc.local.LocalCache;
+import cachemeshpoc.local.CacheEntry.Value;
 
 public class CombinedCache<T> {
 
-	private final GenericCache<T> nearCache;
+	private final LocalCache<T> nearCache;
 
 	private final NodeCache nodeCache;
 
 	private final Serderializer serder;
 
-	public CombinedCache(GenericCache<T> nearCache, NodeCache nodeCache, Serderializer serder) {
+	public CombinedCache(LocalCache<T> nearCache, NodeCache nodeCache, Serderializer serder) {
 		this.nearCache = nearCache;
 		this.nodeCache = nodeCache;
 		this.serder = serder;

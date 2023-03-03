@@ -12,7 +12,7 @@ public class GetResult {
 
 	private final ResultStatus status;
 
-	private final  byte[] bytes;
+	private final byte[] bytes;
 
 	private final long versh;
 

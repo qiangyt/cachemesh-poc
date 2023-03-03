@@ -2,6 +2,7 @@ package cachemeshpoc.local;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import cachemeshpoc.CacheEntry;
 import cachemeshpoc.err.CacheMeshInternalException;
 import cachemeshpoc.local.LocalCache.Factory;
 
@@ -29,7 +30,7 @@ public class LocalCacheManager implements AutoCloseable {
 			}
 
 			if (mergeWithOld) {
-				var oldEntries = CacheEntry.fromMap(old.getMultipleAnyhow(old.getAllKeys()));
+				var oldEntries = CacheEntry.fromMap(old.getMultiple(old.getAllKeys()));
 				newCache.putMultiple(oldEntries);
 			}
 		}

@@ -2,24 +2,27 @@ package cachemeshpoc;
 
 import cachemeshpoc.err.CacheMeshInternalException;
 import cachemeshpoc.local.LocalCache;
-import cachemeshpoc.local.CacheEntry.Value;
 
 public class CombinedCache<T> {
 
-	private final LocalCache<T> nearCache;
+	@lombok.Getter
+	private final Class<T> valueClass;
+
+	private final LocalCache<VershedValue> nearCache;
 
 	private final NodeCache nodeCache;
 
 	private final Serderializer serder;
 
-	public CombinedCache(LocalCache<T> nearCache, NodeCache nodeCache, Serderializer serder) {
+	public CombinedCache(Class<T> valueClass, LocalCache<VershedValue> nearCache, NodeCache nodeCache, Serderializer serder) {
+		this.valueClass = valueClass;
 		this.nearCache = nearCache;
 		this.nodeCache = nodeCache;
 		this.serder = serder;
 	}
 
 	public T getSingle(String key) {
-		var nearValue = this.nearCache.getSingleAnyhow(key);
+		var nearValue = this.nearCache.getSingle(key);
 
 		long versh;
 		if (nearValue != null) {
@@ -38,8 +41,8 @@ public class CombinedCache<T> {
 				throw new CacheMeshInternalException("TODO");
 			}
 			case OK: {
-				var obj = this.serder.deserialize(r.getBytes(), this.nearCache.getValueClass());
-				this.nearCache.putSingle(key, new Value<T>(obj, r.getVersh()));
+				var obj = this.serder.deserialize(r.getBytes(), this.valueClass);
+				this.nearCache.putSingle(key, new VershedValue(obj, r.getVersh()));
 				return obj;
 			}
 			default: {
@@ -51,7 +54,7 @@ public class CombinedCache<T> {
 	public void putSingle(String key, T object) {
 		var bytes = this.serder.serialize(object);
 		long versh = this.nodeCache.putSingle(key, bytes);
-		this.nearCache.putSingle(key, new Value<T>(object, versh));
+		this.nearCache.putSingle(key, new VershedValue(object, versh));
 	}
 
 }

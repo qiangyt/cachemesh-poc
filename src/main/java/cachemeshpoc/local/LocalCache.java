@@ -3,31 +3,13 @@ package cachemeshpoc.local;
 import java.util.Collection;
 import java.util.Map;
 
-import cachemeshpoc.ResultStatus;
-import cachemeshpoc.local.CacheEntry.Head;
-import cachemeshpoc.local.CacheEntry.Value;
+import cachemeshpoc.CacheEntry;
 
 public interface LocalCache<T> extends AutoCloseable {
 
 	public static interface Factory {
 		<T> LocalCache<T> create(String cacheName, Class<T> valueClass);
 	}
-
-	@lombok.Getter
-	@lombok.ToString
-	public static class Result<T> {
-		private final ResultStatus status;
-		private final Value<T> value;
-
-		public Result(ResultStatus status, Value<T> value) {
-			this.status = status;
-			this.value = value;
-		}
-	}
-
-
-	public static final Result<?> NOT_FOUND = new Result<>(ResultStatus.NOT_FOUND, null);
-	public static final Result<?> NO_CHANGE = new Result<>(ResultStatus.NO_CHANGE, null);
 
 	String getName();
 
@@ -37,15 +19,11 @@ public interface LocalCache<T> extends AutoCloseable {
 
 	void invalidateMultiple(Collection<String> keys);
 
-	Result<T> getSingle(Head head);
+	T getSingle(String key);
 
-	Value<T> getSingleAnyhow(String key);
+	Map<String, T> getMultiple(Collection<String> keys);
 
-	Collection<Result<T>> getMultiple(Collection<Head> keys);
-
-	Map<String, Value<T>> getMultipleAnyhow(Collection<String> keys);
-
-	void putSingle(String key, Value<T> value);
+	void putSingle(String key, T value);
 
 	void putMultiple(Collection<CacheEntry<T>> entries);
 

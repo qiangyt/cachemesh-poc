@@ -5,7 +5,7 @@ import java.time.Duration;
 @lombok.Getter
 @lombok.ToString
 @lombok.Builder
-public class CaffeineGenericCacheConfig {
+public class CaffeineLocalCacheConfig {
 
 	public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
 	private final int maximumSize;
@@ -16,7 +16,7 @@ public class CaffeineGenericCacheConfig {
 	public static final Duration DEFAULT_REFRESH_AFTER_WRITE = Duration.ofMinutes(1);
 	private final Duration refreshAfterWrite;//(Duration.ofMinutes(1))
 
-	public static CaffeineGenericCacheConfig buildDefault() {
+	public static CaffeineLocalCacheConfig buildDefault() {
 		return builder()
 				.maximumSize(DEFAULT_MAXIMUM_SIZE)
 				.expireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE)

@@ -28,9 +28,9 @@ public class CombinedCacheManager implements AutoCloseable {
 	@SuppressWarnings("unchecked")
 	public <T> CombinedCache<T> resolve(String cacheName, Class<T> valueClass) {
 		return (CombinedCache<T>)this.caches.computeIfAbsent(cacheName, k -> {
-			var nearCache = this.nearCacheManager.resolve(cacheName, valueClass);
+			var nearCache = this.nearCacheManager.resolve(cacheName, VershedValue.class);
 			var nodeCache = this.nodeCacheManager.resolve(cacheName);
-			var r = new CombinedCache<T>(nearCache, nodeCache, serder);
+			var r = new CombinedCache<T>(valueClass, nearCache, nodeCache, serder);
 			return r;
 		});
 	}

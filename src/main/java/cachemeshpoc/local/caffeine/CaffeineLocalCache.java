@@ -6,25 +6,24 @@ import java.util.Map;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import cachemeshpoc.CacheEntry;
 import cachemeshpoc.local.BaseLocalCache;
-import cachemeshpoc.local.CacheEntry;
-import cachemeshpoc.local.CacheEntry.Value;
 
-public class CaffeineGenericCache<T> extends BaseLocalCache<T> {
+public class CaffeineLocalCache<T> extends BaseLocalCache<T> {
 
 	@lombok.Getter
-	private final CaffeineGenericCacheConfig config;
+	private final CaffeineLocalCacheConfig config;
 
-	private final Cache<String, Value<T>> caffeine;
+	private final Cache<String, T> caffeine;
 
-	public CaffeineGenericCache(String name, Class<T> valueClass, CaffeineGenericCacheConfig cfg) {
+	public CaffeineLocalCache(String name, Class<T> valueClass, CaffeineLocalCacheConfig cfg) {
 		super(name, valueClass);
 
 		this.config = cfg;
 		this.caffeine = createCaffeineInstance(cfg);
 	}
 
-	protected Cache<String, Value<T>> createCaffeineInstance(CaffeineGenericCacheConfig cfg) {
+	protected Cache<String, T> createCaffeineInstance(CaffeineLocalCacheConfig cfg) {
 		return Caffeine.newBuilder()
 							.maximumSize(cfg.getMaximumSize())
 							.expireAfterWrite(cfg.getExpireAfterWrite())
@@ -47,17 +46,18 @@ public class CaffeineGenericCache<T> extends BaseLocalCache<T> {
 		this.caffeine.invalidateAll(keys);
 	}
 
-	public Value<T> getSingleAnyhow(String key) {
+	@Override
+	public T getSingle(String key) {
 		return this.caffeine.getIfPresent(key);
 	}
 
 	@Override
-	public void putSingle(String key, Value<T> value) {
+	public void putSingle(String key, T value) {
 		this.caffeine.put(key, value);
 	}
 
 	@Override
-	public Map<String, Value<T>> getMultipleAnyhow(Collection<String> keys) {
+	public Map<String, T> getMultiple(Collection<String> keys) {
 		return this.caffeine.getAllPresent(keys);
 	}
 

@@ -24,8 +24,8 @@ public class SideCacheManager {
 
 	public SideCache resolve(String cacheName) {
 		return this.caches.computeIfAbsent(cacheName, k -> {
-			var localCache = this.localCacheManager.resolve(cacheName, byte[].class);
-			return new SideCache(cacheName, localCache, hashing);
+			var c = this.localCacheManager.resolve(cacheName, VershedValue.class);
+			return new SideCache(c, hashing);
 		});
 	}
 

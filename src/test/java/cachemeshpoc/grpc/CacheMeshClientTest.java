@@ -1,4 +1,4 @@
-package cachemeshpoc.remote.grpc;
+package cachemeshpoc.grpc;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.AdditionalAnswers.delegatesTo;
@@ -43,7 +43,7 @@ public class CacheMeshClientTest {
 
     var channel = this.grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
-		GrpcConfig serverConfig = new GrpcConfig(34567, "localhost");
+		GrpcConfig serverConfig = new GrpcConfig("localhost", 34567);
     this.client = new GrpcClient(serverConfig, channel);
   }
 

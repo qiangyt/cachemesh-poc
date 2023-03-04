@@ -3,7 +3,7 @@ package cachemeshpoc.json;
 import java.io.IOException;
 import java.util.Date;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import cachemeshpoc.err.CacheMeshRequestException;
+import cachemeshpoc.err.MeshRequestException;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -20,7 +20,7 @@ public class DateDeserialize extends JsonDeserializer<Date> {
 		try {
 			return new Date(Long.valueOf(valueText));
 		} catch (NumberFormatException ex) {
-			throw new CacheMeshRequestException(ex, "%s is NOT a long value", valueText);
+			throw new MeshRequestException(ex, "%s is NOT a long value", valueText);
 		}
 	}
 }

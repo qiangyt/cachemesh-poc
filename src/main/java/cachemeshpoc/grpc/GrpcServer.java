@@ -1,4 +1,4 @@
-package cachemeshpoc.remote.grpc;
+package cachemeshpoc.grpc;
 
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;

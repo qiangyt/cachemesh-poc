@@ -1,4 +1,4 @@
-package cachemeshpoc.remote.grpc;
+package cachemeshpoc.grpc;
 
 import io.grpc.stub.StreamObserver;
 import cachemeshpoc.ResultStatus;
@@ -24,7 +24,7 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 			var resp = cache.getSingle(req.getKey(), req.getVersh());
 
 			respBuilder.setStatus(GrpcHelper.convertStatus(resp.getStatus()));
-			respBuilder.setValue(ByteString.copyFrom(resp.getBytes()));
+			respBuilder.setValue(ByteString.copyFrom(resp.getValue()));
 			respBuilder.setVersh(resp.getVersh());
 		}
 

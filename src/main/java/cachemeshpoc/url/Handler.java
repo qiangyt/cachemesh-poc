@@ -1,11 +1,11 @@
-package cachemeshpoc.remote.url;
+package cachemeshpoc.url;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import cachemeshpoc.MeshNode.Protocol;;
+import cachemeshpoc.MeshProtocol;;
 
 public class Handler extends URLStreamHandler {
 
@@ -19,7 +19,7 @@ public class Handler extends URLStreamHandler {
 
 	@Override
 	protected URLConnection openConnection(URL u) throws IOException {
-		if (Protocol.valueOf(u.getProtocol()) != null) {
+		if (MeshProtocol.valueOf(u.getProtocol()) != null) {
 			return new Connection(u);
 		}
 		return null;

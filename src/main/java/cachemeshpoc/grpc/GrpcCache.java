@@ -1,4 +1,4 @@
-package cachemeshpoc.remote.grpc;
+package cachemeshpoc.grpc;
 
 import cachemeshpoc.GetResult;
 import cachemeshpoc.NodeCache;
@@ -16,7 +16,7 @@ public class GrpcCache implements NodeCache {
 	}
 
 	@Override
-	public GetResult getSingle(String key, long versh) {
+	public GetResult<byte[]> getSingle(String key, long versh) {
 		return this.client.getSingle(this.name, key, versh);
 	}
 

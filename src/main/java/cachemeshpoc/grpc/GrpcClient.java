@@ -1,4 +1,4 @@
-package cachemeshpoc.remote.grpc;
+package cachemeshpoc.grpc;
 
 import io.grpc.ManagedChannel;
 
@@ -35,7 +35,7 @@ public class GrpcClient implements AutoCloseable {
 		LOG.info("Shutdown: done");
 	}
 
-	public GetResult getSingle(String cacheName, String key, long versh) {
+	public GetResult<byte[]> getSingle(String cacheName, String key, long versh) {
 		var req = GetSingleRequest.newBuilder()
 					.setCacheName(cacheName)
 					.setKey(key)
@@ -51,7 +51,7 @@ public class GrpcClient implements AutoCloseable {
 		} */
 
 		byte[] v = resp.getValue() == null ? null : resp.getValue().toByteArray();
-		return new GetResult(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersh());
+		return new GetResult<>(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersh());
 	}
 
 	public long putSingle(String cacheName, String key, byte[] value) {

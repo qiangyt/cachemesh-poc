@@ -1,4 +1,4 @@
-package cachemeshpoc.remote.grpc;
+package cachemeshpoc.grpc;
 
 import io.grpc.testing.GrpcCleanupRule;
 import org.junit.Rule;

@@ -20,17 +20,18 @@ public class SideCache implements NodeCache {
 		return this.local.getName();
 	}
 
-	public GetResult getSingle(String key, long versh) {
+	@SuppressWarnings("unchecked")
+	public GetResult<byte[]> getSingle(String key, long versh) {
 		var v = this.local.getSingle(key);
 		if (v == null) {
-			return GetResult.NOT_FOUND;
+			return (GetResult<byte[]>)GetResult.NOT_FOUND;
 		}
 
 		if (v.getVersh() == versh) {
-			return GetResult.NO_CHANGE;
+			return (GetResult<byte[]>)GetResult.NO_CHANGE;
 		}
 
-		return new GetResult(ResultStatus.OK, (byte[])v.getData(), v.getVersh());
+		return new GetResult<>(ResultStatus.OK, (byte[])v.getData(), v.getVersh());
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package cachemeshpoc.local;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import cachemeshpoc.err.CacheMeshInternalException;
+import cachemeshpoc.err.MeshInternalException;
 import cachemeshpoc.local.LocalCache.Entry;
 import cachemeshpoc.local.LocalCache.Factory;
 
@@ -26,7 +26,7 @@ public class LocalCacheManager implements AutoCloseable {
 			var oldType = old.getValueClass();
 			var newType = newCache.getValueClass();
 			if (oldType.equals(newType) == false) {
-				throw new CacheMeshInternalException("cannot merge 2 caches with different value types: %s <--> %s",
+				throw new MeshInternalException("cannot merge 2 caches with different value types: %s <--> %s",
 						oldType, newType);
 			}
 

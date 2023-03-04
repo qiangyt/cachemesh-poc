@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import cachemeshpoc.err.CacheMeshRequestException;
+import cachemeshpoc.err.MeshRequestException;
 import cachemeshpoc.util.StringHelper;
 
 @lombok.Getter
@@ -50,7 +50,7 @@ public class JacksonHelper {
 		try {
 			return getMapper().readValue(text, clazz);
 		} catch (IOException e) {
-			throw new CacheMeshRequestException(e);
+			throw new MeshRequestException(e);
 		}
 	}
 
@@ -62,7 +62,7 @@ public class JacksonHelper {
 		try {
 			return getMapper().readValue(text, typeReference);
 		} catch (IOException e) {
-			throw new CacheMeshRequestException(e);
+			throw new MeshRequestException(e);
 		}
 	}
 
@@ -85,7 +85,7 @@ public class JacksonHelper {
 			}
 			return getMapper().writeValueAsString(object);
 		} catch (IOException e) {
-			throw new CacheMeshRequestException(e);
+			throw new MeshRequestException(e);
 		}
 	}
 }

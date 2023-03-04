@@ -1,9 +1,9 @@
-package cachemeshpoc.remote.grpc;
+package cachemeshpoc.grpc;
 
 import io.grpc.stub.StreamObserver;
 
 import cachemeshpoc.ResultStatus;
-import cachemeshpoc.err.CacheMeshServiceException;
+import cachemeshpoc.err.MeshServiceException;
 
 public class GrpcHelper {
 
@@ -19,7 +19,7 @@ public class GrpcHelper {
 			case Ok: return ResultStatus.OK;
 			case NoChange: return ResultStatus.NO_CHANGE;
 			case Redirect: return ResultStatus.REDIRECT;
-			default: throw new CacheMeshServiceException("unrecognized remote value status: %d", status);
+			default: throw new MeshServiceException("unrecognized remote value status: %d", status);
 		}
 	}
 
@@ -29,7 +29,7 @@ public class GrpcHelper {
 			case OK: return ValueStatus.Ok;
 			case NO_CHANGE: return ValueStatus.NoChange;
 			case REDIRECT: return ValueStatus.Redirect;
-			default: throw new CacheMeshServiceException("unrecognized remote value status: %d", status);
+			default: throw new MeshServiceException("unrecognized remote value status: %d", status);
 		}
 	}
 

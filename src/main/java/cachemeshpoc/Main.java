@@ -2,15 +2,16 @@ package cachemeshpoc;
 
 import java.net.URL;
 
+import cachemeshpoc.caffeine.CaffeineCacheFactory;
 import cachemeshpoc.grpc.GrpcCacheManager;
 import cachemeshpoc.grpc.GrpcClientFactory;
 import cachemeshpoc.grpc.GrpcConfig;
-import cachemeshpoc.local.caffeine.CaffeineLocalCacheFactory;
+import cachemeshpoc.side.SideCacheManager;
 
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		var caffeineFactory = new CaffeineLocalCacheFactory();
+		var caffeineFactory = new CaffeineCacheFactory();
 		var meshCacheManager = new Network(caffeineFactory);
 
 		var grpcClientFactory = new GrpcClientFactory();

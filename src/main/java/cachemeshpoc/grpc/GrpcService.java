@@ -2,7 +2,7 @@ package cachemeshpoc.grpc;
 
 import io.grpc.stub.StreamObserver;
 import cachemeshpoc.ResultStatus;
-import cachemeshpoc.SideCacheManager;
+import cachemeshpoc.side.SideCacheManager;
 
 import com.google.protobuf.ByteString;
 

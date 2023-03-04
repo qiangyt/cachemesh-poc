@@ -1,4 +1,4 @@
-package cachemeshpoc.local.caffeine;
+package cachemeshpoc.caffeine;
 
 import java.util.Collection;
 import java.util.Map;
@@ -6,23 +6,29 @@ import java.util.Map;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import cachemeshpoc.local.BaseLocalCache;
+import cachemeshpoc.local.LocalCache;
 
-public class CaffeineLocalCache<T> extends BaseLocalCache<T> {
+public class CaffeineCache<T> implements LocalCache<T> {
 
 	@lombok.Getter
-	private final CaffeineLocalCacheConfig config;
+	private final String name;
+
+	@lombok.Getter
+	private final Class<T> valueClass;
+
+	@lombok.Getter
+	private final CaffeineCacheConfig config;
 
 	private final Cache<String, T> caffeine;
 
-	public CaffeineLocalCache(String name, Class<T> valueClass, CaffeineLocalCacheConfig cfg) {
-		super(name, valueClass);
-
+	public CaffeineCache(String name, Class<T> valueClass, CaffeineCacheConfig cfg) {
+		this.name = name;
+		this.valueClass = valueClass;
 		this.config = cfg;
 		this.caffeine = createCaffeineInstance(cfg);
 	}
 
-	protected Cache<String, T> createCaffeineInstance(CaffeineLocalCacheConfig cfg) {
+	protected Cache<String, T> createCaffeineInstance(CaffeineCacheConfig cfg) {
 		return Caffeine.newBuilder()
 							.maximumSize(cfg.getMaximumSize())
 							.expireAfterWrite(cfg.getExpireAfterWrite())

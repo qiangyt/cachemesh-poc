@@ -1,5 +1,9 @@
-package cachemeshpoc;
+package cachemeshpoc.side;
 
+import cachemeshpoc.GetResult;
+import cachemeshpoc.NodeCache;
+import cachemeshpoc.ResultStatus;
+import cachemeshpoc.VershedValue;
 import cachemeshpoc.local.LocalCache;
 import cachemeshpoc.util.Hashing;
 

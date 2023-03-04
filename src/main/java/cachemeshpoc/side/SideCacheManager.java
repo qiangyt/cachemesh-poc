@@ -1,7 +1,9 @@
-package cachemeshpoc;
+package cachemeshpoc.side;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import cachemeshpoc.NodeCache;
+import cachemeshpoc.VershedValue;
 import cachemeshpoc.local.LocalCache;
 import cachemeshpoc.local.LocalCacheManager;
 import cachemeshpoc.util.Hashing;

@@ -3,8 +3,9 @@ package cachemeshpoc.grpc;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cachemeshpoc.NodeCache;
+import cachemeshpoc.NodeCacheManager;
 
-public class GrpcCacheManager implements NodeCache.Manager {
+public class GrpcCacheManager implements NodeCacheManager {
 
 	private final ConcurrentHashMap<String, GrpcCache> caches = new ConcurrentHashMap<>();
 

@@ -2,14 +2,14 @@ package cachemeshpoc.side;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import cachemeshpoc.NodeCache;
+import cachemeshpoc.NodeCacheManager;
 import cachemeshpoc.VershedValue;
-import cachemeshpoc.local.LocalCache;
+import cachemeshpoc.local.LocalCacheFactory;
 import cachemeshpoc.local.LocalCacheManager;
 import cachemeshpoc.util.Hashing;
 import cachemeshpoc.util.MurmurHash;
 
-public class SideCacheManager implements NodeCache.Manager {
+public class SideCacheManager implements NodeCacheManager {
 
 	private final ConcurrentHashMap<String, SideCache> caches = new ConcurrentHashMap<>();
 
@@ -19,11 +19,11 @@ public class SideCacheManager implements NodeCache.Manager {
 	@lombok.Getter
 	private final Hashing hashing;
 
-	public SideCacheManager(LocalCache.Factory localCacheFactory) {
+	public SideCacheManager(LocalCacheFactory localCacheFactory) {
 		this(localCacheFactory, MurmurHash.DEFAULT);
 	}
 
-	public SideCacheManager(LocalCache.Factory localCacheFactory, Hashing hashing) {
+	public SideCacheManager(LocalCacheFactory localCacheFactory, Hashing hashing) {
 		this(new LocalCacheManager(localCacheFactory), hashing);
 	}
 

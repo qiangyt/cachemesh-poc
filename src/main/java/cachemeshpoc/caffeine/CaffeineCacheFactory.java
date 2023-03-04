@@ -1,9 +1,9 @@
 package cachemeshpoc.caffeine;
 
 import cachemeshpoc.local.LocalCache;
-import cachemeshpoc.local.LocalCache.Factory;
+import cachemeshpoc.local.LocalCacheFactory;
 
-public class CaffeineCacheFactory implements Factory {
+public class CaffeineCacheFactory implements LocalCacheFactory {
 
 	@Override
 	public <T> LocalCache<T> create(String cacheName, Class<T> valueClass) {

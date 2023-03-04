@@ -4,22 +4,22 @@ import cachemeshpoc.err.MeshInternalException;
 import cachemeshpoc.err.MeshServiceException;
 import cachemeshpoc.local.LocalCache;
 
-public class Cache<T> {
+public class MeshCache<T> {
 
 	@lombok.Getter
 	private final Class<T> valueClass;
 
 	private final LocalCache<VershedValue> nearCache;
 
-	private final Network net;
+	private final MeshNetwork network;
 
 	@lombok.Getter
 	private final Serderializer serder;
 
-	public Cache(Class<T> valueClass, LocalCache<VershedValue> nearCache, Network net, Serderializer serder) {
+	public MeshCache(Class<T> valueClass, LocalCache<VershedValue> nearCache, MeshNetwork network, Serderializer serder) {
 		this.valueClass = valueClass;
 		this.nearCache = nearCache;
-		this.net = net;
+		this.network = network;
 		this.serder = serder;
 	}
 
@@ -29,27 +29,17 @@ public class Cache<T> {
 
 	@SuppressWarnings("unchecked")
 	public T getSingle(String key) {
+
 		var nearValue = this.nearCache.getSingle(key);
+		long versh = (nearValue == null) ? 0 : nearValue.getVersh();
 
-		long versh;
-		if (nearValue != null) {
-			versh = nearValue.getVersh();
-		} else {
-			versh = 0;
-		}
-
-		var node = this.net.findNode(key);
-		var nodeCacheMgr = node.getNodeCacheManager();
-		var nodeCache = nodeCacheMgr.resolve(getName());
-
+		var nodeCache = this.network.resolveNodeCache(getName(), key);
 		var r = nodeCache.getSingle(key, versh);
 
 		switch(r.getStatus()) {
 			case OK: {
 				var obj = this.serder.deserialize(r.getValue(), this.valueClass);
-				nearValue = new VershedValue(obj, r.getVersh());
-				this.nearCache.putSingle(key, nearValue);
-
+				this.nearCache.putSingle(key, new VershedValue(obj, r.getVersh()));
 				return obj;
 			}
 			case NO_CHANGE:	return (T)nearValue.getData();
@@ -66,14 +56,10 @@ public class Cache<T> {
 	}
 
 	public void putSingle(String key, T object) {
+		var nodeCache = this.network.resolveNodeCache(getName(), key);
+
 		var bytes = this.serder.serialize(object);
-
-		var node = this.net.findNode(key);
-		var nodeCacheMgr = node.getNodeCacheManager();
-		var nodeCache = nodeCacheMgr.resolve(getName());
-
 		long versh = nodeCache.putSingle(key, bytes);
-
 		this.nearCache.putSingle(key, new VershedValue(object, versh));
 	}
 

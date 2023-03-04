@@ -4,7 +4,7 @@ import java.net.URL;
 import cachemeshpoc.util.ConsistentHash;
 
 @lombok.Getter
-public class MeshNode implements ConsistentHash.Node {
+public class Node implements ConsistentHash.Node {
 
 	private final URL url;
 	private final String key;
@@ -12,7 +12,7 @@ public class MeshNode implements ConsistentHash.Node {
 
 	private final NodeCache.Manager nodeCacheManager;
 
-	public MeshNode(URL url, NodeCache.Manager nodeCacheManager) {
+	public Node(URL url, NodeCache.Manager nodeCacheManager) {
 		this.url = url;
 		this.key = url.toExternalForm();
 		this.hashCode = this.key.hashCode();
@@ -28,9 +28,9 @@ public class MeshNode implements ConsistentHash.Node {
 			return true;
 		}
 
-		MeshNode that;
+		Node that;
 		try {
-			that = (MeshNode)obj;
+			that = (Node)obj;
 		} catch (ClassCastException e) {
 			return false;
 		}

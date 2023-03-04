@@ -3,7 +3,7 @@ package cachemeshpoc.grpc;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import cachemeshpoc.MeshProtocol;
+import cachemeshpoc.Protocol;
 import cachemeshpoc.err.MeshInternalException;
 
 @lombok.Getter
@@ -36,7 +36,7 @@ public class GrpcConfig {
 
 	public static GrpcConfig from(URL url) {
 		String protocol = url.getProtocol();
-		if (MeshProtocol.valueOf(protocol) == null) {
+		if (Protocol.valueOf(protocol) == null) {
 			throw new MeshInternalException("unsupported meshcache protocol: %s", protocol);
 		}
 

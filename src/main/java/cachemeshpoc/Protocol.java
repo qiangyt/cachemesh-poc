@@ -2,7 +2,7 @@ package cachemeshpoc;
 
 import cachemeshpoc.url.Handler;
 
-public enum MeshProtocol {
+public enum Protocol {
 
 	//resp3,
 
@@ -13,7 +13,7 @@ public enum MeshProtocol {
 		Handler.registerHandler();
 	}
 
-	public static MeshProtocol Default() {
+	public static Protocol Default() {
 		return grpc;
 	}
 

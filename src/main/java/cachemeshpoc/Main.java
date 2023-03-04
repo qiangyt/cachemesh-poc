@@ -11,7 +11,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		var caffeineFactory = new CaffeineLocalCacheFactory();
-		var meshCacheManager = new MeshNet(caffeineFactory);
+		var meshCacheManager = new Network(caffeineFactory);
 
 		var grpcClientFactory = new GrpcClientFactory();
 
@@ -19,13 +19,13 @@ public class Main {
 		var grpcConfig1 = GrpcConfig.from(url1);
 		var grpcClient1 = grpcClientFactory.create(grpcConfig1);
 		var cacheManager1 = new GrpcCacheManager(grpcClient1);
-		var node1 = new MeshNode(url1, cacheManager1);
+		var node1 = new Node(url1, cacheManager1);
 		meshCacheManager.addNode(node1);
 
 		var url2 = new URL("grpc://localhost:60002");
 		var grpcConfig2 = GrpcConfig.from(url2);
 		var cacheManager2 = new SideCacheManager(caffeineFactory);
-		var node2 = new MeshNode(url2, cacheManager2);
+		var node2 = new Node(url2, cacheManager2);
 		meshCacheManager.addNode(node2);
 
 		var meshCache = meshCacheManager.resolveCache("example", String.class);

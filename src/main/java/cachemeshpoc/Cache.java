@@ -4,19 +4,19 @@ import cachemeshpoc.err.MeshInternalException;
 import cachemeshpoc.err.MeshServiceException;
 import cachemeshpoc.local.LocalCache;
 
-public class MeshCache<T> {
+public class Cache<T> {
 
 	@lombok.Getter
 	private final Class<T> valueClass;
 
 	private final LocalCache<VershedValue> nearCache;
 
-	private final MeshNet net;
+	private final Network net;
 
 	@lombok.Getter
 	private final Serderializer serder;
 
-	public MeshCache(Class<T> valueClass, LocalCache<VershedValue> nearCache, MeshNet net, Serderializer serder) {
+	public Cache(Class<T> valueClass, LocalCache<VershedValue> nearCache, Network net, Serderializer serder) {
 		this.valueClass = valueClass;
 		this.nearCache = nearCache;
 		this.net = net;

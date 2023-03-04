@@ -12,46 +12,46 @@ import cachemeshpoc.util.ConsistentHash;
 import cachemeshpoc.util.MurmurHash;
 
 @lombok.Getter
-public class MeshNet implements AutoCloseable {
+public class Network implements AutoCloseable {
 
-	private final ConcurrentHashMap<String, MeshCache<?>> caches = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, Cache<?>> caches = new ConcurrentHashMap<>();
 
 	private final LocalCacheManager nearCacheManager;
 
-	private final ConsistentHash<MeshNode> consistentHash;
+	private final ConsistentHash<Node> consistentHash;
 
-	private final Map<String, MeshNode> nodes = new HashMap<>();
+	private final Map<String, Node> nodes = new HashMap<>();
 
 	private final Serderializer serder;
 
-	public MeshNet(LocalCache.Factory nearCacheFactory) {
+	public Network(LocalCache.Factory nearCacheFactory) {
 		this(new LocalCacheManager(nearCacheFactory), JsonSerderializer.DEFAULT);
 	}
 
-	public MeshNet(LocalCacheManager nearCacheManager, Serderializer serder) {
+	public Network(LocalCacheManager nearCacheManager, Serderializer serder) {
 		this.consistentHash = new ConsistentHash<>(MurmurHash.DEFAULT);
 		this.nearCacheManager = nearCacheManager;
 		this.serder = serder;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> MeshCache<T> getCache(String cacheName) {
-		return (MeshCache<T>)this.caches.get(cacheName);
+	public <T> Cache<T> getCache(String cacheName) {
+		return (Cache<T>)this.caches.get(cacheName);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
-		return (MeshCache<T>)this.caches.computeIfAbsent(cacheName, k -> {
+	public <T> Cache<T> resolveCache(String cacheName, Class<T> valueClass) {
+		return (Cache<T>)this.caches.computeIfAbsent(cacheName, k -> {
 			var nearCache = this.nearCacheManager.resolve(cacheName, VershedValue.class);
-			return new MeshCache<T>(valueClass, nearCache, this, serder);
+			return new Cache<T>(valueClass, nearCache, this, serder);
 		});
 	}
 
-	public void addNodes(Iterable<MeshNode> nodes) {
+	public void addNodes(Iterable<Node> nodes) {
 		nodes.forEach(this::addNode);
 	}
 
-	public void addNode(MeshNode node) {
+	public void addNode(Node node) {
 		if (this.nodes.putIfAbsent(node.getKey(), node) != null) {
 			throw new MeshInternalException("duplicated node with key=%s", node.getKey());
 		}
@@ -59,7 +59,7 @@ public class MeshNet implements AutoCloseable {
 		this.consistentHash.join(node);
 	}
 
-	public MeshNode findNode(String key) {
+	public Node findNode(String key) {
 		long hash = this.consistentHash.hash(key);
 		var virtualNode = this.consistentHash.virtualNodeFor(hash);
 		return virtualNode.getRealNode();

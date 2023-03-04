@@ -5,7 +5,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import cachemeshpoc.MeshProtocol;;
+import cachemeshpoc.Protocol;;
 
 public class Handler extends URLStreamHandler {
 
@@ -19,7 +19,7 @@ public class Handler extends URLStreamHandler {
 
 	@Override
 	protected URLConnection openConnection(URL u) throws IOException {
-		if (MeshProtocol.valueOf(u.getProtocol()) != null) {
+		if (Protocol.valueOf(u.getProtocol()) != null) {
 			return new Connection(u);
 		}
 		return null;

@@ -80,7 +80,7 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase implements Auto
 		if (!this.launched) {
 			raiseError("not launched");
 		}
-		logInfo("shutdown..., await {}s", this.config.getServiceShutdownSeconds());
+		logInfo("shutdown..., await %ds", this.config.getServiceShutdownSeconds());
 
 		this.server.shutdown().awaitTermination(this.config.getServiceShutdownSeconds(), TimeUnit.SECONDS);
 

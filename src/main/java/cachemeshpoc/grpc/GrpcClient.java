@@ -40,7 +40,7 @@ public class GrpcClient implements AutoCloseable {
 
 	@Override
 	public synchronized void close() throws Exception {
-		logInfo("shutdown..., await {}s", this.config.getClientShutdownSeconds());
+		logInfo("shutdown..., await %ds", this.config.getClientShutdownSeconds());
 
 		this.channel.shutdownNow().awaitTermination(this.config.getClientShutdownSeconds(), TimeUnit.SECONDS);
 

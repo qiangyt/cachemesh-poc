@@ -1,41 +1,24 @@
 package cachemeshpoc;
 
-import java.net.URL;
-
-import cachemeshpoc.caffeine.CaffeineCacheFactory;
-import cachemeshpoc.grpc.GrpcCacheManager;
-import cachemeshpoc.grpc.GrpcClientFactory;
-import cachemeshpoc.grpc.GrpcConfig;
-import cachemeshpoc.side.SideCacheManager;
-
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		var caffeineFactory = new CaffeineCacheFactory();
-		var meshCacheManager = new MeshNetwork(caffeineFactory);
 
-		var grpcClientFactory = new GrpcClientFactory();
+		var mesh = new MeshNetwork();
 
-		var url1 = new URL("grpc://localhost:60001");
-		var grpcConfig1 = GrpcConfig.from(url1);
-		var grpcClient1 = grpcClientFactory.create(grpcConfig1);
-		var cacheManager1 = new GrpcCacheManager(grpcClient1);
-		var node1 = new MeshNode(url1, cacheManager1);
-		meshCacheManager.addNode(node1);
+		mesh.addLocalNode("grpc://localhost:50001");
+		mesh.addRemoteNode("grpc://localhost:50002");
+		mesh.addRemoteNode("grpc://localhost:50003");
 
-		var url2 = new URL("grpc://localhost:60002");
-		var grpcConfig2 = GrpcConfig.from(url2);
-		var cacheManager2 = new SideCacheManager(caffeineFactory);
-		var node2 = new MeshNode(url2, cacheManager2);
-		meshCacheManager.addNode(node2);
+		mesh.bootstrap();
+		try (mesh) {
+			var cache = mesh.resolveCache("example", String.class);
+			cache.putSingle("k1", "v1");
 
-		var meshCache = meshCacheManager.resolveCache("example", String.class);
-		meshCache.putSingle("k1", "v1");
+			String v1 = cache.getSingle("k1");
+			System.out.println("getSingle(key) returns:" + v1);
+		}
 
-		String v1 = meshCache.getSingle("k1");
-		System.out.println("getSingle(key) returns:" + v1);
-
-		meshCacheManager.close();
 	}
 
 

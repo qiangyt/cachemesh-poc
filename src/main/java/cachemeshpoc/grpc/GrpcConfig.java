@@ -7,19 +7,18 @@ import cachemeshpoc.Protocol;
 import cachemeshpoc.err.MeshInternalException;
 
 @lombok.Getter
-////@lombok.NoArgsConstructor
-//@lombok.Builder(buildMethodName = "buildConfig")
-////@lombok.experimental.SuperBuilder
+@lombok.Builder
+//@lombok.NoArgsConstructor
+//@lombok.experimental.Builder
 public class GrpcConfig {
-
-	private final int port;
 
 	private final String host;
 
-	GrpcConfig(String host, int port) {
-		this.host = host;
-		this.port = port;
-	}
+	private final int port;
+
+	private final int serviceShutdownSeconds;
+
+	private final int clientShutdownSeconds;
 
 	public URL toURL() {
 		try {
@@ -40,7 +39,7 @@ public class GrpcConfig {
 			throw new MeshInternalException("unsupported meshcache protocol: %s", protocol);
 		}
 
-		return new GrpcConfig(url.getHost(), url.getPort());
+		return new GrpcConfig(url.getHost(), url.getPort(), 30, 30);
 	}
 
 	public String getTarget() {

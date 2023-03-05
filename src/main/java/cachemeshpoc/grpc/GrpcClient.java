@@ -16,23 +16,35 @@ public class GrpcClient implements AutoCloseable {
 	private static final Logger LOG = LoggerFactory.getLogger(GrpcClient.class);
 
 	@lombok.Getter
-	private final GrpcConfig serverConfig;
+	private final GrpcConfig config;
 
 	private final ManagedChannel channel;
 
 	private final CacheMeshGrpc.CacheMeshBlockingStub stub;
 
-	public GrpcClient(GrpcConfig serverConfig, ManagedChannel channel) {
-		this.serverConfig = serverConfig;
+	public GrpcClient(GrpcConfig config, ManagedChannel channel) {
+		this.config = config;
 		this.channel = channel;
 		this.stub = CacheMeshGrpc.newBlockingStub(channel);
 	}
 
 	@Override
-	public void close() throws Exception {
-		LOG.info("Shut down: ...");
-		this.channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
-		LOG.info("Shutdown: done");
+	public String toString() {
+		return this.config.toString();
+	}
+
+	void logInfo(String messageFormat, Object... args) {
+		String msg = String.format(messageFormat, args);
+		LOG.info("{}: {}", this, msg);
+	}
+
+	@Override
+	public synchronized void close() throws Exception {
+		logInfo("shutdown..., await {}s", this.config.getClientShutdownSeconds());
+
+		this.channel.shutdownNow().awaitTermination(this.config.getClientShutdownSeconds(), TimeUnit.SECONDS);
+
+		logInfo("shutdown: done");
 	}
 
 	public GetResult<byte[]> getSingle(String cacheName, String key, long versh) {

@@ -1,17 +1,91 @@
 package cachemeshpoc.grpc;
 
 import io.grpc.stub.StreamObserver;
-import cachemeshpoc.ResultStatus;
-import cachemeshpoc.side.SideCacheManager;
 
+import io.grpc.Grpc;
+import io.grpc.InsecureServerCredentials;
+import io.grpc.Server;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.protobuf.ByteString;
 
-public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
+
+import cachemeshpoc.ResultStatus;
+import cachemeshpoc.err.MeshInternalException;
+import cachemeshpoc.side.SideCacheManager;
+
+public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase implements AutoCloseable {
+
+	private static final Logger LOG = LoggerFactory.getLogger(GrpcService.class);
 
 	private final SideCacheManager sideCacheManager;
 
-	public GrpcService(SideCacheManager sideCacheManager) {
+	@lombok.Getter
+	private final GrpcConfig config;
+
+	private Server server;
+
+	private boolean launched;
+
+	public GrpcService(GrpcConfig config, SideCacheManager sideCacheManager) {
+		this.config = config;
 		this.sideCacheManager = sideCacheManager;
+
+		this.server = Grpc.newServerBuilderForPort(this.config.getPort(), InsecureServerCredentials.create())
+								.addService(this)
+								.build();
+
+		this.launched = false;
+	}
+
+	void logInfo(String messageFormat, Object... args) {
+		String msg = String.format(messageFormat, args);
+		LOG.info("{}: {}", this, msg);
+	}
+
+	void raiseError(String messageFormat, Object... args) {
+		throw new MeshInternalException("%s: " + messageFormat, this, args);
+	}
+
+	void raiseError(Exception cause, String messageFormat, Object... args) {
+		throw new MeshInternalException(cause, "%s: " + messageFormat, this, args);
+	}
+
+	@Override
+	public String toString() {
+		return this.config.toString() + "." + this.launched;
+	}
+
+	public synchronized void launch() {
+		if (this.launched) {
+			raiseError("already launched");
+		}
+		logInfo("launch...");
+
+		try {
+			this.server.start();
+		} catch (IOException e) {
+			raiseError(e, "failed to launch");
+		}
+
+		this.launched = true;
+		logInfo("launch: done");
+	}
+
+	@Override
+	public synchronized void close() throws Exception {
+		if (!this.launched) {
+			raiseError("not launched");
+		}
+		logInfo("shutdown..., await {}s", this.config.getServiceShutdownSeconds());
+
+		this.server.shutdown().awaitTermination(this.config.getServiceShutdownSeconds(), TimeUnit.SECONDS);
+
+		this.launched = false;
+		logInfo("shutdown: done");
 	}
 
 	@Override

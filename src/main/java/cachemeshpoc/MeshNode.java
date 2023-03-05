@@ -6,13 +6,15 @@ import cachemeshpoc.util.ConsistentHash;
 @lombok.Getter
 public class MeshNode implements ConsistentHash.Node {
 
+	private final boolean remote;
 	private final URL url;
 	private final String key;
 	private final int hashCode;
 
 	private final NodeCacheManager nodeCacheManager;
 
-	public MeshNode(URL url, NodeCacheManager nodeCacheManager) {
+	public MeshNode(boolean remote, URL url, NodeCacheManager nodeCacheManager) {
+		this.remote = remote;
 		this.url = url;
 		this.key = url.toExternalForm();
 		this.hashCode = this.key.hashCode();
@@ -45,7 +47,7 @@ public class MeshNode implements ConsistentHash.Node {
 
 	@Override
 	public String toString() {
-		return this.key;
+		return this.key + "@" + (this.remote ? "remote" : "local");
 	}
 
 }

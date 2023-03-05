@@ -112,24 +112,21 @@ public class MeshNetwork implements AutoCloseable {
 	}
 
 	public MeshNode addRemoteNode(URL url) {
-		NodeCacheManager cacheManager;
+		var grpcConfig = GrpcConfig.from(url);
+		var grpcClient = grpcClientFactory.create(grpcConfig);
+		var cacheManager = new GrpcCacheManager(grpcClient);
 
-		switch (url.getProtocol()) {
-			case "grpc": {
-				var grpcConfig = GrpcConfig.from(url);
-				var grpcClient = grpcClientFactory.create(grpcConfig);
-				cacheManager = new GrpcCacheManager(grpcClient);
-			}
-				break;
-			case "redis": {
-				var lettuceConfig = LettuceConfig.from(url);
-				var lettuceClient = lettuceClientFactory.create(lettuceConfig);
-				cacheManager = new LettuceCacheManager(lettuceClient);
-			}
-				break;
-			default:
-				throw new MeshInternalException("unsupported protocol: {}", url.getProtocol());
-		}
+		return addNode(new MeshNode(true, url, cacheManager));
+	}
+
+	public MeshNode addRedisNode(String url) throws MalformedURLException {
+		return addRedisNode(new URL(null, url, Handler.DEFAULT));
+	}
+
+	public MeshNode addRedisNode(URL url) {
+		var lettuceConfig = LettuceConfig.from(url);
+		var lettuceClient = lettuceClientFactory.create(lettuceConfig);
+		var cacheManager = new LettuceCacheManager(lettuceClient);
 
 		return addNode(new MeshNode(true, url, cacheManager));
 	}

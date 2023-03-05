@@ -135,6 +135,8 @@ public class MeshNetwork implements AutoCloseable {
 
 	public NodeCache resolveNodeCache(String cacheName, String key) {
 		var node = findNode(key);
+		LOG.info("find node for key={}: {}", key, node);
+
 		var nodeCacheMgr = node.getNodeCacheManager();
 		return nodeCacheMgr.resolve(cacheName);
 	}

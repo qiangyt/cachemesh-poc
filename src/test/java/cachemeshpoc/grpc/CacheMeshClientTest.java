@@ -43,7 +43,7 @@ public class CacheMeshClientTest {
 
     var channel = this.grpcCleanup.register(InProcessChannelBuilder.forName(serverName).directExecutor().build());
 
-		GrpcConfig serverConfig = new GrpcConfig("localhost", 34567);
+		GrpcConfig serverConfig = new GrpcConfig("localhost", 34567, 3, 3);
     this.client = new GrpcClient(serverConfig, channel);
   }
 

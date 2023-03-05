@@ -9,14 +9,24 @@ public class Main {
 		mesh.addLocalNode("grpc://localhost:20001");
 		//mesh.addRemoteNode("grpc://localhost:20002");
 		//mesh.addRemoteNode("grpc://localhost:20003");
+		mesh.addLocalNode("grpc://localhost:20002");
+		mesh.addLocalNode("grpc://localhost:20003");
 
 		mesh.bootstrap();
 		try (mesh) {
 			var cache = mesh.resolveCache("example", String.class);
-			cache.putSingle("k1", "v1");
 
-			String v1 = cache.getSingle("k1");
-			System.out.println("getSingle(key) returns:" + v1);
+			for (int i = 0; i < 10; i++) {
+				String key = "k" + i;
+				String v = "v" + i;
+				cache.putSingle(key, v);
+			}
+
+			for (int i = 0; i < 10; i++) {
+				String key = "k" + i;
+				String v = cache.getSingle(key);
+				System.out.printf("getSingle('%s') returns: %s\n", key, v);
+			}
 		}
 
 	}

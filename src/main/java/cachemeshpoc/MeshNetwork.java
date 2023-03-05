@@ -21,10 +21,15 @@ import cachemeshpoc.json.JsonSerderializer;
 import cachemeshpoc.local.LocalCacheFactory;
 import cachemeshpoc.local.LocalCacheManager;
 import cachemeshpoc.side.SideCacheManager;
+import cachemeshpoc.url.Handler;
 import cachemeshpoc.util.ConsistentHash;
 import cachemeshpoc.util.MurmurHash;
 
 public class MeshNetwork implements AutoCloseable {
+
+	static {
+		Handler.registerHandler();
+	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(MeshNetwork.class);
 
@@ -85,22 +90,20 @@ public class MeshNetwork implements AutoCloseable {
 	}
 
 	public MeshNode addLocalNode(String url) throws MalformedURLException {
-		return addLocalNode(new URL(url));
+		return addLocalNode(new URL(null, url, Handler.DEFAULT));
 	}
 
 	public MeshNode addLocalNode(URL url) {
 		var grpcConfig = GrpcConfig.from(url);
 		var cacheManager = new SideCacheManager(this.localCacheFactory);
-
 		var grpcService = new GrpcService(grpcConfig, cacheManager);
-		grpcService.launch();
 		this.grpcServices.put(url, grpcService);
 
 		return addNode(new MeshNode(false, url, cacheManager));
 	}
 
 	public MeshNode addRemoteNode(String url) throws MalformedURLException {
-		return addRemoteNode(new URL(url));
+		return addRemoteNode(new URL(null, url, Handler.DEFAULT));
 	}
 
 	public MeshNode addRemoteNode(URL url) {
@@ -138,7 +141,7 @@ public class MeshNetwork implements AutoCloseable {
 
 	void shutdownGrpcServers() {
 
-		System.err.println("*** shutting down gRPC server since JVM is shutting down");
+		logShutdown("grpc service shutdown...");
 
 		var grpcServices = this.grpcServices.values();
 		var latch = new CountDownLatch(grpcServices.size());
@@ -156,10 +159,10 @@ public class MeshNetwork implements AutoCloseable {
 		try {
 			latch.await(this.shutdownSeconds, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logShutdownError(e);
 		}
 
-		System.err.println("*** server shut down");
+		logShutdown("grpc service shutdown: done");
 	}
 
 	public synchronized void bootstrap() {

@@ -1,6 +1,5 @@
 package cachemeshpoc.grpc;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import cachemeshpoc.Protocol;
@@ -20,17 +19,9 @@ public class GrpcConfig {
 
 	private final int clientShutdownSeconds;
 
-	public URL toURL() {
-		try {
-			return new URL(getTarget());
-		} catch (MalformedURLException e) {
-			throw new MeshInternalException(e);
-		}
-	}
-
 	@Override
 	public String toString() {
-		return toURL().toString();
+		return String.format("grpc://%s:%d", this.host, this.port);
 	}
 
 	public static GrpcConfig from(URL url) {
@@ -43,7 +34,7 @@ public class GrpcConfig {
 	}
 
 	public String getTarget() {
-		return String.format("grpc://%s:%d", this.host, this.port);
+		return String.format("%s:%d", this.host, this.port);
 	}
 
 }

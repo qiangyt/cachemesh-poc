@@ -33,7 +33,6 @@ public class CaffeineCache<T> implements LocalCache<T> {
 		return Caffeine.newBuilder()
 							.maximumSize(cfg.getMaximumSize())
 							.expireAfterWrite(cfg.getExpireAfterWrite())
-							.refreshAfterWrite(cfg.getRefreshAfterWrite())
 							.build();
 	}
 

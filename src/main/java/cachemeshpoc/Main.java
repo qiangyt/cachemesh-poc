@@ -6,9 +6,9 @@ public class Main {
 
 		var mesh = new MeshNetwork();
 
-		mesh.addLocalNode("grpc://localhost:50001");
-		mesh.addRemoteNode("grpc://localhost:50002");
-		mesh.addRemoteNode("grpc://localhost:50003");
+		mesh.addLocalNode("grpc://localhost:20001");
+		//mesh.addRemoteNode("grpc://localhost:20002");
+		//mesh.addRemoteNode("grpc://localhost:20003");
 
 		mesh.bootstrap();
 		try (mesh) {

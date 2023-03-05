@@ -99,16 +99,26 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase implements Auto
 
 	@Override
 	public void getSingle(GetSingleRequest req, StreamObserver<GetSingleResponse> respObserver) {
+		LOG.info("getSingle(): cache name={}, key={}, versh={}",
+					req.getCacheName(), req.getKey(), req.getVersh());
+
 		var cache = this.sideCacheManager.get(req.getCacheName());
+		LOG.info("getSingle(): cache={}", cache);
+
 		var respBuilder = GetSingleResponse.newBuilder();
 		if (cache == null) {
 			respBuilder.setStatus(GrpcHelper.convertStatus(ResultStatus.NOT_FOUND));
 		} else {
 			var resp = cache.getSingle(req.getKey(), req.getVersh());
+			LOG.info("getSingle(): resp={}", resp);
 
 			respBuilder.setStatus(GrpcHelper.convertStatus(resp.getStatus()));
-			respBuilder.setValue(ByteString.copyFrom(resp.getValue()));
 			respBuilder.setVersh(resp.getVersh());
+
+			var value = resp.getValue();
+			if (value != null) {
+				respBuilder.setValue(ByteString.copyFrom(value));
+			}
 		}
 
 		GrpcHelper.complete(respObserver, respBuilder.build());
@@ -116,9 +126,20 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase implements Auto
 
 	@Override
 	public void putSingle(PutSingleRequest req, StreamObserver<PutSingleResponse> respObserver) {
-		var cache = this.sideCacheManager.resolve(req.getCacheName());
+		LOG.info("putSingle(): cache name={}, key={}", req.getCacheName(), req.getKey());
 
-		var versh = cache.putSingle(req.getKey(), req.getValue().toByteArray());
+		var cache = this.sideCacheManager.resolve(req.getCacheName());
+		LOG.info("putSingle(): cache={}", cache);
+
+		var value = req.getValue();
+		long versh;
+		if (value == null) {
+			versh = cache.putSingle(req.getKey(), null);
+		} else {
+			versh = cache.putSingle(req.getKey(), value.toByteArray());
+		}
+		LOG.info("putSingle(): versh={}", versh);
+
 		var respBuilder = PutSingleResponse.newBuilder();
 		respBuilder.setVersh(versh);
 		GrpcHelper.complete(respObserver, respBuilder.build());

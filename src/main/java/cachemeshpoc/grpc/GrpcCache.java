@@ -22,7 +22,7 @@ public class GrpcCache implements NodeCache {
 
 	@Override
 	public long putSingle(String key, byte[] bytes) {
-		return this.client.putSingle(key, key, bytes);
+		return this.client.putSingle(this.name, key, bytes);
 	}
 
 }

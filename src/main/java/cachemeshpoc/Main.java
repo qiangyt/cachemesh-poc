@@ -40,6 +40,18 @@ public class Main {
 					String v = cache.getSingle(key);
 					System.out.printf("getSingle('%s') returns: %s\n", key, v);
 				}
+
+				for (int i = 0; i < 10; i++) {
+					String key = "k" + i;
+					String v = "v" + (i*2);
+					cache.putSingle(key, v);
+				}
+
+				for (int i = 0; i < 10; i++) {
+					String key = "k" + i;
+					String v = cache.getSingle(key);
+					System.out.printf("getSingle('%s') returns: %s\n", key, v);
+				}
 			} else {
 				mesh.blockUntilTermination(true);
 			}

@@ -183,6 +183,17 @@ public class MeshNetwork implements AutoCloseable {
 		}));
 	}
 
+	public void blockUntilTermination(boolean forever) {
+		this.grpcServices.values().forEach((grpcService) -> {
+			try {
+				grpcService.awaitTermination(forever);
+			} catch(InterruptedException ex) {
+				//logShutdown("mesh network shutdown...");
+				ex.printStackTrace(System.err);
+			}
+		});
+	}
+
 	@Override
 	public synchronized void close() throws Exception {
 		if (this.bootstrapped) {

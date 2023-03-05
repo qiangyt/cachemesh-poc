@@ -82,10 +82,19 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase implements Auto
 		}
 		logInfo("shutdown..., await %ds", this.config.getServiceShutdownSeconds());
 
-		this.server.shutdown().awaitTermination(this.config.getServiceShutdownSeconds(), TimeUnit.SECONDS);
+		this.server.shutdown();
+		this.awaitTermination(false);
 
 		this.launched = false;
 		logInfo("shutdown: done");
+	}
+
+	public synchronized void awaitTermination(boolean forever) throws InterruptedException {
+		if (forever) {
+			this.server.awaitTermination();
+		} else {
+			this.server.awaitTermination(this.config.getServiceShutdownSeconds(), TimeUnit.SECONDS);
+		}
 	}
 
 	@Override

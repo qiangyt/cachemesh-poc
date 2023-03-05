@@ -16,11 +16,12 @@ public class Main {
 		if (local) {
 			System.out.println("local mode");
 			mesh.addLocalNode("grpc://localhost:20000");
-			mesh.addRemoteNode("grpc://localhost:20001");
+			mesh.addRemoteNode("redis://localhost:6379");
+			//mesh.addRemoteNode("grpc://localhost:20001");
 		} else {
-			System.out.println("remote mode");
-			mesh.addRemoteNode("grpc://localhost:20000");
-			mesh.addLocalNode("grpc://localhost:20001");
+			//System.out.println("remote mode");
+			//mesh.addRemoteNode("grpc://localhost:20000");
+			//mesh.addLocalNode("grpc://localhost:20001");
 		}
 
 		mesh.bootstrap();

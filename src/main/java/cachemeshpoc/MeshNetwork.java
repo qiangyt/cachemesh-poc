@@ -18,6 +18,9 @@ import cachemeshpoc.grpc.GrpcClientFactory;
 import cachemeshpoc.grpc.GrpcConfig;
 import cachemeshpoc.grpc.GrpcService;
 import cachemeshpoc.json.JsonSerderializer;
+import cachemeshpoc.lettuce.LettuceCacheManager;
+import cachemeshpoc.lettuce.LettuceClientFactory;
+import cachemeshpoc.lettuce.LettuceConfig;
 import cachemeshpoc.local.LocalCacheFactory;
 import cachemeshpoc.local.LocalCacheManager;
 import cachemeshpoc.side.SideCacheManager;
@@ -46,6 +49,8 @@ public class MeshNetwork implements AutoCloseable {
 	private final Serderializer serder;
 
 	private final GrpcClientFactory grpcClientFactory = new GrpcClientFactory();
+
+	private final LettuceClientFactory lettuceClientFactory = new LettuceClientFactory();
 
 	private final LocalCacheFactory localCacheFactory;
 
@@ -107,9 +112,24 @@ public class MeshNetwork implements AutoCloseable {
 	}
 
 	public MeshNode addRemoteNode(URL url) {
-		var grpcConfig = GrpcConfig.from(url);
-		var grpcClient = grpcClientFactory.create(grpcConfig);
-		var cacheManager = new GrpcCacheManager(grpcClient);
+		NodeCacheManager cacheManager;
+
+		switch (url.getProtocol()) {
+			case "grpc": {
+				var grpcConfig = GrpcConfig.from(url);
+				var grpcClient = grpcClientFactory.create(grpcConfig);
+				cacheManager = new GrpcCacheManager(grpcClient);
+			}
+				break;
+			case "redis": {
+				var lettuceConfig = LettuceConfig.from(url);
+				var lettuceClient = lettuceClientFactory.create(lettuceConfig);
+				cacheManager = new LettuceCacheManager(lettuceClient);
+			}
+				break;
+			default:
+				throw new MeshInternalException("unsupported protocol: {}", url.getProtocol());
+		}
 
 		return addNode(new MeshNode(true, url, cacheManager));
 	}
@@ -154,9 +174,10 @@ public class MeshNetwork implements AutoCloseable {
 					grpcService.close();
 				} catch (Exception e) {
 					logShutdownError(e);
-				}}).start();
+				}
+			}).start();
 			latch.countDown();
-		} );
+		});
 
 		try {
 			latch.await(this.shutdownSeconds, TimeUnit.SECONDS);
@@ -187,8 +208,8 @@ public class MeshNetwork implements AutoCloseable {
 		this.grpcServices.values().forEach((grpcService) -> {
 			try {
 				grpcService.awaitTermination(forever);
-			} catch(InterruptedException ex) {
-				//logShutdown("mesh network shutdown...");
+			} catch (InterruptedException ex) {
+				// logShutdown("mesh network shutdown...");
 				ex.printStackTrace(System.err);
 			}
 		});

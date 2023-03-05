@@ -62,7 +62,7 @@ public class GrpcClient implements AutoCloseable {
 			return null;
 		} */
 
-		byte[] v = resp.getValue() == null ? null : resp.getValue().toByteArray();
+		byte[] v = (resp.getValue() == null) ? null : resp.getValue().toByteArray();
 		return new GetResult<>(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersh());
 	}
 

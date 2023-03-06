@@ -6,6 +6,14 @@
     "configurations": [
         {
             "type": "java",
+            "name": "JgroupsHello",
+            "request": "launch",
+            "mainClass": "cachemeshpoc.JgroupsHello",
+            "projectName": "cachemeshpoc",
+            "args": "cachemesh-poc"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "cachemeshpoc.Main",

@@ -1,0 +1,25 @@
+nodes:
+  provider: inline # udp-broadcast, k8s, auto
+  udpBroadcast:
+    port: 6666
+  list:
+    - url: grpc://localhost:20000
+      local: true
+      grpc:
+        serviceShutdown: 30s
+        clientShutdown: 30s
+    - url: grpc://localhost:20001
+    - url: redis://localhost:6379
+      redis:
+        database: 1
+
+serders:
+  provider: jackson
+  jackson:
+
+localCaches:
+  default:
+    provider: caffeine
+    caffeine:
+      maximumSize: 100_000
+      expireAfterWrite: 5min

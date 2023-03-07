@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MeshConfig",
+            "request": "launch",
+            "mainClass": "cachemeshpoc.config.MeshConfig",
+            "projectName": "cachemeshpoc"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "cachemeshpoc.Main",

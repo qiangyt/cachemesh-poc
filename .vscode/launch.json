@@ -12,6 +12,13 @@
             "projectName": "cachemeshpoc"
         },
         {
+            "name": "JgroupsHello",
+            "request": "launch",
+            "mainClass": "cachemeshpoc.JgroupsHello",
+            "projectName": "cachemeshpoc",
+            "args": "jgroup-node-1"
+        },
+        {
             "type": "java",
             "name": "Main",
             "request": "launch",

@@ -23,7 +23,6 @@
 		<jackson.version>2.14.2</jackson.version>
 	</properties>
 
-
 	<build>
 		<extensions>
 			<extension>
@@ -125,7 +124,11 @@
 	</dependencyManagement>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>org.jgroups</groupId>
+			<artifactId>jgroups</artifactId>
+			<version>5.2.12.Final</version>
+		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>

@@ -57,7 +57,7 @@ public class LettuceClient implements AutoCloseable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public GetResult<byte[]> getSingle(String cacheName, String key, long versh) {
+	public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
 		var cmds = this.conn.sync();
 
 		String base64 = cmds.get(key);

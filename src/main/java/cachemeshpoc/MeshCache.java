@@ -9,14 +9,14 @@ public class MeshCache<T> {
 	@lombok.Getter
 	private final Class<T> valueClass;
 
-	private final LocalCache<VershedValue> nearCache;
+	private final LocalCache<VersionedValue> nearCache;
 
 	private final MeshNetwork network;
 
 	@lombok.Getter
 	private final Serderializer serder;
 
-	public MeshCache(Class<T> valueClass, LocalCache<VershedValue> nearCache, MeshNetwork network, Serderializer serder) {
+	public MeshCache(Class<T> valueClass, LocalCache<VersionedValue> nearCache, MeshNetwork network, Serderializer serder) {
 		this.valueClass = valueClass;
 		this.nearCache = nearCache;
 		this.network = network;
@@ -31,15 +31,15 @@ public class MeshCache<T> {
 	public T getSingle(String key) {
 
 		var nearValue = this.nearCache.getSingle(key);
-		long versh = (nearValue == null) ? 0 : nearValue.getVersh();
+		long version = (nearValue == null) ? 0 : nearValue.getVersion();
 
 		var nodeCache = this.network.resolveNodeCache(getName(), key);
-		var r = nodeCache.getSingle(key, versh);
+		var r = nodeCache.getSingle(key, version);
 
 		switch(r.getStatus()) {
 			case OK: {
 				var obj = this.serder.deserialize(r.getValue(), this.valueClass);
-				this.nearCache.putSingle(key, new VershedValue(obj, r.getVersh()));
+				this.nearCache.putSingle(key, new VersionedValue(obj, r.getVersion()));
 				return obj;
 			}
 			case NO_CHANGE:	return (T)nearValue.getData();
@@ -59,8 +59,8 @@ public class MeshCache<T> {
 		var nodeCache = this.network.resolveNodeCache(getName(), key);
 
 		var bytes = this.serder.serialize(object);
-		long versh = nodeCache.putSingle(key, bytes);
-		this.nearCache.putSingle(key, new VershedValue(object, versh));
+		long version = nodeCache.putSingle(key, bytes);
+		this.nearCache.putSingle(key, new VersionedValue(object, version));
 	}
 
 }

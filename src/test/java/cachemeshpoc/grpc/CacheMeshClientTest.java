@@ -57,6 +57,6 @@ public class CacheMeshClientTest {
 
 		assertEquals("test", reqCaptor.getValue().getCacheName());
 		assertEquals("key", reqCaptor.getValue().getKey());
-		assertEquals(123, reqCaptor.getValue().getVersh());
+		assertEquals(123, reqCaptor.getValue().getVersion());
   }
 }

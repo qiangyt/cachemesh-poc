@@ -16,8 +16,8 @@ public class LettuceCache implements NodeCache {
 	}
 
 	@Override
-	public GetResult<byte[]> getSingle(String key, long versh) {
-		return this.client.getSingle(this.name, key, versh);
+	public GetResult<byte[]> getSingle(String key, long version) {
+		return this.client.getSingle(this.name, key, version);
 	}
 
 	@Override

@@ -14,12 +14,12 @@ public class GetResult<T> {
 
 	private final T value;
 
-	private final long versh;
+	private final long version;
 
-	public GetResult(ResultStatus status, T value, long versh) {
+	public GetResult(ResultStatus status, T value, long version) {
 		this.status = status;
 		this.value = value;
-		this.versh = versh;
+		this.version = version;
 	}
 
 }

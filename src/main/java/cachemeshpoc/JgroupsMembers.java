@@ -53,7 +53,7 @@ public class JgroupsMembers {
 		try {
 			this.log.info("join the mesh: ...");
 			var ch = new JChannel(this.configXmlClasspath);
-			ch.name(this.nodeName).setReceiver(new MyReceiver());
+			//ch.name(this.nodeName).setReceiver(new MyReceiver());
 
 			ch.connect(this.meshNetworkName);
 			this.log.info("join the mesh: done");
@@ -83,6 +83,7 @@ public class JgroupsMembers {
 		@Override
 		public void receive(Message msg) {
 			String json = msg.getObject();
+			//me.listener.on
 		}
 
 		@Override

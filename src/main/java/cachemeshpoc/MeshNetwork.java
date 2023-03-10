@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +44,7 @@ public class MeshNetwork implements AutoCloseable {
 
 	private final ConsistentHash<MeshNode> route;
 
-	private final Map<String, MeshNode> nodes = new HashMap<>();
+	private final SortedMap<String, MeshNode> nodes = new TreeMap<>();
 
 	private final Map<URL, GrpcService> grpcServices = new HashMap<>();
 
@@ -89,7 +91,7 @@ public class MeshNetwork implements AutoCloseable {
 	@SuppressWarnings("unchecked")
 	public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
 		return (MeshCache<T>) this.caches.computeIfAbsent(cacheName, k -> {
-			var nearCache = this.nearCacheManager.resolve(cacheName, VershedValue.class);
+			var nearCache = this.nearCacheManager.resolve(cacheName, VersionedValue.class);
 			return new MeshCache<T>(valueClass, nearCache, this, serder);
 		});
 	}

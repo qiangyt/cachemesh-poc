@@ -47,11 +47,11 @@ public class GrpcClient implements AutoCloseable {
 		logInfo("shutdown: done");
 	}
 
-	public GetResult<byte[]> getSingle(String cacheName, String key, long versh) {
+	public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
 		var req = GetSingleRequest.newBuilder()
 					.setCacheName(cacheName)
 					.setKey(key)
-					.setVersh(versh)
+					.setVersion(version)
 					.build();
 
 		var resp = this.stub.getSingle(req);
@@ -63,7 +63,7 @@ public class GrpcClient implements AutoCloseable {
 		} */
 
 		byte[] v = (resp.getValue() == null) ? null : resp.getValue().toByteArray();
-		return new GetResult<>(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersh());
+		return new GetResult<>(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersion());
 	}
 
 	public long putSingle(String cacheName, String key, byte[] value) {
@@ -73,7 +73,7 @@ public class GrpcClient implements AutoCloseable {
 					.setValue(ByteString.copyFrom(value))
 					.build();
 		var resp = this.stub.putSingle(req);
-		return resp.getVersh();
+		return resp.getVersion();
 	}
 
 }

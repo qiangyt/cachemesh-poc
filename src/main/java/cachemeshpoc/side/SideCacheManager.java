@@ -3,7 +3,7 @@ package cachemeshpoc.side;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cachemeshpoc.NodeCacheManager;
-import cachemeshpoc.VershedValue;
+import cachemeshpoc.VersionedValue;
 import cachemeshpoc.local.LocalCacheFactory;
 import cachemeshpoc.local.LocalCacheManager;
 import cachemeshpoc.util.Hashing;
@@ -40,7 +40,7 @@ public class SideCacheManager implements NodeCacheManager {
 	@Override
 	public SideCache resolve(String cacheName) {
 		return this.caches.computeIfAbsent(cacheName, k -> {
-			var c = this.localCacheManager.resolve(cacheName, VershedValue.class);
+			var c = this.localCacheManager.resolve(cacheName, VersionedValue.class);
 			return new SideCache(c, hashing);
 		});
 	}

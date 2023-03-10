@@ -4,9 +4,9 @@ public interface NodeCache {
 
 	String getName();
 
-	GetResult<byte[]> getSingle(String key, long versh);
+	GetResult<byte[]> getSingle(String key, long version);
 
-	// return versh
+	// return version
 	long putSingle(String key, byte[] bytes);
 
 

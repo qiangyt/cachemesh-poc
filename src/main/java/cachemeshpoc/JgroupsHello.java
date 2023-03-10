@@ -10,15 +10,19 @@ public class JgroupsHello {
 
 	protected JChannel ch;
 
-	protected void start(String name) throws Exception {
-		ch = new JChannel("jgroups.xml").name(name)
+	public void start(String name) throws Exception {
+		this.ch = new JChannel("jgroups.xml").name(name)
 				.setReceiver(new MyReceiver(name))
 				.connect("demo-cluster");
 		int counter = 1;
 		for (;;) {
-			ch.send(null, "msg-" + counter++);
+			this.ch.send(null, "msg-" + counter++);
 			Util.sleep(3000);
 		}
+	}
+
+	public void close() {
+		this.ch.close();
 	}
 
 	protected static class MyReceiver implements Receiver {

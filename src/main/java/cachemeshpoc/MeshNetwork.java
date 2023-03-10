@@ -114,6 +114,17 @@ public class MeshNetwork implements AutoCloseable {
 	}
 
 	public MeshNode addRemoteNode(URL url) {
+		String protocol = url.getProtocol();
+		if (protocol.equals("grpc")) {
+			return addGrpcNode(url);
+		} else if (protocol.equals("redis")){
+			return addRedisNode(url);
+		} else {
+			throw new MeshInternalException("unsupported protocol: %s", protocol);
+		}
+	}
+
+	protected MeshNode addGrpcNode(URL url) {
 		var grpcConfig = GrpcConfig.from(url);
 		var grpcClient = grpcClientFactory.create(grpcConfig);
 		var cacheManager = new GrpcCacheManager(grpcClient);
@@ -121,11 +132,7 @@ public class MeshNetwork implements AutoCloseable {
 		return addNode(new MeshNode(true, url, cacheManager));
 	}
 
-	public MeshNode addRedisNode(String url) throws MalformedURLException {
-		return addRedisNode(new URL(null, url, Handler.DEFAULT));
-	}
-
-	public MeshNode addRedisNode(URL url) {
+	protected MeshNode addRedisNode(URL url) {
 		var lettuceConfig = LettuceConfig.from(url);
 		var lettuceClient = lettuceClientFactory.create(lettuceConfig);
 		var cacheManager = new LettuceCacheManager(lettuceClient);
@@ -133,11 +140,11 @@ public class MeshNetwork implements AutoCloseable {
 		return addNode(new MeshNode(true, url, cacheManager));
 	}
 
-	public void addNodes(Iterable<MeshNode> nodes) {
+	protected void addNodes(Iterable<MeshNode> nodes) {
 		nodes.forEach(this::addNode);
 	}
 
-	public MeshNode addNode(MeshNode node) {
+	protected MeshNode addNode(MeshNode node) {
 		if (this.nodes.putIfAbsent(node.getKey(), node) != null) {
 			throw new MeshInternalException("duplicated node with key=%s", node.getKey());
 		}

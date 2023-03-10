@@ -6,25 +6,11 @@
     "configurations": [
         {
             "type": "java",
-            "name": "MeshConfig",
-            "request": "launch",
-            "mainClass": "cachemeshpoc.config.MeshConfig",
-            "projectName": "cachemeshpoc"
-        },
-        {
-            "name": "JgroupsHello",
-            "request": "launch",
-            "mainClass": "cachemeshpoc.JgroupsHello",
-            "projectName": "cachemeshpoc",
-            "args": "jgroup-node-1"
-        },
-        {
-            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "cachemeshpoc.Main",
             "projectName": "cachemeshpoc",
-            "args": "local"
+            "args": ["true", "grpc://localhost:8001"]
         }
     ]
 }

@@ -10,7 +10,7 @@ output: prefixed
 tasks:
 
   java-clean:
-    dir: ./java
+    dir: ./
     cmds:
       - mvn clean
 
@@ -19,7 +19,7 @@ tasks:
       - java-clean
 
   java-build:
-    dir: ./java
+    dir: ./
     cmds:
       - mvn package
 
@@ -28,11 +28,12 @@ tasks:
       - java-build
 
   java-run:
-    dir: ./java
+    dir: ./
     deps:
       - java-build
     cmds:
-      - java -cp $(mvn dependency:build-classpath | grep '\.jar'):target/cachemeshpoc-0.0.1.jar com.github.qiang.cachemeshpoc.Main {{.CLI_ARGS}}
+      #- java -cp $(mvn dependency:build-classpath | grep '\.jar'):target/cachemeshpoc-0.0.1-jar cachemeshpoc.Main {{.CLI_ARGS}}
+      - java -cp target/cachemeshpoc-0.0.1-jar-with-dependencies.jar cachemeshpoc.Main {{.CLI_ARGS}}
 
 
   run:
@@ -40,7 +41,7 @@ tasks:
       - java-run
 
   java-test:
-    dir: ./java
+    dir: ./
     cmds:
       - mvn test
 

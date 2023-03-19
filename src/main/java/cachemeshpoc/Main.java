@@ -12,7 +12,7 @@ public class Main {
 		}
 
 		boolean sayHello = "true".equals(args[0]);
-		System.out.printf("syHello=%s\n", sayHello);
+		System.out.printf("sayHello=%s\n", sayHello);
 
 		String primaryUrl = args[1];
 
@@ -30,12 +30,14 @@ public class Main {
 			new JGroupsListener() {
 				@Override
 				public void onNodeJoin(String nodeUrl) throws Exception {
+					System.out.println("join " + nodeUrl);
 					mesh.addRemoteNode(nodeUrl);
 				}
 
 				@Override
 				public void onNodeLeave(String nodeUrl) throws Exception {
-					//mesh.addRemoteNode("grpc://localhost:20001");
+					System.out.println("leave " + nodeUrl);
+					mesh.addRemoteNode("grpc://localhost:20001");
 				}
 			});
 		jgroups.start();

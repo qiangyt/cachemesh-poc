@@ -6,7 +6,7 @@
 	<groupId>qiangyt</groupId>
 	<artifactId>cachemeshpoc</artifactId>
 	<version>0.0.1</version>
-	<name>cachemeshpoc</name>
+	<name>${project.groupId}:${project.artifactId}</name>
 
 	<properties>
 		<java.version>11</java.version>
@@ -32,7 +32,7 @@
 			</extension>
 		</extensions>
 		<plugins>
-			<plugin>
+			<!--<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>3.5.0</version>
 				<executions>
@@ -46,17 +46,17 @@
 				  </executions>
 				<configuration>
 					<archive>
-						<manifest>
+						<manifest>-->
 							<!--<addClasspath>true</addClasspath>-->
 							<!--<classpathPrefix>lib/</classpathPrefix>-->
-							<mainClass>cachemeshpoc.Main</mainClass>
+							<!--<mainClass>cachemeshpoc.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 				</configuration>
-			</plugin>
+			</plugin>-->
 			<plugin>
 				<groupId>org.xolstice.maven.plugins</groupId>
 				<artifactId>protobuf-maven-plugin</artifactId>

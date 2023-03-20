@@ -7,12 +7,12 @@ import cachemesh.spi.LocalCache;
 import cachemesh.spi.LocalCacheConfig;
 import cachemesh.spi.base.Value;
 
-public class CaffeineCacheBuilder<T> implements LocalCache.Builder<T> {
+public class CaffeineCacheFactory<T> implements LocalCache.Factory<T> {
 
-	public static final CaffeineCacheBuilder<Object> DEFAULT = new CaffeineCacheBuilder<>();
+	public static final CaffeineCacheFactory<Object> DEFAULT = new CaffeineCacheFactory<>();
 
 	@Override
-	public LocalCache<T> build(LocalCacheConfig<T> config) {
+	public LocalCache<T> create(LocalCacheConfig<T> config) {
 		return build((CaffeineCacheConfig<T>)config);
 	}
 

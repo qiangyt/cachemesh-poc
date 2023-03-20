@@ -1,12 +1,19 @@
 package cachemesh;
 
+import org.slf4j.Logger;
+
 import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.err.ServiceException;
+import cachemesh.common.util.LogHelper;
 import cachemesh.spi.LocalCache;
+import cachemesh.spi.NodeCache;
 import cachemesh.spi.base.Value;
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 public class MeshCache<T> implements HasName {
+
+	private Logger logger = LogHelper.getLogger(this);
 
 	private final LocalCache<T> nearCache;
 
@@ -17,8 +24,18 @@ public class MeshCache<T> implements HasName {
 		this.network = network;
 	}
 
+	@Override
 	public String getName() {
 		return this.nearCache.getName();
+	}
+
+	public NodeCache resolveNodeCache(String key) {
+		var node = this.network.findNode(key);
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("find node for {}: {}", kv("key", key), LogHelper.kv("node", node));
+		}
+
+		return node.resolveNodeCache(getName());
 	}
 
 	public T getSingle(String key) {
@@ -27,7 +44,7 @@ public class MeshCache<T> implements HasName {
 		var nearValue = near.getSingle(key);
 		long version = (nearValue == null) ? 0 : nearValue.getVersion();
 
-		var nodeCache = this.network.resolveNodeCache(getName(), key);
+		var nodeCache = resolveNodeCache(key);
 		var r = nodeCache.getSingle(key, version);
 
 		switch(r.getStatus()) {
@@ -51,7 +68,7 @@ public class MeshCache<T> implements HasName {
 	}
 
 	public void putSingle(String key, T object) {
-		var nodeCache = this.network.resolveNodeCache(getName(), key);
+		var nodeCache = resolveNodeCache(key);
 
 		var cfg = this.nearCache.getConfig();
 		var bytes = cfg.getSerder().serialize(object);

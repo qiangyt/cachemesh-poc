@@ -11,9 +11,9 @@ import cachemesh.spi.base.Value;
 
 public interface LocalCache<T> extends AutoCloseable, HasName {
 
-	public static interface Builder<T> extends HasName {
+	public static interface Factory<T> extends HasName {
 
-		LocalCache<T> build(LocalCacheConfig<T> config);
+		LocalCache<T> create(LocalCacheConfig<T> config);
 
 	}
 

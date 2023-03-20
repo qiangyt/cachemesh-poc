@@ -2,11 +2,13 @@ package cachemesh.common.hash;
 
 import java.util.List;
 import java.util.TreeMap;
+import java.util.SortedMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cachemesh.common.Hashing;
+import cachemesh.common.err.InternalException;
 
 // originally, it is based on github.com/redis/jedis: redis.clients.jedis.providers.ShardedConnectionProvider
 // TODO: another choice is akka.routing.ConsistentHash
@@ -37,6 +39,8 @@ public class ConsistentHash<T extends ConsistentHash.Node> {
 
 	private final TreeMap<Long, VirtualNode<T>> ring = new TreeMap<>();
 
+	private final SortedMap<String, T> nodes = new TreeMap<>();
+
 	private final Hashing algo;
 
 	public ConsistentHash(Hashing algo) {
@@ -49,11 +53,18 @@ public class ConsistentHash<T extends ConsistentHash.Node> {
 	}
 
 	public void join(T node) {
-		LOG.info("node {} is joining", node);
-
 		boolean debug = LOG.isDebugEnabled();
-		var rg = this.ring;
+
+		if (debug) {
+			LOG.info("node {} is joining", node);
+		}
+
 		String nodeKey = node.getKey();
+		if (this.nodes.putIfAbsent(node.getKey(), node) != null) {
+			throw new InternalException("duplicated node with key=%s", nodeKey);
+		}
+
+		var rg = this.ring;
 
 		for (int i = 0; i < 160; i++) {
 			String virtualNodeKey = String.format("%s-%d", nodeKey, i);
@@ -89,8 +100,10 @@ public class ConsistentHash<T extends ConsistentHash.Node> {
 		return tail.get(tail.firstKey());
 	}
 
-	public T nodeFor(String key) {
-		return virtualNodeFor(key).getRealNode();
+	public T findNode(String key) {
+		long hash = hash(key);
+		var virtualNode = virtualNodeFor(hash);
+		return virtualNode.getRealNode();
 	}
 
 }

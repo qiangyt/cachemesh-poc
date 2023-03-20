@@ -19,14 +19,14 @@ public abstract class LocalCacheConfig<T> implements HasName {
 	private final Serderializer serder;
 
 	@lombok.Getter
-	private final LocalCache.Builder<T> builder;
+	private final LocalCache.Factory<T> factory;
 
 
-	public LocalCacheConfig(String name, Class<T> valueClass, Serderializer serder, LocalCache.Builder<T> builder) {
+	public LocalCacheConfig(String name, Class<T> valueClass, Serderializer serder, LocalCache.Factory<T> factory) {
 		this.name = name;
 		this.valueClass = valueClass;
 		this.serder = serder;
-		this.builder = builder;
+		this.factory = factory;
 	}
 
 	// public Class<T> getValueClass() {
@@ -42,7 +42,7 @@ public abstract class LocalCacheConfig<T> implements HasName {
 		r.put("name", getName());
 		r.put( "valueClass", getValueClass());
 		r.put( "serder", getSerder().toMap());
-		r.put( "builder", getBuilder().toMap());
+		r.put( "factory", getFactory().toMap());
 
 		return r;
 	}

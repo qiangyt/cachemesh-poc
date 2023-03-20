@@ -27,13 +27,13 @@ public class CaffeineCacheConfig<T> extends LocalCacheConfig<T> {
 	public static <T> CaffeineCacheConfig<T> defaultConfig(String name,
 													Class<T> valueClass,
 													Serderializer serder) {
-		var builder = CaffeineCacheBuilder.DEFAULT;
+		var factory = CaffeineCacheFactory.DEFAULT;
 
 		return (CaffeineCacheConfig<T>)builder()
 				.name(name)
 				.valueClass((Class<Object>)valueClass)
 				.serder(serder)
-				.builder(builder)
+				.factory(factory)
 				.maximumSize(DEFAULT_MAXIMUM_SIZE)
 				.expireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE)
 				.build();
@@ -42,7 +42,7 @@ public class CaffeineCacheConfig<T> extends LocalCacheConfig<T> {
 	public CaffeineCacheConfig(String name,
 							   Class<T> valueClass,
 							   Serderializer serder,
-							   CaffeineCacheBuilder<T> builder,
+							   CaffeineCacheFactory<T> builder,
 							   int maximumSize,
 							   Duration expireAfterWrite ) {
 		super(name, valueClass, serder, builder);
@@ -54,7 +54,7 @@ public class CaffeineCacheConfig<T> extends LocalCacheConfig<T> {
 	public CaffeineCacheConfig<T> buildAnother(String name, Class<T> valueClass) {
 		return new CaffeineCacheConfig<T>(name, valueClass,
 									   getSerder(),
-									   (CaffeineCacheBuilder<T>)getBuilder(),
+									   (CaffeineCacheFactory<T>)getFactory(),
 									   getMaximumSize(),
 									   getExpireAfterWrite()) ;
 	}

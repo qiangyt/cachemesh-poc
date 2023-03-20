@@ -56,7 +56,7 @@ public class LocalCacheManager<T> implements AutoCloseable, Mappable {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("cache not found, so build it: {}", LogHelper.kv("config", c));
 			}
-			return c.getBuilder().build(c);
+			return c.getFactory().create(c);
 		});
 		return (LocalCache<T>)r;
 	}

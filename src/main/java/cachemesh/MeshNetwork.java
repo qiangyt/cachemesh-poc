@@ -24,11 +24,11 @@ import cachemesh.common.util.LogHelper;
 import cachemesh.grpc.GrpcCacheManager;
 import cachemesh.grpc.GrpcClientBuilder;
 import cachemesh.grpc.GrpcConfig;
+import cachemesh.grpc.GrpcManager;
 import cachemesh.grpc.GrpcService;
 import cachemesh.lettuce.LettuceCacheManager;
 import cachemesh.lettuce.LettuceClientFactory;
 import cachemesh.lettuce.LettuceConfig;
-import cachemesh.side.SideCacheManager;
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.LocalCacheConfig;
 import cachemesh.spi.LocalCacheManager;
@@ -52,24 +52,15 @@ public class MeshNetwork implements AutoCloseable, HasName {
 
 	private final ConsistentHash<MeshNode> route;
 
-	private final SortedMap<String, MeshNode> nodes = new TreeMap<>();
-
-	private final Map<URL, GrpcService> grpcServices = new HashMap<>();
-
-	private final GrpcClientBuilder grpcClientBuilder = new GrpcClientBuilder();
+	private final GrpcManager grpcManager = new GrpcManager();
 
 	private final LettuceClientFactory lettuceClientFactory = new LettuceClientFactory();
 
-	private final int shutdownSeconds = 60;
-
-	@lombok.Getter
-	private boolean inShutdownHook;
-
-	@lombok.Getter
-	private boolean bootstrapped;
-
 	@lombok.Getter
 	private String name;
+
+	@lombok.Getter
+	private boolean bootstrapped = false;
 
 	public MeshNetwork(String name) {
 		this(name,
@@ -86,19 +77,6 @@ public class MeshNetwork implements AutoCloseable, HasName {
 		this.sideCacheDefaultConfig = sideCacheDefaultConfig;
 
 		this.route = new ConsistentHash<>(hashing);
-
-		this.bootstrapped = false;
-		this.inShutdownHook = false;
-	}
-
-	@Override
-	public String toString() {
-		return this.nodes.values().toArray().toString();
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T> MeshCache<T> getCache(String cacheName) {
-		return (MeshCache<T>) this.caches.get(cacheName);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -114,10 +92,10 @@ public class MeshNetwork implements AutoCloseable, HasName {
 	}
 
 	public MeshNode addLocalNode(URL url) {
-		var grpcConfig = GrpcConfig.from(url);
 		var cacheManager = new SideCacheManager(new LocalCacheManager<byte[]>(this.sideCacheDefaultConfig), this.hashing);
-		var grpcService = new GrpcService(grpcConfig, cacheManager);
-		this.grpcServices.put(url, grpcService);
+
+		var grpcConfig = GrpcConfig.from(url);
+		this.grpcManager.createService(grpcConfig, cacheManager);
 
 		return addNode(new MeshNode(false, url, cacheManager));
 	}
@@ -139,7 +117,7 @@ public class MeshNetwork implements AutoCloseable, HasName {
 
 	protected MeshNode addGrpcNode(URL url) {
 		var grpcConfig = GrpcConfig.from(url);
-		var grpcClient = grpcClientBuilder.build(grpcConfig);
+		var grpcClient = this.grpcManager.buildClient(grpcConfig);
 		var cacheManager = new GrpcCacheManager(grpcClient);
 
 		return addNode(new MeshNode(true, url, cacheManager));
@@ -158,80 +136,12 @@ public class MeshNetwork implements AutoCloseable, HasName {
 	}
 
 	protected MeshNode addNode(MeshNode node) {
-		if (this.nodes.putIfAbsent(node.getKey(), node) != null) {
-			throw new InternalException("duplicated node with key=%s", node.getKey());
-		}
-
 		this.route.join(node);
 		return node;
 	}
 
 	public MeshNode findNode(String key) {
-		long hash = this.route.hash(key);
-		var virtualNode = this.route.virtualNodeFor(hash);
-		return virtualNode.getRealNode();
-	}
-
-	public NodeCache resolveNodeCache(String cacheName, String key) {
-		var node = findNode(key);
-		this.logger.info("find node for key={}: {}", key, node);
-
-		var nodeCacheMgr = node.getNodeCacheManager();
-		return nodeCacheMgr.resolve(cacheName);
-	}
-
-	void shutdownGrpcServers() {
-
-		logShutdown("grpc service shutdown...");
-
-		var grpcServices = this.grpcServices.values();
-		var latch = new CountDownLatch(grpcServices.size());
-
-		grpcServices.forEach(grpcService -> {
-			new Thread(() -> {
-				try {
-					grpcService.close();
-				} catch (Exception e) {
-					logShutdownError(e);
-				}
-			}).start();
-			latch.countDown();
-		});
-
-		try {
-			latch.await(this.shutdownSeconds, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			logShutdownError(e);
-		}
-
-		logShutdown("grpc service shutdown: done");
-	}
-
-	public synchronized void bootstrap() {
-		this.grpcServices.values().forEach(GrpcService::launch);
-
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			@Override
-			public void run() {
-				MeshNetwork.this.inShutdownHook = true;
-				try {
-					close();
-				} catch (Exception ex) {
-					ex.printStackTrace(System.err);
-				}
-			}
-		}));
-	}
-
-	public void blockUntilTermination(boolean forever) {
-		this.grpcServices.values().forEach((grpcService) -> {
-			try {
-				grpcService.awaitTermination(forever);
-			} catch (InterruptedException ex) {
-				// logShutdown("mesh network shutdown...");
-				ex.printStackTrace(System.err);
-			}
-		});
+		return this.route.findNode(key);
 	}
 
 	@Override
@@ -239,33 +149,21 @@ public class MeshNetwork implements AutoCloseable, HasName {
 		if (this.bootstrapped) {
 			throw new InternalException("not bootstrapped");
 		}
-		logShutdown("mesh network shutdown...");
 
-		shutdownGrpcServers();
+		this.logger.info("mesh network shutdown...");
 
-		logShutdown("nearcache shutdown: ...");
+		this.grpcManager.shutdown();
+
+		this.logger.info("nearcache shutdown: ...");
 		this.nearCacheManager.close();
-		logShutdown("nearcache shutdown: done");
+		this.logger.info("nearcache shutdown: done");
 
 		this.bootstrapped = false;
-		logShutdown("mesh network shutdown: done");
+		this.logger.info("mesh network shutdown: done");
 	}
 
-	void logShutdownError(Exception err) {
-		if (this.inShutdownHook) {
-			err.printStackTrace(System.err);
-		} else {
-			this.logger.error("shutdown error", err);
-		}
-	}
+	public synchronized void bootstrap() {
 
-	void logShutdown(String messageFormat, Object... args) {
-		String msg = String.format(messageFormat, args);
-		if (this.inShutdownHook) {
-			System.err.println(msg);
-		} else {
-			this.logger.info(msg);
-		}
 	}
 
 }

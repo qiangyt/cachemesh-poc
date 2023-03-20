@@ -2,11 +2,18 @@ package cachemesh;
 
 import java.net.URL;
 
+import org.slf4j.Logger;
+
+import cachemesh.common.HasName;
 import cachemesh.common.hash.ConsistentHash;
+import cachemesh.common.util.LogHelper;
+import cachemesh.spi.NodeCache;
 import cachemesh.spi.NodeCacheManager;
 
 @lombok.Getter
-public class MeshNode implements ConsistentHash.Node {
+public class MeshNode implements HasName, ConsistentHash.Node {
+
+	protected final Logger logger = LogHelper.getLogger(this);
 
 	private final boolean remote;
 	private final URL url;
@@ -21,6 +28,16 @@ public class MeshNode implements ConsistentHash.Node {
 		this.key = url.toExternalForm();
 		this.hashCode = this.key.hashCode();
 		this.nodeCacheManager = nodeCacheManager;
+	}
+
+	public NodeCache resolveNodeCache(String cacheName) {
+		var mgr = getNodeCacheManager();
+		return mgr.resolve(cacheName);
+	}
+
+	@Override
+	public String getName() {
+		return toString();
 	}
 
 	@Override

@@ -8,8 +8,8 @@
             "type": "java",
             "name": "Main",
             "request": "launch",
-            "mainClass": "cachemeshpoc.Main",
-            "projectName": "cachemeshpoc",
+            "mainClass": "cachemesh.Main",
+            "projectName": "cachemesh",
             "args": ["true", "grpc://localhost:8001"]
         }
     ]

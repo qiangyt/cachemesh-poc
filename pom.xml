@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>qiangyt</groupId>
-	<artifactId>cachemeshpoc</artifactId>
+	<artifactId>cachemesh</artifactId>
 	<version>0.0.1</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 
@@ -19,6 +19,7 @@
 		<protobuf.version>3.21.7</protobuf.version>
 		<protoc.version>3.21.7</protoc.version>
 		<slf4j.version>2.0.6</slf4j.version>
+		<logback.version>1.4.5</logback.version>
 		<caffeine.version>3.1.4</caffeine.version>
 		<jackson.version>2.14.2</jackson.version>
 	</properties>
@@ -49,7 +50,7 @@
 						<manifest>-->
 							<!--<addClasspath>true</addClasspath>-->
 							<!--<classpathPrefix>lib/</classpathPrefix>-->
-							<!--<mainClass>cachemeshpoc.Main</mainClass>
+							<!--<mainClass>cachemesh.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
@@ -193,14 +194,36 @@
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-access</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>1.4.5</version>
+			<version>${logback.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.4.5</version>
+			<version>${logback.version}</version>
+			<!-- Use runtime scope if the project does not have any compile-time usage of logback,
+				such as implementations of Appender, Encoder, Layout, TurboFilter, etc
+			<scope>runtime</scope>
+			-->
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder -->
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>7.3</version>
+			<!-- Use runtime scope if the project does not have any compile-time usage of logstash-logback-encoder,
+				such as usage of StructuredArguments/Markers or implementations such as
+				JsonProvider, AppenderListener, JsonFactoryDecorator, JsonGeneratorDecorator, etc
+			<scope>runtime</scope>
+			-->
 		</dependency>
 
 		<dependency>

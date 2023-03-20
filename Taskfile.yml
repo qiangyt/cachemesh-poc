@@ -3,7 +3,7 @@ version: '3'
 env:
   VERSION:
     sh: git describe --tags --always # or: git log -n 1 --format=%h
-  BINARY_TITLE: cachemeshpoc
+  BINARY_TITLE: cachemesh
 
 output: prefixed
 
@@ -32,8 +32,8 @@ tasks:
     deps:
       - java-build
     cmds:
-      #- java -cp $(mvn dependency:build-classpath | grep '\.jar'):target/cachemeshpoc-0.0.1-jar cachemeshpoc.Main {{.CLI_ARGS}}
-      - java -cp target/cachemeshpoc-0.0.1-jar-with-dependencies.jar cachemeshpoc.Main {{.CLI_ARGS}}
+      - java -cp $(mvn dependency:build-classpath | grep '\.jar'):target/cachemesh-0.0.1-jar cachemesh.Main {{.CLI_ARGS}}
+      #- java -cp target/cachemesh-0.0.1-jar-with-dependencies.jar cachemesh.Main {{.CLI_ARGS}}
 
 
   run:

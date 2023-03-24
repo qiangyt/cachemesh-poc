@@ -35,7 +35,7 @@ public class MeshCache<T> implements HasName {
 			this.logger.debug("find node for {}: {}", kv("key", key), LogHelper.kv("node", node));
 		}
 
-		return node.resolveNodeCache(getName());
+		return node.getNodeCache();
 	}
 
 	public T getSingle(String key) {
@@ -45,7 +45,7 @@ public class MeshCache<T> implements HasName {
 		long version = (nearValue == null) ? 0 : nearValue.getVersion();
 
 		var nodeCache = resolveNodeCache(key);
-		var r = nodeCache.getSingle(key, version);
+		var r = nodeCache.getSingle(getName(), key, version);
 
 		switch(r.getStatus()) {
 			case OK: {
@@ -72,7 +72,7 @@ public class MeshCache<T> implements HasName {
 
 		var cfg = this.nearCache.getConfig();
 		var bytes = cfg.getSerder().serialize(object);
-		long version = nodeCache.putSingle(key, bytes);
+		long version = nodeCache.putSingle(getName(), key, bytes);
 		this.nearCache.putSingle(key, new Value<>(object, version));
 	}
 

@@ -4,28 +4,41 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 import org.slf4j.LoggerFactory;
 
 import cachemesh.common.Closer;
 import cachemesh.common.Mappable;
+import cachemesh.common.err.InternalException;
 import cachemesh.common.HasName;
 import cachemesh.common.util.LogHelper;
 
 import org.slf4j.Logger;
 
-public class LocalCacheManager<T> implements AutoCloseable, Mappable {
+@ThreadSafe
+public class CommonCacheManager<T, K extends CommonCache<T, C>, C extends CommonCacheConfig<T>>
+	implements AutoCloseable, Mappable {
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final Map<String, LocalCache<T>> caches = new ConcurrentHashMap<>();
+	private final Map<String, K> caches = new ConcurrentHashMap<>();
 
-	private final Map<String, LocalCacheConfig<T>> configs = new ConcurrentHashMap<>();
+	private final Map<String, C> configs = new ConcurrentHashMap<>();
 
 	@lombok.Getter
-	private final LocalCacheConfig<T> defaultConfig;
+	private final C defaultConfig;
 
-	public LocalCacheManager(LocalCacheConfig<T> defaultConfig) {
+	public CommonCacheManager(C defaultConfig) {
 		this.defaultConfig = defaultConfig;
+	}
+
+	public void addConfig(C config) {
+		String name = config.getName();
+		if (this.configs.containsKey(name)) {
+			throw new InternalException("duplicated configuration %s", name);
+		}
+		this.configs.put(name, config);
 	}
 
 	/*@SuppressWarnings("all")
@@ -50,24 +63,30 @@ public class LocalCacheManager<T> implements AutoCloseable, Mappable {
 		this.caches.put(name, newCache);
 	}*/
 
-	public LocalCache<T> resolve(String name, Class<T> valueClass) {
-		var r = this.caches.computeIfAbsent(name, k -> {
+
+	public K get(String name) {
+		return this.caches.get(name);
+	}
+
+	@SuppressWarnings("unchecked")
+	public K resolve(String name, Class<T> valueClass) {
+		return this.caches.computeIfAbsent(name, k -> {
 			var c = resolveConfig(name, valueClass);
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("cache not found, so build it: {}", LogHelper.kv("config", c));
 			}
-			return c.getFactory().create(c);
+			return (K)c.getFactory().create(c);
 		});
-		return (LocalCache<T>)r;
 	}
 
-	public LocalCacheConfig<T> resolveConfig(String name, Class<T> valueClass) {
-		return this.configs.computeIfAbsent(name, k -> {
+	@SuppressWarnings("unchecked")
+	public C resolveConfig(String name, Class<T> valueClass) {
+		return this.configs.computeIfAbsent(name, n -> {
 			var c = this.defaultConfig.buildAnother(name, valueClass);
 			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("cache configuration not found, so build default one: {}", LogHelper.kv("config", c));
+				this.logger.debug("cache configuration not found, so try default one: {}", LogHelper.kv("config", c));
 			}
-			return c;
+			return (C)c;
 		});
 	}
 

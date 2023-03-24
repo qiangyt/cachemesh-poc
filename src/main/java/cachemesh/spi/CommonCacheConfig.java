@@ -3,37 +3,33 @@ package cachemesh.spi;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.Serderializer;
 import cachemesh.common.HasName;
+import cachemesh.common.Serderializer;
 
 @lombok.Getter
 @lombok.experimental.SuperBuilder
-public abstract class LocalCacheConfig<T> implements HasName {
+public class CommonCacheConfig<T> implements HasName {
 
-	@lombok.Getter
 	private final String name;
 
 	private final Class<T> valueClass;
 
-	@lombok.Getter
 	private final Serderializer serder;
 
 	@lombok.Getter
-	private final LocalCache.Factory<T> factory;
+	private final CommonCacheFactory factory;
 
-
-	public LocalCacheConfig(String name, Class<T> valueClass, Serderializer serder, LocalCache.Factory<T> factory) {
+	public CommonCacheConfig(String name, Class<T> valueClass, Serderializer serder, CommonCacheFactory factory) {
 		this.name = name;
 		this.valueClass = valueClass;
 		this.serder = serder;
 		this.factory = factory;
 	}
 
-	// public Class<T> getValueClass() {
-	// 	return this.valueClass;
-	// }
-
-	public abstract LocalCacheConfig<T> buildAnother(String name, Class<T> valueClass);
+	@SuppressWarnings("unchecked")
+	public <T2, C2 extends CommonCacheConfig<T2>> C2 buildAnother(String name, Class<T2> valueClass) {
+		return (C2)new CommonCacheConfig<T2>(name, valueClass, getSerder(), getFactory());
+	}
 
 	@Override
 	public Map<String, Object> toMap() {

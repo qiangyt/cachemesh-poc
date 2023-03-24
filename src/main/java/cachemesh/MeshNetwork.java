@@ -13,21 +13,17 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 
 import cachemesh.caffeine.CaffeineCacheConfig;
-import cachemesh.common.Hashing;
 import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.hash.ConsistentHash;
+import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
 import cachemesh.common.jackson.JacksonSerderializer;
 import cachemesh.common.url.Handler;
 import cachemesh.common.util.LogHelper;
-import cachemesh.grpc.GrpcCacheManager;
-import cachemesh.grpc.GrpcClientBuilder;
 import cachemesh.grpc.GrpcConfig;
-import cachemesh.grpc.GrpcManager;
 import cachemesh.grpc.GrpcService;
-import cachemesh.lettuce.LettuceCacheManager;
-import cachemesh.lettuce.LettuceClientFactory;
+import cachemesh.grpc.GrpcServerManager;
 import cachemesh.lettuce.LettuceConfig;
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.LocalCacheConfig;
@@ -44,46 +40,31 @@ public class MeshNetwork implements AutoCloseable, HasName {
 
 	private final ConcurrentHashMap<String, MeshCache<?>> caches = new ConcurrentHashMap<>();
 
-	private final Hashing hashing;
+	private final MeshNetworkConfig config;
 
 	private final LocalCacheManager<Object> nearCacheManager;
 
-	private final LocalCacheConfig<byte[]> sideCacheDefaultConfig;
+	private final LocalCacheManager<byte[]> sideCacheManager;
 
 	private final ConsistentHash<MeshNode> route;
-
-	private final GrpcManager grpcManager = new GrpcManager();
-
-	private final LettuceClientFactory lettuceClientFactory = new LettuceClientFactory();
-
-	@lombok.Getter
-	private String name;
 
 	@lombok.Getter
 	private boolean bootstrapped = false;
 
-	public MeshNetwork(String name) {
-		this(name,
-			 MurmurHash.DEFAULT,
-			 CaffeineCacheConfig.defaultConfig(name + "-local", Object.class, JacksonSerderializer.DEFAULT),
-			 CaffeineCacheConfig.defaultConfig(name + "-side", byte[].class, JacksonSerderializer.DEFAULT));
-	}
+	public MeshNetwork(MeshNetworkConfig config) {
+		this.config = config;
 
-	public MeshNetwork(String name, Hashing hashing, LocalCacheConfig<Object> localCacheDefaultConfig, LocalCacheConfig<byte[]> sideCacheDefaultConfig) {
-		this.name = name;
+		this.nearCacheManager = new LocalCacheManager<>(config.getNearCacheConfig());
+		this.sideCacheManager = new LocalCacheManager<>(config.getSideCacheDefaultConfig());
 
-		this.hashing = hashing;
-		this.nearCacheManager = new LocalCacheManager<>(localCacheDefaultConfig);
-		this.sideCacheDefaultConfig = sideCacheDefaultConfig;
-
-		this.route = new ConsistentHash<>(hashing);
+		this.route = new ConsistentHash<>(config.getHashing());
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
 		return (MeshCache<T>) this.caches.computeIfAbsent(cacheName, k -> {
 			var nearCache = (LocalCache<T>)this.nearCacheManager.resolve(cacheName, (Class<Object>)valueClass);
-			return new MeshCache<T>(nearCache, this);
+			return new MeshCache<>(nearCache, this);
 		});
 	}
 
@@ -92,10 +73,11 @@ public class MeshNetwork implements AutoCloseable, HasName {
 	}
 
 	public MeshNode addLocalNode(URL url) {
+		var nodeCache = this.sideCacheManager.resolve(null, byte[].class);
 		var cacheManager = new SideCacheManager(new LocalCacheManager<byte[]>(this.sideCacheDefaultConfig), this.hashing);
 
 		var grpcConfig = GrpcConfig.from(url);
-		this.grpcManager.createService(grpcConfig, cacheManager);
+		var grpcServer = this.config.getGrpcManager().resolve(grpcConfig);
 
 		return addNode(new MeshNode(false, url, cacheManager));
 	}

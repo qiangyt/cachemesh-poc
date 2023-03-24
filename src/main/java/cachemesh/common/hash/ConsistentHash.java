@@ -7,7 +7,6 @@ import java.util.SortedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cachemesh.common.Hashing;
 import cachemesh.common.err.InternalException;
 
 // originally, it is based on github.com/redis/jedis: redis.clients.jedis.providers.ShardedConnectionProvider

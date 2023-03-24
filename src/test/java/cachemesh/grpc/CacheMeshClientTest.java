@@ -17,6 +17,8 @@ import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 
+import cachemesh.grpc.client.GrpcClient;
+
 @RunWith(JUnit4.class)
 public class CacheMeshClientTest {
 

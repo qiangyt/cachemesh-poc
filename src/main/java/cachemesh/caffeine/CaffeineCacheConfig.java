@@ -5,11 +5,11 @@ import java.util.Map;
 
 import cachemesh.common.Serderializer;
 import cachemesh.common.jackson.JacksonSerderializer;
-import cachemesh.spi.LocalCacheConfig;
+import cachemesh.spi.CommonCacheConfig;
 
 @lombok.Getter
 @lombok.experimental.SuperBuilder
-public class CaffeineCacheConfig<T> extends LocalCacheConfig<T> {
+public class CaffeineCacheConfig<T> extends CommonCacheConfig<T> {
 
 	public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
 	private final int maximumSize;
@@ -42,21 +42,21 @@ public class CaffeineCacheConfig<T> extends LocalCacheConfig<T> {
 	public CaffeineCacheConfig(String name,
 							   Class<T> valueClass,
 							   Serderializer serder,
-							   CaffeineCacheFactory<T> builder,
+							   CaffeineCacheFactory factory,
 							   int maximumSize,
 							   Duration expireAfterWrite ) {
-		super(name, valueClass, serder, builder);
+		super(name, valueClass, serder, factory);
 		this.maximumSize = maximumSize;
 		this.expireAfterWrite = expireAfterWrite;
 	}
 
 	@Override
-	public CaffeineCacheConfig<T> buildAnother(String name, Class<T> valueClass) {
-		return new CaffeineCacheConfig<T>(name, valueClass,
-									   getSerder(),
-									   (CaffeineCacheFactory<T>)getFactory(),
+	@SuppressWarnings("unchecked")
+	public <T2, C2 extends CommonCacheConfig<T2>> C2 buildAnother(String name, Class<T2> valueClass) {
+		return (C2)new CaffeineCacheConfig<>(name, valueClass,  getSerder(),
+									   (CaffeineCacheFactory)getFactory(),
 									   getMaximumSize(),
-									   getExpireAfterWrite()) ;
+									   getExpireAfterWrite());
 	}
 
 	@Override

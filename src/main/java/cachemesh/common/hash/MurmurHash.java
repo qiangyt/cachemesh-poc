@@ -14,10 +14,9 @@ package cachemesh.common.hash;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import cachemesh.common.Hashing;
-
 /**
  * Copy of github.com/redis/jedis: redis.clients.jedis.util.MurmurHash
+ *
  * This is a very fast, non-cryptographic hash suitable for general hash-based lookup. See
  * http://murmurhash.googlepages.com/ for more details. <br>
  * <p>
@@ -146,5 +145,12 @@ public class MurmurHash implements Hashing {
   public long hash(byte[] key) {
     return hash64A(key, 0x1234ABCD);
   }
+
+
+	@Override
+  public long hash(ByteBuffer buf) {
+		return hash(buf,0x1234ABCD);
+	}
+
 
 }

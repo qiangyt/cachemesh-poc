@@ -1,92 +1,25 @@
 package cachemesh.common.jackson;
 
-import java.io.IOException;
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import cachemesh.common.err.RequestException;
-import cachemesh.common.util.StringHelper;
-
-@lombok.Getter
 public class JacksonHelper {
 
-	public static final JacksonHelper DEFAULT = new JacksonHelper(buildMapper());
+  public static final Jackson JACKSON = Jackson.DEFAULT;
 
-	public final ObjectMapper mapper;
+  public static String pretty(Object object) {
+    return JACKSON.pretty(object);
+  }
 
-	public JacksonHelper(ObjectMapper mapper) {
-		this.mapper = mapper;
-	}
+  public static String to(Object object) {
+    return JACKSON.toString(object, false);
+  }
 
-	public static ObjectMapper buildMapper() {
-		var r = new ObjectMapper();
-		initMapper(r);
-		return r;
-	}
+  public static <T> T from(String json, Class<T> clazz) {
+    return JACKSON.from(json, clazz);
+  }
 
-	public static void initMapper(ObjectMapper mapper) {
-		var dateModule = new SimpleModule();
-		dateModule.addSerializer(Date.class, new DateSerializer());
-		dateModule.addDeserializer(Date.class, new DateDeserialize());
-		mapper.registerModule(dateModule);
+	public static <T> T from(String json, TypeReference<T> typeReference) {
+    return JACKSON.from(json, typeReference);
+  }
 
-		mapper.setSerializationInclusion(Include.NON_NULL);
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-		mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-		mapper.configure(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS, true);
-	}
-
-	public <T> T from(String text, Class<T> clazz) {
-		if (StringHelper.isBlank(text)) {
-			return null;
-		}
-
-		try {
-			return getMapper().readValue(text, clazz);
-		} catch (IOException e) {
-			throw new RequestException(e);
-		}
-	}
-
-	public <T> T from(String text, TypeReference<T> typeReference) {
-		if (StringHelper.isBlank(text)) {
-			return null;
-		}
-
-		try {
-			return getMapper().readValue(text, typeReference);
-		} catch (IOException e) {
-			throw new RequestException(e);
-		}
-	}
-
-	public String pretty(Object object) {
-		return to(object, true);
-	}
-
-	public String to(Object object) {
-		return to(object, false);
-	}
-
-	public String to(Object object, boolean pretty) {
-		if (object == null) {
-			return null;
-		}
-
-		try {
-			if (pretty) {
-				return getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(object);
-			}
-			return getMapper().writeValueAsString(object);
-		} catch (IOException e) {
-			throw new RequestException(e);
-		}
-	}
 }

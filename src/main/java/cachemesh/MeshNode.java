@@ -8,7 +8,6 @@ import cachemesh.common.HasName;
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.util.LogHelper;
 import cachemesh.spi.NodeCache;
-import cachemesh.spi.NodeCacheManager;
 
 @lombok.Getter
 public class MeshNode implements HasName, ConsistentHash.Node {
@@ -19,20 +18,14 @@ public class MeshNode implements HasName, ConsistentHash.Node {
 	private final URL url;
 	private final String key;
 	private final int hashCode;
+	private final NodeCache nodeCache;
 
-	private final NodeCacheManager nodeCacheManager;
-
-	public MeshNode(boolean remote, URL url, NodeCacheManager nodeCacheManager) {
+	public MeshNode(boolean remote, URL url, NodeCache nodeCache) {
 		this.remote = remote;
 		this.url = url;
 		this.key = url.toExternalForm();
 		this.hashCode = this.key.hashCode();
-		this.nodeCacheManager = nodeCacheManager;
-	}
-
-	public NodeCache resolveNodeCache(String cacheName) {
-		var mgr = getNodeCacheManager();
-		return mgr.resolve(cacheName);
+		this.nodeCache = nodeCache;
 	}
 
 	@Override

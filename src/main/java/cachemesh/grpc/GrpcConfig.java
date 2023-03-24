@@ -40,6 +40,7 @@ public class GrpcConfig implements HasName {
 		var r = new HashMap<String, Object>();
 
 		r.put("name", getName());
+		r.put("target", getTarget());
 		r.put("host", getHost());
 		r.put("port", getPort());
 		r.put("serviceShutdownSeconds", getServiceShutdownSeconds());

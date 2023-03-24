@@ -48,6 +48,10 @@ public class Closer {
 	}
 
 	public static void closeSilently(AutoCloseable closeable, String nameOfClosable, Logger logger) {
+		if (closeable == null) {
+			return;
+		}
+
 		boolean debug = logger.isDebugEnabled();
 
 		StructuredArgument closeableLogKv = null;

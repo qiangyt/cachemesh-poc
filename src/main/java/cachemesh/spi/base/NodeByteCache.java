@@ -49,10 +49,7 @@ public class NodeByteCache implements NodeCache {
 		var byteCache = resolveByteCache(cacheName);
 
 		var r = byteCache.putSingle(key, (k, entry) -> {
-			long version;
-			if (entry != null) {
-				version = entry.getVersion() + 1;
-			}
+			long version = (entry == null) ? 1 : entry.getVersion() + 1;
 			return new Value<byte[]>(entry.getData(), version);
 		});
 

@@ -3,6 +3,7 @@ package cachemesh.spi.base;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -12,63 +13,58 @@ import cachemesh.spi.ByteCache;
 import cachemesh.spi.NodeCache;
 import cachemesh.spi.ObjectCache;
 import cachemesh.spi.ObjectCacheConfig;
+import cachemesh.spi.ObjectCacheManager;
 
 
 @ThreadSafe
-public class NodeObjectCache<T> implements NodeCache, ObjectCache<T> {
+public class NodeObjectCache<T> implements NodeCache {
 
-	private final ByteCache byteCache;
+	private final ObjectCacheManager<T> objectCacheManager;
 
-	private final ObjectCache<T> objectCache;
-
-	public NodeObjectCache(ByteCache byteCache, ObjectCache<T> objectCache) {
-		this.byteCache = byteCache;
-		this.objectCache = objectCache;
+	public NodeObjectCache(ObjectCacheManager<T> objectCacheManager) {
+		this.objectCacheManager = objectCacheManager;
 	}
 
 	@Override
 	public String getName() {
-		if (this.byteCache != null) {
-			return this.byteCache.getName();
-		}
-		if (this.objectCache != null) {
-			return this.objectCache.getName();
-		}
-		return "unknown";
+		return this.objectCacheManager.getName();
 	}
 
 	@Override
 	public void close() throws Exception {
-		Closer.closeSilently(this.byteCache);
-		Closer.closeSilently(this.objectCache);
+		this.objectCacheManager.close();
+	}
+
+	ObjectCache<T> resolveObjectCache(String cacheName, Class<T> valueClass) {
+		return this.objectCacheManager.resolve(cacheName, valueClass);
 	}
 
 	@Override
 	public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getSingle'");
+		var objCache = resolveObjectCache(cacheName);
+
+		var v = objCache.getSingle(key, version);
+		if (v == null) {
+			return (GetResult<byte[]>)GetResult.NOT_FOUND;
+		}
+
+		if (v.getVersion() == version) {
+			return (GetResult<byte[]>)GetResult.NO_CHANGE;
+		}
+
+		return new GetResult<>(ResultStatus.OK, v.getData(), v.getVersion());
 	}
 
 	@Override
 	public long putSingle(String cacheName, String key, byte[] value) {
-		if (this.byteCache != null) {
-			return this.byteCache.getName();
-		}
-	}
+		var byteCache = resolveByteCache(cacheName);
 
-	@Override
-	public ObjectCacheConfig<T> getConfig() {
-		return this.objectCache.getConfig();
-	}
+		var r = byteCache.putSingle(key, (k, entry) -> {
+			long version = (entry == null) ? 1 : entry.getVersion() + 1;
+			return new Value<byte[]>(entry.getData(), version);
+		});
 
-	@Override
-	public Value<T> getSingle(String key) {
-		return this.objectCache.getSingle(key);
-	}
-
-	@Override
-	public void putSingle(String key, Value<T> value) {
-		objectCache.putSingle(key, value);
+		return r.getVersion();
 	}
 
 

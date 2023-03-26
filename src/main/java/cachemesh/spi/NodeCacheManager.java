@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 import cachemesh.spi.base.NodeByteCache;
-import cachemesh.spi.base.NodeGenericCache;
+import cachemesh.spi.base.NodeObjectCache;
 
 
 @ThreadSafe
@@ -50,7 +50,7 @@ public class NodeCacheManager implements AutoCloseable {
 		if (bkCacheCfg.isCacheBytes()) {
 
 		}
-		return new NodeGenericCache(bkCache);
+		return new NodeObjectCache(bkCache);
 	}
 
 	@Override

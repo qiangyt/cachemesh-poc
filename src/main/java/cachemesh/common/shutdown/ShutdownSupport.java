@@ -13,7 +13,7 @@ public class ShutdownSupport {
 
 	public static final ShutdownSupport DEFAULT = new ShutdownSupport();
 
-	private final SortedMap<String, ShutdownItem> items = new TreeMap<>();
+	private SortedMap<String, ShutdownItem> items = new TreeMap<>();
 
 	@lombok.Getter
 	private int maxTimeoutSeconds;
@@ -22,8 +22,6 @@ public class ShutdownSupport {
 
 	private final ShutdownLogger logger = new ShutdownLogger(ShutdownSupport.class);
 
-	protected ShutdownSupport() {
-	}
 
 	public void register(Shutdownable target) {
 		register(target, DEFAULT_TIMEOUT_SECONDS);
@@ -121,6 +119,7 @@ public class ShutdownSupport {
 			throw new IllegalStateException(name + " is not ever registered");
 		}
 		if (item.isShutdowned()) {
+			this.items.remove(name);
 			throw new IllegalStateException(name + " is already shutdowned");
 		}
 
@@ -146,6 +145,8 @@ public class ShutdownSupport {
 				itemLogger.error(e, "error occurred when joining the interrupted");
 			}
 		}
+
+		this.items.remove(name);
 	}
 
 
@@ -153,7 +154,7 @@ public class ShutdownSupport {
 		this.logger.info("Shutdown begin");
 
 		var currItems = new ArrayList<>(this.items.values());
-		currItems.removeIf(ShutdownItem::isShutdownNeeded);
+		currItems.removeIf(item -> !item.isShutdownNeeded());
 
 		var latch = new CountDownLatch(currItems.size());
 
@@ -183,15 +184,23 @@ public class ShutdownSupport {
 		for (int i = 0; i < currItems.size(); i++ ) {
 			var item = currItems.get(i);
 			if (item.isShutdowned() == false) {
-				var itemLogger = item.getLogger();
-				itemLogger.info("waiting for being interrupted for shutdown");
+				var iLogger = item.getLogger();
+				iLogger.info("waiting for being interrupted for shutdown");
 				try {
 					threads.get(i).join(100);
 				} catch (InterruptedException e) {
-					itemLogger.error(e, "error occurred when joining the interrupted");
+					iLogger.error(e, "error occurred when joining the interrupted");
 				}
 			}
 		}
+
+		var newItems = new TreeMap<String, ShutdownItem>();
+		currItems.forEach(item -> {
+			if (item.isShutdownNeeded()) {
+				newItems.put(item.getTarget().getName(), item);
+			}
+		});
+		this.items = newItems;
 
 		this.logger.info("Shutdown finished");
 	}

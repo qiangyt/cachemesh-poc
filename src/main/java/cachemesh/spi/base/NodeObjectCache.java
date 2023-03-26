@@ -8,11 +8,11 @@ import cachemesh.spi.NodeCache;
 
 
 @ThreadSafe
-public class NodeGenericCache<T, C extends LocalCacheConfig<T>> implements NodeCache {
+public class NodeObjectCache<T, C extends LocalCacheConfig<T>> implements NodeCache {
 
 	private final LocalCache<T,Value<T>,C> backend;
 
-	public NodeGenericCache(LocalCache<T,Value<T>,C> backend) {
+	public NodeObjectCache(LocalCache<T,Value<T>,C> backend) {
 		this.backend = backend;
 	}
 

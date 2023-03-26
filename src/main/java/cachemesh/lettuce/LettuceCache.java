@@ -55,8 +55,11 @@ public class LettuceCache implements NodeCache {
 
 	@Override
 	public long putSingle(String key, byte[] value) {
+		var redisKey = generateRedisKey(getName(), key);
+
 		var cmds = syncCommand();
-		cmds.set(key, value);
+		cmds.set(redisKey, value);
+
 		return 0;
 	}
 }

@@ -12,7 +12,7 @@ import java.util.TreeMap;
 
 import org.slf4j.Logger;
 
-import cachemesh.caffeine.CaffeineCacheConfig;
+import cachemesh.caffeine.CaffeineConfig;
 import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.hash.ConsistentHash;

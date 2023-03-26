@@ -1,15 +1,15 @@
 package cachemesh.spi;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import cachemesh.common.HasName;
-import cachemesh.spi.base.LocalCacheEntry;
+import cachemesh.common.shutdown.Shutdownable;
 import cachemesh.spi.base.Value;
 
-public interface CommonCache<T, C extends CommonCacheConfig<T>> extends AutoCloseable, HasName {
+public interface LocalCache
+	<T, V extends Value<T>, C extends LocalCacheConfig<T>>
+	extends Shutdownable {
 
 	@Override
 	default Map<String, Object> toMap() {
@@ -29,11 +29,11 @@ public interface CommonCache<T, C extends CommonCacheConfig<T>> extends AutoClos
 
 	//void invalidateMultiple(Collection<String> keys);
 
-	Value<T> getSingle(String key, long version);
+	V getSingle(String key, long version);
 
 	//Map<String, Value<T>> getMultiple(Collection<String> keys);
 
-	Value<T> putSingle(String key, BiFunction<String, Value<T>, Value<T>> mapper);
+	V putSingle(String key, BiFunction<String, V, V> mapper);
 
 	//void putMultiple(Collection<LocalCacheEntry<T>> entries);
 

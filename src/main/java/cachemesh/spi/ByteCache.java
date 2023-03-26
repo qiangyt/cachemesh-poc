@@ -1,6 +1,9 @@
 package cachemesh.spi;
 
-public interface ByteCache extends CommonCache<byte[], ByteCacheConfig> {
+import cachemesh.spi.base.Value;
+
+public interface ByteCache
+	extends LocalCache<byte[], Value<byte[]>, ByteCacheConfig> {
 
 
 }

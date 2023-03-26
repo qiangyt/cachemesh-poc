@@ -1,59 +1,32 @@
 package cachemesh.grpc;
 
-import cachemesh.common.util.LogHelper;
 import cachemesh.spi.NodeCache;
 import cachemesh.spi.base.GetResult;
-
-import io.grpc.ManagedChannel;
-import io.grpc.Grpc;
-import io.grpc.InsecureChannelCredentials;
-
-import java.util.concurrent.TimeUnit;
-
-import static net.logstash.logback.argument.StructuredArguments.kv;
-import org.slf4j.Logger;
 
 import com.google.protobuf.ByteString;
 
 
 public class GrpcCache implements NodeCache {
 
-	private final Logger logger;
-
-	@lombok.Getter
-	private final GrpcConfig config;
-
-	private final ManagedChannel channel;
+	private final GrpcClient client;
 
 	private final CacheMeshGrpc.CacheMeshBlockingStub stub;
 
 
-	public GrpcCache(GrpcConfig config) {
-		this.config = config;
-		this.logger = LogHelper.getLogger(this);
-		this.channel = Grpc.newChannelBuilder(config.getTarget(), InsecureChannelCredentials.create()).build();
-		this.stub = CacheMeshGrpc.newBlockingStub(channel);
+	public GrpcCache(GrpcClient client) {
+		this.client = client;
+		this.stub = CacheMeshGrpc.newBlockingStub(client.getChannel());
 	}
 
 	@Override
 	public String getName() {
-		return getConfig().getName();
+		return this.client.getName();
 	}
 
 	@Override
-	public synchronized void close() throws Exception {
-		var nameKv = kv("name", getName());
-		this.logger.info("{}: shutdowning ..., {}", nameKv, kv("timeout", this.config.getServiceShutdownSeconds() + "s"));
-
-		this.channel.shutdownNow().awaitTermination(this.config.getClientShutdownSeconds(), TimeUnit.SECONDS);
-
-		this.logger.info("{}: shutdown done", nameKv);
-	}
-
-	@Override
-	public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
+	public GetResult<byte[]> getSingle(String key, long version) {
 		var req = GetSingleRequest.newBuilder()
-					.setCacheName(cacheName)
+					.setCacheName(getName())
 					.setKey(key)
 					.setVersion(version)
 					.build();
@@ -71,9 +44,9 @@ public class GrpcCache implements NodeCache {
 	}
 
 	@Override
-	public long putSingle(String cacheName, String key, byte[] value) {
+	public long putSingle(String key, byte[] value) {
 		var req = PutSingleRequest.newBuilder()
-					.setCacheName(cacheName)
+					.setCacheName(getName())
 					.setKey(key)
 					.setValue(ByteString.copyFrom(value))
 					.build();

@@ -1,36 +1,23 @@
 package cachemesh.lettuce;
 
-import cachemesh.common.util.LogHelper;
 import cachemesh.spi.NodeCache;
 import cachemesh.spi.base.GetResult;
 
-import org.slf4j.Logger;
-
-import static net.logstash.logback.argument.StructuredArguments.kv;
-
 import cachemesh.spi.base.ResultStatus;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisCommands;
 
 
-@lombok.Getter
 public class LettuceCache implements NodeCache {
 
-	private final Logger logger;
-
-	@lombok.Getter
-	private final LettuceConfig config;
-
-	private final StatefulRedisConnection<String,byte[]> conn;
-
-	private final RedisClient client;
+	private final LettuceChannel channel;
 
 
-	public LettuceCache(LettuceConfig config) {
-		this.config = config;
-		this.logger = LogHelper.getLogger(this);
-		this.client = RedisClient.create(config.getTarget());
-		this.conn = this.client.connect(config.getCodec());
+	public LettuceCache(LettuceChannel channel) {
+		this.channel = channel;
+	}
+
+	public LettuceConfig getConfig() {
+		return this.channel.getConfig();
 	}
 
 	@Override
@@ -48,23 +35,16 @@ public class LettuceCache implements NodeCache {
 					.toString();
 	}
 
-	@Override
-	public synchronized void close() throws Exception {
-		var nameKv = kv("name", getName());
-		this.logger.info("{}: shutdowning ...", nameKv);
-
-		this.conn.close();
-		this.client.shutdown();
-
-		this.logger.info("{}: shutdown done", nameKv);
+	RedisCommands<String, byte[]> syncCommand() {
+		return this.channel.getConn().sync();
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
-		var cmds = this.conn.sync();
+	public GetResult<byte[]> getSingle(String key, long version) {
+		var redisKey = generateRedisKey(getName(), key);
 
-		var redisKey = generateRedisKey(cacheName, key);
+		var cmds = syncCommand();
 		var value = cmds.get(redisKey);
 		if (value == null) {
 			return (GetResult<byte[]>)GetResult.NOT_FOUND;
@@ -74,8 +54,8 @@ public class LettuceCache implements NodeCache {
 	}
 
 	@Override
-	public long putSingle(String cacheName, String key, byte[] value) {
-		var cmds = this.conn.sync();
+	public long putSingle(String key, byte[] value) {
+		var cmds = syncCommand();
 		cmds.set(key, value);
 		return 0;
 	}

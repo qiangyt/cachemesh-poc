@@ -1,13 +1,18 @@
 package cachemesh.spi.base;
 
-import cachemesh.spi.ByteCache;
+import javax.annotation.concurrent.ThreadSafe;
+
+import cachemesh.spi.LocalCache;
+import cachemesh.spi.LocalCacheConfig;
 import cachemesh.spi.NodeCache;
 
-public class NodeByteCache implements NodeCache {
 
-	private final ByteCache backend;
+@ThreadSafe
+public class NodeGenericCache<T, C extends LocalCacheConfig<T>> implements NodeCache {
 
-	public NodeByteCache(ByteCache backend) {
+	private final LocalCache<T,Value<T>,C> backend;
+
+	public NodeGenericCache(LocalCache<T,Value<T>,C> backend) {
 		this.backend = backend;
 	}
 
@@ -28,17 +33,28 @@ public class NodeByteCache implements NodeCache {
 			return (GetResult<byte[]>)GetResult.NO_CHANGE;
 		}
 
-		return new GetResult<>(ResultStatus.OK, v.getData(), v.getVersion());
+		var serder = this.backend.getConfig().getSerder();
+		var valueBytes = serder.serialize(v.getData());
+
+		return new GetResult<>(ResultStatus.OK, valueBytes, v.getVersion());
 	}
 
 	@Override
 	public long putSingle(String key, byte[] value) {
 		var r = this.backend.putSingle(key, (k, entry) -> {
 			long version = (entry == null) ? 1 : entry.getVersion() + 1;
-			return new Value<byte[]>(entry.getData(), version);
+
+			var cfg = this.backend.getConfig();
+			var serder = cfg.getSerder();
+			var obj = serder.deserialize(value, cfg.getValueClass());
+
+			var v = new Value<T>(obj, version);
+			return v;
 		});
 
 		return r.getVersion();
 	}
+
+
 
 }

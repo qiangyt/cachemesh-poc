@@ -8,7 +8,7 @@ import cachemesh.common.Serderializer;
 
 @lombok.Getter
 @lombok.experimental.SuperBuilder
-public class CommonCacheConfig<T> implements HasName {
+public class LocalCacheConfig<T> implements HasName {
 
 	private final String name;
 
@@ -16,19 +16,26 @@ public class CommonCacheConfig<T> implements HasName {
 
 	private final Serderializer serder;
 
-	@lombok.Getter
-	private final CommonCacheFactory factory;
+	private final boolean cacheBytes;
 
-	public CommonCacheConfig(String name, Class<T> valueClass, Serderializer serder, CommonCacheFactory factory) {
+	@lombok.Getter
+	private final LocalCacheFactory factory;
+
+	public LocalCacheConfig(String name,
+	 						 Class<T> valueClass,
+							 Serderializer serder,
+							 boolean cacheBytes,
+							 LocalCacheFactory factory) {
 		this.name = name;
 		this.valueClass = valueClass;
 		this.serder = serder;
+		this.cacheBytes = cacheBytes;
 		this.factory = factory;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T2, C2 extends CommonCacheConfig<T2>> C2 buildAnother(String name, Class<T2> valueClass) {
-		return (C2)new CommonCacheConfig<T2>(name, valueClass, getSerder(), getFactory());
+	public <T2, C2 extends LocalCacheConfig<T2>> C2 buildAnother(String name, Class<T2> valueClass) {
+		return (C2)new LocalCacheConfig<T2>(name, valueClass, getSerder(), isCacheBytes(), getFactory());
 	}
 
 	@Override
@@ -38,6 +45,7 @@ public class CommonCacheConfig<T> implements HasName {
 		r.put("name", getName());
 		r.put( "valueClass", getValueClass());
 		r.put( "serder", getSerder().toMap());
+		r.put( "cacheBytes", isCacheBytes());
 		r.put( "factory", getFactory().toMap());
 
 		return r;

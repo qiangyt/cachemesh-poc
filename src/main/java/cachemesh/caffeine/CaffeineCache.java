@@ -1,21 +1,43 @@
 package cachemesh.caffeine;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import com.github.benmanes.caffeine.cache.Cache;
-
-import cachemesh.spi.base.BaseCommonCache;
-import cachemesh.spi.base.LocalCacheEntry;
+import lombok.Getter;
+import cachemesh.common.shutdown.AbstractShutdownable;
+import cachemesh.common.shutdown.ShutdownLogger;
+import cachemesh.spi.LocalCache;
 import cachemesh.spi.base.Value;
 
-public class CaffeineCache<T> extends BaseCommonCache<T, CaffeineCacheConfig<T>, Cache<String, Value<T>>> {
+@Getter
+public class CaffeineCache<T, V extends Value<T>>
+	extends AbstractShutdownable
+	implements LocalCache<T, V, CaffeineConfig<T>> {
 
-	public CaffeineCache(CaffeineCacheConfig<T> cfg, Cache<String, Value<T>> instance) {
-		super(cfg, instance);
+	private final CaffeineConfig<T> config;
+
+	private final Cache<String, V> instance;
+
+
+	public CaffeineCache(CaffeineConfig<T> config, Cache<String, V> instance) {
+		super(config.getName());
+
+		this.config = config;
+		this.instance = instance;
+
+		setShutdownNeeded(true);
 	}
+
+	@Override
+	public String toString() {
+		return getConfig().toString();
+	}
+
+	@Override
+	public void onShutdown(ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
+		this.instance.cleanUp();
+	}
+
 
 	// @Override
 	// public void invalidateSingle(String key) {
@@ -28,12 +50,12 @@ public class CaffeineCache<T> extends BaseCommonCache<T, CaffeineCacheConfig<T>,
 	// }
 
 	@Override
-	public Value<T> getSingle(String key, long version) {
+	public V getSingle(String key, long version) {
 		return this.instance.getIfPresent(key);
 	}
 
 	@Override
-	public Value<T> putSingle(String key, BiFunction<String, Value<T>, Value<T>> mapper) {
+	public V putSingle(String key, BiFunction<String, V, V> mapper) {
 		return this.instance.asMap().compute(key, mapper);
 	}
 
@@ -52,9 +74,5 @@ public class CaffeineCache<T> extends BaseCommonCache<T, CaffeineCacheConfig<T>,
 	// 	return this.instance.asMap().keySet();
 	// }
 
-	@Override
-	public void close() throws Exception {
-		this.instance.cleanUp();
-	}
 
 }

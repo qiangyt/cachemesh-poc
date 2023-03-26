@@ -1,7 +1,6 @@
 package cachemesh.spi.base;
 
 @lombok.Getter
-@lombok.ToString
 public class Value<T> {
 
 	private final T data;

@@ -7,6 +7,9 @@ import java.util.Map;
 import cachemesh.Transport;
 import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
+import io.grpc.Grpc;
+import io.grpc.InsecureChannelCredentials;
+import io.grpc.ManagedChannel;
 
 @lombok.Getter
 //@lombok.NoArgsConstructor
@@ -17,22 +20,20 @@ public class GrpcConfig implements HasName {
 
 	private final int port;
 
-	private final int serviceShutdownSeconds;
-
-	private final int clientShutdownSeconds;
-
 	private final String name;
 
 	private final String target;
 
-	public GrpcConfig(String host, int port, int serviceShutdownSeconds, int clientShutdownSeconds) {
+	public GrpcConfig(String host, int port) {
 		this.host = host;
 		this.port = port;
-		this.serviceShutdownSeconds = serviceShutdownSeconds;
-		this.clientShutdownSeconds = clientShutdownSeconds;
 
 		this.target = String.format("%s:%d", host, port);
 		this.name = String.format("%s://%s", Transport.grpc.name(), this.target);
+	}
+
+	public ManagedChannel createClientChannel() {
+		return Grpc.newChannelBuilder(getTarget(), InsecureChannelCredentials.create()).build();
 	}
 
 	@Override
@@ -43,8 +44,6 @@ public class GrpcConfig implements HasName {
 		r.put("target", getTarget());
 		r.put("host", getHost());
 		r.put("port", getPort());
-		r.put("serviceShutdownSeconds", getServiceShutdownSeconds());
-		r.put("clientShutdownSeconds", getClientShutdownSeconds());
 
 		return r;
 	}
@@ -55,7 +54,7 @@ public class GrpcConfig implements HasName {
 			throw new InternalException("unsupported meshcache protocol: %s", protocol);
 		}
 
-		return new GrpcConfig(url.getHost(), url.getPort(), 30, 30);
+		return new GrpcConfig(url.getHost(), url.getPort());
 	}
 
 }

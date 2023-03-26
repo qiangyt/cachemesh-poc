@@ -1,6 +1,6 @@
 package cachemesh;
 
-import cachemesh.caffeine.CaffeineCacheConfig;
+import cachemesh.caffeine.CaffeineConfig;
 import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
 import cachemesh.common.jackson.JacksonSerderializer;
@@ -35,8 +35,8 @@ public class MeshNetworkConfig {
 
 	public MeshNetworkConfig(String name) {
 		this(name, MurmurHash.DEFAULT,
-			 CaffeineCacheConfig.defaultConfig(name + "-nearcache", Object.class, JacksonSerderializer.DEFAULT),
-			 CaffeineCacheConfig.defaultConfig(name + "-sidecache", byte[].class, JacksonSerderializer.DEFAULT),
+			 CaffeineConfig.defaultConfig(name + "-nearcache", Object.class, JacksonSerderializer.DEFAULT),
+			 CaffeineConfig.defaultConfig(name + "-sidecache", byte[].class, JacksonSerderializer.DEFAULT),
 			 GrpcServerManager.DEFAULT);
 	}
 

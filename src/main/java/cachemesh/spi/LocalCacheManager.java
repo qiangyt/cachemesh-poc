@@ -8,17 +8,18 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.slf4j.LoggerFactory;
 
-import cachemesh.common.Closer;
 import cachemesh.common.Mappable;
 import cachemesh.common.err.InternalException;
+import cachemesh.common.shutdown.ShutdownSupport;
 import cachemesh.common.HasName;
 import cachemesh.common.util.LogHelper;
+import cachemesh.spi.base.Value;
 
 import org.slf4j.Logger;
 
 @ThreadSafe
-public class CommonCacheManager<T, K extends CommonCache<T, C>, C extends CommonCacheConfig<T>>
-	implements AutoCloseable, Mappable {
+public class LocalCacheManager<T, V extends Value<T>, K extends LocalCache<T, V, C>, C extends LocalCacheConfig<T>>
+	implements Mappable {
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -29,7 +30,10 @@ public class CommonCacheManager<T, K extends CommonCache<T, C>, C extends Common
 	@lombok.Getter
 	private final C defaultConfig;
 
-	public CommonCacheManager(C defaultConfig) {
+	private ShutdownSupport shutdown;
+
+	public LocalCacheManager(ShutdownSupport shutdown, C defaultConfig) {
+		this.shutdown = shutdown;
 		this.defaultConfig = defaultConfig;
 	}
 
@@ -41,28 +45,6 @@ public class CommonCacheManager<T, K extends CommonCache<T, C>, C extends Common
 		this.configs.put(name, config);
 	}
 
-	/*@SuppressWarnings("all")
-	public void add(LocalCache newCache, boolean mergeWithOld) {
-		String name = newCache.getName();
-
-		var old = this.caches.get(name);
-		if (old != null) {
-			var oldType = old.getValueClass();
-			var newType = newCache.getValueClass();
-			if (oldType.equals(newType) == false) {
-				throw new MeshInternalException("cannot merge 2 caches with different value types: %s <--> %s",
-						oldType, newType);
-			}
-
-			if (mergeWithOld) {
-				var oldEntries = LocalCacheEntry.fromMap(old.getMultiple(old.getAllKeys()));
-				newCache.putMultiple(oldEntries);
-			}
-		}
-
-		this.caches.put(name, newCache);
-	}*/
-
 
 	public K get(String name) {
 		return this.caches.get(name);
@@ -73,9 +55,15 @@ public class CommonCacheManager<T, K extends CommonCache<T, C>, C extends Common
 		return this.caches.computeIfAbsent(name, k -> {
 			var c = resolveConfig(name, valueClass);
 			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("cache not found, so build it: {}", LogHelper.kv("config", c));
+				this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", c));
 			}
-			return (K)c.getFactory().create(c);
+
+			var r = (K)c.getFactory().create(c);
+			if (this.shutdown != null) {
+				this.shutdown.register(r);
+			}
+
+			return r;
 		});
 	}
 
@@ -88,11 +76,6 @@ public class CommonCacheManager<T, K extends CommonCache<T, C>, C extends Common
 			}
 			return (C)c;
 		});
-	}
-
-	@Override
-	public void close() throws Exception {
-		Closer.closeSilently(this.caches.values(), this.logger);
 	}
 
 	@Override

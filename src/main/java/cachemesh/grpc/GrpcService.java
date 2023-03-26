@@ -7,17 +7,17 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 
-import cachemesh.spi.base.SideCache;
+import cachemesh.spi.AggregatedNodeCache;
 
 public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GrpcService.class);
 
-	private final SideCache sideCache;
+	private final AggregatedNodeCache cache;
 
 
-	public GrpcService(SideCache sideCache) {
-		this.sideCache = sideCache;
+	public GrpcService(AggregatedNodeCache cache) {
+		this.cache = cache;
 	}
 
 
@@ -32,7 +32,7 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 			LOG.debug("getSingle(): cache name={}, key={}, version={}", cacheName, key, ver);
 		}
 
-		var resp = this.sideCache.getSingle(cacheName, key, ver);
+		var resp = this.cache.getSingle(cacheName, key, ver);
 		if (debug) {
 			LOG.debug("getSingle(): resp={}", resp);
 		}
@@ -61,7 +61,7 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 			LOG.debug("putSingle(): cache name={}, key={}", cacheName, key);
 		}
 
-		var ver = this.sideCache.putSingle(cacheName, key, value.toByteArray());
+		var ver = this.cache.putSingle(cacheName, key, value.toByteArray());
 		if (debug) {
 			LOG.debug("putSingle(): version={}", ver);
 		}

@@ -42,9 +42,7 @@ public class MeshNetwork implements AutoCloseable, HasName {
 
 	private final MeshNetworkConfig config;
 
-	private final LocalCacheManager<Object> nearCacheManager;
-
-	private final LocalCacheManager<byte[]> sideCacheManager;
+	private final LocalCacheManager<?, ?,?,?> nearCacheManager;
 
 	private final ConsistentHash<MeshNode> route;
 
@@ -55,7 +53,6 @@ public class MeshNetwork implements AutoCloseable, HasName {
 		this.config = config;
 
 		this.nearCacheManager = new LocalCacheManager<>(config.getNearCacheConfig());
-		this.sideCacheManager = new LocalCacheManager<>(config.getSideCacheDefaultConfig());
 
 		this.route = new ConsistentHash<>(config.getHashing());
 	}

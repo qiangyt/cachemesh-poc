@@ -7,20 +7,19 @@ import cachemesh.common.HasName;
 
 @lombok.Getter
 @lombok.experimental.SuperBuilder
-public class ByteCacheConfig  implements HasName {
+public class NodeCacheConfig implements HasName {
 
 	private final String name;
 
-	@lombok.Getter
-	private final ByteCacheFactory factory;
+	private final boolean cacheBytes;
 
-	public ByteCacheConfig(String name, ByteCacheFactory factory) {
+	public NodeCacheConfig(String name, boolean cacheBytes) {
 		this.name = name;
-		this.factory = factory;
+		this.cacheBytes = cacheBytes;
 	}
 
-	public ByteCacheConfig buildAnother(String name) {
-		return new ByteCacheConfig(name, getFactory());
+	public NodeCacheConfig buildAnother(String name) {
+		return new NodeCacheConfig(name, isCacheBytes());
 	}
 
 	@Override
@@ -28,7 +27,7 @@ public class ByteCacheConfig  implements HasName {
 		var r = new HashMap<String, Object>();
 
 		r.put("name", getName());
-		r.put( "factory", getFactory().toMap());
+		r.put( "cacheBytes", isCacheBytes());
 
 		return r;
 	}

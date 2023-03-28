@@ -1,24 +1,21 @@
 package cachemesh.spi.base;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.LocalCacheConfig;
 import cachemesh.spi.NodeCache;
+import cachemesh.spi.NodeCacheConfig;
 
 
-@ThreadSafe
+@lombok.Getter
 public class NodeObjectCache<T, C extends LocalCacheConfig<T>> implements NodeCache {
 
 	private final LocalCache<T,Value<T>,C> backend;
 
-	public NodeObjectCache(LocalCache<T,Value<T>,C> backend) {
-		this.backend = backend;
-	}
+	private final NodeCacheConfig config;
 
-	@Override
-	public String getName() {
-		return this.backend.getName();
+	public NodeObjectCache(NodeCacheConfig config, LocalCache<T,Value<T>,C> backend) {
+		this.backend = backend;
+		this.config = config;
 	}
 
 	@Override

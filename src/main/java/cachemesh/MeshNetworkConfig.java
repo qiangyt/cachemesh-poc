@@ -17,26 +17,18 @@ public class MeshNetworkConfig {
 
 	private LocalCacheConfig<Object> nearCacheConfig;
 
-	private LocalCacheConfig<byte[]> sideCacheDefaultConfig;
-
-	private GrpcServerManager grpcManager;
-
 	public MeshNetworkConfig(String name,
 							 Hashing hashing,
 							 LocalCacheConfig<Object> nearCacheConfig,
-							 LocalCacheConfig<byte[]> sideCacheDefaultConfig,
 							 GrpcServerManager grpcManager) {
 		this.name = name;
 		this.hashing = hashing;
 		this.nearCacheConfig = nearCacheConfig;
-		this.sideCacheDefaultConfig = sideCacheDefaultConfig;
-		this.grpcManager = grpcManager;//TODO: GrpcServerManagerConfig
 	}
 
 	public MeshNetworkConfig(String name) {
 		this(name, MurmurHash.DEFAULT,
 			 CaffeineConfig.defaultConfig(name + "-nearcache", Object.class, JacksonSerderializer.DEFAULT),
-			 CaffeineConfig.defaultConfig(name + "-sidecache", byte[].class, JacksonSerderializer.DEFAULT),
 			 GrpcServerManager.DEFAULT);
 	}
 

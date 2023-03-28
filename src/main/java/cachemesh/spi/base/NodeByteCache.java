@@ -2,18 +2,18 @@ package cachemesh.spi.base;
 
 import cachemesh.spi.ByteCache;
 import cachemesh.spi.NodeCache;
+import cachemesh.spi.NodeCacheConfig;
 
+@lombok.Getter
 public class NodeByteCache implements NodeCache {
 
 	private final ByteCache backend;
 
-	public NodeByteCache(ByteCache backend) {
-		this.backend = backend;
-	}
+	private final NodeCacheConfig config;
 
-	@Override
-	public String getName() {
-		return this.backend.getName();
+	public NodeByteCache(NodeCacheConfig config, ByteCache backend) {
+		this.backend = backend;
+		this.config = config;
 	}
 
 	@Override

@@ -13,7 +13,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 
 public class MeshCache<T> implements HasName {
 
-	private Logger logger = LogHelper.getLogger(this);
+	private Logger logger;
 
 	private final LocalCache<T> nearCache;
 
@@ -22,6 +22,8 @@ public class MeshCache<T> implements HasName {
 	public MeshCache(LocalCache<T> nearCache, MeshNetwork network) {
 		this.nearCache = nearCache;
 		this.network = network;
+
+		this.logger = LogHelper.getLogger(this);
 	}
 
 	@Override

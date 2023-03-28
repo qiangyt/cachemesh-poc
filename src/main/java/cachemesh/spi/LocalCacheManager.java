@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import cachemesh.common.Mappable;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.shutdown.ShutdownSupport;
-import cachemesh.common.HasName;
 import cachemesh.common.util.LogHelper;
 import cachemesh.spi.base.Value;
 
@@ -21,69 +20,79 @@ import org.slf4j.Logger;
 public class LocalCacheManager<T, V extends Value<T>, K extends LocalCache<T, V, C>, C extends LocalCacheConfig<T>>
 	implements Mappable {
 
+	class Item {
+		K cache;
+		C config;
+	}
+
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private final Map<String, K> caches = new ConcurrentHashMap<>();
-
-	private final Map<String, C> configs = new ConcurrentHashMap<>();
+	private final Map<String, Item> items = new ConcurrentHashMap<>();
 
 	@lombok.Getter
 	private final C defaultConfig;
 
 	private ShutdownSupport shutdown;
 
+
 	public LocalCacheManager(ShutdownSupport shutdown, C defaultConfig) {
 		this.shutdown = shutdown;
 		this.defaultConfig = defaultConfig;
 	}
 
+
 	public void addConfig(C config) {
-		String name = config.getName();
-		if (this.configs.containsKey(name)) {
-			throw new InternalException("duplicated configuration %s", name);
-		}
-		this.configs.put(name, config);
+		this.items.compute(config.getName(), (name, item) -> {
+			if (item != null) {
+				throw new InternalException("duplicated configuration %s", name);
+			}
+
+			item = new Item();
+			item.config = config;
+			return item;
+		});
+	}
+
+
+	public C getConfig(String name) {
+		var i = this.items.get(name);
+		return (i == null) ? null : i.config;
 	}
 
 
 	public K get(String name) {
-		return this.caches.get(name);
+		var i = this.items.get(name);
+		return (i == null) ? null : i.cache;
 	}
 
 	@SuppressWarnings("unchecked")
 	public K resolve(String name, Class<T> valueClass) {
-		return this.caches.computeIfAbsent(name, k -> {
-			var c = resolveConfig(name, valueClass);
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", c));
+		var i = this.items.compute(name, (n, item) -> {
+			if (item == null) {
+				item = new Item();
+				item.config = this.defaultConfig.buildAnother(name, valueClass);
 			}
 
-			var r = (K)c.getFactory().create(c);
-			if (this.shutdown != null) {
-				this.shutdown.register(r);
+			if (item.cache == null) {
+				var r = (K)item.config.getFactory().create(item.config);
+				if (this.shutdown != null) {
+					this.shutdown.register(r);
+				}
+				if (this.logger.isDebugEnabled()) {
+					this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", item.config));
+				}
 			}
 
-			return r;
+			return item;
 		});
-	}
-
-	@SuppressWarnings("unchecked")
-	public C resolveConfig(String name, Class<T> valueClass) {
-		return this.configs.computeIfAbsent(name, n -> {
-			var c = this.defaultConfig.buildAnother(name, valueClass);
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("cache configuration not found, so try default one: {}", LogHelper.kv("config", c));
-			}
-			return (C)c;
-		});
+		return i.cache;
 	}
 
 	@Override
 	public Map<String, Object> toMap() {
 		var r = new HashMap<String, Object>();
 
-		r.put("caches", HasName.toMaps(this.caches));
-		r.put("configs", HasName.toMaps(this.configs));
+		//r.put("caches", HasName.toMaps(this.caches));
 		r.put("defaultConfig", this.defaultConfig.toMap());
 
 		return r;

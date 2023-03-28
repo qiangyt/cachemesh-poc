@@ -7,30 +7,26 @@ import org.slf4j.Logger;
 import cachemesh.common.HasName;
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.util.LogHelper;
-import cachemesh.spi.NodeCache;
 
 @lombok.Getter
-public class MeshNode implements HasName, ConsistentHash.Node {
+public abstract class MeshNode implements HasName, ConsistentHash.Node {
 
-	protected final Logger logger = LogHelper.getLogger(this);
+	protected final Logger logger;
 
-	private final boolean remote;
 	private final URL url;
 	private final String key;
 	private final int hashCode;
-	private final NodeCache nodeCache;
 
-	public MeshNode(boolean remote, URL url, NodeCache nodeCache) {
-		this.remote = remote;
+	public MeshNode(URL url) {
 		this.url = url;
 		this.key = url.toExternalForm();
 		this.hashCode = this.key.hashCode();
-		this.nodeCache = nodeCache;
+		this.logger = LogHelper.getLogger(this);
 	}
 
 	@Override
 	public String getName() {
-		return toString();
+		return getKey();
 	}
 
 	@Override
@@ -57,9 +53,11 @@ public class MeshNode implements HasName, ConsistentHash.Node {
 		return this.hashCode;
 	}
 
+	public abstract boolean isRemote();
+
 	@Override
 	public String toString() {
-		return this.key + "@" + (this.remote ? "remote" : "local");
+		return this.key + "@" + (isRemote() ? "remote" : "local");
 	}
 
 }

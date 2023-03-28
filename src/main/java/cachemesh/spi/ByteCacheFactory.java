@@ -1,8 +1,9 @@
 package cachemesh.spi;
 
-import cachemesh.spi.base.Value;
+import cachemesh.common.HasName;
 
-public interface ByteCacheFactory
-	extends LocalCacheFactory<byte[], Value<byte[]>, ByteCacheConfig, ByteCache> {
+public interface ByteCacheFactory extends HasName {
+
+	ByteCache create(ByteCacheConfig config);
 
 }

@@ -8,6 +8,13 @@ import cachemesh.spi.base.GetResult;
 @ThreadSafe
 public interface NodeCache extends HasName {
 
+	NodeCacheConfig getConfig();
+
+	@Override
+	default String getName() {
+		return getConfig().getName();
+	}
+
 	GetResult<byte[]> getSingle(String key, long version);
 
 	// return version

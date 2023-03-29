@@ -12,4 +12,8 @@ public enum Transport {
 		return grpc;
 	}
 
+	public String url(String target) {
+		return String.format("%s://%s", name(), target);
+	}
+
 }

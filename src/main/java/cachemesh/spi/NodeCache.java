@@ -2,23 +2,15 @@ package cachemesh.spi;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import cachemesh.common.HasName;
 import cachemesh.spi.base.GetResult;
 
 @ThreadSafe
-public interface NodeCache extends HasName {
+public interface NodeCache {
 
-	NodeCacheConfig getConfig();
-
-	@Override
-	default String getName() {
-		return getConfig().getName();
-	}
-
-	GetResult<byte[]> getSingle(String key, long version);
+	GetResult<byte[]> getSingle(String cacheName, String key, long version);
 
 	// return version
-	long putSingle(String key, byte[] value);
+	long putSingle(String cacheName, String key, byte[] value);
 
 
 }

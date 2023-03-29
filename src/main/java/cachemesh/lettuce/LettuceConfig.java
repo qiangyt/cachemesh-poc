@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cachemesh.Transport;
-import cachemesh.common.HasName;
+import cachemesh.common.Mappable;
 import cachemesh.common.err.InternalException;
 
 @lombok.Getter
-public class LettuceConfig implements HasName {
+public class LettuceConfig implements Mappable {
 
-	private final String name;
+	private final String url;
 
 	private final String target;
 
@@ -40,15 +40,15 @@ public class LettuceConfig implements HasName {
 			this.target = String.format("%s:%d", this.host, this.port);
 		}
 
-		this.name = String.format("%s://%s", Transport.redis.name(), this.target);
+		this.url = Transport.redis.url(this.target);
 	}
 
 	@Override
 	public Map<String, Object> toMap() {
 		var r = new HashMap<String, Object>();
 
-		r.put("name", getName());
 		r.put("target", getTarget());
+		r.put("url", getUrl());
 		r.put("host", getHost());
 		r.put("port", getPort());
 		r.put("database", getDatabase());

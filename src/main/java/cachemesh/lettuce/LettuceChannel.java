@@ -15,7 +15,7 @@ public class LettuceChannel extends AbstractShutdownable {
 	private final RedisClient client;
 
 	public LettuceChannel(LettuceConfig config) {
-		super(config.getName());
+		super(config.getUrl());
 
 		this.config = config;
 		this.client = RedisClient.create(config.getTarget());

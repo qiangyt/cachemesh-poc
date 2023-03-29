@@ -8,25 +8,17 @@ import com.google.protobuf.ByteString;
 
 public class GrpcCache implements NodeCache {
 
-	private final GrpcClient client;
-
 	private final CacheMeshGrpc.CacheMeshBlockingStub stub;
 
 
 	public GrpcCache(GrpcClient client) {
-		this.client = client;
 		this.stub = CacheMeshGrpc.newBlockingStub(client.getChannel());
 	}
 
 	@Override
-	public String getName() {
-		return this.client.getName();
-	}
-
-	@Override
-	public GetResult<byte[]> getSingle(String key, long version) {
+	public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
 		var req = GetSingleRequest.newBuilder()
-					.setCacheName(getName())
+					.setCacheName(cacheName)
 					.setKey(key)
 					.setVersion(version)
 					.build();
@@ -44,9 +36,9 @@ public class GrpcCache implements NodeCache {
 	}
 
 	@Override
-	public long putSingle(String key, byte[] value) {
+	public long putSingle(String cacheName, String key, byte[] value) {
 		var req = PutSingleRequest.newBuilder()
-					.setCacheName(getName())
+					.setCacheName(cacheName)
 					.setKey(key)
 					.setValue(ByteString.copyFrom(value))
 					.build();

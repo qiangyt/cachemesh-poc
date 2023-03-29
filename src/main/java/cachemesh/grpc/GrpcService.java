@@ -7,16 +7,16 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 
-import cachemesh.spi.AggregatedNodeCache;
+import cachemesh.spi.NodeCache;
 
 public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GrpcService.class);
 
-	private final AggregatedNodeCache cache;
+	private final NodeCache cache;
 
 
-	public GrpcService(AggregatedNodeCache cache) {
+	public GrpcService(NodeCache cache) {
 		this.cache = cache;
 	}
 

@@ -20,11 +20,6 @@ public class LettuceCache implements NodeCache {
 		return this.channel.getConfig();
 	}
 
-	@Override
-	public String getName() {
-		return getConfig().getName();
-	}
-
 	public String generateRedisKey(String cacheName, String key) {
 		var sep = getConfig().getSeparator();
 
@@ -41,8 +36,8 @@ public class LettuceCache implements NodeCache {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public GetResult<byte[]> getSingle(String key, long version) {
-		var redisKey = generateRedisKey(getName(), key);
+	public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
+		var redisKey = generateRedisKey(cacheName, key);
 
 		var cmds = syncCommand();
 		var value = cmds.get(redisKey);
@@ -54,8 +49,8 @@ public class LettuceCache implements NodeCache {
 	}
 
 	@Override
-	public long putSingle(String key, byte[] value) {
-		var redisKey = generateRedisKey(getName(), key);
+	public long putSingle(String cacheName, String key, byte[] value) {
+		var redisKey = generateRedisKey(cacheName, key);
 
 		var cmds = syncCommand();
 		cmds.set(redisKey, value);

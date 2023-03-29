@@ -6,11 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.checkerframework.checker.units.qual.C;
-import org.checkerframework.checker.units.qual.K;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static net.logstash.logback.argument.StructuredArguments.kv;
 
 import cachemesh.common.Mappable;
 import cachemesh.common.err.InternalException;

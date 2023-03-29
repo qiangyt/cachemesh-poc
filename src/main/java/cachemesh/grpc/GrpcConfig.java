@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cachemesh.Transport;
-import cachemesh.common.HasName;
+import cachemesh.common.Mappable;
 import cachemesh.common.err.InternalException;
 import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
@@ -14,13 +14,13 @@ import io.grpc.ManagedChannel;
 @lombok.Getter
 //@lombok.NoArgsConstructor
 //@lombok.experimental.Builder
-public class GrpcConfig implements HasName {
+public class GrpcConfig implements Mappable {
 
 	private final String host;
 
 	private final int port;
 
-	private final String name;
+	private final String url;
 
 	private final String target;
 
@@ -29,7 +29,7 @@ public class GrpcConfig implements HasName {
 		this.port = port;
 
 		this.target = String.format("%s:%d", host, port);
-		this.name = String.format("%s://%s", Transport.grpc.name(), this.target);
+		this.url = Transport.grpc.url(this.target);
 	}
 
 	public ManagedChannel createClientChannel() {
@@ -40,7 +40,7 @@ public class GrpcConfig implements HasName {
 	public Map<String, Object> toMap() {
 		var r = new HashMap<String, Object>();
 
-		r.put("name", getName());
+		r.put("url", getUrl());
 		r.put("target", getTarget());
 		r.put("host", getHost());
 		r.put("port", getPort());

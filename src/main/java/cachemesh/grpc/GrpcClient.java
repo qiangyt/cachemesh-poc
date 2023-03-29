@@ -16,7 +16,7 @@ public class GrpcClient extends AbstractShutdownable {
 	private ManagedChannel channel = null;
 
 	public GrpcClient(GrpcConfig config) {
-		super(config.getName());
+		super(config.getUrl());
 
 		this.config = config;
 		this.channel = config.createClientChannel();

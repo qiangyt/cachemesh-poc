@@ -25,7 +25,7 @@ public class GrpcServer extends AbstractShutdownable {
 	private Server instance = null;
 
 	public GrpcServer(GrpcConfig config) {
-		super(config.getName());
+		super(config.getUrl());
 
 		this.config = config;
 		this.builder = Grpc.newServerBuilderForPort(config.getPort(), InsecureServerCredentials.create());

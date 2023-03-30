@@ -1,7 +1,7 @@
 package cachemesh.grpc;
 
+import cachemesh.core.GetResult;
 import cachemesh.spi.NodeCache;
-import cachemesh.spi.base.GetResult;
 
 import com.google.protobuf.ByteString;
 

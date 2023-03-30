@@ -1,6 +1,4 @@
-package cachemesh;
-
-import java.net.URL;
+package cachemesh.core;
 
 import org.slf4j.Logger;
 
@@ -14,18 +12,16 @@ public class MeshNode implements HasName, ConsistentHash.Node {
 
 	protected final Logger logger;
 
-	private final URL url;
 	private final String key;
 	private final int hashCode;
 	private final boolean remote;
 	private final NodeCache cache;
 
-	public MeshNode(boolean remote, URL url, NodeCache cache) {
+	public MeshNode(boolean remote, String key, NodeCache cache) {
 		this.remote = remote;
-		this.url = url;
 		this.cache = cache;
 
-		this.key = url.toExternalForm();
+		this.key = key;
 		this.hashCode = this.key.hashCode();
 		this.logger = LogHelper.getLogger(this);
 	}

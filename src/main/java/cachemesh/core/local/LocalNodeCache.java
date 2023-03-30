@@ -1,7 +1,9 @@
-package cachemesh.spi.base;
+package cachemesh.core.local;
 
+import cachemesh.core.GetResult;
+import cachemesh.core.ResultStatus;
+import cachemesh.core.ValueImpl;
 import cachemesh.spi.LocalCache;
-import cachemesh.spi.LocalCacheManager;
 import cachemesh.spi.NodeCache;
 
 @lombok.Getter

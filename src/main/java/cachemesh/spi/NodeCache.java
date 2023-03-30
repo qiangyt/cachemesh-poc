@@ -2,7 +2,7 @@ package cachemesh.spi;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import cachemesh.spi.base.GetResult;
+import cachemesh.core.GetResult;
 
 @ThreadSafe
 public interface NodeCache {

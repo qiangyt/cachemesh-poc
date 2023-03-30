@@ -6,7 +6,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.LocalCacheConfig;
 import cachemesh.spi.LocalCacheFactory;
-import cachemesh.spi.base.Value;
+import cachemesh.spi.Value;
 
 public class CaffeineFactory implements LocalCacheFactory {
 

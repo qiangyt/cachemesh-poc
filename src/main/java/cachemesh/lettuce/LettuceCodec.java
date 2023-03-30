@@ -3,14 +3,11 @@ package cachemesh.lettuce;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
 import io.lettuce.core.codec.RedisCodec;
 
 public class LettuceCodec implements RedisCodec<String, byte[]> {
 
-	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-
-	public static final LettuceCodec DEFAULT = new LettuceCodec(DEFAULT_CHARSET);
+	public static final LettuceCodec DEFAULT = new LettuceCodec(StandardCharsets.UTF_8);
 
 	@lombok.Getter
 	private final Charset charset;
@@ -45,6 +42,5 @@ public class LettuceCodec implements RedisCodec<String, byte[]> {
 	public ByteBuffer encodeValue(byte[] value) {
 		return ByteBuffer.wrap(value);
 	}
-
 
 }

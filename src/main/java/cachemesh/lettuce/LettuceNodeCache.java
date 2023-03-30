@@ -1,9 +1,8 @@
 package cachemesh.lettuce;
 
+import cachemesh.core.GetResult;
+import cachemesh.core.ResultStatus;
 import cachemesh.spi.NodeCache;
-import cachemesh.spi.base.GetResult;
-
-import cachemesh.spi.base.ResultStatus;
 import io.lettuce.core.api.sync.RedisCommands;
 
 
@@ -21,7 +20,7 @@ public class LettuceNodeCache implements NodeCache {
 	}
 
 	public String generateRedisKey(String cacheName, String key) {
-		var sep = getConfig().getSeparator();
+		var sep = getConfig().getKeySeparator();
 
 		return new StringBuilder(cacheName.length() + sep.length() + key.length())
 					.append(cacheName)

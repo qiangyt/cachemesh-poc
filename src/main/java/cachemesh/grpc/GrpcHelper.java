@@ -1,7 +1,7 @@
 package cachemesh.grpc;
 
 import cachemesh.common.err.ServiceException;
-import cachemesh.spi.base.ResultStatus;
+import cachemesh.core.ResultStatus;
 import io.grpc.stub.StreamObserver;
 
 public class GrpcHelper {

@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import cachemesh.common.shutdown.Shutdownable;
-import cachemesh.spi.base.Value;
 
 public interface LocalCache	extends Shutdownable {
 

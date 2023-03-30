@@ -1,4 +1,4 @@
-package cachemesh.spi.base;
+package cachemesh.core;
 
 @lombok.ToString
 @lombok.Getter

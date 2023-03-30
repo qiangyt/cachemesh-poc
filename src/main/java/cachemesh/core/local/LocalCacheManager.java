@@ -1,4 +1,4 @@
-package cachemesh.spi;
+package cachemesh.core.local;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +12,8 @@ import cachemesh.common.Mappable;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.shutdown.ShutdownSupport;
 import cachemesh.common.util.LogHelper;
+import cachemesh.spi.LocalCache;
+import cachemesh.spi.LocalCacheConfig;
 
 import org.slf4j.Logger;
 

@@ -1,4 +1,4 @@
-package cachemesh.spi.base;
+package cachemesh.spi;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;

@@ -1,4 +1,4 @@
-package cachemesh.spi.base;
+package cachemesh.core;
 
 public enum ResultStatus {
 

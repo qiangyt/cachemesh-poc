@@ -1,15 +1,17 @@
 package cachemesh;
 
 import org.slf4j.Logger;
+import lombok.Getter;
 
 import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.err.ServiceException;
 import cachemesh.common.util.LogHelper;
+import cachemesh.core.MeshNodeManager;
+import cachemesh.core.ValueImpl;
+import cachemesh.core.local.LocalCacheManager;
 import cachemesh.spi.LocalCache;
-import cachemesh.spi.LocalCacheManager;
 import cachemesh.spi.NodeCache;
-import cachemesh.spi.base.ValueImpl;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -17,13 +19,15 @@ public class MeshCache<T> implements HasName {
 
 	private Logger logger;
 
+	@Getter
 	private final LocalCache nearCache;
 
-	private final MeshNetwork network;
+	@Getter
+	private final MeshNodeManager nodeManager;
 
-	public MeshCache(String name, LocalCacheManager localCacheManager, MeshNetwork network) {
-		this.nearCache = localCacheManager.get(name);
-		this.network = network;
+	public MeshCache(String name, LocalCacheManager nearCacheManager, MeshNodeManager nodeManager) {
+		this.nearCache = nearCacheManager.get(name);
+		this.nodeManager = nodeManager;
 
 		this.logger = LogHelper.getLogger(this);
 	}
@@ -34,7 +38,7 @@ public class MeshCache<T> implements HasName {
 	}
 
 	public NodeCache resolveNodeCache(String key) {
-		var n = this.network.findNode(key);
+		var n = getNodeManager().findNode(key);
 		if (this.logger.isDebugEnabled()) {
 			this.logger.debug("find node for {}: {}", kv("key", key), LogHelper.kv("node", n));
 		}
@@ -51,7 +55,7 @@ public class MeshCache<T> implements HasName {
 	}
 
 	protected T getRemoteSingle(NodeCache nodeCache, String key) {
-		var near = this.nearCache;
+		var near = getNearCache();
 		var cfg = near.getConfig();
 
 		@SuppressWarnings("unchecked")
@@ -71,11 +75,11 @@ public class MeshCache<T> implements HasName {
 			}
 			case NO_CHANGE:	return nearValue.getObject(cfg.getSerder(), valueClass);
 			case NOT_FOUND: {
-				this.nearCache.invalidateSingle(key);
+				near.invalidateSingle(key);
 				return null;
 			}
 			case REDIRECT: {
-				this.nearCache.invalidateSingle(key);
+				near.invalidateSingle(key);
 				throw new InternalException("TODO");
 			}
 			default: throw new ServiceException("unexpected status");
@@ -93,12 +97,14 @@ public class MeshCache<T> implements HasName {
 
 	@SuppressWarnings("unchecked")
 	protected void putLocalSingle(NodeCache nodeCache, String key, T object) {
-		var valueClass = (Class<T>)this.nearCache.getConfig().getValueClass();
+		var near = getNearCache();
+
+		var valueClass = (Class<T>)near.getConfig().getValueClass();
 		nodeCache.putSingleObject(getName(), key, object, valueClass);
 	}
 
 	protected void putRemoteSingle(NodeCache nodeCache, String key, Object object) {
-		var near = this.nearCache;
+		var near = getNearCache();
 
 		var valueBytes = near.getConfig().getSerder().serialize(object);
 		long version = nodeCache.putSingle(getName(), key, valueBytes);

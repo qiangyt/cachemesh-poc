@@ -9,7 +9,7 @@ import lombok.Getter;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.spi.LocalCache;
-import cachemesh.spi.base.Value;
+import cachemesh.spi.Value;
 
 @Getter
 public class CaffeineCache

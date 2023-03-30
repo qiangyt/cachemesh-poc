@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 
 import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
-import cachemesh.common.url.Handler;
 import cachemesh.common.util.LogHelper;
 import cachemesh.core.MeshCacheManager;
 import cachemesh.core.MeshNodeManager;

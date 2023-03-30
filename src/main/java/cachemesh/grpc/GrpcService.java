@@ -54,14 +54,16 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 	public void putSingle(PutSingleRequest req, StreamObserver<PutSingleResponse> respObserver) {
 		var cacheName = req.getCacheName();
 		var key = req.getKey();
-		var value = req.getValue();
 		var debug = LOG.isDebugEnabled();
 
 		if (debug) {
 			LOG.debug("putSingle(): cache name={}, key={}", cacheName, key);
 		}
 
-		var ver = this.cache.putSingle(cacheName, key, value.toByteArray());
+		var reqV = req.getValue();
+		var value = (reqV == null) ? null : reqV.toByteArray();
+
+		var ver = this.cache.putSingle(cacheName, key, value);
 		if (debug) {
 			LOG.debug("putSingle(): version={}", ver);
 		}

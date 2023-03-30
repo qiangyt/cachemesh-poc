@@ -7,12 +7,12 @@ import cachemesh.spi.base.ResultStatus;
 import io.lettuce.core.api.sync.RedisCommands;
 
 
-public class LettuceCache implements NodeCache {
+public class LettuceNodeCache implements NodeCache {
 
 	private final LettuceChannel channel;
 
 
-	public LettuceCache(LettuceChannel channel) {
+	public LettuceNodeCache(LettuceChannel channel) {
 		this.channel = channel;
 	}
 
@@ -41,7 +41,7 @@ public class LettuceCache implements NodeCache {
 
 		var cmds = syncCommand();
 		var value = cmds.get(redisKey);
-		if (value == null) {
+		if (value == null) {//TODO: how to indicate we do have the value but the value is null
 			return (GetResult<byte[]>)GetResult.NOT_FOUND;
 		}
 

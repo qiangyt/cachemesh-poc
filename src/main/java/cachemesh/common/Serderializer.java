@@ -4,6 +4,6 @@ public interface Serderializer extends HasName {
 
 	byte[] serialize(Object obj);
 
-	Object deserialize(byte[] bytes, Class<?> clazz);
+	<T> T deserialize(byte[] bytes, Class<T> clazz);
 
 }

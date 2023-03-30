@@ -1,67 +1,89 @@
 package cachemesh;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.slf4j.Logger;
 
-import cachemesh.caffeine.CaffeineConfig;
 import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.hash.ConsistentHash;
-import cachemesh.common.hash.Hashing;
-import cachemesh.common.hash.MurmurHash;
-import cachemesh.common.jackson.JacksonSerderializer;
 import cachemesh.common.url.Handler;
 import cachemesh.common.util.LogHelper;
+import cachemesh.grpc.GrpcClientManager;
 import cachemesh.grpc.GrpcConfig;
+import cachemesh.grpc.GrpcNodeCache;
 import cachemesh.grpc.GrpcService;
 import cachemesh.grpc.GrpcServerManager;
+import cachemesh.lettuce.LettuceChannelManager;
 import cachemesh.lettuce.LettuceConfig;
-import cachemesh.spi.LocalCache;
-import cachemesh.spi.LocalCacheConfig;
+import cachemesh.lettuce.LettuceNodeCache;
 import cachemesh.spi.LocalCacheManager;
-import cachemesh.spi.NodeCache;
+import cachemesh.spi.base.LocalNodeCache;
+import lombok.Getter;
 
-public class MeshNetwork implements AutoCloseable, HasName {
+public class MeshNetwork implements HasName {
 
 	static {
 		Handler.registerHandler();
 	}
 
-	private final Logger logger = LogHelper.getLogger(this);
-
-	private final ConcurrentHashMap<String, MeshCache<?>> caches = new ConcurrentHashMap<>();
-
+	@Getter
 	private final MeshNetworkConfig config;
 
-	private final LocalCacheManager<?, ?,?,?> nearCacheManager;
+	@Getter
+	private final LocalCacheManager nearCacheManager;
+
+	@Getter
+	private final LocalCacheManager localCacheManager;
+
+	@Getter
+	private final GrpcServerManager grpcServerManager;
+
+	@Getter
+	private final GrpcClientManager grpcClientManager;
+
+	@Getter
+	private final LettuceChannelManager lettuceChannelManager;
+
+	@lombok.Getter
+	private boolean bootstrapped;
 
 	private final ConsistentHash<MeshNode> route;
 
-	@lombok.Getter
-	private boolean bootstrapped = false;
+	private final Logger logger;
 
-	public MeshNetwork(MeshNetworkConfig config) {
+	private final ConcurrentHashMap<String, MeshCache<?>> caches;
+
+	public MeshNetwork(MeshNetworkConfig config,
+						LocalCacheManager nearCacheManager,
+						LocalCacheManager localCacheManager,
+						GrpcServerManager grpcServerManager,
+						GrpcClientManager grpcClientManager,
+						LettuceChannelManager lettuceChannelManager) {
 		this.config = config;
+		this.nearCacheManager = nearCacheManager;
+		this.localCacheManager = localCacheManager;
+		this.grpcServerManager = grpcServerManager;
+		this.grpcClientManager = grpcClientManager;
+		this.lettuceChannelManager = lettuceChannelManager;
 
-		this.nearCacheManager = new LocalCacheManager<>(config.getNearCacheConfig());
-
+		this.bootstrapped = false;
 		this.route = new ConsistentHash<>(config.getHashing());
+		this.logger = LogHelper.getLogger(this);
+		this.caches = new ConcurrentHashMap<>();
+	}
+
+	@Override
+	public String getName() {
+		return getConfig().getName();
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
 		return (MeshCache<T>) this.caches.computeIfAbsent(cacheName, k -> {
-			var nearCache = (LocalCache<T>)this.nearCacheManager.resolve(cacheName, (Class<Object>)valueClass);
-			return new MeshCache<>(nearCache, this);
+			return new MeshCache<>(cacheName, getLocalCacheManager(), this);
 		});
 	}
 
@@ -70,13 +92,15 @@ public class MeshNetwork implements AutoCloseable, HasName {
 	}
 
 	public MeshNode addLocalNode(URL url) {
-		var nodeCache = this.sideCacheManager.resolve(null, byte[].class);
-		var cacheManager = new SideCacheManager(new LocalCacheManager<byte[]>(this.sideCacheDefaultConfig), this.hashing);
-
 		var grpcConfig = GrpcConfig.from(url);
-		var grpcServer = this.config.getGrpcManager().resolve(grpcConfig);
+		var grpcServer = getGrpcServerManager().resolve(grpcConfig);
+		var localNodeCache = new LocalNodeCache(getLocalCacheManager());
+		var grpcService = new GrpcService(localNodeCache);
+		grpcServer.addService(grpcService);
 
-		return addNode(new MeshNode(false, url, cacheManager));
+		var node = new MeshNode(false, url, localNodeCache);
+
+		return addNode(node);
 	}
 
 	public MeshNode addRemoteNode(String url) throws MalformedURLException {
@@ -87,7 +111,7 @@ public class MeshNetwork implements AutoCloseable, HasName {
 		String protocol = url.getProtocol();
 		if (protocol.equals("grpc")) {
 			return addGrpcNode(url);
-		} else if (protocol.equals("redis")){
+		} else if (protocol.equals("redis")) {
 			return addRedisNode(url);
 		} else {
 			throw new InternalException("unsupported protocol: %s", protocol);
@@ -96,18 +120,22 @@ public class MeshNetwork implements AutoCloseable, HasName {
 
 	protected MeshNode addGrpcNode(URL url) {
 		var grpcConfig = GrpcConfig.from(url);
-		var grpcClient = this.grpcManager.buildClient(grpcConfig);
-		var cacheManager = new GrpcCacheManager(grpcClient);
+		var grpcClient = getGrpcClientManager().resolve(grpcConfig);
+		var grpcCache = new GrpcNodeCache(grpcClient);
 
-		return addNode(new MeshNode(true, url, cacheManager));
+		var node = new MeshNode(true, url, grpcCache);
+
+		return addNode(node);
 	}
 
 	protected MeshNode addRedisNode(URL url) {
 		var lettuceConfig = LettuceConfig.from(url);
-		var lettuceClient = lettuceClientFactory.create(lettuceConfig);
-		var cacheManager = new LettuceCacheManager(lettuceClient);
+		var lettuceChannel = getLettuceChannelManager().resolve(lettuceConfig);
+		var lettuceCache = new LettuceNodeCache(lettuceChannel);
 
-		return addNode(new MeshNode(true, url, cacheManager));
+		var node = new MeshNode(true, url, lettuceCache);
+
+		return addNode(node);
 	}
 
 	protected void addNodes(Iterable<MeshNode> nodes) {
@@ -123,26 +151,30 @@ public class MeshNetwork implements AutoCloseable, HasName {
 		return this.route.findNode(key);
 	}
 
-	@Override
-	public synchronized void close() throws Exception {
+	public void bootstrap() {
+		if (this.bootstrapped) {
+			throw new InternalException("already bootstrapped");
+		}
+
+		this.logger.info("mesh network bootstrap: ...");
+
+		getGrpcServerManager().startAll();
+
+		this.bootstrapped = true;
+		this.logger.info("mesh network bootstrap: done");
+	}
+
+	public void shutdown() throws InterruptedException {
 		if (this.bootstrapped) {
 			throw new InternalException("not bootstrapped");
 		}
 
 		this.logger.info("mesh network shutdown...");
 
-		this.grpcManager.shutdown();
-
-		this.logger.info("nearcache shutdown: ...");
-		this.nearCacheManager.close();
-		this.logger.info("nearcache shutdown: done");
+		// TODO
 
 		this.bootstrapped = false;
 		this.logger.info("mesh network shutdown: done");
-	}
-
-	public synchronized void bootstrap() {
-
 	}
 
 }

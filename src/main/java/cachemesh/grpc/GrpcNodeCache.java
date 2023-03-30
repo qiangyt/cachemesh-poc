@@ -6,12 +6,12 @@ import cachemesh.spi.base.GetResult;
 import com.google.protobuf.ByteString;
 
 
-public class GrpcCache implements NodeCache {
+public class GrpcNodeCache implements NodeCache {
 
 	private final CacheMeshGrpc.CacheMeshBlockingStub stub;
 
 
-	public GrpcCache(GrpcClient client) {
+	public GrpcNodeCache(GrpcClient client) {
 		this.stub = CacheMeshGrpc.newBlockingStub(client.getChannel());
 	}
 
@@ -31,7 +31,9 @@ public class GrpcCache implements NodeCache {
 			return null;
 		} */
 
-		var v = (resp.getValue() == null) ? null : resp.getValue().toByteArray();
+		//TODO: how to indicate we do have the value but the value is null
+		var respV = resp.getValue();
+		var v = (respV == null) ? null : respV.toByteArray();
 		return new GetResult<>(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersion());
 	}
 
@@ -39,10 +41,12 @@ public class GrpcCache implements NodeCache {
 	public long putSingle(String cacheName, String key, byte[] value) {
 		var req = PutSingleRequest.newBuilder()
 					.setCacheName(cacheName)
-					.setKey(key)
-					.setValue(ByteString.copyFrom(value))
-					.build();
-		var resp = this.stub.putSingle(req);
+					.setKey(key);
+		if (value != null) {
+			req.setValue(ByteString.copyFrom(value));
+		}
+
+		var resp = this.stub.putSingle(req.build());
 		return resp.getVersion();
 	}
 

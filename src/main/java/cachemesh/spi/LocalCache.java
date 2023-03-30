@@ -1,5 +1,6 @@
 package cachemesh.spi;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -23,18 +24,18 @@ public interface LocalCache	extends Shutdownable {
 
 	LocalCacheConfig getConfig();
 
-	//void invalidateSingle(String key);
+	void invalidateSingle(String key);
 
-	//void invalidateMultiple(Collection<String> keys);
+	void invalidateMultiple(Collection<String> keys);
 
 	Value getSingle(String key);
 
-	//Map<String, Value<T>> getMultiple(Collection<String> keys);
+	Map<String, Value> getMultiple(Collection<String> keys);
 
 	Value putSingle(String key, BiFunction<String, Value, Value> mapper);
 
 	//void putMultiple(Collection<LocalCacheEntry<T>> entries);
 
-	//Collection<String> getAllKeys();
+	Collection<String> getAllKeys();
 
 }

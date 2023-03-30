@@ -8,7 +8,6 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import cachemesh.common.err.InternalException;
 import cachemesh.common.shutdown.ShutdownSupport;
 import cachemesh.common.util.LogHelper;
 
@@ -27,12 +26,8 @@ public class GrpcServerManager {
 		this.shutdown = shutdown;
 	}
 
-	public GrpcServer create(GrpcConfig config) {
-		return this.servers.compute(config.getTarget(), (target, prev) -> {
-			if (prev != null) {
-				throw new InternalException("duplicated grpc server for %s", target);
-			}
-
+	public GrpcServer resolve(GrpcConfig config) {
+		return this.servers.computeIfAbsent(config.getTarget(), k -> {
 			var r = new GrpcServer(config);
 			if (this.shutdown != null) {
 				this.shutdown.register(r);
@@ -46,6 +41,5 @@ public class GrpcServerManager {
 	public void startAll() {
 		this.servers.values().forEach(GrpcServer::start);
 	}
-
 
 }

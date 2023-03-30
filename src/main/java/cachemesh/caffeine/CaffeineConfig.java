@@ -19,14 +19,14 @@ public class CaffeineConfig extends LocalCacheConfig {
 
 
 	public static CaffeineConfig defaultConfig(String name, Class<?> valueClass) {
-		return defaultConfig(name, valueClass, JacksonSerderializer.DEFAULT, true);
+		return defaultConfig(name, valueClass, JacksonSerderializer.DEFAULT/*, true*/);
 	}
 
 
 	public static CaffeineConfig defaultConfig(String name,
 													Class<?> valueClass,
-													Serderializer serder,
-													boolean cacheBytes) {
+													Serderializer serder/*,
+													boolean cacheBytes*/) {
 		var factory = CaffeineFactory.DEFAULT;
 
 		return builder()

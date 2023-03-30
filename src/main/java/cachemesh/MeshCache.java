@@ -7,10 +7,10 @@ import cachemesh.common.err.InternalException;
 import cachemesh.common.err.ServiceException;
 import cachemesh.common.util.LogHelper;
 import cachemesh.spi.LocalCache;
-import cachemesh.spi.LocalCacheConfig;
 import cachemesh.spi.LocalCacheManager;
 import cachemesh.spi.NodeCache;
-import cachemesh.spi.base.Value;
+import cachemesh.spi.base.ValueImpl;
+
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 public class MeshCache<T> implements HasName {
@@ -34,31 +34,42 @@ public class MeshCache<T> implements HasName {
 	}
 
 	public NodeCache resolveNodeCache(String key) {
-		var node = this.network.findNode(key);
+		var n = this.network.findNode(key);
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("find node for {}: {}", kv("key", key), LogHelper.kv("node", node));
+			this.logger.debug("find node for {}: {}", kv("key", key), LogHelper.kv("node", n));
 		}
 
-		return node.getCache();
+		return n.getCache();
 	}
 
 	public T getSingle(String key) {
+		var nodeCache = resolveNodeCache(key);
+		if (nodeCache.isLocal()) {
+			return nodeCache.getSingleObject(getName(), key);
+		}
+		return getRemoteSingle(nodeCache, key);
+	}
+
+	protected T getRemoteSingle(NodeCache nodeCache, String key) {
 		var near = this.nearCache;
+		var cfg = near.getConfig();
+
+		@SuppressWarnings("unchecked")
+		var valueClass = (Class<T>)cfg.getValueClass();
 
 		var nearValue = near.getSingle(key);
 		long version = (nearValue == null) ? 0 : nearValue.getVersion();
 
-		var nodeCache = resolveNodeCache(key);
 		var r = nodeCache.getSingle(getName(), key, version);
 
 		switch(r.getStatus()) {
 			case OK: {
-				var cfg = near.getConfig();
-				T obj = cfg.getSerder().deserialize(r.getValue(), cfg.getValueClass());
-				near.putSingle(key, new Value<>(obj, r.getVersion()));
-				return obj;
+				var valueBytes = r.getValue();
+				T valueObj = cfg.getSerder().deserialize(valueBytes, valueClass);
+				near.putSingle(key, (k, v) -> new ValueImpl(valueObj, valueBytes, r.getVersion()));
+				return valueObj;
 			}
-			case NO_CHANGE:	return (T)nearValue.getData();
+			case NO_CHANGE:	return nearValue.getObject(cfg.getSerder(), valueClass);
 			case NOT_FOUND: {
 				this.nearCache.invalidateSingle(key);
 				return null;
@@ -73,11 +84,26 @@ public class MeshCache<T> implements HasName {
 
 	public void putSingle(String key, T object) {
 		var nodeCache = resolveNodeCache(key);
+		if (nodeCache.isLocal()) {
+			putLocalSingle(nodeCache, key, object);
+		} else {
+			putRemoteSingle(nodeCache, key, object);
+		}
+	}
 
-		var cfg = this.nearCache.getConfig();
-		var bytes = cfg.getSerder().serialize(object);
-		long version = nodeCache.putSingle(getName(), key, bytes);
-		this.nearCache.putSingle(key, new Value<>(object, version));
+	@SuppressWarnings("unchecked")
+	protected void putLocalSingle(NodeCache nodeCache, String key, T object) {
+		var valueClass = (Class<T>)this.nearCache.getConfig().getValueClass();
+		nodeCache.putSingleObject(getName(), key, object, valueClass);
+	}
+
+	protected void putRemoteSingle(NodeCache nodeCache, String key, Object object) {
+		var near = this.nearCache;
+
+		var valueBytes = near.getConfig().getSerder().serialize(object);
+		long version = nodeCache.putSingle(getName(), key, valueBytes);
+
+		near.putSingle(key, (k, v) -> new ValueImpl(object, valueBytes, version));
 	}
 
 }

@@ -1,5 +1,7 @@
 package cachemesh.caffeine;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -39,15 +41,15 @@ public class CaffeineCache
 	}
 
 
-	// @Override
-	// public void invalidateSingle(String key) {
-	// 	this.instance.invalidate(key);
-	// }
+	@Override
+	public void invalidateSingle(String key) {
+		this.instance.invalidate(key);
+	}
 
-	// @Override
-	// public void invalidateMultiple(Collection<String> keys) {
-	// 	this.instance.invalidateAll(keys);
-	// }
+	@Override
+	public void invalidateMultiple(Collection<String> keys) {
+		this.instance.invalidateAll(keys);
+	}
 
 	@Override
 	public Value getSingle(String key) {
@@ -59,20 +61,20 @@ public class CaffeineCache
 		return this.instance.asMap().compute(key, mapper);
 	}
 
-	// @Override
-	// public Map<String, Value<T>> getMultiple(Collection<String> keys) {
-	// 	return this.instance.getAllPresent(keys);
-	// }
+	@Override
+	public Map<String, Value> getMultiple(Collection<String> keys) {
+	 	return this.instance.getAllPresent(keys);
+	}
 
 	// @Override
 	// public void putMultiple(Collection<LocalCacheEntry<T>> entries) {
 	// 	this.instance.putAll(LocalCacheEntry.toMap(entries));
 	// }
 
-	// @Override
-	// public Collection<String> getAllKeys() {
-	// 	return this.instance.asMap().keySet();
-	// }
+	@Override
+	public Collection<String> getAllKeys() {
+		return this.instance.asMap().keySet();
+	}
 
 
 }

@@ -4,55 +4,29 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 import cachemesh.common.Serderializer;
-import lombok.Getter;
 
-public class Value {
+public interface Value {
 
-	private Reference<byte[]> bytesR;
+	static final Object NULL_OBJECT = new Object();
 
-	@Getter
-	private Object object;
+	static final byte[] NULL_BYTES = new byte[]{};
 
-	@Getter
-	private long version;
+	static final Reference<byte[]> NULL_BYTES_R = new WeakReference<>(NULL_BYTES);
 
-	public Value(byte[] bytes, long version) {
-		this.bytesR = new WeakReference<>(bytes);
-		this.version = version;
-	}
+	static final Reference<Object> NULL_OBJECT_R = new WeakReference<>(NULL_OBJECT);
 
-	public Value(Object object, long version) {
-		this.object = object;
-		this.version = version;
-	}
+	boolean hasValue();
 
-	public Object getObject(Serderializer serder, Class<?> valueClass) {
-		if (this.object == null) {
-			byte[] bytes = (this.bytesR == null) ? null : this.bytesR.get();
-			if (bytes == null) {
-				return null;
-			}
-			this.object = serder.deserialize(bytes, valueClass);
-		}
-		return this.object;
-	}
+	boolean isNullValue();
 
-	public byte[] getBytes(Serderializer serder) {
-		byte[] bytes = (this.bytesR == null) ? null : this.bytesR.get();
-		if (bytes != null) {
-			return bytes;
-		}
+	<T> T getObject(Serderializer serder, Class<?> valueClass);
 
-		if (this.object == null) {
-			return null;
-		}
-		bytes = serder.serialize(this.object);
-		this.bytesR = new WeakReference<>(bytes);//TODO: or use SoftReference; have this configurable
+	<T> T getObject();
 
-		return bytes;
-	}
+	byte[] getBytes(Serderializer serder);
 
+	byte[] getBytes();
 
-
+	long getVersion();
 
 }

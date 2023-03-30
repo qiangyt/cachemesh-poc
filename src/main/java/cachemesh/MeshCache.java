@@ -8,6 +8,7 @@ import cachemesh.common.err.ServiceException;
 import cachemesh.common.util.LogHelper;
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.LocalCacheConfig;
+import cachemesh.spi.LocalCacheManager;
 import cachemesh.spi.NodeCache;
 import cachemesh.spi.base.Value;
 import static net.logstash.logback.argument.StructuredArguments.kv;
@@ -16,12 +17,12 @@ public class MeshCache<T> implements HasName {
 
 	private Logger logger;
 
-	private final LocalCache<T, Value<T>, LocalCacheConfig<T>> nearCache;
+	private final LocalCache nearCache;
 
 	private final MeshNetwork network;
 
-	public MeshCache(LocalCache<T, Value<T>, LocalCacheConfig<T>> nearCache, MeshNetwork network) {
-		this.nearCache = nearCache;
+	public MeshCache(String name, LocalCacheManager localCacheManager, MeshNetwork network) {
+		this.nearCache = localCacheManager.get(name);
 		this.network = network;
 
 		this.logger = LogHelper.getLogger(this);
@@ -38,7 +39,7 @@ public class MeshCache<T> implements HasName {
 			this.logger.debug("find node for {}: {}", kv("key", key), LogHelper.kv("node", node));
 		}
 
-		return node.getNodeCache();
+		return node.getCache();
 	}
 
 	public T getSingle(String key) {

@@ -8,28 +8,28 @@ import java.util.HashMap;
 
 @lombok.Getter
 @lombok.ToString
-public class LocalCacheEntry<T> {
+public class LocalCacheEntry {
 
 	private final String key;
-	private final Value<T> value;
+	private final Value value;
 
-	public LocalCacheEntry(String key, Value<T> value) {
+	public LocalCacheEntry(String key, Value value) {
 			this.key = key;
 			this.value = value;
 		}
 
-	public static <R> Map<String, Value<R>> toMap(Iterable<LocalCacheEntry<R>> entries) {
-		var r = new HashMap<String, Value<R>>();
+	public static Map<String, Value> toMap(Iterable<LocalCacheEntry> entries) {
+		var r = new HashMap<String, Value>();
 		entries.forEach(entry -> {
 			r.put(entry.getKey(), entry.getValue());
 		});
 		return r;
 	}
 
-	public static <R> List<LocalCacheEntry<R>> fromMap(Map<String, Value<R>> entries) {
-		var r = new ArrayList<LocalCacheEntry<R>>(entries.size());
+	public static List<LocalCacheEntry> fromMap(Map<String, Value> entries) {
+		var r = new ArrayList<LocalCacheEntry>(entries.size());
 		for (var entry : entries.entrySet()) {
-			r.add(new LocalCacheEntry<R>(entry.getKey(), entry.getValue()));
+			r.add(new LocalCacheEntry(entry.getKey(), entry.getValue()));
 		}
 		return r;
 	}

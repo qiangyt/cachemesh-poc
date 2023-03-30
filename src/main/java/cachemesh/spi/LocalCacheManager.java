@@ -12,17 +12,15 @@ import cachemesh.common.Mappable;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.shutdown.ShutdownSupport;
 import cachemesh.common.util.LogHelper;
-import cachemesh.spi.base.Value;
 
 import org.slf4j.Logger;
 
 @ThreadSafe
-public class LocalCacheManager<T, V extends Value<T>, K extends LocalCache<T, V, C>, C extends LocalCacheConfig<T>>
-	implements Mappable {
+public class LocalCacheManager implements Mappable {
 
 	class Item {
-		K cache;
-		C config;
+		LocalCache cache;
+		LocalCacheConfig config;
 	}
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -30,18 +28,18 @@ public class LocalCacheManager<T, V extends Value<T>, K extends LocalCache<T, V,
 	private final Map<String, Item> items = new ConcurrentHashMap<>();
 
 	@lombok.Getter
-	private final C defaultConfig;
+	private final LocalCacheConfig defaultConfig;
 
 	private ShutdownSupport shutdown;
 
 
-	public LocalCacheManager(ShutdownSupport shutdown, C defaultConfig) {
+	public LocalCacheManager(ShutdownSupport shutdown, LocalCacheConfig defaultConfig) {
 		this.shutdown = shutdown;
 		this.defaultConfig = defaultConfig;
 	}
 
 
-	public void addConfig(C config) {
+	public void addConfig(LocalCacheConfig config) {
 		this.items.compute(config.getName(), (name, item) -> {
 			if (item != null) {
 				throw new InternalException("duplicated configuration %s", name);
@@ -54,19 +52,18 @@ public class LocalCacheManager<T, V extends Value<T>, K extends LocalCache<T, V,
 	}
 
 
-	public C getConfig(String name) {
+	public LocalCacheConfig getConfig(String name) {
 		var i = this.items.get(name);
 		return (i == null) ? null : i.config;
 	}
 
 
-	public K get(String name) {
+	public LocalCache get(String name) {
 		var i = this.items.get(name);
 		return (i == null) ? null : i.cache;
 	}
 
-	@SuppressWarnings("unchecked")
-	public K resolve(String name, Class<T> valueClass) {
+	public LocalCache resolve(String name, Class<?> valueClass) {
 		var i = this.items.compute(name, (n, item) -> {
 			if (item == null) {
 				item = new Item();
@@ -74,7 +71,7 @@ public class LocalCacheManager<T, V extends Value<T>, K extends LocalCache<T, V,
 			}
 
 			if (item.cache == null) {
-				var r = (K)item.config.getFactory().create(item.config);
+				var r = item.config.getFactory().create(item.config);
 				if (this.shutdown != null) {
 					this.shutdown.register(r);
 				}

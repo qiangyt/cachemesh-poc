@@ -10,16 +10,16 @@ import cachemesh.spi.LocalCache;
 import cachemesh.spi.base.Value;
 
 @Getter
-public class CaffeineCache<T, V extends Value<T>>
+public class CaffeineCache
 	extends AbstractShutdownable
-	implements LocalCache<T, V, CaffeineConfig<T>> {
+	implements LocalCache {
 
-	private final CaffeineConfig<T> config;
+	private final CaffeineConfig config;
 
-	private final Cache<String, V> instance;
+	private final Cache<String, Value> instance;
 
 
-	public CaffeineCache(CaffeineConfig<T> config, Cache<String, V> instance) {
+	public CaffeineCache(CaffeineConfig config, Cache<String, Value> instance) {
 		super(config.getName());
 
 		this.config = config;
@@ -50,12 +50,12 @@ public class CaffeineCache<T, V extends Value<T>>
 	// }
 
 	@Override
-	public V getSingle(String key, long version) {
+	public Value getSingle(String key) {
 		return this.instance.getIfPresent(key);
 	}
 
 	@Override
-	public V putSingle(String key, BiFunction<String, V, V> mapper) {
+	public Value putSingle(String key, BiFunction<String, Value, Value> mapper) {
 		return this.instance.asMap().compute(key, mapper);
 	}
 

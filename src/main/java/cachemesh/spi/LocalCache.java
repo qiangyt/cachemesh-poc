@@ -7,9 +7,7 @@ import java.util.function.BiFunction;
 import cachemesh.common.shutdown.Shutdownable;
 import cachemesh.spi.base.Value;
 
-public interface LocalCache
-	<T, V extends Value<T>, C extends LocalCacheConfig<T>>
-	extends Shutdownable {
+public interface LocalCache	extends Shutdownable {
 
 	@Override
 	default Map<String, Object> toMap() {
@@ -23,17 +21,17 @@ public interface LocalCache
 		return getConfig().getName();
 	}
 
-	C getConfig();
+	LocalCacheConfig getConfig();
 
 	//void invalidateSingle(String key);
 
 	//void invalidateMultiple(Collection<String> keys);
 
-	V getSingle(String key, long version);
+	Value getSingle(String key);
 
 	//Map<String, Value<T>> getMultiple(Collection<String> keys);
 
-	V putSingle(String key, BiFunction<String, V, V> mapper);
+	Value putSingle(String key, BiFunction<String, Value, Value> mapper);
 
 	//void putMultiple(Collection<LocalCacheEntry<T>> entries);
 

@@ -15,7 +15,7 @@ public class MeshNetworkConfig {
 
 	private Hashing hashing;
 
-	private LocalCacheConfig<Object> nearCacheConfig;
+	private LocalCacheConfig nearCacheConfig;
 
 	public MeshNetworkConfig(String name,
 							 Hashing hashing,

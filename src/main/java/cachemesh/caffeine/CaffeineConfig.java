@@ -9,7 +9,7 @@ import cachemesh.spi.LocalCacheConfig;
 
 @lombok.Getter
 @lombok.experimental.SuperBuilder
-public class CaffeineConfig<T> extends LocalCacheConfig<T> {
+public class CaffeineConfig extends LocalCacheConfig {
 
 	public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
 	private final int maximumSize;
@@ -18,23 +18,22 @@ public class CaffeineConfig<T> extends LocalCacheConfig<T> {
 	private final Duration expireAfterWrite;
 
 
-	public static <T> CaffeineConfig<T> defaultConfig(String name, Class<T> valueClass) {
+	public static CaffeineConfig defaultConfig(String name, Class<?> valueClass) {
 		return defaultConfig(name, valueClass, JacksonSerderializer.DEFAULT, true);
 	}
 
 
-	@SuppressWarnings("unchecked")
-	public static <T> CaffeineConfig<T> defaultConfig(String name,
-													Class<T> valueClass,
+	public static CaffeineConfig defaultConfig(String name,
+													Class<?> valueClass,
 													Serderializer serder,
 													boolean cacheBytes) {
 		var factory = CaffeineFactory.DEFAULT;
 
-		return (CaffeineConfig<T>)builder()
+		return builder()
 				.name(name)
-				.valueClass((Class<Object>)valueClass)
+				.valueClass(valueClass)
 				.serder(serder)
-				.cacheBytes(cacheBytes)
+				//.cacheBytes(cacheBytes)
 				.factory(factory)
 				.maximumSize(DEFAULT_MAXIMUM_SIZE)
 				.expireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE)
@@ -42,24 +41,23 @@ public class CaffeineConfig<T> extends LocalCacheConfig<T> {
 	}
 
 	public CaffeineConfig(String name,
-							   Class<T> valueClass,
+							   Class<?> valueClass,
 							   Serderializer serder,
-							   boolean cacheBytes,
+							   //boolean cacheBytes,
 							   CaffeineFactory factory,
 							   int maximumSize,
 							   Duration expireAfterWrite ) {
-		super(name, valueClass, serder, cacheBytes, factory);
+		super(name, valueClass, serder, /*cacheBytes,*/ factory);
 		this.maximumSize = maximumSize;
 		this.expireAfterWrite = expireAfterWrite;
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <T2, C2 extends LocalCacheConfig<T2>> C2 buildAnother(String name, Class<T2> valueClass) {
-		return (C2)new CaffeineConfig<>(name, valueClass, getSerder(), isCacheBytes(),
-									   (CaffeineFactory)getFactory(),
-									   getMaximumSize(),
-									   getExpireAfterWrite());
+	public LocalCacheConfig buildAnother(String name, Class<?> valueClass) {
+		return new CaffeineConfig(name, valueClass, getSerder(), /*isCacheBytes(),*/
+								  (CaffeineFactory)getFactory(),
+								  getMaximumSize(),
+								  getExpireAfterWrite());
 	}
 
 	@Override

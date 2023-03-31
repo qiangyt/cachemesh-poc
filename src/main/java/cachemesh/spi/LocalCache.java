@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import cachemesh.common.shutdown.Shutdownable;
+import cachemesh.common.HasName;
 
-public interface LocalCache	extends Shutdownable {
+public interface LocalCache	extends HasName {
 
 	@Override
 	default Map<String, Object> toMap() {
@@ -20,6 +20,8 @@ public interface LocalCache	extends Shutdownable {
 	default String getName() {
 		return getConfig().getName();
 	}
+
+	void shutdown(int timeoutSeconds) throws InterruptedException;
 
 	LocalCacheConfig getConfig();
 

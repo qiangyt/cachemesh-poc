@@ -7,17 +7,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import cachemesh.common.util.LogHelper;
 
 
 @ThreadSafe
 public abstract class ShutdownableResourceManager<T extends ShutdownableResource<C>, C extends ShutdownableConfig>
 	extends AbstractShutdownable {
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private Map<String, T> resources = new ConcurrentHashMap<>();
 
@@ -32,7 +27,7 @@ public abstract class ShutdownableResourceManager<T extends ShutdownableResource
 	public T resolve(C config) {
 		return getResources().computeIfAbsent(config.getName(), target -> {
 			var r = create(config);
-			this.logger.info("created {}: {}", config.getClass(), LogHelper.entries(r));
+			getLogger().info("created {}: {}", config.getClass(), LogHelper.entries(r));
 			return r;
 		});
 	}

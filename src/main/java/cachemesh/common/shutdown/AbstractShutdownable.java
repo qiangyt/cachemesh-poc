@@ -10,7 +10,7 @@ import lombok.Getter;
 public abstract class AbstractShutdownable implements Shutdownable {
 
 	@Getter
-	protected final Logger logger;
+	private final Logger logger;
 
 	private final String name;
 

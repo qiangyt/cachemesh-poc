@@ -1,9 +1,9 @@
 package cachemesh.grpc;
 
 import cachemesh.common.shutdown.ShutdownSupport;
-import cachemesh.common.shutdown.ShutdownableResourceManager;
+import cachemesh.common.shutdown.ShutdownableManager;
 
-public class GrpcClientManager extends ShutdownableResourceManager<GrpcClient, GrpcConfig> {
+public class GrpcClientManager extends ShutdownableManager<GrpcClient, GrpcConfig> {
 
 	public static final GrpcClientManager DEFAULT = new GrpcClientManager("default-grpc-client-manager", ShutdownSupport.DEFAULT);
 

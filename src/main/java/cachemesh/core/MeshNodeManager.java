@@ -4,8 +4,6 @@ import java.util.Map;
 
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.hash.Hashing;
-import cachemesh.core.local.LocalCacheManager;
-import cachemesh.core.local.LocalNodeCache;
 import cachemesh.spi.TransportProvider;
 import lombok.Getter;
 

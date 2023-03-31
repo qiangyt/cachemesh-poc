@@ -4,7 +4,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 import cachemesh.MeshCache;
-import cachemesh.core.local.LocalCacheManager;
 import lombok.Getter;
 
 public class MeshCacheManager {

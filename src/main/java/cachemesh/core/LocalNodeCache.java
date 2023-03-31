@@ -1,8 +1,5 @@
-package cachemesh.core.local;
+package cachemesh.core;
 
-import cachemesh.core.GetResult;
-import cachemesh.core.ResultStatus;
-import cachemesh.core.ValueImpl;
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.NodeCache;
 

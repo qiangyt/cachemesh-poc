@@ -2,8 +2,8 @@ package cachemesh.grpc;
 
 import java.util.Map;
 
+import cachemesh.core.LocalNodeCache;
 import cachemesh.core.Transport;
-import cachemesh.core.local.LocalNodeCache;
 import cachemesh.spi.NodeCache;
 import cachemesh.spi.TransportProvider;
 import lombok.Getter;

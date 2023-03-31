@@ -11,16 +11,16 @@ import cachemesh.common.util.LogHelper;
 
 
 @ThreadSafe
-public abstract class ShutdownableResourceManager<T extends ShutdownableResource<C>, C extends ShutdownableConfig>
+public abstract class ShutdownableManager<T extends ShutdownableResource<C>, C extends ShutdownableConfig>
 	extends AbstractShutdownable {
 
 	private Map<String, T> resources = new ConcurrentHashMap<>();
 
-	public ShutdownableResourceManager(String name, ShutdownSupport shutdownSupport) {
+	public ShutdownableManager(String name, ShutdownSupport shutdownSupport) {
 		super(name, shutdownSupport, 0);
 	}
 
-	public ShutdownableResourceManager(String name, ShutdownSupport shutdownSupport, int shutdownTimeoutSeconds) {
+	public ShutdownableManager(String name, ShutdownSupport shutdownSupport, int shutdownTimeoutSeconds) {
 		super(name, shutdownSupport, shutdownTimeoutSeconds);
 	}
 

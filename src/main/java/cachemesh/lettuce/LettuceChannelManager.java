@@ -1,9 +1,9 @@
 package cachemesh.lettuce;
 
 import cachemesh.common.shutdown.ShutdownSupport;
-import cachemesh.common.shutdown.ShutdownableResourceManager;
+import cachemesh.common.shutdown.ShutdownableManager;
 
-public class LettuceChannelManager extends ShutdownableResourceManager<LettuceChannel, LettuceConfig> {
+public class LettuceChannelManager extends ShutdownableManager<LettuceChannel, LettuceConfig> {
 
 	public static final LettuceChannelManager DEFAULT = new LettuceChannelManager("default-lettuce-channel-manager", ShutdownSupport.DEFAULT);
 

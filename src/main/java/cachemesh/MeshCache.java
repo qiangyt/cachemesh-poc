@@ -7,9 +7,9 @@ import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.err.ServiceException;
 import cachemesh.common.util.LogHelper;
+import cachemesh.core.LocalCacheManager;
 import cachemesh.core.MeshNodeManager;
 import cachemesh.core.ValueImpl;
-import cachemesh.core.local.LocalCacheManager;
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.NodeCache;
 

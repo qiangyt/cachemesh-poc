@@ -1,4 +1,4 @@
-package cachemesh.core.local;
+package cachemesh.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;

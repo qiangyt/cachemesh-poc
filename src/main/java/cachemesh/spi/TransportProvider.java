@@ -3,7 +3,7 @@ package cachemesh.spi;
 import java.util.Map;
 
 import cachemesh.common.HasName;
-import cachemesh.core.local.LocalNodeCache;
+import cachemesh.core.LocalNodeCache;
 
 public interface TransportProvider extends HasName {
 

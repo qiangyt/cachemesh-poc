@@ -9,17 +9,25 @@ import lombok.Getter;
 @Getter
 public abstract class AbstractShutdownable implements Shutdownable {
 
+	@Getter
 	protected final Logger logger;
 
 	private final String name;
 
 	private ShutdownSupport shutdownSupport;
 
-	private boolean shutdownNeeded;
+	protected AbstractShutdownable(String name, ShutdownSupport shutdownSupport) {
+		this(name, shutdownSupport, 0);
+	}
 
-	public AbstractShutdownable(String name) {
+	protected AbstractShutdownable(String name, ShutdownSupport shutdownSupport, int shutdownTimeoutSeconds) {
 		this.name = name;
 		this.logger = LogHelper.getLogger(this);
+
+		this.shutdownSupport = shutdownSupport;
+		if (shutdownSupport != null) {
+			shutdownSupport.register(this, shutdownTimeoutSeconds);
+		}
 	}
 
 	@Override
@@ -32,21 +40,11 @@ public abstract class AbstractShutdownable implements Shutdownable {
 		if (sd != null) {
 			sd.shutdown(this, timeoutSeconds);
 		} else {
-			onShutdown(shutdownLogger(), timeoutSeconds);
+			onShutdown(createShutdownLogger(), timeoutSeconds);
 		}
 	}
 
-	protected void setShutdownNeeded(boolean shutdownNeeded) {
-		this.shutdownNeeded = shutdownNeeded;
-	}
-
-	@Override
-	public void onShutdownRegistered(ShutdownSupport shutdownSupport) {
-		this.shutdownSupport = shutdownSupport;
-	}
-
-	@Override
-	public ShutdownLogger shutdownLogger() {
+	public ShutdownLogger createShutdownLogger() {
 		return new ShutdownLogger(getLogger());
 	}
 

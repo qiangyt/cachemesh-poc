@@ -50,7 +50,7 @@ public class GrpcTransportProvider implements TransportProvider {
 		var transport = Transport.parseUrl(url);
 		transport.ensureProtocol(GrpcConfig.PROTOCOL);
 
-		return GrpcConfig.parseTarget(transport.getTarget());
+		return GrpcConfig.parseName(transport.getTarget());
 	}
 
 }

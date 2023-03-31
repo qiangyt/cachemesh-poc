@@ -1,40 +1,23 @@
 package cachemesh.lettuce;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import cachemesh.common.shutdown.ShutdownSupport;
-import cachemesh.common.util.LogHelper;
+import cachemesh.common.shutdown.ShutdownableResourceManager;
 
-public class LettuceChannelManager {
+public class LettuceChannelManager extends ShutdownableResourceManager<LettuceChannel, LettuceConfig> {
 
-	public static final LettuceChannelManager DEFAULT = new LettuceChannelManager(ShutdownSupport.DEFAULT);
+	public static final LettuceChannelManager DEFAULT = new LettuceChannelManager("default-lettuce-channel-manager", ShutdownSupport.DEFAULT);
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-
-	private Map<String, LettuceChannel> channels = new ConcurrentHashMap<>();
-
-	private ShutdownSupport shutdown;
-
-	public LettuceChannelManager(ShutdownSupport shutdown) {
-		this.shutdown = shutdown;
+	public LettuceChannelManager(String name, ShutdownSupport shutdownSupport) {
+		super(name, shutdownSupport, 0);
 	}
 
-	public LettuceChannel resolve(LettuceConfig config) {
-		var target = config.getTarget();
+	public LettuceChannelManager(String name, ShutdownSupport shutdownSupport, int shutdownTimeoutSeconds) {
+		super(name, shutdownSupport, shutdownTimeoutSeconds);
+	}
 
-		return this.channels.computeIfAbsent(target, k -> {
-			var r = new LettuceChannel(config);
-			if (this.shutdown != null) {
-				this.shutdown.register(r);
-			}
-
-			this.logger.info("created lettuce channel: {}", LogHelper.entries(r));
-			return r;
-		});
+	@Override
+	protected LettuceChannel create(LettuceConfig config) {
+		return new LettuceChannel(config, getShutdownSupport(), this);
 	}
 
 }

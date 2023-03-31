@@ -2,31 +2,22 @@ package cachemesh.grpc;
 
 import java.util.concurrent.TimeUnit;
 
-import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
+import cachemesh.common.shutdown.ShutdownSupport;
+import cachemesh.common.shutdown.ShutdownableResource;
 import io.grpc.ManagedChannel;
 import lombok.Getter;
 
 
 @Getter
-public class GrpcClient extends AbstractShutdownable {
-
-	private final GrpcConfig config;
+public class GrpcClient extends ShutdownableResource<GrpcConfig> {
 
 	private ManagedChannel channel = null;
 
-	public GrpcClient(GrpcConfig config) {
-		super(config.getUrl());
 
-		this.config = config;
+	public GrpcClient(GrpcConfig config, ShutdownSupport shutdownSupport, GrpcClientManager clientManager) {
+		super(config, shutdownSupport, clientManager);
 		this.channel = config.createClientChannel();
-
-		setShutdownNeeded(true);
-	}
-
-	@Override
-	public String toString() {
-		return getConfig().toString();
 	}
 
 	@Override

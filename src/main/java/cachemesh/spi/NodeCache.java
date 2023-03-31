@@ -7,6 +7,8 @@ import cachemesh.core.GetResult;
 @ThreadSafe
 public interface NodeCache {
 
+	void shutdown(int timeoutSeconds) throws InterruptedException;
+
 	GetResult<byte[]> getSingle(String cacheName, String key, long version);
 
 	// return version

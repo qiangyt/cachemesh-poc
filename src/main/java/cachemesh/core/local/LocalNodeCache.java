@@ -6,13 +6,18 @@ import cachemesh.core.ValueImpl;
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.NodeCache;
 
-@lombok.Getter
+
 public class LocalNodeCache implements NodeCache {
 
 	private final LocalCacheManager backend;
 
 	public LocalNodeCache(LocalCacheManager backend) {
 		this.backend = backend;
+	}
+
+	@Override
+	public void shutdown(int timeoutSeconds) throws InterruptedException {
+		this.backend.shutdown(timeoutSeconds);
 	}
 
 	@Override

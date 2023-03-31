@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import cachemesh.common.err.InternalException;
-import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
+import cachemesh.common.shutdown.ShutdownSupport;
+import cachemesh.common.shutdown.ShutdownableResource;
 import cachemesh.common.util.LogHelper;
 import io.grpc.BindableService;
 import io.grpc.Grpc;
@@ -13,28 +14,24 @@ import io.grpc.InsecureServerCredentials;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
-import lombok.Getter;
-
-public class GrpcServer extends AbstractShutdownable {
-
-	@Getter
-	private final GrpcConfig config;
+public class GrpcServer extends ShutdownableResource<GrpcConfig> {
 
 	private final ServerBuilder<?> builder;
 
-	private Server instance = null;
+	private volatile Server instance = null;
 
-	public GrpcServer(GrpcConfig config) {
-		super(config.getUrl());
-
-		this.config = config;
+	public GrpcServer(GrpcConfig config, ShutdownSupport shutdownSupport, GrpcServerManager serverManager) {
+		super(config, shutdownSupport, serverManager);
 		this.builder = Grpc.newServerBuilderForPort(config.getPort(), InsecureServerCredentials.create());
+	}
 
-		setShutdownNeeded(false);
+	@Override
+	public boolean isShutdownNeeded() {
+		return isStarted();
 	}
 
 	public boolean isStarted() {
-		return isShutdownNeeded();
+		return this.instance != null;
 	}
 
 	public void addService(BindableService service) {
@@ -42,11 +39,6 @@ public class GrpcServer extends AbstractShutdownable {
 			throw new InternalException("%s: cannot add service any more once server started", getName());
 		}
 		this.builder.addService(service);
-	}
-
-	@Override
-	public String toString() {
-		return getConfig().toString();
 	}
 
 	public void start() {
@@ -61,8 +53,6 @@ public class GrpcServer extends AbstractShutdownable {
 		try {
 			inst.start();
 			this.instance = inst;
-
-			setShutdownNeeded(true);
 
 			getLogger().info("started");
 		} catch (IOException e) {
@@ -82,8 +72,7 @@ public class GrpcServer extends AbstractShutdownable {
 
 		this.instance.shutdown();
 		blockUntilTermination(0);
-
-		setShutdownNeeded(false);
+		this.instance = null;
 	}
 
 	public void blockUntilTermination(int timeoutSeconds) throws InterruptedException {

@@ -33,7 +33,7 @@ public class LettuceTransportProvider implements TransportProvider {
 		var transport = Transport.parseUrl(url);
 		transport.ensureProtocol(LettuceConfig.PROTOCOL);
 
-		return LettuceConfig.parseTarget(transport.getTarget());
+		return LettuceConfig.parseName(transport.getTarget());
 	}
 
 }

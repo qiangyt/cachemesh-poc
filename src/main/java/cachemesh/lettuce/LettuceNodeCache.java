@@ -10,9 +10,13 @@ public class LettuceNodeCache implements NodeCache {
 
 	private final LettuceChannel channel;
 
-
 	public LettuceNodeCache(LettuceChannel channel) {
 		this.channel = channel;
+	}
+
+	@Override
+	public void shutdown(int timeoutSeconds) throws InterruptedException {
+		this.channel.shutdown(timeoutSeconds);
 	}
 
 	public LettuceConfig getConfig() {
@@ -56,4 +60,5 @@ public class LettuceNodeCache implements NodeCache {
 
 		return 0;
 	}
+
 }

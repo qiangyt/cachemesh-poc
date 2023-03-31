@@ -19,7 +19,12 @@ public class ShutdownItem {
 		this.timeoutSeconds = timeoutSeconds;
 		this.shutdowned = false;
 		this.support = support;
-		this.logger = target.shutdownLogger();
+
+		if (target instanceof AbstractShutdownable) {
+			this.logger = ((AbstractShutdownable)target).createShutdownLogger();
+		} else {
+			this.logger = new ShutdownLogger(target.getLogger());
+		}
 	}
 
 
@@ -40,7 +45,7 @@ public class ShutdownItem {
 		try {
 			this.target.onShutdown(this.logger, timeoutSeconds);
 		} catch (Exception e) {
-			this.target.shutdownLogger().error(e, "got error during shutdown");
+			this.logger.error(e, "got error during shutdown");
 		}
 
 		this.shutdowned = true;

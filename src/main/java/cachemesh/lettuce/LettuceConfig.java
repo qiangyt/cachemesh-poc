@@ -3,13 +3,13 @@ package cachemesh.lettuce;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.Mappable;
+import cachemesh.common.shutdown.ShutdownableConfig;
 import cachemesh.common.util.StringHelper;
 import cachemesh.core.Transport;
 
 @lombok.Getter
 @lombok.Builder
-public class LettuceConfig implements Mappable {
+public class LettuceConfig implements ShutdownableConfig {
 
 	public static final String PROTOCOL = "redis";
 
@@ -21,13 +21,13 @@ public class LettuceConfig implements Mappable {
 
 	private final String url;
 
-	private final String target;
+	private final String name;
 
 	public static final String DEFAULT_SEPARATOR = "%";
 
 	private final String keySeparator;
 
-	private final LettuceCodec codec;
+	private final int shutdownTimeoutSeconds;
 
 
 	@Override
@@ -37,10 +37,10 @@ public class LettuceConfig implements Mappable {
 		configMap.put("host", getHost());
 		configMap.put("port", getPort());
 		configMap.put("database", getDatabase());
-		configMap.put("target", getTarget());
+		configMap.put("name", getName());
 		configMap.put("url", getUrl());
 		configMap.put("keySeparator", getKeySeparator());
-		configMap.put("codec", getCodec());
+		configMap.put("shutdownTimeoutSeconds", getShutdownTimeoutSeconds());
 
 		return configMap;
 	}
@@ -49,7 +49,7 @@ public class LettuceConfig implements Mappable {
 		var transport = Transport.parseUrl(url);
 		transport.ensureProtocol(PROTOCOL);
 
-		var configMap = parseTarget(transport.getTarget());
+		var configMap = parseName(transport.getTarget());
 		return from(configMap);
 	}
 
@@ -60,15 +60,15 @@ public class LettuceConfig implements Mappable {
 		var port = (Integer)configMap.get("port");
 		var database = (Integer)configMap.get("database");
 
-		String target;
+		String name;
 
 		if (StringHelper.isBlank(url)) {
 			if (database == null) {
 				database = Integer.valueOf(0);
 			}
 
-			target = formatTarget(host, port, database);
-			url = Transport.formatUrl(PROTOCOL, target);
+			name = formatName(host, port, database);
+			url = Transport.formatUrl(PROTOCOL, name);
 		} else {
 			if (StringHelper.isBlank(host) == false || port != null || database != null) {
 				throw new IllegalArgumentException("host+port+database is exclusive with url");
@@ -77,8 +77,8 @@ public class LettuceConfig implements Mappable {
 			var transport = Transport.parseUrl(url);
 			transport.ensureProtocol(PROTOCOL);
 
-			target = transport.getTarget();
-			configMap = parseTarget(target);
+			name = transport.getTarget();
+			configMap = parseName(name);
 
 			host = (String)configMap.get("host");
 			port = (Integer)configMap.get("port");
@@ -94,24 +94,21 @@ public class LettuceConfig implements Mappable {
 			keySeparator = DEFAULT_SEPARATOR;
 		}
 
-		var codec = (LettuceCodec)configMap.get("codec");
-		if (codec == null) {
-			codec = LettuceCodec.DEFAULT;
-		}
+		Integer shutdownTimeoutSeconds = (Integer)configMap.get("shutdownTimeoutSeconds");
 
 		return builder()
 				.host(host)
 				.port(port.intValue())
 				.url(url)
 				.database(database.intValue())
-				.target(target)
+				.name(name)
 				.keySeparator(keySeparator)
-				.codec(codec)
+				.shutdownTimeoutSeconds(shutdownTimeoutSeconds)
 				.build();
 	}
 
 
-	public static String formatTarget(String host, int port, int database) {
+	public static String formatName(String host, int port, int database) {
 		if (database > 0) {
 			return String.format("%s:%d/%d", host, port, database);
 		}
@@ -119,14 +116,14 @@ public class LettuceConfig implements Mappable {
 	}
 
 
-	public static Map<String,Object> parseTarget(String target) {
-		int sep1 = target.indexOf(":");
+	public static Map<String,Object> parseName(String name) {
+		int sep1 = name.indexOf(":");
 		if (sep1 <= 0) {
-			throw new IllegalArgumentException("target should follow the format: <host>:<port>/<database>");
+			throw new IllegalArgumentException("name should follow the format: <host>:<port>/<database>");
 		}
 
-		String host = target.substring(0, sep1);
-		String portAndDatabase = target.substring(sep1 + ":".length());
+		String host = name.substring(0, sep1);
+		String portAndDatabase = name.substring(sep1 + ":".length());
 
 		int port;
 		int database;

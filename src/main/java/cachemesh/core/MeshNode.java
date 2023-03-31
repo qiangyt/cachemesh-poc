@@ -26,6 +26,10 @@ public class MeshNode implements HasName, ConsistentHash.Node {
 		this.logger = LogHelper.getLogger(this);
 	}
 
+	public void shutdown(int timeoutSeconds) throws InterruptedException {
+		getCache().shutdown(timeoutSeconds);
+	}
+
 	@Override
 	public String getName() {
 		return getKey();

@@ -9,10 +9,16 @@ import com.google.protobuf.ByteString;
 public class GrpcNodeCache implements NodeCache {
 
 	private final CacheMeshGrpc.CacheMeshBlockingStub stub;
-
+	private final GrpcClient client;
 
 	public GrpcNodeCache(GrpcClient client) {
 		this.stub = CacheMeshGrpc.newBlockingStub(client.getChannel());
+		this.client = client;
+	}
+
+	@Override
+	public void shutdown(int timeoutSeconds) throws InterruptedException {
+		this.client.shutdown(timeoutSeconds);
 	}
 
 	@Override

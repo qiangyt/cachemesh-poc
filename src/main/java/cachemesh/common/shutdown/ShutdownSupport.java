@@ -45,9 +45,7 @@ public class ShutdownSupport {
 			return new ShutdownItem(this, target, timeoutSeconds);
 		});
 
-		target.onShutdownRegistered(this);
 		this.logger.info("registered shutdown: %s", name);
-
 
 		refreshTimeout();
 	}

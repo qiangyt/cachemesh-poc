@@ -1,17 +1,19 @@
 package cachemesh.common.shutdown;
 
+import org.slf4j.Logger;
+
 import cachemesh.common.HasName;
 
 public interface Shutdownable extends HasName {
 
 	void shutdown(int timeoutSeconds) throws InterruptedException;
 
-	void onShutdownRegistered(ShutdownSupport shutdownSupport);
-
 	void onShutdown(ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException;
 
-	ShutdownLogger shutdownLogger();
+	default boolean isShutdownNeeded() {
+		return true;
+	}
 
-	boolean isShutdownNeeded();
+	Logger getLogger();
 
 }

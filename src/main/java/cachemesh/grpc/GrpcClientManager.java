@@ -1,42 +1,23 @@
 package cachemesh.grpc;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.annotation.concurrent.ThreadSafe;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import cachemesh.common.shutdown.ShutdownSupport;
-import cachemesh.common.util.LogHelper;
+import cachemesh.common.shutdown.ShutdownableResourceManager;
 
-@ThreadSafe
-public class GrpcClientManager {
+public class GrpcClientManager extends ShutdownableResourceManager<GrpcClient, GrpcConfig> {
 
-	public static final GrpcClientManager DEFAULT = new GrpcClientManager(ShutdownSupport.DEFAULT);
+	public static final GrpcClientManager DEFAULT = new GrpcClientManager("default-grpc-client-manager", ShutdownSupport.DEFAULT);
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-
-	private Map<String, GrpcClient> clients = new ConcurrentHashMap<>();
-
-	private ShutdownSupport shutdown;
-
-	public GrpcClientManager(ShutdownSupport shutdown) {
-		this.shutdown = shutdown;
+	public GrpcClientManager(String name, ShutdownSupport shutdownSupport) {
+		super(name, shutdownSupport, 0);
 	}
 
-	public GrpcClient resolve(GrpcConfig config) {
-		return this.clients.computeIfAbsent(config.getTarget(), target -> {
-			var r = new GrpcClient(config);
-			if (this.shutdown != null) {
-				this.shutdown.register(r);
-			}
-
-			this.logger.info("created grpc client: {}", LogHelper.entries(r));
-			return r;
-		});
+	public GrpcClientManager(String name, ShutdownSupport shutdownSupport, int shutdownTimeoutSeconds) {
+		super(name, shutdownSupport, shutdownTimeoutSeconds);
 	}
 
+	@Override
+	protected GrpcClient create(GrpcConfig config) {
+		return new GrpcClient(config, getShutdownSupport(), this);
+	}
 
 }

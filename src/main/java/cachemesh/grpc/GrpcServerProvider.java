@@ -7,6 +7,8 @@ import lombok.Getter;
 @Getter
 public class GrpcServerProvider extends Manager<GrpcConfig, GrpcServer> {
 
+	public static final GrpcServerProvider DEFAULT = new GrpcServerProvider(ShutdownManager.DEFAULT);
+
 	private final ShutdownManager shutdownManager;
 
 	public GrpcServerProvider(ShutdownManager shutdownManager) {

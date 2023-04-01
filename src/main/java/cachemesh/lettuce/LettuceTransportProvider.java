@@ -5,6 +5,7 @@ import java.util.Map;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
 import cachemesh.core.TransportConfig;
+import cachemesh.core.TransportRegistry;
 import cachemesh.core.TransportURL;
 import cachemesh.spi.Transport;
 import cachemesh.spi.TransportProvider;
@@ -12,6 +13,13 @@ import lombok.Getter;
 
 @Getter
 public class LettuceTransportProvider implements TransportProvider {
+
+	public static final LettuceTransportProvider DEFAULT
+		= new LettuceTransportProvider(DedicatedRedisClientProvider.DEFAULT, ShutdownManager.DEFAULT);
+
+	public static void register() {
+		TransportRegistry.DEFAULT.register(LettuceConfig.PROTOCOL, DEFAULT);
+	}
 
 	private final ShutdownManager shutdownManager;
 

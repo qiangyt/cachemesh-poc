@@ -1,5 +1,6 @@
 package cachemesh;
 
+import cachemesh.core.MeshNetwork;
 import cachemesh.jgroup.JGroupsListener;
 import cachemesh.jgroup.JGroupsMembers;
 

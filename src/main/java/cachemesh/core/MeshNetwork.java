@@ -2,15 +2,33 @@ package cachemesh.core;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+
+import cachemesh.common.HasName;
+import cachemesh.common.LifeStage;
+import cachemesh.common.shutdown.Shutdownable;
+import cachemesh.common.util.LogHelper;
+import cachemesh.grpc.GrpcTransportProvider;
+import cachemesh.lettuce.LettuceTransportProvider;
+import lombok.Getter;
+
+
 import cachemesh.common.hash.ConsistentHash;
-import cachemesh.common.hash.Hashing;
 import cachemesh.spi.Transport;
 import cachemesh.spi.TransportProvider;
 import lombok.AccessLevel;
-import lombok.Getter;
+
+
 
 @Getter
-public class MeshNodeManager {
+public class MeshNetwork implements Shutdownable, HasName {
+
+	static {
+		GrpcTransportProvider.register();
+		LettuceTransportProvider.register();
+	}
+
+	private final MeshNetworkConfig config;
 
 	@Getter(AccessLevel.PROTECTED)
 	private final ConsistentHash<MeshNode> route;
@@ -19,16 +37,56 @@ public class MeshNodeManager {
 
 	private final TransportRegistry transportRegistry;
 
-	public MeshNodeManager(Hashing hashing,
-						   LocalCacheManager localCacheManager,
-						   TransportRegistry transportRegistry) {
-		this.route = new ConsistentHash<>(hashing);
+	private final Logger logger;
+
+	private final LifeStage lifeStage;
+
+	private final MeshCacheManager meshCacheManager;
+
+	public MeshNetwork(MeshNetworkConfig config,
+					   LocalCacheManager nearCacheManager,
+					   LocalCacheManager localCacheManager,
+					   TransportRegistry transportRegistry) {
+
+		this.config = config;
+		this.route = new ConsistentHash<>(config.getHashing());
 		this.localCacheManager = localCacheManager;
 		this.transportRegistry = transportRegistry;
+		this.logger = LogHelper.getLogger(this);
+		this.lifeStage = new LifeStage("meshnetwork", config.getName(), getLogger());
+		this.meshCacheManager = new MeshCacheManager(nearCacheManager, this);
+
 	}
 
+	@Override
+	public String getName() {
+		return getConfig().getName();
+	}
+
+	public void start() throws InterruptedException {
+		getLifeStage().starting();
+
+		for (var node: getRoute().nodes()) {
+			node.start();
+		}
+
+		getLifeStage().started();
+	}
+
+	@Override
+	public void shutdown(int timeoutSeconds) throws InterruptedException {
+		getLifeStage().stopping();
+
+		for (var node: getRoute().nodes()) {
+			node.stop();
+		}
+
+		getLifeStage().stopped();
+	}
+
+
 	public MeshNode findNode(String key) {
-		return this.route.findNode(key);
+		return getRoute().findNode(key);
 	}
 
 	public TransportProvider loadTransportProvider(String protocol) {

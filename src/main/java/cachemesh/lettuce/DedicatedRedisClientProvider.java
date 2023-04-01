@@ -10,6 +10,8 @@ public class DedicatedRedisClientProvider
 	extends Manager<LettuceConfig, RedisClient>
 	implements RedisClientProvider {
 
+	public static final DedicatedRedisClientProvider DEFAULT = new DedicatedRedisClientProvider();
+
 	@Override
 	protected String retrieveKey(LettuceConfig config) {
 		return config.getTarget();

@@ -52,6 +52,10 @@ public class ConsistentHash<T extends ConsistentHash.Node> {
 		this.algo = algo;
 	}
 
+	public Iterable<T> nodes() {
+		return this.nodes.values();
+	}
+
 	public void join(List<T> nodes) {
 		LOG.info("got {} nodes to join", nodes.size());
 		nodes.forEach(this::join);

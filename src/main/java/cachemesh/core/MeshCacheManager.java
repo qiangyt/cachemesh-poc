@@ -3,7 +3,6 @@ package cachemesh.core;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
-import cachemesh.MeshCache;
 import lombok.Getter;
 
 @Getter
@@ -13,17 +12,17 @@ public class MeshCacheManager {
 
 	private final LocalCacheManager nearCacheManager;
 
-	private final MeshNodeManager nodeManager;
+	private final MeshNetwork network;
 
-	public MeshCacheManager(LocalCacheManager nearCacheManager, MeshNodeManager nodeManager) {
+	public MeshCacheManager(LocalCacheManager nearCacheManager, MeshNetwork network) {
 		this.nearCacheManager = nearCacheManager;
-		this.nodeManager = nodeManager;
+		this.network = network;
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
 		return (MeshCache<T>) this.caches.computeIfAbsent(cacheName, k -> {
-			return new MeshCache<>(cacheName, getNearCacheManager(), getNodeManager());
+			return new MeshCache<>(cacheName, getNearCacheManager(), getNetwork());
 		});
 	}
 

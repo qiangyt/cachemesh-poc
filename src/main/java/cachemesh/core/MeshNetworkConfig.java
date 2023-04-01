@@ -1,4 +1,4 @@
-package cachemesh;
+package cachemesh.core;
 
 import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;

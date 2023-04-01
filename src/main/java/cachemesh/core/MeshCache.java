@@ -1,4 +1,4 @@
-package cachemesh;
+package cachemesh.core;
 
 import org.slf4j.Logger;
 import lombok.Getter;
@@ -7,9 +7,6 @@ import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.err.ServiceException;
 import cachemesh.common.util.LogHelper;
-import cachemesh.core.LocalCacheManager;
-import cachemesh.core.MeshNodeManager;
-import cachemesh.core.ValueImpl;
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.Transport;
 
@@ -22,11 +19,11 @@ public class MeshCache<T> implements HasName {
 
 	private final LocalCache nearCache;
 
-	private final MeshNodeManager nodeManager;
+	private final MeshNetwork network;
 
-	public MeshCache(String name, LocalCacheManager nearCacheManager, MeshNodeManager nodeManager) {
+	public MeshCache(String name, LocalCacheManager nearCacheManager, MeshNetwork network) {
 		this.nearCache = nearCacheManager.get(name);
-		this.nodeManager = nodeManager;
+		this.network = network;
 
 		this.logger = LogHelper.getLogger(this);
 	}
@@ -37,7 +34,7 @@ public class MeshCache<T> implements HasName {
 	}
 
 	public Transport resolveTransport(String key) {
-		var n = getNodeManager().findNode(key);
+		var n = getNetwork().findNode(key);
 		if (this.logger.isDebugEnabled()) {
 			this.logger.debug("find node for {}: {}", kv("key", key), LogHelper.kv("node", n));
 		}
@@ -47,7 +44,7 @@ public class MeshCache<T> implements HasName {
 
 	public T getSingle(String key) {
 		var transport = resolveTransport(key);
-		if (transport.isLocal()) {
+		if (transport.isRemote() == false) {
 			return transport.getSingleObject(getName(), key);
 		}
 		return getRemoteSingle(transport, key);
@@ -87,7 +84,7 @@ public class MeshCache<T> implements HasName {
 
 	public void putSingle(String key, T object) {
 		var transport = resolveTransport(key);
-		if (transport.isLocal()) {
+		if (transport.isRemote() == false) {
 			putLocalSingle(transport, key, object);
 		} else {
 			putRemoteSingle(transport, key, object);

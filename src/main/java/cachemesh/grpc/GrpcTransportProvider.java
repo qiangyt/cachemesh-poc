@@ -6,6 +6,7 @@ import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.LocalTransport;
 import cachemesh.core.MeshNode;
 import cachemesh.core.TransportConfig;
+import cachemesh.core.TransportRegistry;
 import cachemesh.core.TransportURL;
 import cachemesh.spi.Transport;
 import cachemesh.spi.TransportProvider;
@@ -13,6 +14,13 @@ import lombok.Getter;
 
 @Getter
 public class GrpcTransportProvider implements TransportProvider {
+
+	public static final GrpcTransportProvider DEFAULT
+		= new GrpcTransportProvider(GrpcServerProvider.DEFAULT, ShutdownManager.DEFAULT);
+
+	public static void register() {
+		TransportRegistry.DEFAULT.register(GrpcConfig.PROTOCOL, DEFAULT);
+	}
 
 	private final GrpcServerProvider serverProvider;
 

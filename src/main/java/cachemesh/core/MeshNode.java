@@ -6,15 +6,19 @@ import cachemesh.common.HasName;
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.util.LogHelper;
 import cachemesh.spi.NodeCache;
+import lombok.Getter;
 
-@lombok.Getter
+@Getter
 public class MeshNode implements HasName, ConsistentHash.Node {
 
 	protected final Logger logger;
 
 	private final String key;
+
 	private final int hashCode;
+
 	private final boolean remote;
+
 	private final NodeCache cache;
 
 	public MeshNode(boolean remote, String key, NodeCache cache) {

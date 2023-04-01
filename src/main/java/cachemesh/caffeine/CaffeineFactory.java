@@ -8,12 +8,13 @@ import cachemesh.spi.LocalCache;
 import cachemesh.spi.LocalCacheConfig;
 import cachemesh.spi.LocalCacheFactory;
 import cachemesh.spi.Value;
+import lombok.Getter;
 
+@Getter
 public class CaffeineFactory implements LocalCacheFactory {
 
 	public static final CaffeineFactory DEFAULT = new CaffeineFactory(ShutdownSupport.DEFAULT);
 
-	@lombok.Getter
 	private final ShutdownSupport shutdownSupport;
 
 	public CaffeineFactory(ShutdownSupport shutdownSupport) {

@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cachemesh.common.Mappable;
+import lombok.Getter;
 
-@lombok.Getter
-public class Transport implements Mappable {
+@Getter
+public class TransportURL implements Mappable {
 
 	public static final String URL_SEPARATOR = "://";
 
@@ -15,7 +16,7 @@ public class Transport implements Mappable {
 	private final String target;
 
 
-	public Transport(String protocol, String target) {
+	public TransportURL(String protocol, String target) {
 		this.protocol = protocol;
 		this.target = target;
 	}
@@ -37,7 +38,7 @@ public class Transport implements Mappable {
 	}
 
 
-	public static Transport parseUrl(String url) {
+	public static TransportURL parseUrl(String url) {
 		int sep = url.indexOf(URL_SEPARATOR);
 		if (sep <= 0) {
 			throw new IllegalArgumentException("url should follow the format: <url>" + URL_SEPARATOR + "<target>");
@@ -46,7 +47,7 @@ public class Transport implements Mappable {
 		String protocol = url.substring(0, sep);
 		String target = url.substring(sep + URL_SEPARATOR.length());
 
-		return new Transport(protocol, target);
+		return new TransportURL(protocol, target);
 	}
 
 

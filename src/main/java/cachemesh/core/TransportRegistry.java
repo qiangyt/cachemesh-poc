@@ -3,24 +3,24 @@ package cachemesh.core;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
-import cachemesh.spi.TransportProvider;
+import cachemesh.spi.Transport;
 
 
 public class TransportRegistry {
 
-	private final Map<String, TransportProvider> providers = new ConcurrentHashMap<>();
+	private final Map<String, Transport> transports = new ConcurrentHashMap<>();
 
-	public void register(TransportProvider provider) {
-		this.providers.compute(provider.getProtocol(), (protocol, existing) -> {
+	public void register(Transport transport) {
+		this.transports.compute(transport.getProtocol(), (protocol, existing) -> {
 			if (existing != null) {
-				throw new IllegalArgumentException("duplicated transport provider: " + protocol);
+				throw new IllegalArgumentException("duplicated transport transport: " + protocol);
 			}
-			return provider;
+			return transport;
 		});
 	}
 
-	public TransportProvider get(String protocol) {
-		return this.providers.get(protocol);
+	public Transport get(String protocol) {
+		return this.transports.get(protocol);
 	}
 
 }

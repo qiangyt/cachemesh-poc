@@ -19,6 +19,7 @@ import cachemesh.spi.LocalCacheConfig;
 import lombok.Getter;
 import org.slf4j.Logger;
 
+@Getter
 @ThreadSafe
 public class LocalCacheManager implements Shutdownable {
 
@@ -27,21 +28,18 @@ public class LocalCacheManager implements Shutdownable {
 		LocalCacheConfig config;
 	}
 
-	@Getter
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final Map<String, Item> items = new ConcurrentHashMap<>();
 
-	@Getter
 	private final LocalCacheConfig defaultConfig;
 
-	@Getter
-	private ShutdownSupport shutdownSupport;
+	private final ShutdownSupport shutdownSupport;
 
-	@Getter
-	private String name;
+	private final String name;
 
-	public LocalCacheManager(LocalCacheConfig defaultConfig, ShutdownSupport shutdownSupport) {
+	public LocalCacheManager(String name, LocalCacheConfig defaultConfig, ShutdownSupport shutdownSupport) {
+		this.name = name;
 		this.defaultConfig = defaultConfig;
 
 		this.shutdownSupport = shutdownSupport;
@@ -49,7 +47,6 @@ public class LocalCacheManager implements Shutdownable {
 			shutdownSupport.register(this);
 		}
 	}
-
 
 	public void addConfig(LocalCacheConfig config) {
 		this.items.compute(config.getName(), (name, item) -> {

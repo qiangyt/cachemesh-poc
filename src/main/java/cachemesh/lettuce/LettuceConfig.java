@@ -3,13 +3,15 @@ package cachemesh.lettuce;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.shutdown.ShutdownableConfig;
+import cachemesh.common.Mappable;
 import cachemesh.common.util.StringHelper;
-import cachemesh.core.Transport;
+import cachemesh.core.TransportURL;
+import lombok.Getter;
+import lombok.Builder;
 
-@lombok.Getter
-@lombok.Builder
-public class LettuceConfig implements ShutdownableConfig {
+@Getter
+@Builder
+public class LettuceConfig implements Mappable {
 
 	public static final String PROTOCOL = "redis";
 
@@ -21,7 +23,7 @@ public class LettuceConfig implements ShutdownableConfig {
 
 	private final String url;
 
-	private final String name;
+	private final String target;
 
 	public static final String DEFAULT_SEPARATOR = "%";
 
@@ -37,7 +39,7 @@ public class LettuceConfig implements ShutdownableConfig {
 		configMap.put("host", getHost());
 		configMap.put("port", getPort());
 		configMap.put("database", getDatabase());
-		configMap.put("name", getName());
+		configMap.put("target", getTarget());
 		configMap.put("url", getUrl());
 		configMap.put("keySeparator", getKeySeparator());
 		configMap.put("shutdownTimeoutSeconds", getShutdownTimeoutSeconds());
@@ -46,10 +48,10 @@ public class LettuceConfig implements ShutdownableConfig {
 	}
 
 	public static LettuceConfig from(String url) {
-		var transport = Transport.parseUrl(url);
+		var transport = TransportURL.parseUrl(url);
 		transport.ensureProtocol(PROTOCOL);
 
-		var configMap = parseName(transport.getTarget());
+		var configMap = parseTarget(transport.getTarget());
 		return from(configMap);
 	}
 
@@ -60,25 +62,25 @@ public class LettuceConfig implements ShutdownableConfig {
 		var port = (Integer)configMap.get("port");
 		var database = (Integer)configMap.get("database");
 
-		String name;
+		String target;
 
 		if (StringHelper.isBlank(url)) {
 			if (database == null) {
 				database = Integer.valueOf(0);
 			}
 
-			name = formatName(host, port, database);
-			url = Transport.formatUrl(PROTOCOL, name);
+			target = formatTarget(host, port, database);
+			url = TransportURL.formatUrl(PROTOCOL, target);
 		} else {
 			if (StringHelper.isBlank(host) == false || port != null || database != null) {
 				throw new IllegalArgumentException("host+port+database is exclusive with url");
 			}
 
-			var transport = Transport.parseUrl(url);
+			var transport = TransportURL.parseUrl(url);
 			transport.ensureProtocol(PROTOCOL);
 
-			name = transport.getTarget();
-			configMap = parseName(name);
+			target = transport.getTarget();
+			configMap = parseTarget(target);
 
 			host = (String)configMap.get("host");
 			port = (Integer)configMap.get("port");
@@ -101,14 +103,14 @@ public class LettuceConfig implements ShutdownableConfig {
 				.port(port.intValue())
 				.url(url)
 				.database(database.intValue())
-				.name(name)
+				.target(target)
 				.keySeparator(keySeparator)
 				.shutdownTimeoutSeconds(shutdownTimeoutSeconds)
 				.build();
 	}
 
 
-	public static String formatName(String host, int port, int database) {
+	public static String formatTarget(String host, int port, int database) {
 		if (database > 0) {
 			return String.format("%s:%d/%d", host, port, database);
 		}
@@ -116,14 +118,14 @@ public class LettuceConfig implements ShutdownableConfig {
 	}
 
 
-	public static Map<String,Object> parseName(String name) {
-		int sep1 = name.indexOf(":");
+	public static Map<String,Object> parseTarget(String target) {
+		int sep1 = target.indexOf(":");
 		if (sep1 <= 0) {
 			throw new IllegalArgumentException("name should follow the format: <host>:<port>/<database>");
 		}
 
-		String host = name.substring(0, sep1);
-		String portAndDatabase = name.substring(sep1 + ":".length());
+		String host = target.substring(0, sep1);
+		String portAndDatabase = target.substring(sep1 + ":".length());
 
 		int port;
 		int database;

@@ -10,15 +10,18 @@ import org.slf4j.LoggerFactory;
 
 import cachemesh.common.HasName;
 import cachemesh.common.util.DateHelper;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class ShutdownLogger implements HasName {
 
 	public static final ShutdownLogger DEFAULT = new ShutdownLogger(ShutdownLogger.class);
 
 	private final Logger logger;
 
-	@lombok.Getter @lombok.Setter
-	private boolean inShutdownHook;
+	@Setter
+	private volatile boolean inShutdownHook;
 
 	public ShutdownLogger(Class<?> klass) {
 		this(klass.getSimpleName());

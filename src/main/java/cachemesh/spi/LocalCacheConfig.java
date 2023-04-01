@@ -5,9 +5,11 @@ import java.util.Map;
 
 import cachemesh.common.HasName;
 import cachemesh.common.Serderializer;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
-@lombok.Getter
-@lombok.experimental.SuperBuilder
+@Getter
+@SuperBuilder
 public class LocalCacheConfig implements HasName {
 
 	private final String name;
@@ -18,7 +20,6 @@ public class LocalCacheConfig implements HasName {
 
 	//private final boolean cacheBytes;
 
-	@lombok.Getter
 	private final LocalCacheFactory factory;
 
 	public LocalCacheConfig(String name,

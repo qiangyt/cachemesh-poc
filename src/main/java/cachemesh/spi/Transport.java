@@ -5,7 +5,7 @@ import java.util.Map;
 import cachemesh.common.HasName;
 import cachemesh.core.LocalNodeCache;
 
-public interface TransportProvider extends HasName {
+public interface Transport extends HasName {
 
 	default String getProtocol() {
 		return getName();

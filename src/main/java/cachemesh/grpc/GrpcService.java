@@ -6,18 +6,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
+import lombok.Getter;
+import cachemesh.core.LocalNodeCache;
 
-import cachemesh.spi.NodeCache;
-
+@Getter
 public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GrpcService.class);
 
-	private final NodeCache cache;
+	private final LocalNodeCache cache;
 
+	private final GrpcServer server;
 
-	public GrpcService(NodeCache cache) {
+	private final GrpcConfig config;
+
+	public GrpcService(GrpcConfig config, GrpcServer server, LocalNodeCache cache) {
+		this.config = config;
+		this.server = server;
 		this.cache = cache;
+
+		server.addService(this);
 	}
 
 

@@ -3,16 +3,18 @@ package cachemesh.grpc;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.shutdown.ShutdownableConfig;
+import cachemesh.common.Mappable;
 import cachemesh.common.util.StringHelper;
-import cachemesh.core.Transport;
+import cachemesh.core.TransportURL;
 import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
 import io.grpc.ManagedChannel;
+import lombok.Getter;
+import lombok.Builder;
 
-@lombok.Getter
-@lombok.Builder
-public class GrpcConfig implements ShutdownableConfig {
+@Getter
+@Builder
+public class GrpcConfig implements Mappable {
 
 	public static final String PROTOCOL = "grpc";
 
@@ -22,12 +24,12 @@ public class GrpcConfig implements ShutdownableConfig {
 
 	private final String url;
 
-	private final String name;
+	private final String target;
 
 	private final int shutdownTimeoutSeconds;
 
 	public ManagedChannel createClientChannel() {
-		return Grpc.newChannelBuilder(getName(), InsecureChannelCredentials.create()).build();
+		return Grpc.newChannelBuilder(getTarget(), InsecureChannelCredentials.create()).build();
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class GrpcConfig implements ShutdownableConfig {
 		var configMap = new HashMap<String, Object>();
 
 		configMap.put("url", getUrl());
-		configMap.put("name", getName());
+		configMap.put("target", getTarget());
 		configMap.put("host", getHost());
 		configMap.put("port", getPort());
 		configMap.put("shutdownTimeoutSeconds", getShutdownTimeoutSeconds());
@@ -44,10 +46,10 @@ public class GrpcConfig implements ShutdownableConfig {
 	}
 
 	public static GrpcConfig from(String url) {
-		var transport = Transport.parseUrl(url);
+		var transport = TransportURL.parseUrl(url);
 		transport.ensureProtocol(PROTOCOL);
 
-		var configMap = parseName(transport.getTarget());
+		var configMap = parseTarget(transport.getTarget());
 		return from(configMap);
 	}
 
@@ -56,21 +58,21 @@ public class GrpcConfig implements ShutdownableConfig {
 		var host = (String)configMap.get("host");
 		var port = (Integer)configMap.get("port");
 
-		String name;
+		String target;
 
 		if (StringHelper.isBlank(url)) {
-			name = formatName(host, port);
-			url = Transport.formatUrl(PROTOCOL, name);
+			target = formatTarget(host, port);
+			url = TransportURL.formatUrl(PROTOCOL, target);
 		} else {
 			if (StringHelper.isBlank(host) == false || port != null) {
 				throw new IllegalArgumentException("host+port is exclusive with url");
 			}
 
-			var transport = Transport.parseUrl(url);
+			var transport = TransportURL.parseUrl(url);
 			transport.ensureProtocol(PROTOCOL);
 
-			name = transport.getTarget();
-			configMap = parseName(name);
+			target = transport.getTarget();
+			configMap = parseTarget(target);
 
 			host = (String)configMap.get("host");
 			port = (Integer)configMap.get("port");
@@ -82,18 +84,18 @@ public class GrpcConfig implements ShutdownableConfig {
 				.host(host)
 				.port(port.intValue())
 				.url(url)
-				.name(name)
+				.target(target)
 				.shutdownTimeoutSeconds(shutdownTimeoutSeconds)
 				.build();
 	}
 
 
-	public static String formatName(String host, int port) {
+	public static String formatTarget(String host, int port) {
 		return host + ":" + port;
 	}
 
 
-	public static Map<String,Object> parseName(String name) {
+	public static Map<String,Object> parseTarget(String name) {
 		int sep = name.indexOf(":");
 		if (sep <= 0) {
 			throw new IllegalArgumentException("name should follow the format: <host>:<port>");

@@ -4,23 +4,37 @@ import cachemesh.core.GetResult;
 import cachemesh.core.ResultStatus;
 import cachemesh.spi.NodeCache;
 import io.lettuce.core.api.sync.RedisCommands;
+import cachemesh.common.shutdown.AbstractShutdownable;
+import cachemesh.common.shutdown.ShutdownLogger;
+import cachemesh.common.shutdown.ShutdownSupport;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.StatefulRedisConnection;
+import lombok.Getter;
 
+@Getter
+public class LettuceCache extends AbstractShutdownable implements NodeCache {
 
-public class LettuceNodeCache implements NodeCache {
+	private final StatefulRedisConnection<String,byte[]> connection;
 
-	private final LettuceChannel channel;
+	private final RedisClient client;
 
-	public LettuceNodeCache(LettuceChannel channel) {
-		this.channel = channel;
+	private final LettuceConfig config;
+
+	public LettuceCache(LettuceConfig config, ShutdownSupport shutdownSupport) {
+		super(config.getTarget(), shutdownSupport);
+
+		this.config = config;
+		this.client = RedisClient.create(config.getTarget());
+		this.connection = this.client.connect(LettuceCodec.DEFAULT);
 	}
 
 	@Override
-	public void shutdown(int timeoutSeconds) throws InterruptedException {
-		this.channel.shutdown(timeoutSeconds);
-	}
-
-	public LettuceConfig getConfig() {
-		return this.channel.getConfig();
+	public void onShutdown(ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
+		try {
+			getConnection().close();
+		} finally {
+			getClient().shutdown();
+		}
 	}
 
 	public String generateRedisKey(String cacheName, String key) {
@@ -34,7 +48,7 @@ public class LettuceNodeCache implements NodeCache {
 	}
 
 	RedisCommands<String, byte[]> syncCommand() {
-		return this.channel.getConn().sync();
+		return getConnection().sync();
 	}
 
 	@Override

@@ -18,7 +18,9 @@ import com.google.protobuf.ByteString;
 import cachemesh.common.err.RequestException;
 import cachemesh.common.util.StringHelper;
 
-@lombok.Getter
+import lombok.Getter;
+
+@Getter
 @ThreadSafe
 public class Jackson {
 

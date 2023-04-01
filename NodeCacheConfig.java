@@ -5,8 +5,11 @@ import java.util.Map;
 
 import cachemesh.common.Mappable;
 
-@lombok.Getter
-@lombok.experimental.SuperBuilder
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@SuperBuilder
 public class NodeCacheConfig implements Mappable {
 
 	private final boolean cacheBytes;

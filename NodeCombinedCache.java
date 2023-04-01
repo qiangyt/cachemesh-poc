@@ -5,8 +5,9 @@ import cachemesh.spi.LocalCacheConfig;
 import cachemesh.spi.NodeCache;
 import cachemesh.spi.NodeCacheConfig;
 
+import lombok.Getter;
 
-@lombok.Getter
+@Getter
 public class NodeCombinedCache<T, C extends LocalCacheConfig<T>> implements NodeCache {
 
 	private final LocalCache<T, CombinedValue<T>, C> backend;

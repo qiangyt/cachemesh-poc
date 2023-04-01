@@ -9,12 +9,11 @@ import lombok.Getter;
 @Getter
 public abstract class AbstractShutdownable implements Shutdownable {
 
-	@Getter
 	private final Logger logger;
 
 	private final String name;
 
-	private ShutdownSupport shutdownSupport;
+	private final ShutdownSupport shutdownSupport;
 
 	protected AbstractShutdownable(String name, ShutdownSupport shutdownSupport) {
 		this(name, shutdownSupport, 0);

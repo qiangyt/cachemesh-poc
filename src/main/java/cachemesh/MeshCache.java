@@ -15,14 +15,13 @@ import cachemesh.spi.NodeCache;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
+@Getter
 public class MeshCache<T> implements HasName {
 
-	private Logger logger;
+	private final Logger logger;
 
-	@Getter
 	private final LocalCache nearCache;
 
-	@Getter
 	private final MeshNodeManager nodeManager;
 
 	public MeshCache(String name, LocalCacheManager nearCacheManager, MeshNodeManager nodeManager) {

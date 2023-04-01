@@ -1,7 +1,8 @@
 package cachemesh.core;
 
-@lombok.ToString
-@lombok.Getter
+import lombok.Getter;
+
+@Getter
 public class GetResult<T> {
 
 	public static final GetResult<?> NOT_FOUND

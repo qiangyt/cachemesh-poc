@@ -6,14 +6,13 @@ import java.util.Map;
 import cachemesh.MeshCache;
 import lombok.Getter;
 
+@Getter
 public class MeshCacheManager {
 
 	private final Map<String, MeshCache<?>> caches = new ConcurrentHashMap<>();
 
-	@Getter
 	private final LocalCacheManager nearCacheManager;
 
-	@Getter
 	private final MeshNodeManager nodeManager;
 
 	public MeshCacheManager(LocalCacheManager nearCacheManager, MeshNodeManager nodeManager) {

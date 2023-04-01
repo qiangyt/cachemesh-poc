@@ -8,9 +8,9 @@ import java.util.Map;
 import cachemesh.spi.Value;
 
 import java.util.HashMap;
+import lombok.Getter;
 
-@lombok.Getter
-@lombok.ToString
+@Getter
 public class LocalCacheEntry {
 
 	private final String key;

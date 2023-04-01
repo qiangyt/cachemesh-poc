@@ -6,9 +6,11 @@ import java.util.Map;
 import cachemesh.common.Serderializer;
 import cachemesh.common.jackson.JacksonSerderializer;
 import cachemesh.spi.LocalCacheConfig;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
-@lombok.Getter
-@lombok.experimental.SuperBuilder
+@Getter
+@SuperBuilder
 public class CaffeineConfig extends LocalCacheConfig {
 
 	public static final int DEFAULT_MAXIMUM_SIZE = 100_000;

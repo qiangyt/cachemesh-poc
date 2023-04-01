@@ -4,8 +4,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import cachemesh.common.Serderializer;
+import lombok.Getter;
 
-@lombok.Getter
+@Getter
 public class JacksonSerderializer implements Serderializer {
 
 	public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;

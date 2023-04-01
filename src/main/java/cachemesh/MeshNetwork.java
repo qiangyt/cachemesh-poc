@@ -9,31 +9,23 @@ import cachemesh.core.LocalCacheManager;
 import cachemesh.core.MeshCacheManager;
 import cachemesh.core.MeshNodeManager;
 import cachemesh.core.TransportRegistry;
-import cachemesh.grpc.GrpcClientManager;
-import cachemesh.grpc.GrpcServerManager;
-import cachemesh.lettuce.LettuceChannelManager;
 import lombok.Getter;
 
+@Getter
 public class MeshNetwork implements HasName {
 
-	@Getter
 	private final MeshNetworkConfig config;
 
-	@Getter
 	private final LocalCacheManager nearCacheManager;
 
-	@Getter
 	private final LocalCacheManager localCacheManager;
 
-	@Getter
 	private boolean bootstrapped;
 
 	private final Logger logger;
 
-	@Getter
 	private final MeshCacheManager meshCacheManager;
 
-	@Getter
 	private final MeshNodeManager nodeManager;
 
 	public MeshNetwork(MeshNetworkConfig config,

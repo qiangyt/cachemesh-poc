@@ -5,18 +5,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cachemesh.common.err.InternalException;
+import lombok.Getter;
 
+@Getter
 public class JGroupsMembers {
 
 	private final JGroupsListener listener;
 
-	@lombok.Getter
 	private final String url;
 
-	@lombok.Getter
 	private final String meshNetworkName;
 
-	@lombok.Getter
 	private final String configXmlClasspath;
 
 	private final Logger log;

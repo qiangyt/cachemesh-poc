@@ -1,11 +1,12 @@
 package cachemesh.common.shutdown;
+import lombok.Getter;
 
-@lombok.Getter
+@Getter
 public class ShutdownItem {
 
-	final private Shutdownable target;
+	private final Shutdownable target;
 
-	final private int timeoutSeconds;
+	private final int timeoutSeconds;
 
 	private volatile boolean shutdowned;
 

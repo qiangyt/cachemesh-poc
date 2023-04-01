@@ -4,12 +4,13 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import io.lettuce.core.codec.RedisCodec;
+import lombok.Getter;
 
+@Getter
 public class LettuceCodec implements RedisCodec<String, byte[]> {
 
 	public static final LettuceCodec DEFAULT = new LettuceCodec(StandardCharsets.UTF_8);
 
-	@lombok.Getter
 	private final Charset charset;
 
 	public LettuceCodec(Charset charset) {

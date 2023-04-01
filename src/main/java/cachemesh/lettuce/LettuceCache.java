@@ -6,7 +6,7 @@ import cachemesh.spi.NodeCache;
 import io.lettuce.core.api.sync.RedisCommands;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
-import cachemesh.common.shutdown.ShutdownSupport;
+import cachemesh.common.shutdown.ShutdownManager;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import lombok.Getter;
@@ -20,8 +20,8 @@ public class LettuceCache extends AbstractShutdownable implements NodeCache {
 
 	private final LettuceConfig config;
 
-	public LettuceCache(LettuceConfig config, ShutdownSupport shutdownSupport) {
-		super(config.getTarget(), shutdownSupport);
+	public LettuceCache(LettuceConfig config, ShutdownManager shutdownManager) {
+		super(config.getTarget(), shutdownManager);
 
 		this.config = config;
 		this.client = RedisClient.create(config.getTarget());

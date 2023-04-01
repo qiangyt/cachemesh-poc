@@ -2,7 +2,7 @@ package cachemesh.grpc;
 
 import java.util.Map;
 
-import cachemesh.common.shutdown.ShutdownSupport;
+import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.LocalNodeCache;
 import cachemesh.core.TransportURL;
 import cachemesh.spi.NodeCache;
@@ -12,10 +12,10 @@ import lombok.Getter;
 @Getter
 public class GrpcTransport implements Transport {
 
-	private final ShutdownSupport shutdownSupport;
+	private final ShutdownManager shutdownManager;
 
-	public GrpcTransport(ShutdownSupport shutdownSupport) {
-		this.shutdownSupport = shutdownSupport;
+	public GrpcTransport(ShutdownManager shutdownManager) {
+		this.shutdownManager = shutdownManager;
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class GrpcTransport implements Transport {
 	@Override
 	public boolean setUpForLocalNode(Map<String,Object> configMap, LocalNodeCache localNodeCache) {
 		var config = GrpcConfig.from(configMap);
-		var server = new GrpcStandaloneServer(config, getShutdownSupport());
+		var server = new GrpcStandaloneServer(config, getShutdownManager());
 		var service = new GrpcService(config, server, localNodeCache);
 
 		return true;asfsd
@@ -35,7 +35,7 @@ public class GrpcTransport implements Transport {
 	@Override
 	public NodeCache setUpForRemoteNode(Map<String,Object> configMap) {
 		var config = GrpcConfig.from(configMap);
-		return new GrpcCache(config, getShutdownSupport());
+		return new GrpcCache(config, getShutdownManager());
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package cachemesh.grpc;
 import java.util.concurrent.TimeUnit;
 
 import cachemesh.common.shutdown.ShutdownLogger;
-import cachemesh.common.shutdown.ShutdownSupport;
+import cachemesh.common.shutdown.ShutdownManager;
 import io.grpc.ManagedChannel;
 import lombok.Getter;
 
@@ -22,8 +22,8 @@ public class GrpcCache extends AbstractShutdownable implements NodeCache {
 
 	private final GrpcConfig config;
 
-	public GrpcCache(GrpcConfig config, ShutdownSupport shutdownSupport) {
-		super(config.getTarget(), shutdownSupport);
+	public GrpcCache(GrpcConfig config, ShutdownManager shutdownManager) {
+		super(config.getTarget(), shutdownManager);
 
 		this.config = config;
 		this.channel = getConfig().createClientChannel();

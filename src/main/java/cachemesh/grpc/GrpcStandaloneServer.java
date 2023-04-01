@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
-import cachemesh.common.shutdown.ShutdownSupport;
+import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.common.util.LogHelper;
 import io.grpc.BindableService;
 import io.grpc.Grpc;
@@ -31,8 +31,8 @@ public class GrpcStandaloneServer extends AbstractShutdownable implements GrpcSe
 	@Setter(AccessLevel.PROTECTED)
 	private volatile boolean started;
 
-	public GrpcStandaloneServer(GrpcConfig config, ShutdownSupport shutdownSupport) {
-		super(config.getTarget(), shutdownSupport);
+	public GrpcStandaloneServer(GrpcConfig config, ShutdownManager shutdownManager) {
+		super(config.getTarget(), shutdownManager);
 
 		this.config = config;
 

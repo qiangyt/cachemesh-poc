@@ -7,11 +7,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 
-public class ShutdownSupport {
+public class ShutdownManager {
 
 	public static final int DEFAULT_TIMEOUT_SECONDS = 2;
 
-	public static final ShutdownSupport DEFAULT = new ShutdownSupport();
+	public static final ShutdownManager DEFAULT = new ShutdownManager();
 
 	private SortedMap<String, ShutdownItem> items = new TreeMap<>();
 
@@ -20,22 +20,22 @@ public class ShutdownSupport {
 
 	private Thread thread;
 
-	private final ShutdownLogger logger = new ShutdownLogger(ShutdownSupport.class);
+	private final ShutdownLogger logger = new ShutdownLogger(ShutdownManager.class);
 
 
-	public void register(Shutdownable target) {
+	public void register(ManagedShutdownable target) {
 		register(target, DEFAULT_TIMEOUT_SECONDS);
 	}
 
-	public void register(Iterable<Shutdownable> targets) {
+	public void register(Iterable<? extends ManagedShutdownable> targets) {
 		targets.forEach(this::register);
 	}
 
-	public void register(Iterable<Shutdownable> targets, int timeoutSeconds) {
+	public void register(Iterable<? extends ManagedShutdownable> targets, int timeoutSeconds) {
 		targets.forEach(target -> register(target, timeoutSeconds));
 	}
 
-	public void register(Shutdownable target, int timeoutSeconds) {
+	public void register(ManagedShutdownable target, int timeoutSeconds) {
 		var name = target.getName();
 
 		this.items.compute(name, (k, existing) -> {
@@ -50,7 +50,7 @@ public class ShutdownSupport {
 		refreshTimeout();
 	}
 
-	public void unregister(Shutdownable target) {
+	public void unregister(ManagedShutdownable target) {
 		var name = target.getName();
 
 		this.items.compute(name, (k, existing) -> {
@@ -106,7 +106,7 @@ public class ShutdownSupport {
 	}
 
 
-	public void shutdown(Shutdownable target, int timeoutSeconds) {
+	public void shutdown(ManagedShutdownable target, int timeoutSeconds) {
 		String name = target.getName();
 		if (target.isShutdownNeeded() == false) {
 			throw new IllegalStateException(name + " no need shutdown");

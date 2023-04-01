@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import cachemesh.common.err.InternalException;
 import cachemesh.common.shutdown.ShutdownLogger;
-import cachemesh.common.shutdown.ShutdownSupport;
+import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.common.shutdown.Shutdownable;
 import cachemesh.common.util.LogHelper;
 import cachemesh.spi.LocalCache;
@@ -34,17 +34,17 @@ public class LocalCacheManager implements Shutdownable {
 
 	private final LocalCacheConfig defaultConfig;
 
-	private final ShutdownSupport shutdownSupport;
+	private final ShutdownManager shutdownManager;
 
 	private final String name;
 
-	public LocalCacheManager(String name, LocalCacheConfig defaultConfig, ShutdownSupport shutdownSupport) {
+	public LocalCacheManager(String name, LocalCacheConfig defaultConfig, ShutdownManager shutdownManager) {
 		this.name = name;
 		this.defaultConfig = defaultConfig;
 
-		this.shutdownSupport = shutdownSupport;
-		if (shutdownSupport != null) {
-			shutdownSupport.register(this);
+		this.shutdownManager = shutdownManager;
+		if (shutdownManager != null) {
+			shutdownManager.register(this);
 		}
 	}
 
@@ -107,7 +107,7 @@ public class LocalCacheManager implements Shutdownable {
 			throw new IllegalStateException(getName() + " doesn't need shutdown");
 		}
 
-		var sd = getShutdownSupport();
+		var sd = getShutdownManager();
 		if (sd != null) {
 			sd.shutdown(this, timeoutSeconds);
 		} else {

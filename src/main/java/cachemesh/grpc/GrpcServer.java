@@ -6,5 +6,7 @@ public interface GrpcServer {
 
 	void addService(BindableService service);
 
+	boolean isStarted();
+
 }
 

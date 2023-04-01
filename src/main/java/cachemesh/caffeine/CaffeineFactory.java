@@ -3,7 +3,7 @@ package cachemesh.caffeine;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import cachemesh.common.shutdown.ShutdownSupport;
+import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.LocalCacheConfig;
 import cachemesh.spi.LocalCacheFactory;
@@ -13,12 +13,12 @@ import lombok.Getter;
 @Getter
 public class CaffeineFactory implements LocalCacheFactory {
 
-	public static final CaffeineFactory DEFAULT = new CaffeineFactory(ShutdownSupport.DEFAULT);
+	public static final CaffeineFactory DEFAULT = new CaffeineFactory(ShutdownManager.DEFAULT);
 
-	private final ShutdownSupport shutdownSupport;
+	private final ShutdownManager shutdownManager;
 
-	public CaffeineFactory(ShutdownSupport shutdownSupport) {
-		this.shutdownSupport = shutdownSupport;
+	public CaffeineFactory(ShutdownManager shutdownManager) {
+		this.shutdownManager = shutdownManager;
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class CaffeineFactory implements LocalCacheFactory {
 									.maximumSize(cconfig.getMaximumSize())
 									.expireAfterWrite(cconfig.getExpireAfterWrite())
 									.build();
-		return new CaffeineCache(cconfig, instance, getShutdownSupport());
+		return new CaffeineCache(cconfig, instance, getShutdownManager());
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package cachemesh.lettuce;
 
 import java.util.Map;
 
-import cachemesh.common.shutdown.ShutdownSupport;
+import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.TransportURL;
 import cachemesh.spi.NodeCache;
 import cachemesh.spi.Transport;
@@ -11,10 +11,10 @@ import lombok.Getter;
 @Getter
 public class LettuceTransport implements Transport {
 
-	private final ShutdownSupport shutdownSupport;
+	private final ShutdownManager shutdownManager;
 
-	public LettuceTransport(ShutdownSupport shutdownSupport) {
-		this.shutdownSupport = shutdownSupport;
+	public LettuceTransport(ShutdownManager shutdownManager) {
+		this.shutdownManager = shutdownManager;
 	}
 
 	@Override
@@ -23,9 +23,9 @@ public class LettuceTransport implements Transport {
 	}
 
 	@Override
-	public NodeCache setUpForRemoteNode(Map<String,Object> configMap) {
+	public NodeCache createRemoteCache(Map<String,Object> configMap) {
 		var config = LettuceConfig.from(configMap);
-		return new LettuceCache(config, getShutdownSupport());
+		return new LettuceCache(config, getShutdownManager());
 	}
 
 	@Override

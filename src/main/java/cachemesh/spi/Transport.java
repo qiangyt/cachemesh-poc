@@ -17,6 +17,6 @@ public interface Transport extends HasName {
 		return false;
 	}
 
-	NodeCache setUpForRemoteNode(Map<String,Object> configMap);
+	NodeCache createRemoteCache(Map<String,Object> configMap);
 
 }

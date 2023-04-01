@@ -7,25 +7,25 @@ import lombok.Getter;
 
 
 @Getter
-public abstract class AbstractShutdownable implements Shutdownable {
+public abstract class AbstractShutdownable implements ManagedShutdownable {
 
 	private final Logger logger;
 
 	private final String name;
 
-	private final ShutdownSupport shutdownSupport;
+	private final ShutdownManager shutdownManager;
 
-	protected AbstractShutdownable(String name, ShutdownSupport shutdownSupport) {
-		this(name, shutdownSupport, 0);
+	protected AbstractShutdownable(String name, ShutdownManager shutdownManager) {
+		this(name, shutdownManager, 0);
 	}
 
-	protected AbstractShutdownable(String name, ShutdownSupport shutdownSupport, int shutdownTimeoutSeconds) {
+	protected AbstractShutdownable(String name, ShutdownManager shutdownManager, int shutdownTimeoutSeconds) {
 		this.name = name;
 		this.logger = LogHelper.getLogger(this);
 
-		this.shutdownSupport = shutdownSupport;
-		if (shutdownSupport != null) {
-			shutdownSupport.register(this, shutdownTimeoutSeconds);
+		this.shutdownManager = shutdownManager;
+		if (shutdownManager != null) {
+			shutdownManager.register(this, shutdownTimeoutSeconds);
 		}
 	}
 
@@ -35,7 +35,7 @@ public abstract class AbstractShutdownable implements Shutdownable {
 			throw new IllegalStateException(getName() + " doesn't need shutdown");
 		}
 
-		var sd = getShutdownSupport();
+		var sd = getShutdownManager();
 		if (sd != null) {
 			sd.shutdown(this, timeoutSeconds);
 		} else {

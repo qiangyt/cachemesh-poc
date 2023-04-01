@@ -4,18 +4,18 @@ import lombok.Getter;
 @Getter
 public class ShutdownItem {
 
-	private final Shutdownable target;
+	private final ManagedShutdownable target;
 
 	private final int timeoutSeconds;
 
 	private volatile boolean shutdowned;
 
-	private final ShutdownSupport support;
+	private final ShutdownManager support;
 
 	private final ShutdownLogger logger;
 
 
-	public ShutdownItem(ShutdownSupport support, Shutdownable target, int timeoutSeconds) {
+	public ShutdownItem(ShutdownManager support, ManagedShutdownable target, int timeoutSeconds) {
 		this.target = target;
 		this.timeoutSeconds = timeoutSeconds;
 		this.shutdowned = false;

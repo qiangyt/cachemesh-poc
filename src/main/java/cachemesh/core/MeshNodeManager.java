@@ -94,7 +94,7 @@ public class MeshNodeManager {
 	}
 
 	protected MeshNode addRemoteNode(Transport transport, Map<String, Object> configMap) {
-		var nodeCache = transport.setUpForRemoteNode(configMap);
+		var nodeCache = transport.createRemoteCache(configMap);
 		if (nodeCache == null) {
 			throw new IllegalArgumentException("transport " + transport.getProtocol() + " doesn't support remote node");
 		}

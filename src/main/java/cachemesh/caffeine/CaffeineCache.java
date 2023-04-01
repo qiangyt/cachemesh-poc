@@ -8,7 +8,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import lombok.Getter;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
-import cachemesh.common.shutdown.ShutdownSupport;
+import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.Value;
 
@@ -22,8 +22,8 @@ public class CaffeineCache
 	private final Cache<String, Value> instance;
 
 
-	public CaffeineCache(CaffeineConfig config, Cache<String, Value> instance, ShutdownSupport shutdownSupport) {
-		super(config.getName(), shutdownSupport);
+	public CaffeineCache(CaffeineConfig config, Cache<String, Value> instance, ShutdownManager shutdownManager) {
+		super(config.getName(), shutdownManager);
 
 		this.config = config;
 		this.instance = instance;

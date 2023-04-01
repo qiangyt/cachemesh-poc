@@ -1,26 +1,37 @@
 package cachemesh.core;
 
 import cachemesh.spi.LocalCache;
-import cachemesh.spi.NodeCache;
+import cachemesh.spi.Transport;
+import lombok.Getter;
 
+@Getter
+public class LocalTransport implements Transport {
 
-public class LocalNodeCache implements NodeCache {
+	private final LocalCacheManager localCacheManager;
 
-	private final LocalCacheManager backend;
-
-	public LocalNodeCache(LocalCacheManager backend) {
-		this.backend = backend;
+	public LocalTransport(LocalCacheManager localCacheManager) {
+		this.localCacheManager = localCacheManager;
 	}
 
 	@Override
-	public void shutdown(int timeoutSeconds) throws InterruptedException {
-		this.backend.shutdown(timeoutSeconds);
+	public boolean isRemote() {
+		return false;
+	}
+
+	@Override
+	public void start(int timeoutSeconds) throws InterruptedException {
+		// nothing to do
+	}
+
+	@Override
+	public void stop(int timeoutSeconds) throws InterruptedException {
+		// nothing to do
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
-		var cache = this.backend.get(cacheName);
+		var cache = getLocalCacheManager().get(cacheName);
 		if (cache == null) {
 			return (GetResult<byte[]>)GetResult.NOT_FOUND;
 		}
@@ -41,7 +52,7 @@ public class LocalNodeCache implements NodeCache {
 
 	@Override
 	public long putSingle(String cacheName, String key, byte[] value) {
-		LocalCache cache = this.backend.resolve(cacheName, byte[].class);
+		LocalCache cache = getLocalCacheManager().resolve(cacheName, byte[].class);
 
 		var r = cache.putSingle(key, (k, entry) -> {
 			long version = (entry == null) ? 1 : entry.getVersion() + 1;
@@ -52,13 +63,8 @@ public class LocalNodeCache implements NodeCache {
 	}
 
 	@Override
-	public boolean isLocal() {
-		return true;
-	}
-
-	@Override
 	public <T> T getSingleObject(String cacheName, String key) {
-		var cache = this.backend.get(cacheName);
+		var cache = getLocalCacheManager().get(cacheName);
 		if (cache == null) {
 			return null;
 		}
@@ -74,7 +80,7 @@ public class LocalNodeCache implements NodeCache {
 
 	@Override
 	public <T> long putSingleObject(String cacheName, String key, T value, Class<T> valueClass) {
-		LocalCache cache = this.backend.resolve(cacheName, valueClass);
+		LocalCache cache = getLocalCacheManager().resolve(cacheName, valueClass);
 
 		var r = cache.putSingle(key, (k, entry) -> {
 			long version = (entry == null) ? 1 : entry.getVersion() + 1;

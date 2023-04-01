@@ -1,22 +1,36 @@
 package cachemesh.spi;
 
-import java.util.Map;
+import javax.annotation.concurrent.ThreadSafe;
 
-import cachemesh.common.HasName;
-import cachemesh.core.LocalNodeCache;
+import cachemesh.core.GetResult;
 
-public interface Transport extends HasName {
+@ThreadSafe
+public interface Transport {
 
-	default String getProtocol() {
-		return getName();
+	void start(int timeoutSeconds) throws InterruptedException;
+
+	void stop(int timeoutSeconds) throws InterruptedException;
+
+	GetResult<byte[]> getSingle(String cacheName, String key, long version);
+
+	// return version
+	long putSingle(String cacheName, String key, byte[] value);
+
+	boolean isRemote();
+
+	default <T> T getSingleObject(String cacheName, String key) {
+		if (isRemote()) {
+			throw new UnsupportedOperationException("unsupported by remote transport");
+		}
+		throw new UnsupportedOperationException("to be implemented");
 	}
 
-	Map<String,Object> parseUrl(String url);
-
-	default boolean setUpForLocalNode(Map<String,Object> configMap, LocalNodeCache localNodeCache) {
-		return false;
+	default <T> long putSingleObject(String cacheName, String key, T value, Class<T> valueClass) {
+		if (isRemote()) {
+			throw new UnsupportedOperationException("unsupported by remote transport");
+		}
+		throw new UnsupportedOperationException("to be implemented");
 	}
 
-	NodeCache createRemoteCache(Map<String,Object> configMap);
 
 }

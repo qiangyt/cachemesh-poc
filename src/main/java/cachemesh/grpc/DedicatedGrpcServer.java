@@ -3,11 +3,11 @@ package cachemesh.grpc;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import cachemesh.common.LifeStage;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.common.util.LogHelper;
 import io.grpc.BindableService;
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
@@ -19,7 +19,7 @@ import lombok.Setter;
 import lombok.AccessLevel;
 
 @Getter
-public class GrpcStandaloneServer extends AbstractShutdownable implements GrpcServer {
+public class DedicatedGrpcServer extends AbstractShutdownable implements GrpcServer {
 
 	private final ServerBuilder<?> builder;
 
@@ -28,15 +28,20 @@ public class GrpcStandaloneServer extends AbstractShutdownable implements GrpcSe
 
 	private final GrpcConfig config;
 
-	@Setter(AccessLevel.PROTECTED)
-	private volatile boolean started;
+	private final LifeStage lifeStage;
 
-	public GrpcStandaloneServer(GrpcConfig config, ShutdownManager shutdownManager) {
+	public DedicatedGrpcServer(GrpcConfig config, ShutdownManager shutdownManager) {
 		super(config.getTarget(), shutdownManager);
 
 		this.config = config;
 
 		this.builder = Grpc.newServerBuilderForPort(config.getPort(), InsecureServerCredentials.create());
+		this.lifeStage = new LifeStage("grpc-server", config.getTarget(), getLogger());
+	}
+
+	@Override
+	public boolean isStarted() {
+		return getLifeStage().getType() == LifeStage.Type.started;
 	}
 
 	@Override
@@ -52,12 +57,13 @@ public class GrpcStandaloneServer extends AbstractShutdownable implements GrpcSe
 		getBuilder().addService(service);
 	}
 
-	public void start() {
-		if (isStarted()) {
-			throw new InternalException("%s: server already started", getName());
-		}
+	@Override
+	public void stop(int timeoutSeconds) throws InterruptedException {
+		shutdown(timeoutSeconds);
+	}
 
-		getLogger().info("starting ...", LogHelper.kv("config", getConfig()));
+	public void start(int timeoutSeconds) {
+		getLifeStage().starting();
 
 		var inst = getBuilder().build();
 
@@ -65,33 +71,23 @@ public class GrpcStandaloneServer extends AbstractShutdownable implements GrpcSe
 			inst.start();
 			setInstance(inst);
 
-			getLogger().info("started");
+			getLifeStage().started();
 		} catch (IOException e) {
 			throw new InternalException(e, "%s: failed to start server", getName());
 		}
 	}
 
-	public void ensureStarted() {
-		if (!isStarted()) {
-			throw new InternalException("%s: server not yet started", getName());
-		}
-	}
-
 	@Override
 	public void onShutdown(ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
-		ensureStarted();
+		getLifeStage().stopping();
 
 		var inst = getInstance();
-		inst.shutdown();
-		blockUntilTermination(0);
-
 		setInstance(null);
-	}
 
-	public void blockUntilTermination(int timeoutSeconds) throws InterruptedException {
-		ensureStarted();
+		inst.shutdown();
+		inst.awaitTermination(timeoutSeconds, TimeUnit.SECONDS);
 
-		getInstance().awaitTermination(timeoutSeconds, TimeUnit.SECONDS);
+		getLifeStage().stopped();
 	}
 
 }

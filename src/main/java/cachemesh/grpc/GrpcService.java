@@ -7,25 +7,20 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 import lombok.Getter;
-import cachemesh.core.LocalNodeCache;
+import cachemesh.core.LocalTransport;
 
 @Getter
 public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GrpcService.class);
 
-	private final LocalNodeCache cache;
-
-	private final GrpcServer server;
+	private final LocalTransport localTransport;
 
 	private final GrpcConfig config;
 
-	public GrpcService(GrpcConfig config, GrpcServer server, LocalNodeCache cache) {
+	public GrpcService(GrpcConfig config, LocalTransport localTransport) {
 		this.config = config;
-		this.server = server;
-		this.cache = cache;
-
-		server.addService(this);
+		this.localTransport = localTransport;
 	}
 
 
@@ -40,7 +35,7 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 			LOG.debug("getSingle(): cache name={}, key={}, version={}", cacheName, key, ver);
 		}
 
-		var resp = this.cache.getSingle(cacheName, key, ver);
+		var resp = getLocalTransport().getSingle(cacheName, key, ver);
 		if (debug) {
 			LOG.debug("getSingle(): resp={}", resp);
 		}
@@ -71,7 +66,7 @@ public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 		var reqV = req.getValue();
 		var value = (reqV == null) ? null : reqV.toByteArray();
 
-		var ver = this.cache.putSingle(cacheName, key, value);
+		var ver = getLocalTransport().putSingle(cacheName, key, value);
 		if (debug) {
 			LOG.debug("putSingle(): version={}", ver);
 		}

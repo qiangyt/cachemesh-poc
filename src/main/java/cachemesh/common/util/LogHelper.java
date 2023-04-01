@@ -11,7 +11,11 @@ import net.logstash.logback.argument.StructuredArguments;
 public class LogHelper {
 
 	public static Logger getLogger(HasName hasName) {
-		return LoggerFactory.getLogger(hasName.getName() + "@" + hasName.getClass());
+		return getLogger(hasName.getClass().getName(), hasName.getName());
+	}
+
+	public static Logger getLogger(String type, String name) {
+		return LoggerFactory.getLogger(name + "@" + type);
 	}
 
 	public static StructuredArgument entries(Mappable mappable) {

@@ -5,11 +5,14 @@ import java.util.Map;
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.hash.Hashing;
 import cachemesh.spi.Transport;
+import cachemesh.spi.TransportProvider;
+import lombok.AccessLevel;
 import lombok.Getter;
 
 @Getter
 public class MeshNodeManager {
 
+	@Getter(AccessLevel.PROTECTED)
 	private final ConsistentHash<MeshNode> route;
 
 	private final LocalCacheManager localCacheManager;
@@ -28,81 +31,72 @@ public class MeshNodeManager {
 		return this.route.findNode(key);
 	}
 
-	public void addNode(MeshNode node) {
-		this.route.join(node);
-	}
-
-	public void addNodes(Iterable<MeshNode> nodes) {
-		nodes.forEach(this::addNode);
+	public TransportProvider loadTransportProvider(String protocol) {
+		var r = getTransportRegistry().getByKey(protocol);
+		if (r == null) {
+			throw new IllegalArgumentException("unsupported protocol: " + protocol);
+		}
+		return r;
 	}
 
 	public MeshNode addLocalNode(String url) {
-		var protocol = TransportURL.parseUrl(url).getProtocol();
+		var pc = TransportURL.parseUrl(url).getProtocol();
+		var pdr = loadTransportProvider(pc);
+		var cm = pdr.parseUrl(url);
 
-		var transport = getTransportRegistry().get(protocol);
-		if (transport == null) {
-			throw new IllegalArgumentException("unsupported protocol: " + protocol);
-		}
-
-		var configMap = transport.parseUrl(url);
-
-		return addLocalNode(transport, configMap);
+		return addLocalNode(pdr, cm);
 	}
 
-	public MeshNode addLocalNode(String protocol, Map<String, Object> configMap) {
-		var transport = getTransportRegistry().get(protocol);
-		if (transport == null) {
-			throw new IllegalArgumentException("unsupported protocol: " + protocol);
-		}
+	public MeshNode addLocalNode(Map<String, Object> configMap) {
+		var pc = (String)configMap.get("protocol");
+		var pdr = loadTransportProvider(pc);
 
-		return addLocalNode(transport, configMap);
+		return addLocalNode(pdr, configMap);
 	}
 
-	protected MeshNode addLocalNode(Transport transport, Map<String, Object> configMap) {
-		var localNodeCache = new LocalNodeCache(getLocalCacheManager());
-		if (transport.setUpForLocalNode(configMap, localNodeCache) == false) {
-			throw new IllegalArgumentException("transport " + transport.getProtocol() + " doesn't support local node");
+	protected MeshNode addLocalNode(TransportProvider provider, Map<String, Object> configMap) {
+		var tp = new LocalTransport(getLocalCacheManager());
+		var cfg = provider.parseConfig(configMap);
+
+		if (provider.setUpLocalTransport(cfg, tp) == false) {
+			throw new IllegalArgumentException("transport " + provider.getProtocol() + " doesn't support local node");
 		}
 
-		String target = TransportURL.getTarget(configMap);
-		var node = new MeshNode(false, target, localNodeCache);
-		addNode(node);
-		return node;
+		return addNode(provider, cfg, tp);
 	}
-
 
 	public MeshNode addRemoteNode(String url) {
-		var protocol = TransportURL.parseUrl(url).getProtocol();
+		var pc = TransportURL.parseUrl(url).getProtocol();
+		var pdr = loadTransportProvider(pc);
+		var cm = pdr.parseUrl(url);
 
-		var transport = getTransportRegistry().get(protocol);
-		if (transport == null) {
-			throw new IllegalArgumentException("unsupported protocol: " + protocol);
-		}
-
-		var configMap = transport.parseUrl(url);
-
-		return addRemoteNode(transport, configMap);
+		return addRemoteNode(pdr, cm);
 	}
 
-	public MeshNode addRemoteNode(String protocol, Map<String, Object> configMap) {
-		var transport = getTransportRegistry().get(protocol);
-		if (transport == null) {
-			throw new IllegalArgumentException("unsupported protocol: " + protocol);
-		}
+	public MeshNode addRemoteNode(Map<String, Object> configMap) {
+		var pc = (String)configMap.get("protocol");
+		var pdr = loadTransportProvider(pc);
 
-		return addRemoteNode(transport, configMap);
+		return addRemoteNode(pdr, configMap);
 	}
 
-	protected MeshNode addRemoteNode(Transport transport, Map<String, Object> configMap) {
-		var nodeCache = transport.createRemoteCache(configMap);
-		if (nodeCache == null) {
-			throw new IllegalArgumentException("transport " + transport.getProtocol() + " doesn't support remote node");
+	protected MeshNode addRemoteNode(TransportProvider provider, Map<String, Object> configMap) {
+		var cfg = provider.parseConfig(configMap);
+
+		var tp = provider.createRemoteTransport(cfg);
+		if (tp == null) {
+			throw new IllegalArgumentException("transport " + provider.getProtocol() + " doesn't support remote node");
 		}
 
-		String target = TransportURL.getTarget(configMap);
-		var node = new MeshNode(true, target, nodeCache);
-		addNode(node);
-		return node;
+		return addNode(provider, cfg, tp);
+	}
+
+	protected MeshNode addNode(TransportProvider provider, TransportConfig config, Transport transport) {
+		var r = new MeshNode(config, transport);
+		r.addHook(provider);
+
+		getRoute().join(r);
+		return r;
 	}
 
 }

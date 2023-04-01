@@ -3,18 +3,18 @@ package cachemesh.grpc;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.Mappable;
 import cachemesh.common.util.StringHelper;
+import cachemesh.core.TransportConfig;
 import cachemesh.core.TransportURL;
 import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
 import io.grpc.ManagedChannel;
 import lombok.Getter;
-import lombok.Builder;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@Builder
-public class GrpcConfig implements Mappable {
+@SuperBuilder
+public class GrpcConfig extends TransportConfig {
 
 	public static final String PROTOCOL = "grpc";
 
@@ -26,7 +26,12 @@ public class GrpcConfig implements Mappable {
 
 	private final String target;
 
-	private final int shutdownTimeoutSeconds;
+	private final boolean remote;
+
+	@Override
+	public String getProtocol() {
+		return PROTOCOL;
+	}
 
 	public ManagedChannel createClientChannel() {
 		return Grpc.newChannelBuilder(getTarget(), InsecureChannelCredentials.create()).build();
@@ -34,13 +39,11 @@ public class GrpcConfig implements Mappable {
 
 	@Override
 	public Map<String, Object> toMap() {
-		var configMap = new HashMap<String, Object>();
+		var configMap = super.toMap();
 
 		configMap.put("url", getUrl());
-		configMap.put("target", getTarget());
 		configMap.put("host", getHost());
 		configMap.put("port", getPort());
-		configMap.put("shutdownTimeoutSeconds", getShutdownTimeoutSeconds());
 
 		return configMap;
 	}
@@ -78,14 +81,18 @@ public class GrpcConfig implements Mappable {
 			port = (Integer)configMap.get("port");
 		}
 
-		Integer shutdownTimeoutSeconds = (Integer)configMap.get("shutdownTimeoutSeconds");
+		var startTimeoutSeconds = (Integer)configMap.get("startTimeoutSeconds");
+		var stopTimeoutSeconds = (Integer)configMap.get("stopTimeoutSeconds");
+		var remote = (Boolean)configMap.get("remote");
 
 		return builder()
 				.host(host)
 				.port(port.intValue())
 				.url(url)
 				.target(target)
-				.shutdownTimeoutSeconds(shutdownTimeoutSeconds)
+				.startTimeoutSeconds(startTimeoutSeconds)
+				.stopTimeoutSeconds(stopTimeoutSeconds)
+				.remote(remote)
 				.build();
 	}
 

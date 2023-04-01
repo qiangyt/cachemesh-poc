@@ -3,15 +3,15 @@ package cachemesh.lettuce;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.Mappable;
 import cachemesh.common.util.StringHelper;
+import cachemesh.core.TransportConfig;
 import cachemesh.core.TransportURL;
 import lombok.Getter;
-import lombok.Builder;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@Builder
-public class LettuceConfig implements Mappable {
+@SuperBuilder
+public class LettuceConfig extends TransportConfig {
 
 	public static final String PROTOCOL = "redis";
 
@@ -29,20 +29,25 @@ public class LettuceConfig implements Mappable {
 
 	private final String keySeparator;
 
-	private final int shutdownTimeoutSeconds;
+	@Override
+	public String getProtocol() {
+		return PROTOCOL;
+	}
 
+	@Override
+	public boolean isRemote() {
+		return true;
+	}
 
 	@Override
 	public Map<String, Object> toMap() {
-		var configMap = new HashMap<String, Object>();
+		var configMap = super.toMap();
 
 		configMap.put("host", getHost());
 		configMap.put("port", getPort());
 		configMap.put("database", getDatabase());
-		configMap.put("target", getTarget());
 		configMap.put("url", getUrl());
 		configMap.put("keySeparator", getKeySeparator());
-		configMap.put("shutdownTimeoutSeconds", getShutdownTimeoutSeconds());
 
 		return configMap;
 	}
@@ -96,7 +101,8 @@ public class LettuceConfig implements Mappable {
 			keySeparator = DEFAULT_SEPARATOR;
 		}
 
-		Integer shutdownTimeoutSeconds = (Integer)configMap.get("shutdownTimeoutSeconds");
+		var startTimeoutSeconds = (Integer)configMap.get("startTimeoutSeconds");
+		var stopTimeoutSeconds = (Integer)configMap.get("stopTimeoutSeconds");
 
 		return builder()
 				.host(host)
@@ -105,7 +111,8 @@ public class LettuceConfig implements Mappable {
 				.database(database.intValue())
 				.target(target)
 				.keySeparator(keySeparator)
-				.shutdownTimeoutSeconds(shutdownTimeoutSeconds)
+				.startTimeoutSeconds(startTimeoutSeconds)
+				.stopTimeoutSeconds(stopTimeoutSeconds)
 				.build();
 	}
 

@@ -11,7 +11,7 @@ import cachemesh.core.LocalCacheManager;
 import cachemesh.core.MeshNodeManager;
 import cachemesh.core.ValueImpl;
 import cachemesh.spi.LocalCache;
-import cachemesh.spi.NodeCache;
+import cachemesh.spi.Transport;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -36,24 +36,24 @@ public class MeshCache<T> implements HasName {
 		return this.nearCache.getName();
 	}
 
-	public NodeCache resolveNodeCache(String key) {
+	public Transport resolveTransport(String key) {
 		var n = getNodeManager().findNode(key);
 		if (this.logger.isDebugEnabled()) {
 			this.logger.debug("find node for {}: {}", kv("key", key), LogHelper.kv("node", n));
 		}
 
-		return n.getCache();
+		return n.getTransport();
 	}
 
 	public T getSingle(String key) {
-		var nodeCache = resolveNodeCache(key);
-		if (nodeCache.isLocal()) {
-			return nodeCache.getSingleObject(getName(), key);
+		var transport = resolveTransport(key);
+		if (transport.isLocal()) {
+			return transport.getSingleObject(getName(), key);
 		}
-		return getRemoteSingle(nodeCache, key);
+		return getRemoteSingle(transport, key);
 	}
 
-	protected T getRemoteSingle(NodeCache nodeCache, String key) {
+	protected T getRemoteSingle(Transport nodeCache, String key) {
 		var near = getNearCache();
 		var cfg = near.getConfig();
 
@@ -86,23 +86,23 @@ public class MeshCache<T> implements HasName {
 	}
 
 	public void putSingle(String key, T object) {
-		var nodeCache = resolveNodeCache(key);
-		if (nodeCache.isLocal()) {
-			putLocalSingle(nodeCache, key, object);
+		var transport = resolveTransport(key);
+		if (transport.isLocal()) {
+			putLocalSingle(transport, key, object);
 		} else {
-			putRemoteSingle(nodeCache, key, object);
+			putRemoteSingle(transport, key, object);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void putLocalSingle(NodeCache nodeCache, String key, T object) {
+	protected void putLocalSingle(Transport nodeCache, String key, T object) {
 		var near = getNearCache();
 
 		var valueClass = (Class<T>)near.getConfig().getValueClass();
 		nodeCache.putSingleObject(getName(), key, object, valueClass);
 	}
 
-	protected void putRemoteSingle(NodeCache nodeCache, String key, Object object) {
+	protected void putRemoteSingle(Transport nodeCache, String key, Object object) {
 		var near = getNearCache();
 
 		var valueBytes = near.getConfig().getSerder().serialize(object);

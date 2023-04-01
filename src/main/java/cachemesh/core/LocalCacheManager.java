@@ -10,9 +10,9 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.LoggerFactory;
 
 import cachemesh.common.err.InternalException;
+import cachemesh.common.shutdown.ManagedShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.common.shutdown.Shutdownable;
 import cachemesh.common.util.LogHelper;
 import cachemesh.spi.LocalCache;
 import cachemesh.spi.LocalCacheConfig;
@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 
 @Getter
 @ThreadSafe
-public class LocalCacheManager implements Shutdownable {
+public class LocalCacheManager implements ManagedShutdownable {
 
 	class Item {
 		LocalCache cache;

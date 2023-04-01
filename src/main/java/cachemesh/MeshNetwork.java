@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 
 import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
+import cachemesh.common.shutdown.Shutdownable;
 import cachemesh.common.util.LogHelper;
 import cachemesh.core.LocalCacheManager;
 import cachemesh.core.MeshCacheManager;
@@ -12,7 +13,7 @@ import cachemesh.core.TransportRegistry;
 import lombok.Getter;
 
 @Getter
-public class MeshNetwork implements HasName {
+public class MeshNetwork implements Shutdownable, HasName {
 
 	private final MeshNetworkConfig config;
 
@@ -62,7 +63,8 @@ public class MeshNetwork implements HasName {
 		this.logger.info("mesh network bootstrap: done");
 	}
 
-	public void shutdown() throws InterruptedException {
+	@Override
+	public void shutdown(int timeoutSeconds) throws InterruptedException {
 		if (this.bootstrapped) {
 			throw new InternalException("not bootstrapped");
 		}

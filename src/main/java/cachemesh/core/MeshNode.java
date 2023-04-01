@@ -1,42 +1,107 @@
 package cachemesh.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 
-import cachemesh.common.HasName;
+import cachemesh.common.LifeStage;
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.util.LogHelper;
-import cachemesh.spi.NodeCache;
+import cachemesh.spi.Transport;
+import cachemesh.spi.NodeHook;
+import lombok.AccessLevel;
 import lombok.Getter;
 
 @Getter
-public class MeshNode implements HasName, ConsistentHash.Node {
+public class MeshNode implements ConsistentHash.Node {
 
 	protected final Logger logger;
 
-	private final String key;
+	private final TransportConfig config;
 
 	private final int hashCode;
 
-	private final boolean remote;
+	private final Transport transport;
 
-	private final NodeCache cache;
+	@Getter(AccessLevel.PROTECTED)
+	private final List<NodeHook> hooks = new ArrayList<>();
 
-	public MeshNode(boolean remote, String key, NodeCache cache) {
-		this.remote = remote;
-		this.cache = cache;
+	private final LifeStage lifeStage;
 
-		this.key = key;
-		this.hashCode = this.key.hashCode();
+	public MeshNode(TransportConfig config, Transport transport) {
+		this.config = config;
+		this.transport = transport;
+
+		var key = getKey();
+
+		this.hashCode = key.hashCode();
 		this.logger = LogHelper.getLogger(this);
-	}
 
-	public void shutdown(int timeoutSeconds) throws InterruptedException {
-		getCache().shutdown(timeoutSeconds);
+		this.lifeStage = new LifeStage("meshnode", key, getLogger());
 	}
 
 	@Override
-	public String getName() {
-		return getKey();
+	public String getKey() {
+		return getConfig().getTarget();
+	}
+
+	public void addHook(NodeHook hook) {
+		getHooks().add(hook);
+	}
+
+	void beforeStart() throws InterruptedException {
+		getLifeStage().starting();
+
+		int timeout = getConfig().getStartTimeoutSeconds();
+		for (var hook: getHooks()) {
+			hook.beforeNodeStart(this, timeout);
+		}
+	}
+
+	void afterStart() throws InterruptedException {
+		getLifeStage().started();
+
+		int timeout = getConfig().getStartTimeoutSeconds();
+		for (var hook: getHooks()) {
+			hook.afterNodeStart(this, timeout);
+		}
+	}
+
+	void beforeStop() throws InterruptedException {
+		getLifeStage().stopping();
+
+		int timeout = getConfig().getStopTimeoutSeconds();
+		for (var hook: getHooks()) {
+			hook.beforeNodeStop(this, timeout);
+		}
+	}
+
+	void afterStop() throws InterruptedException {
+		getLifeStage().stopped();
+
+		int timeout = getConfig().getStopTimeoutSeconds();
+		for (var hook: getHooks()) {
+			hook.afterNodeStop(this, timeout);
+		}
+	}
+
+	public void start() throws InterruptedException {
+		beforeStart();
+
+		int timeout = getConfig().getStopTimeoutSeconds();
+		getTransport().start(timeout);
+
+		afterStart();
+	}
+
+	public void stop() throws InterruptedException {
+		beforeStop();
+
+		int timeout = getConfig().getStopTimeoutSeconds();
+		getTransport().stop(timeout);
+
+		afterStop();
 	}
 
 	@Override
@@ -55,7 +120,7 @@ public class MeshNode implements HasName, ConsistentHash.Node {
 			return false;
 		}
 
-		return this.key.equals(that.key);
+		return getKey().equals(that.getKey());
 	}
 
 	@Override
@@ -65,7 +130,7 @@ public class MeshNode implements HasName, ConsistentHash.Node {
 
 	@Override
 	public String toString() {
-		return this.key + "@" + (isRemote() ? "remote" : "local");
+		return getKey() + "@" + (getConfig().isRemote() ? "remote" : "local");
 	}
 
 }

@@ -16,27 +16,29 @@
 #
 
 nodes:
-  provider: inline # udp-broadcast, k8s, auto
-  udpBroadcast:
-    port: 6666
-  list:
-    - url: grpc://localhost:20000
-      local: true
-      grpc:
-        serviceShutdown: 30s
-        clientShutdown: 30s
-    - url: grpc://localhost:20001
-    - url: redis://localhost:6379
-      redis:
-        database: 1
+  provider: inline # jgroup, k8s, auto
+  inline:
+    - url: grpc://localhost:50001
+      remote: false
+    - url: grpc://localhost:50002
+    - url: redis://localhost:6371
 
-serders:
-  provider: jackson
-  jackson:
-
-localCaches:
+local:
+  provider: caffeine
   default:
-    provider: caffeine
     caffeine:
       maximumSize: 100_000
       expireAfterWrite: 5min
+  caches:
+    testA:
+      valueClass: java.lang.String
+      serders:
+        provider: jackson
+        jackson:
+
+transports:
+  grpc:
+    provider: cachemesh.grpc.GrpcTransportProvider
+  redis:
+    provider: cachemesh.redis.lettuce.LettuceTransportProvider
+

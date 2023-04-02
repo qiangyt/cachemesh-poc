@@ -34,15 +34,17 @@ public class GrpcConfig extends TransportConfig {
 
     public static final String PROTOCOL = "grpc";
 
-    private final String       host;
+	public static final String DEFAULT_HOST = "localhost";
 
-    private final int          port;
+    private String       host = DEFAULT_HOST;
 
-    private final String       url;
+    private int          port;
 
-    private final String       target;
+    private String       url;
 
-    private final boolean      remote;
+    private String       target;
+
+    private boolean      remote;
 
     @Override
     public String getProtocol() {

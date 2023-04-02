@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package cachemesh.common.shutdown;
 
 import java.util.ArrayList;
@@ -6,36 +22,34 @@ import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-
 public class ShutdownManager {
 
-	public static final int DEFAULT_TIMEOUT_SECONDS = 2;
+    public static final int                 DEFAULT_TIMEOUT_SECONDS = 2;
 
-	public static final ShutdownManager DEFAULT = new ShutdownManager();
+    public static final ShutdownManager     DEFAULT                 = new ShutdownManager();
 
-	private SortedMap<String, ShutdownItem> items = new TreeMap<>();
+    private SortedMap<String, ShutdownItem> items                   = new TreeMap<>();
 
-	@lombok.Getter
-	private int maxTimeoutSeconds;
+    @lombok.Getter
+    private int                             maxTimeoutSeconds;
 
-	private Thread thread;
+    private Thread                          thread;
 
-	private final ShutdownLogger logger = new ShutdownLogger(ShutdownManager.class);
+    private final ShutdownLogger            logger                  = new ShutdownLogger(ShutdownManager.class);
 
+    public void register(ManagedShutdownable target) {
+        register(target, DEFAULT_TIMEOUT_SECONDS);
+    }
 
-	public void register(ManagedShutdownable target) {
-		register(target, DEFAULT_TIMEOUT_SECONDS);
-	}
-
-	public void register(Iterable<? extends ManagedShutdownable> targets) {
+    public void register(Iterable<? extends ManagedShutdownable> targets) {
 		targets.forEach(this::register);
 	}
 
-	public void register(Iterable<? extends ManagedShutdownable> targets, int timeoutSeconds) {
+    public void register(Iterable<? extends ManagedShutdownable> targets, int timeoutSeconds) {
 		targets.forEach(target -> register(target, timeoutSeconds));
 	}
 
-	public void register(ManagedShutdownable target, int timeoutSeconds) {
+    public void register(ManagedShutdownable target, int timeoutSeconds) {
 		var name = target.getName();
 
 		this.items.compute(name, (k, existing) -> {
@@ -50,7 +64,7 @@ public class ShutdownManager {
 		refreshTimeout();
 	}
 
-	public void unregister(ManagedShutdownable target) {
+    public void unregister(ManagedShutdownable target) {
 		var name = target.getName();
 
 		this.items.compute(name, (k, existing) -> {
@@ -65,27 +79,27 @@ public class ShutdownManager {
 		refreshTimeout();
 	}
 
-	public void refreshTimeout() {
-		int timeout = 0;
-		for (var i : this.items.values()) {
-			timeout = Math.max(timeout, i.getTimeoutSeconds());
-		}
-		;
-		this.maxTimeoutSeconds = timeout;
-	}
+    public void refreshTimeout() {
+        int timeout = 0;
+        for (var i : this.items.values()) {
+            timeout = Math.max(timeout, i.getTimeoutSeconds());
+        }
+        ;
+        this.maxTimeoutSeconds = timeout;
+    }
 
-	public void unhook() {
-		if (this.thread == null) {
-			throw new IllegalStateException("not ever enabled");
-		}
-		if (!Runtime.getRuntime().removeShutdownHook(this.thread)) {
-			throw new IllegalStateException("failed to remove shutdown hook");
-		}
+    public void unhook() {
+        if (this.thread == null) {
+            throw new IllegalStateException("not ever enabled");
+        }
+        if (!Runtime.getRuntime().removeShutdownHook(this.thread)) {
+            throw new IllegalStateException("failed to remove shutdown hook");
+        }
 
-		this.logger.info("shutdown hook is removed");
-	}
+        this.logger.info("shutdown hook is removed");
+    }
 
-	public void hook() {
+    public void hook() {
 		if (this.thread != null) {
 			throw new IllegalStateException("already enabled");
 		}
@@ -105,8 +119,7 @@ public class ShutdownManager {
 		this.logger.info("shutdown hook is added");
 	}
 
-
-	public void shutdown(ManagedShutdownable target, int timeoutSeconds) {
+    public void shutdown(ManagedShutdownable target, int timeoutSeconds) {
 		String name = target.getName();
 		if (target.isShutdownNeeded() == false) {
 			throw new IllegalStateException(name + " no need shutdown");
@@ -147,8 +160,7 @@ public class ShutdownManager {
 		this.items.remove(name);
 	}
 
-
-	public void shutdownAll() throws InterruptedException {
+    public void shutdownAll() throws InterruptedException {
 		this.logger.info("Shutdown begin");
 
 		var currItems = new ArrayList<>(this.items.values());
@@ -202,5 +214,4 @@ public class ShutdownManager {
 
 		this.logger.info("Shutdown finished");
 	}
-
 }

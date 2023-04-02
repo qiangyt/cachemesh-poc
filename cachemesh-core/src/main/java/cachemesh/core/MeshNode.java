@@ -1,3 +1,19 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package cachemesh.core;
 
 import java.util.ArrayList;
@@ -16,121 +32,121 @@ import lombok.Getter;
 @Getter
 public class MeshNode implements ConsistentHash.Node {
 
-	protected final Logger logger;
+    protected final Logger        logger;
 
-	private final TransportConfig config;
+    private final TransportConfig config;
 
-	private final int hashCode;
+    private final int             hashCode;
 
-	private final Transport transport;
+    private final Transport       transport;
 
-	@Getter(AccessLevel.PROTECTED)
-	private final List<NodeHook> hooks = new ArrayList<>();
+    @Getter(AccessLevel.PROTECTED)
+    private final List<NodeHook>  hooks = new ArrayList<>();
 
-	private final LifeStage lifeStage;
+    private final LifeStage       lifeStage;
 
-	public MeshNode(TransportConfig config, Transport transport) {
-		this.config = config;
-		this.transport = transport;
+    public MeshNode(TransportConfig config, Transport transport) {
+        this.config = config;
+        this.transport = transport;
 
-		var key = getKey();
+        var key = getKey();
 
-		this.hashCode = key.hashCode();
-		this.logger = LogHelper.getLogger(this);
+        this.hashCode = key.hashCode();
+        this.logger = LogHelper.getLogger(this);
 
-		this.lifeStage = new LifeStage("meshnode", key, getLogger());
-	}
+        this.lifeStage = new LifeStage("meshnode", key, getLogger());
+    }
 
-	@Override
-	public String getKey() {
-		return getConfig().getTarget();
-	}
+    @Override
+    public String getKey() {
+        return getConfig().getTarget();
+    }
 
-	public void addHook(NodeHook hook) {
-		getHooks().add(hook);
-	}
+    public void addHook(NodeHook hook) {
+        getHooks().add(hook);
+    }
 
-	void beforeStart() throws InterruptedException {
-		getLifeStage().starting();
+    void beforeStart() throws InterruptedException {
+        getLifeStage().starting();
 
-		int timeout = getConfig().getStartTimeoutSeconds();
-		for (var hook: getHooks()) {
-			hook.beforeNodeStart(this, timeout);
-		}
-	}
+        int timeout = getConfig().getStartTimeoutSeconds();
+        for (var hook : getHooks()) {
+            hook.beforeNodeStart(this, timeout);
+        }
+    }
 
-	void afterStart() throws InterruptedException {
-		getLifeStage().started();
+    void afterStart() throws InterruptedException {
+        getLifeStage().started();
 
-		int timeout = getConfig().getStartTimeoutSeconds();
-		for (var hook: getHooks()) {
-			hook.afterNodeStart(this, timeout);
-		}
-	}
+        int timeout = getConfig().getStartTimeoutSeconds();
+        for (var hook : getHooks()) {
+            hook.afterNodeStart(this, timeout);
+        }
+    }
 
-	void beforeStop() throws InterruptedException {
-		getLifeStage().stopping();
+    void beforeStop() throws InterruptedException {
+        getLifeStage().stopping();
 
-		int timeout = getConfig().getStopTimeoutSeconds();
-		for (var hook: getHooks()) {
-			hook.beforeNodeStop(this, timeout);
-		}
-	}
+        int timeout = getConfig().getStopTimeoutSeconds();
+        for (var hook : getHooks()) {
+            hook.beforeNodeStop(this, timeout);
+        }
+    }
 
-	void afterStop() throws InterruptedException {
-		getLifeStage().stopped();
+    void afterStop() throws InterruptedException {
+        getLifeStage().stopped();
 
-		int timeout = getConfig().getStopTimeoutSeconds();
-		for (var hook: getHooks()) {
-			hook.afterNodeStop(this, timeout);
-		}
-	}
+        int timeout = getConfig().getStopTimeoutSeconds();
+        for (var hook : getHooks()) {
+            hook.afterNodeStop(this, timeout);
+        }
+    }
 
-	public void start() throws InterruptedException {
-		beforeStart();
+    public void start() throws InterruptedException {
+        beforeStart();
 
-		int timeout = getConfig().getStopTimeoutSeconds();
-		getTransport().start(timeout);
+        int timeout = getConfig().getStopTimeoutSeconds();
+        getTransport().start(timeout);
 
-		afterStart();
-	}
+        afterStart();
+    }
 
-	public void stop() throws InterruptedException {
-		beforeStop();
+    public void stop() throws InterruptedException {
+        beforeStop();
 
-		int timeout = getConfig().getStopTimeoutSeconds();
-		getTransport().stop(timeout);
+        int timeout = getConfig().getStopTimeoutSeconds();
+        getTransport().stop(timeout);
 
-		afterStop();
-	}
+        afterStop();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
 
-		MeshNode that;
-		try {
-			that = (MeshNode)obj;
-		} catch (ClassCastException e) {
-			return false;
-		}
+        MeshNode that;
+        try {
+            that = (MeshNode) obj;
+        } catch (ClassCastException e) {
+            return false;
+        }
 
-		return getKey().equals(that.getKey());
-	}
+        return getKey().equals(that.getKey());
+    }
 
-	@Override
-	public int hashCode() {
-		return this.hashCode;
-	}
+    @Override
+    public int hashCode() {
+        return this.hashCode;
+    }
 
-	@Override
-	public String toString() {
-		return getKey() + "@" + (getConfig().isRemote() ? "remote" : "local");
-	}
+    @Override
+    public String toString() {
+        return getKey() + "@" + (getConfig().isRemote() ? "remote" : "local");
+    }
 
 }

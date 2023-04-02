@@ -1,57 +1,71 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package cachemesh.common.shutdown;
+
 import lombok.Getter;
 
 @Getter
 public class ShutdownItem {
 
-	private final ManagedShutdownable target;
+    private final ManagedShutdownable target;
 
-	private final int timeoutSeconds;
+    private final int                 timeoutSeconds;
 
-	private volatile boolean shutdowned;
+    private volatile boolean          shutdowned;
 
-	private final ShutdownManager support;
+    private final ShutdownManager     support;
 
-	private final ShutdownLogger logger;
+    private final ShutdownLogger      logger;
 
+    public ShutdownItem(ShutdownManager support, ManagedShutdownable target, int timeoutSeconds) {
+        this.target = target;
+        this.timeoutSeconds = timeoutSeconds;
+        this.shutdowned = false;
+        this.support = support;
 
-	public ShutdownItem(ShutdownManager support, ManagedShutdownable target, int timeoutSeconds) {
-		this.target = target;
-		this.timeoutSeconds = timeoutSeconds;
-		this.shutdowned = false;
-		this.support = support;
+        if (target instanceof AbstractShutdownable) {
+            this.logger = ((AbstractShutdownable) target).createShutdownLogger();
+        } else {
+            this.logger = new ShutdownLogger(target.getLogger());
+        }
+    }
 
-		if (target instanceof AbstractShutdownable) {
-			this.logger = ((AbstractShutdownable)target).createShutdownLogger();
-		} else {
-			this.logger = new ShutdownLogger(target.getLogger());
-		}
-	}
+    public boolean isShutdownNeeded() {
+        if (this.target.isShutdownNeeded() == false) {
+            return false;
+        }
+        return isShutdowned() == false;
+    }
 
+    public void shutdown(int timeoutSeconds) {
+        this.logger.info("begin to shutdown");
 
-	public boolean isShutdownNeeded() {
-		if (this.target.isShutdownNeeded() == false) {
-			return false;
-		}
-		return isShutdowned() == false;
-	}
+        if (timeoutSeconds <= 0) {
+            timeoutSeconds = getTimeoutSeconds();
+        }
 
-	public void shutdown(int timeoutSeconds) {
-		this.logger.info("begin to shutdown");
+        try {
+            this.target.onShutdown(this.logger, timeoutSeconds);
+        } catch (Exception e) {
+            this.logger.error(e, "got error during shutdown");
+        }
 
-		if (timeoutSeconds <= 0) {
-			timeoutSeconds = getTimeoutSeconds();
-		}
-
-		try {
-			this.target.onShutdown(this.logger, timeoutSeconds);
-		} catch (Exception e) {
-			this.logger.error(e, "got error during shutdown");
-		}
-
-		this.shutdowned = true;
-		this.logger.info("end to shutdown");
-	}
-
+        this.shutdowned = true;
+        this.logger.info("end to shutdown");
+    }
 
 }

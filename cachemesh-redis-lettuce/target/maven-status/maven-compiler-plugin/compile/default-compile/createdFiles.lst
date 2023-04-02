@@ -1,8 +1,0 @@
-cachemesh/lettuce/LettuceCodec.class
-cachemesh/lettuce/LettuceTransportProvider.class
-cachemesh/lettuce/LettuceTransport.class
-cachemesh/lettuce/LettuceConfig$LettuceConfigBuilder.class
-cachemesh/lettuce/LettuceConfig$LettuceConfigBuilderImpl.class
-cachemesh/lettuce/LettuceConfig.class
-cachemesh/lettuce/RedisClientProvider.class
-cachemesh/lettuce/DedicatedRedisClientProvider.class

@@ -1,6 +1,0 @@
-/data/qiangyt/github/qiangyt/cachemesh-poc/cachemesh-redis-lettuce/src/main/java/cachemesh/redis/lettuce/LettuceTransportProvider.java
-/data/qiangyt/github/qiangyt/cachemesh-poc/cachemesh-redis-lettuce/src/main/java/cachemesh/redis/lettuce/DedicatedRedisClientProvider.java
-/data/qiangyt/github/qiangyt/cachemesh-poc/cachemesh-redis-lettuce/src/main/java/cachemesh/redis/lettuce/LettuceTransport.java
-/data/qiangyt/github/qiangyt/cachemesh-poc/cachemesh-redis-lettuce/src/main/java/cachemesh/redis/lettuce/RedisClientProvider.java
-/data/qiangyt/github/qiangyt/cachemesh-poc/cachemesh-redis-lettuce/src/main/java/cachemesh/redis/lettuce/LettuceConfig.java
-/data/qiangyt/github/qiangyt/cachemesh-poc/cachemesh-redis-lettuce/src/main/java/cachemesh/redis/lettuce/LettuceCodec.java

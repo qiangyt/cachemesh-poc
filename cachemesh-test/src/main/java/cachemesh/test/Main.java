@@ -20,7 +20,7 @@ import cachemesh.grpc.GrpcTransportProvider;
 import cachemesh.core.MeshNetwork;
 import cachemesh.jgroup.JGroupsListener;
 import cachemesh.jgroup.JGroupsMembers;
-import cachemesh.lettuce.LettuceTransportProvider;
+import cachemesh.redis.lettuce.LettuceTransportProvider;
 
 public class Main {
 

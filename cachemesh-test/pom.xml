@@ -7,9 +7,8 @@
 	<groupId>cachemesh</groupId>
 	<artifactId>cachemesh-test</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1</version>
-    <url>https://github.com/qiangyt/cachemesh</url>
-	<name>${project.artifactId}</name>
+	<url>https://github.com/qiangyt/cachemesh</url>
+	<name>${project.artifactId} ${project.version}</name>
 
 	<parent>
         <groupId>cachemesh</groupId>
@@ -20,38 +19,13 @@
 	<dependencies>
         <dependency>
             <groupId>cachemesh</groupId>
-            <artifactId>cachemesh-caffeine</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>cachemesh</groupId>
-            <artifactId>cachemesh-common</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>cachemesh</groupId>
             <artifactId>cachemesh-core</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>cachemesh</groupId>
-            <artifactId>cachemesh-grpc</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>cachemesh</groupId>
-            <artifactId>cachemesh-jgroup</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>cachemesh</groupId>
-            <artifactId>cachemesh-redis-lettuce</artifactId>
-            <version>0.0.1</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>cachemesh</groupId>
             <artifactId>cachemesh-spring</artifactId>
-            <version>0.0.1</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

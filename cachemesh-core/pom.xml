@@ -10,17 +10,8 @@
     </parent>
     <groupId>cachemesh</groupId>
     <artifactId>cachemesh-core</artifactId>
-    <version>0.0.1</version>
     <packaging>jar</packaging>
-    <name>${project.artifactId}</name>
+    <name>${project.artifactId} ${project.version}</name>
     <url>https://github.com/qiangyt/cachemesh</url>
-
-    <dependencies>
-        <dependency>
-            <groupId>cachemesh</groupId>
-            <artifactId>cachemesh-common</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-    </dependencies>
 
 </project>

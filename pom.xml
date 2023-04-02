@@ -27,15 +27,9 @@
     </developers>
 
     <modules>
-        <module>cachemesh-caffeine</module>
-        <module>cachemesh-classic</module>
-        <module>cachemesh-common</module>
         <module>cachemesh-core</module>
         <module>cachemesh-example</module>
-        <module>cachemesh-grpc</module>
-        <module>cachemesh-jgroup</module>
         <module>cachemesh-k8s</module>
-        <module>cachemesh-redis-lettuce</module>
         <module>cachemesh-spring</module>
         <module>cachemesh-starter</module>
         <module>cachemesh-test</module>

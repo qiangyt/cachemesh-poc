@@ -54,15 +54,11 @@
         <project.build.sourceEncoding>${project.encoding}</project.build.sourceEncoding>
 
         <jacoco.path>${project.build.directory}/jacoco.exec</jacoco.path>
-        <jacoco.skip>true</jacoco.skip>
 
-        <caffeine.version>3.1.4</caffeine.version>
         <grpc.version>1.53.0</grpc.version>
         <jackson.version>2.14.2</jackson.version>
-        <logback.version>1.4.5</logback.version>
-        <protobuf.version>3.21.7</protobuf.version>
+        <logback.version>1.4.6</logback.version>
         <protoc.version>3.21.7</protoc.version>
-        <slf4j.version>2.0.6</slf4j.version>
     </properties>
 
     <dependencyManagement>
@@ -116,7 +112,7 @@
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
-                <version>${caffeine.version}</version>
+                <version>3.1.5</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -133,7 +129,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java-util</artifactId>
-                <version>${protobuf.version}</version>
+                <version>3.21.7</version>
             </dependency>
             <dependency>
                 <groupId>io.grpc</groupId>
@@ -194,23 +190,24 @@
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>annotations-api</artifactId>
                 <version>6.0.53</version>
+                <!-- TODO: upgrade? -->
                 <scope>provided</scope>
                 <!-- not needed at runtime -->
             </dependency>
             <dependency>
                 <groupId>org.jgroups</groupId>
                 <artifactId>jgroups</artifactId>
-                <version>5.2.12.Final</version>
+                <version>5.2.13.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
+                <version>2.0.7</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.4.0</version>
+                <version>5.2.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -352,9 +349,9 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.9</version>
+                    <version>0.8.8</version>
                     <configuration>
-                        <skip>${jacoco.skip}</skip>
+                        <skip>true</skip>
                         <destFile>${jacoco.path}</destFile>
                         <sessionId>jacoco_coverage</sessionId>
                     </configuration>
@@ -374,7 +371,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.0</version>
+                    <version>3.11.0</version>
                     <configuration>
                         <source>${java.source.version}</source>
                         <target>${java.target.version}</target>
@@ -386,7 +383,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.12.4</version>
+                    <version>3.0.0</version>
                     <inherited>true</inherited>
                     <configuration>
                         <!-- jacoco coveraage -->
@@ -401,7 +398,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>2.0.2</version>
+                    <version>3.2.1</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -414,7 +411,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-eclipse-plugin</artifactId>
-                    <version>2.5.1</version>
+                    <version>2.10</version>
                     <configuration>
                         <downloadSources>true</downloadSources>
                     </configuration>
@@ -440,7 +437,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.4.1</version>
+                    <version>3.2.1</version>
                     <executions>
                         <execution>
                             <id>enforce</id>
@@ -521,7 +518,7 @@
                 <plugin>
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
-                    <version>3.0</version>
+                    <version>4.2</version>
                     <configuration>
                         <quiet>true</quiet>
                         <header>${user.dir}/tools/codestyle/HEADER</header>
@@ -552,8 +549,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <!-- jacoco coveraage -->
-            <!-- mvn jacoco:report -Djacoco.skip=false -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

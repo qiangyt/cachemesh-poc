@@ -32,14 +32,14 @@ public abstract class Registry<C, T> {
     }
 
     public void register(C config, T item) {
-		var key = retrieveKey(config);
-		getItemMap().compute(key, (k, existing) -> {
-			if (existing != null) {
-				throw new IllegalArgumentException("duplicated: " + key);
-			}
-			return item;
-		});
-	}
+        var key = retrieveKey(config);
+        getItemMap().compute(key, (k, existing) -> {
+            if (existing != null) {
+                throw new IllegalArgumentException("duplicated: " + key);
+            }
+            return item;
+        });
+    }
 
     public T unregister(C config) {
         String key = retrieveKey(config);

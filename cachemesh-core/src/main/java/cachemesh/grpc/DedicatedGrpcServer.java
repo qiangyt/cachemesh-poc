@@ -40,11 +40,11 @@ public class DedicatedGrpcServer extends AbstractShutdownable implements GrpcSer
     private final ServerBuilder<?> builder;
 
     @Setter(AccessLevel.PROTECTED)
-    private Server                 instance;
+    private Server instance;
 
-    private final GrpcConfig       config;
+    private final GrpcConfig config;
 
-    private final LifeStage        lifeStage;
+    private final LifeStage lifeStage;
 
     public DedicatedGrpcServer(GrpcConfig config, ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);

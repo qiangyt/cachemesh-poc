@@ -32,9 +32,9 @@ public class LettuceTransport extends AbstractShutdownable implements Transport 
 
     private StatefulRedisConnection<String, byte[]> connection;
 
-    private final RedisClient                       client;
+    private final RedisClient client;
 
-    private final LettuceConfig                     config;
+    private final LettuceConfig config;
 
     public LettuceTransport(LettuceConfig config, RedisClient client, ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);
@@ -70,7 +70,7 @@ public class LettuceTransport extends AbstractShutdownable implements Transport 
         var sep = getConfig().getKeySeparator();
 
         return new StringBuilder(cacheName.length() + sep.length() + key.length()).append(cacheName).append(sep)
-            .append(key).toString();
+                .append(key).toString();
     }
 
     RedisCommands<String, byte[]> syncCommand() {
@@ -84,7 +84,7 @@ public class LettuceTransport extends AbstractShutdownable implements Transport 
 
         var cmds = syncCommand();
         var value = cmds.get(redisKey);
-        if (value == null) {//TODO: how to indicate we do have the value but the value is null
+        if (value == null) {// TODO: how to indicate we do have the value but the value is null
             return (GetResult<byte[]>) GetResult.NOT_FOUND;
         }
 

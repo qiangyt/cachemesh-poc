@@ -32,7 +32,7 @@ import lombok.Getter;
 public class GrpcTransportProvider implements TransportProvider {
 
     public static final GrpcTransportProvider DEFAULT = new GrpcTransportProvider(GrpcServerProvider.DEFAULT,
-                                                          ShutdownManager.DEFAULT);
+            ShutdownManager.DEFAULT);
 
     public static void register() {
         TransportRegistry.DEFAULT.register(GrpcConfig.PROTOCOL, DEFAULT);
@@ -40,7 +40,7 @@ public class GrpcTransportProvider implements TransportProvider {
 
     private final GrpcServerProvider serverProvider;
 
-    private final ShutdownManager    shutdownManager;
+    private final ShutdownManager shutdownManager;
 
     public GrpcTransportProvider(GrpcServerProvider serverProvider, ShutdownManager shutdownManager) {
         this.serverProvider = serverProvider;

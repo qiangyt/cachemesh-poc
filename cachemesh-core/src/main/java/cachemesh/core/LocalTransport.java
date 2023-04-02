@@ -67,16 +67,16 @@ public class LocalTransport implements Transport {
     }
 
     @Override
-	public long putSingle(String cacheName, String key, byte[] value) {
-		LocalCache cache = getLocalCacheManager().resolve(cacheName, byte[].class);
+    public long putSingle(String cacheName, String key, byte[] value) {
+        LocalCache cache = getLocalCacheManager().resolve(cacheName, byte[].class);
 
-		var r = cache.putSingle(key, (k, entry) -> {
-			long version = (entry == null) ? 1 : entry.getVersion() + 1;
-			return new ValueImpl(value, version);
-		});
+        var r = cache.putSingle(key, (k, entry) -> {
+            long version = (entry == null) ? 1 : entry.getVersion() + 1;
+            return new ValueImpl(value, version);
+        });
 
-		return r.getVersion();
-	}
+        return r.getVersion();
+    }
 
     @Override
     public <T> T getSingleObject(String cacheName, String key) {
@@ -95,14 +95,14 @@ public class LocalTransport implements Transport {
     }
 
     @Override
-	public <T> long putSingleObject(String cacheName, String key, T value, Class<T> valueClass) {
-		LocalCache cache = getLocalCacheManager().resolve(cacheName, valueClass);
+    public <T> long putSingleObject(String cacheName, String key, T value, Class<T> valueClass) {
+        LocalCache cache = getLocalCacheManager().resolve(cacheName, valueClass);
 
-		var r = cache.putSingle(key, (k, entry) -> {
-			long version = (entry == null) ? 1 : entry.getVersion() + 1;
-			return new ValueImpl(value, version);
-		});
+        var r = cache.putSingle(key, (k, entry) -> {
+            long version = (entry == null) ? 1 : entry.getVersion() + 1;
+            return new ValueImpl(value, version);
+        });
 
-		return r.getVersion();
-	}
+        return r.getVersion();
+    }
 }

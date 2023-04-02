@@ -28,11 +28,11 @@ import cachemesh.core.LocalTransport;
 @Getter
 public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {
 
-    private static final Logger  LOG = LoggerFactory.getLogger(GrpcService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GrpcService.class);
 
     private final LocalTransport localTransport;
 
-    private final GrpcConfig     config;
+    private final GrpcConfig config;
 
     public GrpcService(GrpcConfig config, LocalTransport localTransport) {
         this.config = config;

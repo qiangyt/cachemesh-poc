@@ -28,28 +28,25 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class LocalCacheConfig implements HasName {
 
-    private final String            name;
+    private final String name;
 
-    private final Class<?>          valueClass;
+    private final Class<?> valueClass;
 
-    private final Serderializer     serder;
+    private final Serderializer serder;
 
-    //private final boolean cacheBytes;
+    // private final boolean cacheBytes;
 
     private final LocalCacheFactory factory;
 
-    public LocalCacheConfig(String name, Class<?> valueClass, Serderializer serder,
-    //						 boolean cacheBytes,
-                            LocalCacheFactory factory) {
+    public LocalCacheConfig(String name, Class<?> valueClass, Serderializer serder, LocalCacheFactory factory) {
         this.name = name;
         this.valueClass = valueClass;
         this.serder = serder;
-        //	this.cacheBytes = cacheBytes;
         this.factory = factory;
     }
 
     public LocalCacheConfig buildAnother(String name, Class<?> valueClass) {
-        return new LocalCacheConfig(name, valueClass, getSerder(), /*isCacheBytes(), */getFactory());
+        return new LocalCacheConfig(name, valueClass, getSerder(), getFactory());
     }
 
     @Override
@@ -59,7 +56,6 @@ public class LocalCacheConfig implements HasName {
         r.put("name", getName());
         r.put("valueClass", getValueClass());
         r.put("serder", getSerder().toMap());
-        //r.put( "cacheBytes", isCacheBytes());
         r.put("factory", getFactory().toMap());
 
         return r;

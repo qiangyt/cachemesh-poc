@@ -24,11 +24,11 @@ import cachemesh.core.spi.Value;
 
 public class ValueImpl implements Value {
 
-    private Reference<byte[]> bytesR; //TODO: or use SoftReference; have this configurable
+    private Reference<byte[]> bytesR; // TODO: or use SoftReference; have this configurable
 
-    private Object            object;
+    private Object object;
 
-    private long              version;
+    private long version;
 
     public ValueImpl(byte[] bytes, long version) {
         withBytes(bytes, version);

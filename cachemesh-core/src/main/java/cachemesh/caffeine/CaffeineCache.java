@@ -31,7 +31,7 @@ import cachemesh.core.spi.Value;
 @Getter
 public class CaffeineCache extends AbstractShutdownable implements LocalCache {
 
-    private final CaffeineConfig       config;
+    private final CaffeineConfig config;
 
     private final Cache<String, Value> instance;
 
@@ -79,7 +79,7 @@ public class CaffeineCache extends AbstractShutdownable implements LocalCache {
 
     // @Override
     // public void putMultiple(Collection<LocalCacheEntry<T>> entries) {
-    // 	this.instance.putAll(LocalCacheEntry.toMap(entries));
+    // this.instance.putAll(LocalCacheEntry.toMap(entries));
     // }
 
     @Override

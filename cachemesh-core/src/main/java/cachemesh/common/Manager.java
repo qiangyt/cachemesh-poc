@@ -19,19 +19,19 @@ package cachemesh.common;
 public abstract class Manager<C, T> extends Registry<C, T> {
 
     public T resolve(C config) {
-		String key = retrieveKey(config);
-		return getItemMap().computeIfAbsent(key, k -> doCreate(config));
-	}
+        String key = retrieveKey(config);
+        return getItemMap().computeIfAbsent(key, k -> doCreate(config));
+    }
 
     public T create(C config) {
-		String key = retrieveKey(config);
-		return getItemMap().compute(key, (k, existing) -> {
-			if (existing != null) {
-				throw new IllegalArgumentException("duplicated: " + key);
-			}
-			return doCreate(config);
-		});
-	}
+        String key = retrieveKey(config);
+        return getItemMap().compute(key, (k, existing) -> {
+            if (existing != null) {
+                throw new IllegalArgumentException("duplicated: " + key);
+            }
+            return doCreate(config);
+        });
+    }
 
     public T release(C config, int timeoutSeconds) throws InterruptedException {
         T r = unregister(config);

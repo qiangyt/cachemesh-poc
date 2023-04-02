@@ -40,19 +40,19 @@ import org.slf4j.Logger;
 public class LocalCacheManager implements ManagedShutdownable {
 
     class Item {
-        LocalCache       cache;
+        LocalCache cache;
         LocalCacheConfig config;
     }
 
-    private final Logger            logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Map<String, Item> items  = new ConcurrentHashMap<>();
+    private final Map<String, Item> items = new ConcurrentHashMap<>();
 
-    private final LocalCacheConfig  defaultConfig;
+    private final LocalCacheConfig defaultConfig;
 
-    private final ShutdownManager   shutdownManager;
+    private final ShutdownManager shutdownManager;
 
-    private final String            name;
+    private final String name;
 
     public LocalCacheManager(String name, LocalCacheConfig defaultConfig, ShutdownManager shutdownManager) {
         this.name = name;
@@ -65,16 +65,16 @@ public class LocalCacheManager implements ManagedShutdownable {
     }
 
     public void addConfig(LocalCacheConfig config) {
-		this.items.compute(config.getName(), (name, item) -> {
-			if (item != null) {
-				throw new InternalException("duplicated configuration %s", name);
-			}
+        this.items.compute(config.getName(), (name, item) -> {
+            if (item != null) {
+                throw new InternalException("duplicated configuration %s", name);
+            }
 
-			item = new Item();
-			item.config = config;
-			return item;
-		});
-	}
+            item = new Item();
+            item.config = config;
+            return item;
+        });
+    }
 
     public LocalCacheConfig getConfig(String name) {
         var i = this.items.get(name);
@@ -87,29 +87,29 @@ public class LocalCacheManager implements ManagedShutdownable {
     }
 
     public LocalCache resolve(String name, Class<?> valueClass) {
-		var i = this.items.compute(name, (n, item) -> {
-			if (item == null) {
-				item = new Item();
-				item.config = this.defaultConfig.buildAnother(name, valueClass);
-			}
+        var i = this.items.compute(name, (n, item) -> {
+            if (item == null) {
+                item = new Item();
+                item.config = this.defaultConfig.buildAnother(name, valueClass);
+            }
 
-			if (item.cache == null) {
-				item.cache = item.config.getFactory().create(item.config);
-				if (this.logger.isDebugEnabled()) {
-					this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", item.config));
-				}
-			}
+            if (item.cache == null) {
+                item.cache = item.config.getFactory().create(item.config);
+                if (this.logger.isDebugEnabled()) {
+                    this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", item.config));
+                }
+            }
 
-			return item;
-		});
-		return i.cache;
-	}
+            return item;
+        });
+        return i.cache;
+    }
 
     @Override
     public Map<String, Object> toMap() {
         var r = new HashMap<String, Object>();
 
-        //r.put("caches", HasName.toMaps(this.caches));
+        // r.put("caches", HasName.toMaps(this.caches));
         r.put("defaultConfig", this.defaultConfig.toMap());
 
         return r;

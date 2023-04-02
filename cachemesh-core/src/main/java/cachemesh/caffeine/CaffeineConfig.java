@@ -29,37 +29,36 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class CaffeineConfig extends LocalCacheConfig {
 
-    public static final int      DEFAULT_MAXIMUM_SIZE       = 100_000;
-    private final int            maximumSize;
+    public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
+    private final int maximumSize;
 
     public static final Duration DEFAULT_EXPIRE_AFTER_WRITE = Duration.ofMinutes(5);
-    private final Duration       expireAfterWrite;
+    private final Duration expireAfterWrite;
 
     public static CaffeineConfig defaultConfig(String name, Class<?> valueClass) {
-        return defaultConfig(name, valueClass, JacksonSerderializer.DEFAULT/*, true*/);
+        return defaultConfig(name, valueClass, JacksonSerderializer.DEFAULT/* , true */);
     }
 
-    public static CaffeineConfig defaultConfig(String name, Class<?> valueClass, Serderializer serder/*,
-                                                                                                     boolean cacheBytes*/) {
+    public static CaffeineConfig defaultConfig(String name, Class<?> valueClass,
+            Serderializer serder/) {
         var factory = CaffeineFactory.DEFAULT;
 
         return builder().name(name).valueClass(valueClass).serder(serder)
-        //.cacheBytes(cacheBytes)
-            .factory(factory).maximumSize(DEFAULT_MAXIMUM_SIZE).expireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE).build();
+                .factory(factory).maximumSize(DEFAULT_MAXIMUM_SIZE).expireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE)
+                .build();
     }
 
-    public CaffeineConfig(String name, Class<?> valueClass, Serderializer serder,
-    //boolean cacheBytes,
-                          CaffeineFactory factory, int maximumSize, Duration expireAfterWrite) {
-        super(name, valueClass, serder, /*cacheBytes,*/factory);
+    public CaffeineConfig(String name, Class<?> valueClass, Serderializer serder, CaffeineFactory factory,
+            int maximumSize, Duration expireAfterWrite) {
+        super(name, valueClass, serder, factory);
         this.maximumSize = maximumSize;
         this.expireAfterWrite = expireAfterWrite;
     }
 
     @Override
     public LocalCacheConfig buildAnother(String name, Class<?> valueClass) {
-        return new CaffeineConfig(name, valueClass, getSerder(), /*isCacheBytes(),*/
-        (CaffeineFactory) getFactory(), getMaximumSize(), getExpireAfterWrite());
+        return new CaffeineConfig(name, valueClass, getSerder(), (CaffeineFactory) getFactory(), getMaximumSize(),
+                getExpireAfterWrite());
     }
 
     @Override

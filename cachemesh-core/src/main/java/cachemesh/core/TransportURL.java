@@ -27,9 +27,9 @@ public class TransportURL implements Mappable {
 
     public static final String URL_SEPARATOR = "://";
 
-    private final String       protocol;
+    private final String protocol;
 
-    private final String       target;
+    private final String target;
 
     public TransportURL(String protocol, String target) {
         this.protocol = protocol;

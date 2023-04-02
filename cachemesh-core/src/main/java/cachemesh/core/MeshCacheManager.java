@@ -26,9 +26,9 @@ public class MeshCacheManager {
 
     private final Map<String, MeshCache<?>> caches = new ConcurrentHashMap<>();
 
-    private final LocalCacheManager         nearCacheManager;
+    private final LocalCacheManager nearCacheManager;
 
-    private final MeshNetwork               network;
+    private final MeshNetwork network;
 
     public MeshCacheManager(LocalCacheManager nearCacheManager, MeshNetwork network) {
         this.nearCacheManager = nearCacheManager;
@@ -36,9 +36,9 @@ public class MeshCacheManager {
     }
 
     @SuppressWarnings("unchecked")
-	public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
-		return (MeshCache<T>) this.caches.computeIfAbsent(cacheName, k -> {
-			return new MeshCache<>(cacheName, getNearCacheManager(), getNetwork());
-		});
-	}
+    public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
+        return (MeshCache<T>) this.caches.computeIfAbsent(cacheName, k -> {
+            return new MeshCache<>(cacheName, getNearCacheManager(), getNetwork());
+        });
+    }
 }

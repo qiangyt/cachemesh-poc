@@ -43,8 +43,8 @@ public class Main {
         System.out.println("mesh bootstrap: ...");
         var mesh = new MeshNetwork("example");
         mesh.addLocalNode(primaryUrl);
-        //mesh.addRedisNode("redis://localhost:6379");
-        //mesh.addRemoteNode("grpc://localhost:20001");
+        // mesh.addRedisNode("redis://localhost:6379");
+        // mesh.addRemoteNode("grpc://localhost:20001");
 
         mesh.bootstrap();
         Thread.sleep(5000);
@@ -60,12 +60,12 @@ public class Main {
             @Override
             public void onNodeLeave(String nodeUrl) throws Exception {
                 System.out.println("leave " + nodeUrl);
-                //mesh.remoteNode(nodeUrl);
+                // mesh.remoteNode(nodeUrl);
             }
         });
         jgroups.start();
 
-        //String[] nodeUrls = args;
+        // String[] nodeUrls = args;
 
         try {
             if (!sayHello) {

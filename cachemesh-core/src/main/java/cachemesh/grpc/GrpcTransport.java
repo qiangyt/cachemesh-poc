@@ -34,9 +34,9 @@ public class GrpcTransport extends AbstractShutdownable implements Transport {
 
     private CacheMeshGrpc.CacheMeshBlockingStub stub;
 
-    private ManagedChannel                      channel;
+    private ManagedChannel channel;
 
-    private final GrpcConfig                    config;
+    private final GrpcConfig config;
 
     public GrpcTransport(GrpcConfig config, ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);
@@ -75,14 +75,12 @@ public class GrpcTransport extends AbstractShutdownable implements Transport {
         var req = GetSingleRequest.newBuilder().setCacheName(cacheName).setKey(key).setVersion(version).build();
 
         var resp = this.stub.getSingle(req);
-        /*try {
-        	resp = stub.getSingle(req);
-        } catch (StatusRuntimeException e) {
-        	LOG.warn("Get single key RPC failed: {}", e.getStatus());
-        	return null;
-        } */
+        /*
+         * try { resp = stub.getSingle(req); } catch (StatusRuntimeException e) {
+         * LOG.warn("Get single key RPC failed: {}", e.getStatus()); return null; }
+         */
 
-        //TODO: how to indicate we do have the value but the value is null
+        // TODO: how to indicate we do have the value but the value is null
         var respV = resp.getValue();
         var v = (respV == null) ? null : respV.toByteArray();
         return new GetResult<>(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersion());

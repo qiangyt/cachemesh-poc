@@ -33,10 +33,10 @@ public class ShutdownLogger implements HasName {
 
     public static final ShutdownLogger DEFAULT = new ShutdownLogger(ShutdownLogger.class);
 
-    private final Logger               logger;
+    private final Logger logger;
 
     @Setter
-    private volatile boolean           inShutdownHook;
+    private volatile boolean inShutdownHook;
 
     public ShutdownLogger(Class<?> klass) {
         this(klass.getSimpleName());
@@ -55,7 +55,7 @@ public class ShutdownLogger implements HasName {
 
         if (isInShutdownHook()) {
             System.out.printf("%s INFO (SHUTDOWN) - %s: %s \n", LocalDateTime.now().format(DateHelper.DAYTIME),
-                getName(), msg);
+                    getName(), msg);
         } else {
             logger.info("{}: %s", kv("name", getName()), msg);
         }
@@ -66,7 +66,7 @@ public class ShutdownLogger implements HasName {
 
         if (isInShutdownHook()) {
             System.out.printf("%s ERROR (SHUTDOWN) - %s: %s \n", LocalDateTime.now().format(DateHelper.DAYTIME),
-                getName(), msg);
+                    getName(), msg);
             if (cause != null) {
                 cause.printStackTrace(System.err);
             }

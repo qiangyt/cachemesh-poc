@@ -31,7 +31,7 @@ public class CaffeineFactory implements LocalCacheFactory {
 
     public static final CaffeineFactory DEFAULT = new CaffeineFactory(ShutdownManager.DEFAULT);
 
-    private final ShutdownManager       shutdownManager;
+    private final ShutdownManager shutdownManager;
 
     public CaffeineFactory(ShutdownManager shutdownManager) {
         this.shutdownManager = shutdownManager;
@@ -41,7 +41,7 @@ public class CaffeineFactory implements LocalCacheFactory {
     public LocalCache create(LocalCacheConfig config) {
         CaffeineConfig cconfig = (CaffeineConfig) config;
         Cache<String, Value> instance = Caffeine.newBuilder().maximumSize(cconfig.getMaximumSize())
-            .expireAfterWrite(cconfig.getExpireAfterWrite()).build();
+                .expireAfterWrite(cconfig.getExpireAfterWrite()).build();
         return new CaffeineCache(cconfig, instance, getShutdownManager());
     }
 

@@ -34,15 +34,15 @@ public class GrpcConfig extends TransportConfig {
 
     public static final String PROTOCOL = "grpc";
 
-    private final String       host;
+    private final String host;
 
-    private final int          port;
+    private final int port;
 
-    private final String       url;
+    private final String url;
 
-    private final String       target;
+    private final String target;
 
-    private final boolean      remote;
+    private final boolean remote;
 
     @Override
     public String getProtocol() {
@@ -102,7 +102,7 @@ public class GrpcConfig extends TransportConfig {
         var remote = (Boolean) configMap.get("remote");
 
         return builder().host(host).port(port.intValue()).url(url).target(target)
-            .startTimeoutSeconds(startTimeoutSeconds).stopTimeoutSeconds(stopTimeoutSeconds).remote(remote).build();
+                .startTimeoutSeconds(startTimeoutSeconds).stopTimeoutSeconds(stopTimeoutSeconds).remote(remote).build();
     }
 
     public static String formatTarget(String host, int port) {

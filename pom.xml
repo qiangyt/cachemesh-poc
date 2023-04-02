@@ -2,19 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>qiangyt</groupId>
-	<artifactId>cachemesh</artifactId>
+	<groupId>cachemesh</groupId>
+	<artifactId>cachemesh-parent</artifactId>
+	<packaging>pom</packaging>
 	<version>0.0.1</version>
-	<name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/qiangyt/cachemesh</url>
+	<name>${project.artifactId}</name>
 
 	<properties>
 		<java.version>11</java.version>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<grpc.version>1.53.0</grpc.version>
 		<protobuf.version>3.21.7</protobuf.version>
 		<protoc.version>3.21.7</protoc.version>
@@ -23,6 +26,18 @@
 		<caffeine.version>3.1.4</caffeine.version>
 		<jackson.version>2.14.2</jackson.version>
 	</properties>
+
+    <modules>
+        <module>cachemesh-caffeine</module>
+        <module>cachemesh-common</module>
+        <module>cachemesh-core</module>
+        <module>cachemesh-grpc</module>
+        <module>cachemesh-jgroup</module>
+        <module>cachemesh-redis-lettuce</module>
+        <module>cachemesh-spring</module>
+        <module>cachemesh-starter</module>
+        <module>cachemesh-test</module>
+    </modules>
 
 	<build>
 		<extensions>
@@ -115,35 +130,191 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-access</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+				<!-- Use runtime scope if the project does not have any compile-time usage of logback,
+					such as implementations of Appender, Encoder, Layout, TurboFilter, etc
+				<scope>runtime</scope>
+				-->
+			</dependency>
+
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.ben-manes.caffeine</groupId>
+				<artifactId>caffeine</artifactId>
+				<version>${caffeine.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.9.0</version> <!-- prevent downgrade via protobuf-java-util -->
+			</dependency>
+			<dependency>
+				<groupId>com.google.errorprone</groupId>
+				<artifactId>error_prone_annotations</artifactId>
+				<version>2.18.0</version> <!-- or 2.14.0 -->
+			</dependency>
+			<dependency>
+				<groupId>com.google.protobuf</groupId>
+				<artifactId>protobuf-java-util</artifactId>
+				<version>${protobuf.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>io.grpc</groupId>
 				<artifactId>grpc-bom</artifactId>
 				<version>${grpc.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-netty-shaded</artifactId>
+				<version>${grpc.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-protobuf</artifactId>
+				<version>${grpc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-stub</artifactId>
+				<version>${grpc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-testing</artifactId>
+				<version>${grpc.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.lettuce</groupId>
+				<artifactId>lettuce-core</artifactId>
+				<version>6.2.3.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.cache</groupId>
+				<artifactId>cache-api</artifactId>
+				<version>1.1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.13.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.logstash.logback</groupId>
+				<artifactId>logstash-logback-encoder</artifactId>
+				<version>7.3</version>
+				<!-- Use runtime scope if the project does not have any compile-time usage of logstash-logback-encoder,
+					such as usage of StructuredArguments/Markers or implementations such as
+					JsonProvider, AppenderListener, JsonFactoryDecorator, JsonGeneratorDecorator, etc
+				<scope>runtime</scope>
+				-->
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>annotations-api</artifactId>
+				<version>6.0.53</version>
+				<scope>provided</scope> <!-- not needed at runtime -->
+			</dependency>
+			<dependency>
+				<groupId>org.jgroups</groupId>
+				<artifactId>jgroups</artifactId>
+				<version>5.2.12.Final</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>3.4.0</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.26</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>2.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.jgroups</groupId>
-			<artifactId>jgroups</artifactId>
-			<version>5.2.12.Final</version>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-access</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<!-- Use runtime scope if the project does not have any compile-time usage of logback,
+				such as implementations of Appender, Encoder, Layout, TurboFilter, etc
+			<scope>runtime</scope>
+			-->
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>${jackson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.errorprone</groupId>
+			<artifactId>error_prone_annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java-util</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-netty-shaded</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
@@ -154,116 +325,54 @@
 			<artifactId>grpc-stub</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-java-util</artifactId>
-			<version>${protobuf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.9.0</version> <!-- prevent downgrade via protobuf-java-util -->
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>annotations-api</artifactId>
-			<version>6.0.53</version>
-			<scope>provided</scope> <!-- not needed at runtime -->
-		</dependency>
-		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-testing</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.google.errorprone</groupId>
-			<artifactId>error_prone_annotations</artifactId>
-			<version>2.18.0</version> <!-- or 2.14.0 -->
+			<groupId>io.lettuce</groupId>
+			<artifactId>lettuce-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.cache</groupId>
+			<artifactId>cache-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
-			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>3.4.0</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-access</artifactId>
-			<version>${logback.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>${logback.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
-			<!-- Use runtime scope if the project does not have any compile-time usage of logback,
-				such as implementations of Appender, Encoder, Layout, TurboFilter, etc
-			<scope>runtime</scope>
-			-->
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder -->
 		<dependency>
 			<groupId>net.logstash.logback</groupId>
 			<artifactId>logstash-logback-encoder</artifactId>
-			<version>7.3</version>
 			<!-- Use runtime scope if the project does not have any compile-time usage of logstash-logback-encoder,
 				such as usage of StructuredArguments/Markers or implementations such as
 				JsonProvider, AppenderListener, JsonFactoryDecorator, JsonGeneratorDecorator, etc
 			<scope>runtime</scope>
 			-->
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>annotations-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jgroups</groupId>
+			<artifactId>jgroups</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
-
 		<dependency>
-			<groupId>com.github.ben-manes.caffeine</groupId>
-			<artifactId>caffeine</artifactId>
-			<version>${caffeine.version}</version>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>javax.cache</groupId>
-			<artifactId>cache-api</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.26</version>
-			<scope>provided</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>io.lettuce</groupId>
-			<artifactId>lettuce-core</artifactId>
-			<version>6.2.3.RELEASE</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
-			<version>2.0</version>
 		</dependency>
-
-
 	</dependencies>
 
 </project>

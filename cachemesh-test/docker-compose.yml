@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+
+  redis:
+    image: redis:7.0.9-bullseye
+    ports:
+      - 6379:6379
+

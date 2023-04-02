@@ -20,17 +20,17 @@
 	<dependencies>
         <dependency>
             <groupId>cachemesh</groupId>
+            <artifactId>cachemesh-caffeine</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>cachemesh</groupId>
             <artifactId>cachemesh-common</artifactId>
             <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>cachemesh</groupId>
             <artifactId>cachemesh-core</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>cachemesh</groupId>
-            <artifactId>cachemesh-caffeine</artifactId>
             <version>0.0.1</version>
         </dependency>
         <dependency>
@@ -46,6 +46,11 @@
         <dependency>
             <groupId>cachemesh</groupId>
             <artifactId>cachemesh-redis-lettuce</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>cachemesh</groupId>
+            <artifactId>cachemesh-spring</artifactId>
             <version>0.0.1</version>
         </dependency>
     </dependencies>

@@ -42,22 +42,24 @@
     </scm>
 
     <properties>
-        <caffeine.version>3.1.4</caffeine.version>
-        <grpc.version>1.53.0</grpc.version>
-        <jackson.version>2.14.2</jackson.version>
-        <jacoco.path>${project.build.directory}/jacoco.exec</jacoco.path>
-        <jacoco.skip>true</jacoco.skip>
+        <java.version>11</java.version>
         <java.source.version>${java.version}</java.source.version>
         <java.target.version>${java.version}</java.target.version>
-        <java.version>11</java.version>
-        <logback.version>1.4.5</logback.version>
-        <maven.compiler.encoding>${project.encoding}</maven.compiler.encoding>
         <maven.compiler.source>${java.source.version}</maven.compiler.source>
         <maven.compiler.target>${java.target.version}</maven.compiler.target>
-        <project.build.sourceEncoding>${project.encoding}</project.build.sourceEncoding>
 
         <project.encoding>UTF-8</project.encoding>
         <project.reporting.outputEncoding>${project.encoding}</project.reporting.outputEncoding>
+        <maven.compiler.encoding>${project.encoding}</maven.compiler.encoding>
+        <project.build.sourceEncoding>${project.encoding}</project.build.sourceEncoding>
+
+        <jacoco.path>${project.build.directory}/jacoco.exec</jacoco.path>
+        <jacoco.skip>true</jacoco.skip>
+
+        <caffeine.version>3.1.4</caffeine.version>
+        <grpc.version>1.53.0</grpc.version>
+        <jackson.version>2.14.2</jackson.version>
+        <logback.version>1.4.5</logback.version>
         <protobuf.version>3.21.7</protobuf.version>
         <protoc.version>3.21.7</protoc.version>
         <slf4j.version>2.0.6</slf4j.version>

@@ -27,7 +27,7 @@ public class LettuceCodec implements RedisCodec<String, byte[]> {
 
     public static final LettuceCodec DEFAULT = new LettuceCodec(StandardCharsets.UTF_8);
 
-    private final Charset charset;
+    private final Charset            charset;
 
     public LettuceCodec(Charset charset) {
         this.charset = charset;

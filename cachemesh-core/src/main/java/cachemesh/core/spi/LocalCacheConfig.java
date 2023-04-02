@@ -28,11 +28,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class LocalCacheConfig implements HasName {
 
-    private final String name;
+    private final String            name;
 
-    private final Class<?> valueClass;
+    private final Class<?>          valueClass;
 
-    private final Serderializer serder;
+    private final Serderializer     serder;
 
     // private final boolean cacheBytes;
 

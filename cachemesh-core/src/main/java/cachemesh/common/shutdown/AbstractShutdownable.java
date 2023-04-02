@@ -24,9 +24,9 @@ import lombok.Getter;
 @Getter
 public abstract class AbstractShutdownable implements ManagedShutdownable {
 
-    private final Logger logger;
+    private final Logger          logger;
 
-    private final String name;
+    private final String          name;
 
     private final ShutdownManager shutdownManager;
 

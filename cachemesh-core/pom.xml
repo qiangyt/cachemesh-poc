@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>cachemesh-parent</artifactId>
         <groupId>cachemesh</groupId>
+        <artifactId>cachemesh-parent</artifactId>
         <version>0.0.1</version>
     </parent>
     <groupId>cachemesh</groupId>

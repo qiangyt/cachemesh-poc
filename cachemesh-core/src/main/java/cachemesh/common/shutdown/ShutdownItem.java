@@ -23,13 +23,13 @@ public class ShutdownItem {
 
     private final ManagedShutdownable target;
 
-    private final int timeoutSeconds;
+    private final int                 timeoutSeconds;
 
-    private volatile boolean shutdowned;
+    private volatile boolean          shutdowned;
 
-    private final ShutdownManager support;
+    private final ShutdownManager     support;
 
-    private final ShutdownLogger logger;
+    private final ShutdownLogger      logger;
 
     public ShutdownItem(ShutdownManager support, ManagedShutdownable target, int timeoutSeconds) {
         this.target = target;

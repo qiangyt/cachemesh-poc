@@ -34,23 +34,23 @@ import lombok.AccessLevel;
 @Getter
 public class MeshNetwork implements Shutdownable, HasName {
 
-    private final MeshNetworkConfig config;
+    private final MeshNetworkConfig        config;
 
     @Getter(AccessLevel.PROTECTED)
     private final ConsistentHash<MeshNode> route;
 
-    private final LocalCacheManager localCacheManager;
+    private final LocalCacheManager        localCacheManager;
 
-    private final TransportRegistry transportRegistry;
+    private final TransportRegistry        transportRegistry;
 
-    private final Logger logger;
+    private final Logger                   logger;
 
-    private final LifeStage lifeStage;
+    private final LifeStage                lifeStage;
 
-    private final MeshCacheManager meshCacheManager;
+    private final MeshCacheManager         meshCacheManager;
 
     public MeshNetwork(MeshNetworkConfig config, LocalCacheManager nearCacheManager,
-            LocalCacheManager localCacheManager, TransportRegistry transportRegistry) {
+                       LocalCacheManager localCacheManager, TransportRegistry transportRegistry) {
 
         this.config = config;
         this.route = new ConsistentHash<>(config.getHashing());

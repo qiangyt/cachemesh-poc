@@ -26,9 +26,9 @@ public class MeshCacheManager {
 
     private final Map<String, MeshCache<?>> caches = new ConcurrentHashMap<>();
 
-    private final LocalCacheManager nearCacheManager;
+    private final LocalCacheManager         nearCacheManager;
 
-    private final MeshNetwork network;
+    private final MeshNetwork               network;
 
     public MeshCacheManager(LocalCacheManager nearCacheManager, MeshNetwork network) {
         this.nearCacheManager = nearCacheManager;

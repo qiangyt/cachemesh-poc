@@ -29,11 +29,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class CaffeineConfig extends LocalCacheConfig {
 
-    public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
-    private final int maximumSize;
+    public static final int      DEFAULT_MAXIMUM_SIZE       = 100_000;
+    private final int            maximumSize;
 
     public static final Duration DEFAULT_EXPIRE_AFTER_WRITE = Duration.ofMinutes(5);
-    private final Duration expireAfterWrite;
+    private final Duration       expireAfterWrite;
 
     public static CaffeineConfig defaultConfig(String name, Class<?> valueClass) {
         return defaultConfig(name, valueClass, JacksonSerderializer.DEFAULT/* , true */);
@@ -43,11 +43,11 @@ public class CaffeineConfig extends LocalCacheConfig {
         var factory = CaffeineFactory.DEFAULT;
 
         return builder().name(name).valueClass(valueClass).serder(serder).factory(factory)
-                .maximumSize(DEFAULT_MAXIMUM_SIZE).expireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE).build();
+            .maximumSize(DEFAULT_MAXIMUM_SIZE).expireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE).build();
     }
 
     public CaffeineConfig(String name, Class<?> valueClass, Serderializer serder, CaffeineFactory factory,
-            int maximumSize, Duration expireAfterWrite) {
+                          int maximumSize, Duration expireAfterWrite) {
         super(name, valueClass, serder, factory);
         this.maximumSize = maximumSize;
         this.expireAfterWrite = expireAfterWrite;
@@ -56,7 +56,7 @@ public class CaffeineConfig extends LocalCacheConfig {
     @Override
     public LocalCacheConfig buildAnother(String name, Class<?> valueClass) {
         return new CaffeineConfig(name, valueClass, getSerder(), (CaffeineFactory) getFactory(), getMaximumSize(),
-                getExpireAfterWrite());
+            getExpireAfterWrite());
     }
 
     @Override

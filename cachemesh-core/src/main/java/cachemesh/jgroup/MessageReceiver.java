@@ -29,13 +29,13 @@ import cachemesh.common.err.MeshException;
 
 public class MessageReceiver implements Receiver {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MessageReceiver.class);
+    private static final Logger       LOG   = LoggerFactory.getLogger(MessageReceiver.class);
 
     // private View currentView;
 
-    private final JGroupsMembers members;
+    private final JGroupsMembers      members;
 
-    private final JGroupsListener listener;
+    private final JGroupsListener     listener;
 
     private final Map<String, String> nodes = new ConcurrentHashMap<>();
 

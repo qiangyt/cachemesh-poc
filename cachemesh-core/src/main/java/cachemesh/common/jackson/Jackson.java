@@ -42,7 +42,7 @@ public class Jackson {
 
     public static final Jackson DEFAULT = new Jackson(buildDefaultMapper());
 
-    public final ObjectMapper mapper;
+    public final ObjectMapper   mapper;
 
     public Jackson(ObjectMapper mapper) {
         this.mapper = mapper;

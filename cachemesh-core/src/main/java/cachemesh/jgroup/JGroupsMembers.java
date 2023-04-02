@@ -28,15 +28,15 @@ public class JGroupsMembers {
 
     private final JGroupsListener listener;
 
-    private final String url;
+    private final String          url;
 
-    private final String meshNetworkName;
+    private final String          meshNetworkName;
 
-    private final String configXmlClasspath;
+    private final String          configXmlClasspath;
 
-    private final Logger log;
+    private final Logger          log;
 
-    private JChannel channel;
+    private JChannel              channel;
 
     public JGroupsMembers(String url, String meshNetworkName, String configXmlClasspath, JGroupsListener listener) {
         this.listener = listener;

@@ -25,13 +25,13 @@ import lombok.Getter;
 @Getter
 public class JacksonSerderializer implements Serderializer {
 
-    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    public static final Charset              DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
-    public static final JacksonSerderializer DEFAULT = new JacksonSerderializer();
+    public static final JacksonSerderializer DEFAULT         = new JacksonSerderializer();
 
-    private final Jackson jackson;
+    private final Jackson                    jackson;
 
-    private final Charset charset;
+    private final Charset                    charset;
 
     public JacksonSerderializer() {
         this(Jackson.DEFAULT, DEFAULT_CHARSET);

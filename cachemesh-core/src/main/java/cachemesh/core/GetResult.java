@@ -25,11 +25,11 @@ public class GetResult<T> {
 
     public static final GetResult<?> NO_CHANGE = new GetResult<>(ResultStatus.NO_CHANGE, null, 0);
 
-    private final ResultStatus status;
+    private final ResultStatus       status;
 
-    private final T value;
+    private final T                  value;
 
-    private final long version;
+    private final long               version;
 
     public GetResult(ResultStatus status, T value, long version) {
         this.status = status;

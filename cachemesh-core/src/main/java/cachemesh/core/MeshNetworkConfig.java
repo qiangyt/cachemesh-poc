@@ -27,7 +27,7 @@ public class MeshNetworkConfig {
 
     private final String name;
 
-    private Hashing hashing;
+    private Hashing      hashing;
 
     public MeshNetworkConfig(String name, Hashing hashing) {
         this.name = name;

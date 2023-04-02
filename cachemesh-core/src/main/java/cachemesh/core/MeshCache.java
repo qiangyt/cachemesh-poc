@@ -31,9 +31,9 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 @Getter
 public class MeshCache<T> implements HasName {
 
-    private final Logger logger;
+    private final Logger      logger;
 
-    private final LocalCache nearCache;
+    private final LocalCache  nearCache;
 
     private final MeshNetwork network;
 
@@ -79,24 +79,24 @@ public class MeshCache<T> implements HasName {
         var r = nodeCache.getSingle(getName(), key, version);
 
         switch (r.getStatus()) {
-        case OK: {
-            var valueBytes = r.getValue();
-            T valueObj = cfg.getSerder().deserialize(valueBytes, valueClass);
-            near.putSingle(key, (k, v) -> new ValueImpl(valueObj, valueBytes, r.getVersion()));
-            return valueObj;
-        }
-        case NO_CHANGE:
-            return nearValue.getObject(cfg.getSerder(), valueClass);
-        case NOT_FOUND: {
-            near.invalidateSingle(key);
-            return null;
-        }
-        case REDIRECT: {
-            near.invalidateSingle(key);
-            throw new InternalException("TODO");
-        }
-        default:
-            throw new ServiceException("unexpected status");
+            case OK: {
+                var valueBytes = r.getValue();
+                T valueObj = cfg.getSerder().deserialize(valueBytes, valueClass);
+                near.putSingle(key, (k, v) -> new ValueImpl(valueObj, valueBytes, r.getVersion()));
+                return valueObj;
+            }
+            case NO_CHANGE:
+                return nearValue.getObject(cfg.getSerder(), valueClass);
+            case NOT_FOUND: {
+                near.invalidateSingle(key);
+                return null;
+            }
+            case REDIRECT: {
+                near.invalidateSingle(key);
+                throw new InternalException("TODO");
+            }
+            default:
+                throw new ServiceException("unexpected status");
         }
     }
 

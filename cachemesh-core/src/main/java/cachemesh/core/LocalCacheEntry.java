@@ -29,7 +29,7 @@ import lombok.Getter;
 public class LocalCacheEntry {
 
     private final String key;
-    private final Value value;
+    private final Value  value;
 
     public LocalCacheEntry(String key, Value value) {
         this.key = key;

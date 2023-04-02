@@ -27,6 +27,11 @@ tasks:
     deps:
       - java-build
 
+  format:
+    dir: ./
+    cmds:
+      - mvn formatter:format
+
   java-run:
     dir: ./
     deps:

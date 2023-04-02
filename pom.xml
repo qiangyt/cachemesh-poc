@@ -47,16 +47,17 @@
         <jackson.version>2.14.2</jackson.version>
         <jacoco.path>${project.build.directory}/jacoco.exec</jacoco.path>
         <jacoco.skip>true</jacoco.skip>
-        <java.source.version>11</java.source.version>
-        <java.target.version>11</java.target.version>
+        <java.source.version>${java.version}</java.source.version>
+        <java.target.version>${java.version}</java.target.version>
         <java.version>11</java.version>
         <logback.version>1.4.5</logback.version>
-        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.encoding>${project.encoding}</maven.compiler.encoding>
+        <maven.compiler.source>${java.source.version}</maven.compiler.source>
+        <maven.compiler.target>${java.target.version}</maven.compiler.target>
+        <project.build.sourceEncoding>${project.encoding}</project.build.sourceEncoding>
+
         <project.encoding>UTF-8</project.encoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.reporting.outputEncoding>${project.encoding}</project.reporting.outputEncoding>
         <protobuf.version>3.21.7</protobuf.version>
         <protoc.version>3.21.7</protoc.version>
         <slf4j.version>2.0.6</slf4j.version>
@@ -473,16 +474,10 @@
                     </executions>
                 </plugin>
                 <plugin>
-					<!-- https://code.revelc.net/formatter-maven-plugin/plugin-info.html -->
+                    <!-- https://code.revelc.net/formatter-maven-plugin/plugin-info.html -->
                     <groupId>net.revelc.code.formatter</groupId>
                     <artifactId>formatter-maven-plugin</artifactId>
                     <version>2.22.0</version>
-                </plugin>
-                <!-- formatter
-                <plugin>
-                    <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                    <artifactId>maven-java-formatter-plugin</artifactId>
-                    <version>0.4</version>
                     <executions>
                         <execution>
                             <goals>
@@ -491,10 +486,18 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <configFile>${user.dir}/tools/codestyle/formatter.xml</configFile>
+                        <directories>
+                            <directory>${project.build.sourceDirectory}</directory>
+                            <directory>${project.build.directory}/generated-sources</directory>
+                        </directories>
+                        <compilerSource>${java.source.version}</compilerSource>
+                        <compilerCompliance>${java.source.version}</compilerCompliance>
+                        <compilerTargetPlatform>${java.target.version}</compilerTargetPlatform>
+                        <lineEnding>LF</lineEnding>
                         <encoding>${project.encoding}</encoding>
+                        <configFile>${user.dir}/tools/codestyle/formatter.xml</configFile>
                     </configuration>
-                </plugin> -->
+                </plugin>
                 <!-- sort pom -->
                 <plugin>
                     <groupId>com.github.ekryd.sortpom</groupId>
@@ -584,11 +587,6 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok-maven-plugin</artifactId>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                <artifactId>maven-java-formatter-plugin</artifactId>
-            </plugin>-->
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>

@@ -39,13 +39,11 @@ public class CaffeineConfig extends LocalCacheConfig {
         return defaultConfig(name, valueClass, JacksonSerderializer.DEFAULT/* , true */);
     }
 
-    public static CaffeineConfig defaultConfig(String name, Class<?> valueClass,
-            Serderializer serder/) {
+    public static CaffeineConfig defaultConfig(String name, Class<?> valueClass, Serderializer serder) {
         var factory = CaffeineFactory.DEFAULT;
 
-        return builder().name(name).valueClass(valueClass).serder(serder)
-                .factory(factory).maximumSize(DEFAULT_MAXIMUM_SIZE).expireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE)
-                .build();
+        return builder().name(name).valueClass(valueClass).serder(serder).factory(factory)
+                .maximumSize(DEFAULT_MAXIMUM_SIZE).expireAfterWrite(DEFAULT_EXPIRE_AFTER_WRITE).build();
     }
 
     public CaffeineConfig(String name, Class<?> valueClass, Serderializer serder, CaffeineFactory factory,

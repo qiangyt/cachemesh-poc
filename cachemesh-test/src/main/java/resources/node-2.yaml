@@ -1,0 +1,39 @@
+#
+# Copyright © 2023 Yiting Qiang (qiangyt@wxcount.com)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: hello
+
+hashing: murmur
+
+nodes:
+  kind: inline # jgroup, k8s, auto
+  inline:
+    - url: grpc://localhost:50001
+    - url: grpc://localhost:50002
+      local: true
+    - url: redis://localhost:6371
+
+local:
+  kind: caffeine # caffeine, auto
+  defaultCache:
+    maximumSize: 100_000
+    expireAfterWrite: 5min
+  caches:
+    - name: testA
+      valueClass: java.lang.String
+      #serder:
+      #  provider: jackson
+      #  jackson:

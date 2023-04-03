@@ -8,6 +8,7 @@
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
+    <description>Evolve caching smoothly and low cost</description>
     <url>https://github.com/qiangyt/cachemesh</url>
 
     <licenses>
@@ -520,17 +521,26 @@
                     <artifactId>license-maven-plugin</artifactId>
                     <version>4.2</version>
                     <configuration>
+                        <properties>
+                            <owner>Yiting Qiang</owner>
+                            <email>qiangyt@wxcount.com</email>
+                            <year>2023</year>
+                        </properties>
                         <quiet>true</quiet>
-                        <header>${user.dir}/tools/codestyle/HEADER</header>
-                        <includes>
-                            <include>**/src/main/java/**</include>
-                            <include>**/src/test/java/**</include>
-                        </includes>
-                        <excludes>
-                            <exclude>**/cachemesh/common/hash/ConsistentHash.java</exclude>
-                            <exclude>**/cachemesh/common/hash/Hashing.java</exclude>
-                            <exclude>**/cachemesh/common/hash/MurmurHash.java</exclude>
-                        </excludes>
+                        <licenseSets>
+                            <licenseSet>
+                                <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+                                <includes>
+                                    <include>**/src/main/java/**</include>
+                                    <include>**/src/test/java/**</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>**/cachemesh/common/hash/ConsistentHash.java</exclude>
+                                    <exclude>**/cachemesh/common/hash/Hashing.java</exclude>
+                                    <exclude>**/cachemesh/common/hash/MurmurHash.java</exclude>
+                                </excludes>
+                            </licenseSet>
+                        </licenseSets>
                         <strictCheck>true</strictCheck>
                         <mapping>
                             <java>SLASHSTAR_STYLE</java>

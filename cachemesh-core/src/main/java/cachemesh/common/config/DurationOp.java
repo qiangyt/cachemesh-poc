@@ -16,6 +16,7 @@
  */
 package cachemesh.common.config;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -23,31 +24,21 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class IntegerAccessor extends Accessor<Integer> {
+public class DurationOp extends Operator<Duration> {
+
+	public static final DurationOp DEFAULT = new DurationOp();
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
-            .unmodifiableCollection(List.of(Character.class, Number.class, String.class));
-
-    private final Integer defaultValue;
-
-    public IntegerAccessor(Class<?> ownerClass, String name, Integer defaultValue) {
-        super(ownerClass, name);
-        this.defaultValue = defaultValue;
-    }
-
-    @Override
-    public Integer defaultValue() {
-        return this.defaultValue;
-    }
+            .unmodifiableCollection(List.of(String.class));
 
     @Override
     public Class<?> propertyClass() {
-        return Integer.class;
+        return Duration.class;
     }
 
     @Override
-    public Integer createEmptyValue() {
-        return defaultValue();
+    public Duration createZeroValue() {
+        return Duration.ZERO;
     }
 
     @Override
@@ -56,17 +47,8 @@ public class IntegerAccessor extends Accessor<Integer> {
     }
 
     @Override
-    public Integer doConvert(String hint, Object value) {
-        var clazz = value.getClass();
-
-        if (clazz == Character.class) {
-            return (int) ((Character) value).charValue();
-        }
-        if (clazz == String.class) {
-            return Integer.valueOf((String) value);
-        }
-
-        return ((Number) value).intValue();
+    public Duration doConvert(String hint, Object value) {
+        return Duration.parse((String) value);
     }
 
 }

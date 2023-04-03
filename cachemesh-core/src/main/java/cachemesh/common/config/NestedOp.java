@@ -26,7 +26,7 @@ import cachemesh.common.util.Reflect;
 import lombok.Getter;
 
 @Getter
-public class NestedAccessor<T extends SomeConfig> extends Accessor<T> {
+public class NestedOp<T extends SomeConfig> extends Operator<T> {
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(Map.class));
@@ -35,22 +35,13 @@ public class NestedAccessor<T extends SomeConfig> extends Accessor<T> {
 
     private final Class<T> propertyClass;
 
-    private final T defaultValue;
-
-    public NestedAccessor(Class<?> ownerClass, String name, Class<T> propertyClass, T defaultValue) {
-        super(ownerClass, name);
+    public NestedOp(Class<T> propertyClass) {
         this.constructor = Reflect.noArgsConstructor(propertyClass);
         this.propertyClass = propertyClass;
-        this.defaultValue = defaultValue;
     }
 
     @Override
-    public T defaultValue() {
-        return this.defaultValue;
-    }
-
-    @Override
-    public T createEmptyValue() {
+    public T createZeroValue() {
         return Reflect.newInstance(getConstructor());
     }
 
@@ -68,7 +59,7 @@ public class NestedAccessor<T extends SomeConfig> extends Accessor<T> {
     @SuppressWarnings("unchecked")
     public T doConvert(String hint, Object value) {
         var map = (Map<String, Object>) value;
-        T r = createEmptyValue();
+        T r = createZeroValue();
         r.withMap(hint, map);
         return r;
     }

@@ -24,24 +24,15 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class ListAccessor<T> extends Accessor<List<T>> {
+public class ListOp<T> extends Operator<List<T>> {
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(Iterable.class));
 
-    private final Accessor<T> elementProperty;
+    private final Operator<? extends T> elementOp;
 
-    private final List<T> defaultValue;
-
-    public ListAccessor(Class<?> ownerClass, String name, Accessor<T> elementProperty, List<T> defaultValue) {
-        super(ownerClass, name);
-        this.elementProperty = elementProperty;
-        this.defaultValue = Collections.unmodifiableList(defaultValue);
-    }
-
-    @Override
-    public List<T> defaultValue() {
-        return this.defaultValue;
+    public ListOp(Operator<? extends T> elementOp) {
+        this.elementOp = elementOp;
     }
 
     @Override
@@ -55,7 +46,7 @@ public class ListAccessor<T> extends Accessor<List<T>> {
     }
 
     @Override
-    public List<T> createEmptyValue() {
+    public List<T> createZeroValue() {
         return new ArrayList<T>();
     }
 
@@ -73,12 +64,12 @@ public class ListAccessor<T> extends Accessor<List<T>> {
     public List<T> doConvert(String hint, Object value) {
         var r = new ArrayList<T>();
 
-        var eltProp = getElementProperty();
+        var eltOp = getElementOp();
         int i = 0;
 
         for (var childObj : (Iterable<?>) value) {
-            var childHint = String.format("%s.%s[%d]", hint, propertyName(), i);
-            var child = eltProp.convert(childHint, childObj);
+            var childHint = String.format("%s[%d]", hint, i);
+            var child = eltOp.convert(childHint, childObj);
             r.add(child);
             i++;
         }

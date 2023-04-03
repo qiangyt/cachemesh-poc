@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import cachemesh.common.util.StringHelper;
 
-public abstract class Descriptor<T> {
+public abstract class Operator<T> {
 
     public abstract Class<?> propertyClass();
 
@@ -13,9 +13,9 @@ public abstract class Descriptor<T> {
         return null;
     }
 
-    public abstract T defaultValue();
-
-    public abstract T createEmptyValue();
+    public T createZeroValue() {
+		return null;
+	}
 
     @SuppressWarnings("unchecked")
     public T supply(String hint, Object value) {

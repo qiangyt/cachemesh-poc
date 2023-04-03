@@ -18,41 +18,53 @@ package cachemesh.core.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Collection;
 
-import cachemesh.common.config.EnumAccessor;
-import cachemesh.common.config.ListAccessor;
-import cachemesh.common.config.NestedAccessor;
-import cachemesh.common.config.Accessor;
+import cachemesh.common.config.EnumOp;
+import cachemesh.common.config.ListOp;
+import cachemesh.common.config.NestedOp;
+import cachemesh.common.config.Property;
 import cachemesh.common.config.SomeConfig;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Builder;
+import lombok.Singular;
 
 @Getter
 @Setter
+@Builder
 public class NodesConfig implements SomeConfig {
+
+	public static NestedOp<NodesConfig> OP = new NestedOp<>(NodesConfig.class);
 
     public static final Kind DEFAULT_KIND = Kind.inline;
 
     public enum Kind {
-                      inline, jgroup, k8s
+        inline, jgroup, k8s
     }
 
-    private Kind                                   kind;
+	@Builder.Default
+    private Kind  kind = DEFAULT_KIND;
 
-    private List<NodeConfig>                       inline;
+	@Singular("inline")
+    private List<NodeConfig> inline;
 
-    public static final NestedAccessor<NodeConfig> NODE_PROPS_PROPERTY = new NestedAccessor<>(NodesConfig.class,
-        NodeConfig.class, "inline", null);
-
-    public static final Map<String, Accessor<?>>   ACCESSORS           = SomeConfig.buildAccessors(
-        new EnumAccessor<Kind>(NodesConfig.class, Kind.class, "kind", Kind.inline),
-        new ListAccessor<NodeConfig>(NodesConfig.class, NODE_PROPS_PROPERTY, "local", new ArrayList<NodeConfig>()));
+    public static final Collection<Property<?>>  PROPERTIES = SomeConfig.buildProperties(
+		Property.<Kind>builder().configClass(NodesConfig.class)
+			.propertyName("kind")
+			.defaultValue(DEFAULT_KIND)
+			.op(new EnumOp<>(Kind.class))
+			.build(),
+		Property.<List<NodeConfig>>builder().configClass(NodesConfig.class)
+			.propertyName("inline")
+			.defaultValue(new ArrayList<>())
+			.op(new ListOp<>(NodeConfig.OP))
+			.build()
+	);
 
     @Override
-    public Collection<Accessor<?>> accessors() {
-        return ACCESSORS;
+    public Collection<Property<?>> properties() {
+        return PROPERTIES;
     }
 
 }

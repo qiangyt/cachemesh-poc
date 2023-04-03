@@ -16,23 +16,27 @@
  */
 package cachemesh.core.config;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Collection;
 
-import cachemesh.common.config.EnumAccessor;
-import cachemesh.common.config.ListAccessor;
-import cachemesh.common.config.NestedAccessor;
-import cachemesh.common.config.Accessor;
+import cachemesh.common.config.EnumOp;
+import cachemesh.common.config.ListOp;
+import cachemesh.common.config.NestedOp;
+import cachemesh.common.config.Property;
 import cachemesh.common.config.SomeConfig;
 import lombok.Setter;
+import lombok.Singular;
 
 @Getter
 @Setter
+@Builder
 public class LocalConfig implements SomeConfig {
+
+	public static NestedOp<LocalConfig> OP = new NestedOp<>(LocalConfig.class);
 
     public enum Kind {
         caffeine
@@ -40,25 +44,36 @@ public class LocalConfig implements SomeConfig {
 
     public static final Kind DEFAULT_KIND = Kind.caffeine;
 
-    public static final LocalCacheConfig DEFAULT_CACHE = CaffeineConfig.DEFAULT;
+	@Builder.Default
+    private Kind kind = DEFAULT_KIND;
 
-    private Kind kind;
+	@Builder.Default
+    private LocalCacheConfig defaultCache = CaffeineConfig.builder().name("default").valueClass(byte[].class).build();
 
-    private LocalCacheConfig defaultCache;
-
+	@Singular
     private List<LocalCacheConfig> caches;
 
-    public static final NestedAccessor<LocalCacheConfig> DEFAULT_CACHE_PROPERTY = new NestedAccessor<>(
-            LocalConfig.class, "defaultCache", LocalCacheConfig.class, DEFAULT_CACHE);
-
-    public static final Map<String, Accessor<?>> ACCESSORS = SomeConfig.buildAccessors(
-            new EnumAccessor<Kind>(LocalConfig.class, "kind", Kind.class, DEFAULT_KIND), DEFAULT_CACHE_PROPERTY,
-            new ListAccessor<LocalCacheConfig>(LocalConfig.class, "caches", DEFAULT_CACHE_PROPERTY,
-                    new ArrayList<LocalCacheConfig>()));
+    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
+		Property.<Kind>builder().configClass(LocalConfig.class)
+			.propertyName("kind")
+			.defaultValue(DEFAULT_KIND)
+			.op(new EnumOp<>(Kind.class))
+			.build(),
+		Property.<LocalCacheConfig>builder().configClass(LocalConfig.class)
+			.propertyName("defaultCache")
+			.defaultValue(CaffeineConfig.builder().name("default").valueClass(byte[].class).build())
+			.op(CaffeineConfig.OP)
+			.build(),
+		Property.<List<LocalCacheConfig>>builder().configClass(LocalConfig.class)
+			.propertyName("caches")
+			.defaultValue(new ArrayList<>())
+			.op(new ListOp<>(CaffeineConfig.OP))
+			.build()
+	);
 
     @Override
-    public Collection<Accessor<?>> accessors() {
-        return ACCESSORS;
+    public Collection<Property<?>> properties() {
+        return PROPERTIES;
     }
 
 }

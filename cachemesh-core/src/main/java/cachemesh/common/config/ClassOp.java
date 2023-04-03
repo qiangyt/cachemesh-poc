@@ -23,34 +23,16 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class EnumAccessor<T extends Enum<T>> extends Accessor<T> {
+public class ClassOp extends Operator<Class<?>> {
+
+	public static final ClassOp DEFAULT = new ClassOp();
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(String.class));
 
-    private final Class<T> enumClass;
-
-    private final T defaultValue;
-
-    public EnumAccessor(Class<?> ownerClass, String name, Class<T> enumClass, T defaultValue) {
-        super(ownerClass, name);
-        this.enumClass = enumClass;
-        this.defaultValue = defaultValue;
-    }
-
-    @Override
-    public T defaultValue() {
-        return this.defaultValue;
-    }
-
-    @Override
-    public T createEmptyValue() {
-        return defaultValue();
-    }
-
     @Override
     public Class<?> propertyClass() {
-        return this.enumClass;
+        return Class.class;
     }
 
     @Override
@@ -59,8 +41,13 @@ public class EnumAccessor<T extends Enum<T>> extends Accessor<T> {
     }
 
     @Override
-    public T doConvert(String hint, Object value) {
-        return Enum.valueOf(getEnumClass(), (String) value);
+    public Class<?> doConvert(String hint, Object value) {
+        var className = (String) value;
+        try {
+            return Thread.currentThread().getContextClassLoader().loadClass(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

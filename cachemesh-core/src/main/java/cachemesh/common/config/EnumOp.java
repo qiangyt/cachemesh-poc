@@ -16,7 +16,6 @@
  */
 package cachemesh.common.config;
 
-import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -24,31 +23,20 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class DurationAccessor extends Accessor<Duration> {
+public class EnumOp<T extends Enum<T>> extends Operator<T> {
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(String.class));
 
-    private final Duration defaultValue;
+    private final Class<T> enumClass;
 
-    public DurationAccessor(Class<?> ownerClass, String name, Duration defaultValue) {
-        super(ownerClass, name);
-        this.defaultValue = defaultValue;
-    }
-
-    @Override
-    public Duration defaultValue() {
-        return this.defaultValue;
+    public EnumOp(Class<T> enumClass) {
+        this.enumClass = enumClass;
     }
 
     @Override
     public Class<?> propertyClass() {
-        return Duration.class;
-    }
-
-    @Override
-    public Duration createEmptyValue() {
-        return defaultValue();
+        return this.enumClass;
     }
 
     @Override
@@ -57,8 +45,8 @@ public class DurationAccessor extends Accessor<Duration> {
     }
 
     @Override
-    public Duration doConvert(String hint, Object value) {
-        return Duration.parse((String) value);
+    public T doConvert(String hint, Object value) {
+        return Enum.valueOf(getEnumClass(), (String) value);
     }
 
 }

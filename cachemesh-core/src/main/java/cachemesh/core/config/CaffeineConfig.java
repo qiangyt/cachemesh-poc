@@ -19,12 +19,14 @@ package cachemesh.core.config;
 import java.time.Duration;
 import java.util.Collection;
 
-import cachemesh.common.config.DurationAccessor;
-import cachemesh.common.config.IntegerAccessor;
-import cachemesh.common.config.Accessor;
+import cachemesh.common.config.DurationOp;
+import cachemesh.common.config.IntegerOp;
+import cachemesh.common.config.NestedOp;
+import cachemesh.common.config.Property;
 import cachemesh.common.config.SomeConfig;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -32,25 +34,35 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class CaffeineConfig extends LocalCacheConfig {
 
+	public static final NestedOp<CaffeineConfig> OP = new NestedOp<>(CaffeineConfig.class);
+
     public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
 
     public static final Duration DEFAULT_EXPIRE_AFTER_WIRTER = Duration.ofMinutes(5);
 
-    public static final CaffeineConfig DEFAULT = CaffeineConfig.builder().name("default").valueClass(byte[].class)
-            .serder(SerderConfig.DEFAULT).maximumSize(DEFAULT_MAXIMUM_SIZE)
-            .expireAfterWrite(DEFAULT_EXPIRE_AFTER_WIRTER).build();
+	@Builder.Default
+    private int maximumSize = DEFAULT_MAXIMUM_SIZE;
 
-    private int maximumSize;
+	@Builder.Default
+    private Duration expireAfterWrite = DEFAULT_EXPIRE_AFTER_WIRTER;
 
-    private Duration expireAfterWrite;
-
-    public static final Collection<Accessor<?>> ACCESSORS = SomeConfig.buildAccessors(
-            new IntegerAccessor(CaffeineConfig.class, "maximumSize", DEFAULT_MAXIMUM_SIZE),
-            new DurationAccessor(CaffeineConfig.class, "expireAfterWrite", DEFAULT_EXPIRE_AFTER_WIRTER));
+    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
+		LocalCacheConfig.PROPERTIES,
+		Property.<Integer>builder().configClass(CaffeineConfig.class)
+			.propertyName("maximumSize")
+			.defaultValue(DEFAULT_MAXIMUM_SIZE)
+			.op(IntegerOp.DEFAULT)
+			.build(),
+		Property.<Duration>builder().configClass(CaffeineConfig.class)
+			.propertyName("expireAfterWrite")
+			.defaultValue(DEFAULT_EXPIRE_AFTER_WIRTER)
+			.op(DurationOp.DEFAULT)
+			.build()
+	);
 
     @Override
-    public Collection<Accessor<?>> accessors() {
-        return ACCESSORS;
+    public Collection<Property<?>> properties() {
+        return PROPERTIES;
     }
 
 }

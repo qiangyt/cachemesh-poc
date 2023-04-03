@@ -20,22 +20,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class BooleanAccessor extends Accessor<Boolean> {
+public class BooleanOp extends Operator<Boolean> {
+
+	public static final BooleanOp DEFAULT = new BooleanOp();
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(String.class, Character.class, Number.class));
-
-    private final Boolean defaultValue;
-
-    public BooleanAccessor(Class<?> ownerClass, String name, Boolean defaultValue) {
-        super(ownerClass, name);
-        this.defaultValue = defaultValue;
-    }
-
-    @Override
-    public Boolean defaultValue() {
-        return this.defaultValue;
-    }
 
     @Override
     public Class<?> propertyClass() {
@@ -48,8 +38,8 @@ public class BooleanAccessor extends Accessor<Boolean> {
     }
 
     @Override
-    public Boolean createEmptyValue() {
-        return defaultValue();
+    public Boolean createZeroValue() {
+        return Boolean.FALSE;
     }
 
     @Override

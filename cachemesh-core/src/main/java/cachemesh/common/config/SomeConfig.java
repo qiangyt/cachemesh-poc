@@ -16,6 +16,7 @@
  */
 package cachemesh.common.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,23 +27,31 @@ import cachemesh.common.Mappable;
 
 public interface SomeConfig extends Mappable {
 
-    Collection<Accessor<?>> accessors();
+    Collection<Property<?>> properties();
 
-    static Collection<Accessor<?>> buildAccessors(Accessor<?>... array) {
-        return Collections.unmodifiableList(Arrays.asList(array));
+    static Collection<Property<?>> buildProperties(Property<?>... array) {
+		var list = Arrays.asList(array);
+        return Collections.unmodifiableList(list);
+    }
+
+    static Collection<Property<?>> buildProperties(Collection<Property<?>> supers, Property<?>... array) {
+		var list = new ArrayList<Property<?>>(supers.size() + array.length);
+		list.addAll(supers);
+		list.addAll(Arrays.asList(array));
+        return Collections.unmodifiableList(list);
     }
 
     @Override
     default Map<String, Object> toMap() {
         var r = new HashMap<String, Object>();
-        for (var p : accessors()) {
+        for (var p : properties()) {
             r.put(p.propertyName(), p.get(this));
         }
         return r;
     }
 
     default void withMap(String path, Map<String, Object> m) {
-        for (var p : accessors()) {
+        for (var p : properties()) {
             var name = p.propertyName();
             if (m.containsKey(name)) {
                 Object value = m.get(name);

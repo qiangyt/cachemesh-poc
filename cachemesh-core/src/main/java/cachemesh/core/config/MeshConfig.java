@@ -19,18 +19,19 @@ package cachemesh.core.config;
 import cachemesh.common.HasName;
 import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
-import cachemesh.common.config.EnumAccessor;
-import cachemesh.common.config.NestedAccessor;
-import cachemesh.common.config.Accessor;
+import cachemesh.common.config.EnumOp;
+import cachemesh.common.config.Property;
 import cachemesh.common.config.SomeConfig;
-import cachemesh.common.config.StringAccessor;
+import cachemesh.common.config.StringOp;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Builder;
 
 import java.util.Collection;
 
 @Getter
 @Setter
+@Builder
 public class MeshConfig implements SomeConfig, HasName {
 
     public static enum HashingKind {
@@ -43,23 +44,48 @@ public class MeshConfig implements SomeConfig, HasName {
         }
     }
 
-    private String name;
+    public static final String DEFAULT_NAME = "test";
 
-    private HashingKind hashing;
+    public static final HashingKind DEFAULT_HASHING = HashingKind.murmur;
 
-    private NodesConfig nodes;
+	@Builder.Default
+    private String name = DEFAULT_NAME;
 
-    private LocalConfig local;
+	@Builder.Default
+    private HashingKind hashing = DEFAULT_HASHING;
 
-    public static final Collection<Accessor<?>> ACCESSORS = SomeConfig.buildAccessors(
-            new StringAccessor(MeshConfig.class, "name", null),
-            new EnumAccessor<HashingKind>(MeshConfig.class, HashingKind.class, "hashing", HashingKind.murmur),
-            new NestedAccessor<NodesConfig>(MeshConfig.class, NodesConfig.class, "nodes", null),
-            new NestedAccessor<LocalConfig>(MeshConfig.class, LocalConfig.class, "local", null));
+	@Builder.Default
+    private NodesConfig nodes = NodesConfig.builder().build();
+
+	@Builder.Default
+    private LocalConfig local = LocalConfig.builder().build();
+
+    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
+		Property.<String>builder().configClass(MeshConfig.class)
+			.propertyName("name")
+			.defaultValue(DEFAULT_NAME)
+			.op(StringOp.DEFAULT)
+			.build(),
+		Property.<HashingKind>builder().configClass(MeshConfig.class)
+			.propertyName("hashing")
+			.defaultValue(DEFAULT_HASHING)
+			.op(new EnumOp<>(HashingKind.class))
+			.build(),
+		Property.<NodesConfig>builder().configClass(MeshConfig.class)
+			.propertyName("nodes")
+			.defaultValue(NodesConfig.builder().build())
+			.op(NodesConfig.OP)
+			.build(),
+		Property.<LocalConfig>builder().configClass(MeshConfig.class)
+			.propertyName("local")
+			.defaultValue(LocalConfig.builder().build())
+			.op(LocalConfig.OP)
+			.build()
+	);
 
     @Override
-    public Collection<Accessor<?>> accessors() {
-        return ACCESSORS;
+    public Collection<Property<?>> properties() {
+        return PROPERTIES;
     }
 
 }

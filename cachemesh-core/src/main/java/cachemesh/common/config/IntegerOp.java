@@ -20,34 +20,21 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.Getter;
+public class IntegerOp extends Operator<Integer> {
 
-@Getter
-public class ClassAccessor extends Accessor<Class<?>> {
+	public static final IntegerOp DEFAULT = new IntegerOp();
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
-            .unmodifiableCollection(List.of(String.class));
-
-    private final Class<?> defaultValue;
-
-    public ClassAccessor(Class<?> ownerClass, String name, Class<?> defaultValue) {
-        super(ownerClass, name);
-        this.defaultValue = defaultValue;
-    }
-
-    @Override
-    public Class<?> defaultValue() {
-        return this.defaultValue;
-    }
-
-    @Override
-    public Class<?> createEmptyValue() {
-        return defaultValue();
-    }
+            .unmodifiableCollection(List.of(Character.class, Number.class, String.class));
 
     @Override
     public Class<?> propertyClass() {
-        return Class.class;
+        return Integer.class;
+    }
+
+    @Override
+    public Integer createZeroValue() {
+        return Integer.valueOf(0);
     }
 
     @Override
@@ -56,13 +43,17 @@ public class ClassAccessor extends Accessor<Class<?>> {
     }
 
     @Override
-    public Class<?> doConvert(String hint, Object value) {
-        var className = (String) value;
-        try {
-            return Thread.currentThread().getContextClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+    public Integer doConvert(String hint, Object value) {
+        var clazz = value.getClass();
+
+        if (clazz == Character.class) {
+            return (int) ((Character) value).charValue();
         }
+        if (clazz == String.class) {
+            return Integer.valueOf((String) value);
+        }
+
+        return ((Number) value).intValue();
     }
 
 }

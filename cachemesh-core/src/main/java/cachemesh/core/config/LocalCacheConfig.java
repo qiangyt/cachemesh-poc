@@ -18,13 +18,13 @@ package cachemesh.core.config;
 
 import java.util.Collection;
 
-import cachemesh.common.config.ClassAccessor;
-import cachemesh.common.config.NestedAccessor;
-import cachemesh.common.config.Accessor;
+import cachemesh.common.config.ClassOp;
+import cachemesh.common.config.Property;
 import cachemesh.common.config.SomeConfig;
-import cachemesh.common.config.StringAccessor;
+import cachemesh.common.config.StringOp;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -36,19 +36,31 @@ public abstract class LocalCacheConfig implements SomeConfig {
 
     private Class<?> valueClass;
 
-    public static final SerderConfig DEFAULT_SERDER = SerderConfig.DEFAULT;
-    private SerderConfig serder;
+	@Builder.Default
+    private SerderConfig serder = SerderConfig.builder().build();
 
     // public abstract LocalCacheProps buildAnother(String name, Class<?> valueClass);
 
-    public static final Collection<Accessor<?>> ACCESSORS = SomeConfig.buildAccessors(
-            new StringAccessor(LocalCacheConfig.class, "name", null),
-            new ClassAccessor(LocalCacheConfig.class, "valueClass", null),
-            new NestedAccessor<SerderConfig>(LocalCacheConfig.class, "serder", SerderConfig.class, DEFAULT_SERDER));
+    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
+		Property.<String>builder().configClass(LocalCacheConfig.class)
+			.propertyName("name")
+			.op(StringOp.DEFAULT)
+			.build(),
+		Property.<Class<?>>builder().configClass(LocalCacheConfig.class)
+			.propertyName("valueClass")
+			.defaultValue(byte[].class)
+			.op(ClassOp.DEFAULT)
+			.build(),
+		Property.<SerderConfig>builder().configClass(LocalCacheConfig.class)
+			.propertyName("serder")
+			.defaultValue(SerderConfig.builder().build())
+			.op(SerderConfig.OP)
+			.build()
+		);
 
     @Override
-    public Collection<Accessor<?>> accessors() {
-        return ACCESSORS;
+    public Collection<Property<?>> properties() {
+        return PROPERTIES;
     }
 
 }

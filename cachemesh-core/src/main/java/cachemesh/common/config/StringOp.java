@@ -16,23 +16,9 @@
  */
 package cachemesh.common.config;
 
-import lombok.Getter;
+public class StringOp extends Operator<String> {
 
-@Getter
-public class StringAccessor extends Accessor<String> {
-
-    private String defaultValue;
-
-    public StringAccessor(Class<?> ownerClass, String name, String defaultValue) {
-        super(ownerClass, name);
-        this.defaultValue = defaultValue;
-
-    }
-
-    @Override
-    public String defaultValue() {
-        return this.defaultValue;
-    }
+	public static final StringOp DEFAULT = new StringOp();
 
     @Override
     public Class<?> propertyClass() {
@@ -40,7 +26,7 @@ public class StringAccessor extends Accessor<String> {
     }
 
     @Override
-    public String createEmptyValue() {
+    public String createZeroValue() {
         return "";
     }
 

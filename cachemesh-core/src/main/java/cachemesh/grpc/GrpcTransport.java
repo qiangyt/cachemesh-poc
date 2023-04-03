@@ -34,9 +34,9 @@ public class GrpcTransport extends AbstractShutdownable implements Transport {
 
     private CacheMeshGrpc.CacheMeshBlockingStub stub;
 
-    private ManagedChannel                      channel;
+    private ManagedChannel channel;
 
-    private final GrpcConfig                    config;
+    private final GrpcConfig config;
 
     public GrpcTransport(GrpcConfig config, ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);

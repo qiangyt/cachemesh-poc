@@ -41,24 +41,24 @@ import org.slf4j.Logger;
 public class LocalCacheManager implements ManagedShutdownable {
 
     class Item {
-        LocalCache       cache;
+        LocalCache cache;
         LocalCacheConfig config;
     }
 
-    private final Logger             logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Map<String, Item>  items  = new ConcurrentHashMap<>();
+    private final Map<String, Item> items = new ConcurrentHashMap<>();
 
-    private final LocalCacheConfig   defaultConfig;
+    private final LocalCacheConfig defaultConfig;
 
     private final LocalCacheProvider provider;
 
-    private final ShutdownManager    shutdownManager;
+    private final ShutdownManager shutdownManager;
 
-    private final String             name;
+    private final String name;
 
     public LocalCacheManager(String name, LocalCacheConfig defaultConfig, LocalCacheProvider provider,
-                             ShutdownManager shutdownManager) {
+            ShutdownManager shutdownManager) {
         this.name = name;
         this.defaultConfig = defaultConfig;
         this.provider = provider;

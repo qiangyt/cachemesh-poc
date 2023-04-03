@@ -32,7 +32,7 @@ import cachemesh.core.spi.Value;
 @Getter
 public class CaffeineCache extends AbstractShutdownable implements LocalCache {
 
-    private final CaffeineConfig       config;
+    private final CaffeineConfig config;
 
     private final Cache<String, Value> instance;
 

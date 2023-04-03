@@ -32,18 +32,18 @@ import lombok.Getter;
 @Getter
 public class MeshNode implements ConsistentHash.Node {
 
-    protected final Logger        logger;
+    protected final Logger logger;
 
     private final TransportConfig config;
 
-    private final int             hashCode;
+    private final int hashCode;
 
-    private final Transport       transport;
+    private final Transport transport;
 
     @Getter(AccessLevel.PROTECTED)
-    private final List<NodeHook>  hooks = new ArrayList<>();
+    private final List<NodeHook> hooks = new ArrayList<>();
 
-    private final LifeStage       lifeStage;
+    private final LifeStage lifeStage;
 
     public MeshNode(TransportConfig config, Transport transport) {
         this.config = config;

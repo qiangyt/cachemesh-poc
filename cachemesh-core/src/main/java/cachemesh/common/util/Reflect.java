@@ -39,8 +39,7 @@ public class Reflect {
 
     public static String getterName(String name, Class<?> propertyClass) {
         var verb = (Boolean.class.isAssignableFrom(propertyClass) || boolean.class.isAssignableFrom(propertyClass))
-            ? "is"
-            : "get";
+                ? "is" : "get";
         return verb + StringHelper.capitalize(name);
     }
 
@@ -50,7 +49,7 @@ public class Reflect {
             Method method = ownerClass.getDeclaredMethod(methodName);
             if (method.getReturnType() != propertyClass) {
                 var msg = String.format("expect getter %s returns %s, but got %s", methodName, propertyClass,
-                    method.getReturnType());
+                        method.getReturnType());
                 throw new RuntimeException(msg);
             }
             return method;

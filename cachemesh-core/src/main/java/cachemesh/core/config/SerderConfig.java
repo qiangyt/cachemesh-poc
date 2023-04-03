@@ -51,14 +51,6 @@ public class SerderConfig implements SomeConfig {
             .buildProperties(Property.<Kind> builder().configClass(SerderConfig.class).propertyName("kind")
                     .defaultValue(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build());
 
-    public SerderConfig() {
-    }
-
-    @Builder
-    public SerderConfig(Kind kind) {
-        this.kind = kind;
-    }
-
     @Override
     public Collection<Property<?>> properties() {
         return PROPERTIES;

@@ -31,13 +31,13 @@ import lombok.Getter;
 public class LettuceTransportProvider implements TransportProvider {
 
     public static final LettuceTransportProvider DEFAULT = new LettuceTransportProvider(
-        DedicatedRedisClientProvider.DEFAULT, ShutdownManager.DEFAULT);
+            DedicatedRedisClientProvider.DEFAULT, ShutdownManager.DEFAULT);
 
     public static void register() {
         TransportRegistry.DEFAULT.register(LettuceConfig.PROTOCOL, DEFAULT);
     }
 
-    private final ShutdownManager     shutdownManager;
+    private final ShutdownManager shutdownManager;
 
     private final RedisClientProvider clientProvider;
 

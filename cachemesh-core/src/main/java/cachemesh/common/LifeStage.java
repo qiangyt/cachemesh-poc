@@ -25,16 +25,16 @@ import lombok.Getter;
 public class LifeStage {
 
     public static enum Type {
-                             created, starting, started, stopping, stopped
+        created, starting, started, stopping, stopped
     }
 
     private volatile Type type = Type.created;
 
-    private final String  hintKey;
+    private final String hintKey;
 
-    private final String  hintValue;
+    private final String hintValue;
 
-    private final Logger  logger;
+    private final Logger logger;
 
     public LifeStage(String hintKey, String hintValue) {
         this(hintKey, hintValue, LogHelper.getLogger(hintKey, hintValue));

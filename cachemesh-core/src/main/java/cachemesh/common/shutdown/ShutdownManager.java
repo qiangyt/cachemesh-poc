@@ -24,18 +24,18 @@ import java.util.concurrent.TimeUnit;
 
 public class ShutdownManager {
 
-    public static final int                 DEFAULT_TIMEOUT_SECONDS = 2;
+    public static final int DEFAULT_TIMEOUT_SECONDS = 2;
 
-    public static final ShutdownManager     DEFAULT                 = new ShutdownManager();
+    public static final ShutdownManager DEFAULT = new ShutdownManager();
 
-    private SortedMap<String, ShutdownItem> items                   = new TreeMap<>();
+    private SortedMap<String, ShutdownItem> items = new TreeMap<>();
 
     @lombok.Getter
-    private int                             maxTimeoutSeconds;
+    private int maxTimeoutSeconds;
 
-    private Thread                          thread;
+    private Thread thread;
 
-    private final ShutdownLogger            logger                  = new ShutdownLogger(ShutdownManager.class);
+    private final ShutdownLogger logger = new ShutdownLogger(ShutdownManager.class);
 
     public void register(ManagedShutdownable target) {
         register(target, DEFAULT_TIMEOUT_SECONDS);

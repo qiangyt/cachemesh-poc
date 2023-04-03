@@ -29,21 +29,21 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class LettuceConfig extends TransportConfig {
 
-    public static final String PROTOCOL          = "redis";
+    public static final String PROTOCOL = "redis";
 
-    private final String       host;
+    private final String host;
 
-    private final int          port;
+    private final int port;
 
-    private final int          database;
+    private final int database;
 
-    private final String       url;
+    private final String url;
 
-    private final String       target;
+    private final String target;
 
     public static final String DEFAULT_SEPARATOR = "%";
 
-    private final String       keySeparator;
+    private final String keySeparator;
 
     @Override
     public String getProtocol() {
@@ -120,8 +120,8 @@ public class LettuceConfig extends TransportConfig {
         var stopTimeoutSeconds = (Integer) configMap.get("stopTimeoutSeconds");
 
         return builder().host(host).port(port.intValue()).url(url).database(database.intValue()).target(target)
-            .keySeparator(keySeparator).startTimeoutSeconds(startTimeoutSeconds).stopTimeoutSeconds(stopTimeoutSeconds)
-            .build();
+                .keySeparator(keySeparator).startTimeoutSeconds(startTimeoutSeconds)
+                .stopTimeoutSeconds(stopTimeoutSeconds).build();
     }
 
     public static String formatTarget(String host, int port, int database) {

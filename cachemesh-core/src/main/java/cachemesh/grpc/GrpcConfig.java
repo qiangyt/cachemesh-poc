@@ -32,19 +32,19 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class GrpcConfig extends TransportConfig {
 
-    public static final String PROTOCOL     = "grpc";
+    public static final String PROTOCOL = "grpc";
 
     public static final String DEFAULT_HOST = "localhost";
 
-    private String             host         = DEFAULT_HOST;
+    private String host = DEFAULT_HOST;
 
-    private int                port;
+    private int port;
 
-    private String             url;
+    private String url;
 
-    private String             target;
+    private String target;
 
-    private boolean            remote;
+    private boolean remote;
 
     @Override
     public String getProtocol() {
@@ -104,7 +104,7 @@ public class GrpcConfig extends TransportConfig {
         var remote = (Boolean) configMap.get("remote");
 
         return builder().host(host).port(port.intValue()).url(url).target(target)
-            .startTimeoutSeconds(startTimeoutSeconds).stopTimeoutSeconds(stopTimeoutSeconds).remote(remote).build();
+                .startTimeoutSeconds(startTimeoutSeconds).stopTimeoutSeconds(stopTimeoutSeconds).remote(remote).build();
     }
 
     public static String formatTarget(String host, int port) {

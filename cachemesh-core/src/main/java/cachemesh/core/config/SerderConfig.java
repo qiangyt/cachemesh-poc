@@ -33,39 +33,35 @@ import lombok.Builder;
 @Builder
 public class SerderConfig implements SomeConfig {
 
-	public static enum Kind {
-		jackson
-	}
+    public static enum Kind {
+        jackson
+    }
 
-	public static final NestedOp<SerderConfig> OP = new NestedOp<>(SerderConfig.class);
+    public static final NestedOp<SerderConfig> OP = new NestedOp<>(SerderConfig.class);
 
-	public static final Kind DEFAULT_KIND = Kind.jackson;
+    public static final Kind DEFAULT_KIND = Kind.jackson;
 
-	@Builder.Default
-	private Kind kind = DEFAULT_KIND;
+    @Builder.Default
+    private Kind kind = DEFAULT_KIND;
 
-	@Builder.Default
-	private Serderializer instance = JacksonSerderializer.DEFAULT;
+    @Builder.Default
+    private Serderializer instance = JacksonSerderializer.DEFAULT;
 
-	public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-		Property.<Kind>builder().configClass(SerderConfig.class)
-			.propertyName("kind")
-			.defaultValue(DEFAULT_KIND)
-			.op(new EnumOp<>(Kind.class))
-			.build()
-	);
+    public static final Collection<Property<?>> PROPERTIES = SomeConfig
+            .buildProperties(Property.<Kind> builder().configClass(SerderConfig.class).propertyName("kind")
+                    .defaultValue(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build());
 
-	public SerderConfig() {
-	}
+    public SerderConfig() {
+    }
 
-	@Builder
-	public SerderConfig(Kind kind) {
-		this.kind = kind;
-	}
+    @Builder
+    public SerderConfig(Kind kind) {
+        this.kind = kind;
+    }
 
-	@Override
-	public Collection<Property<?>> properties() {
-		return PROPERTIES;
-	}
+    @Override
+    public Collection<Property<?>> properties() {
+        return PROPERTIES;
+    }
 
 }

@@ -31,38 +31,35 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class CaffeineConfig extends LocalCacheConfig {
 
-	public static final NestedOp<CaffeineConfig> OP = new NestedOp<>(CaffeineConfig.class);
+    public static final NestedOp<CaffeineConfig> OP = new NestedOp<>(CaffeineConfig.class);
 
     public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
 
     public static final Duration DEFAULT_EXPIRE_AFTER_WIRTER = Duration.ofMinutes(5);
 
-	@Builder.Default
+    @Builder.Default
     private int maximumSize = DEFAULT_MAXIMUM_SIZE;
 
-	@Builder.Default
+    @Builder.Default
     private Duration expireAfterWrite = DEFAULT_EXPIRE_AFTER_WIRTER;
 
-    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-		LocalCacheConfig.PROPERTIES,
-		Property.<Integer>builder().configClass(CaffeineConfig.class)
-			.propertyName("maximumSize")
-			.defaultValue(DEFAULT_MAXIMUM_SIZE)
-			.op(IntegerOp.DEFAULT)
-			.build(),
-		Property.<Duration>builder().configClass(CaffeineConfig.class)
-			.propertyName("expireAfterWrite")
-			.defaultValue(DEFAULT_EXPIRE_AFTER_WIRTER)
-			.op(DurationOp.DEFAULT)
-			.build()
-	);
+    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(LocalCacheConfig.PROPERTIES,
+            Property.<Integer> builder().configClass(CaffeineConfig.class).propertyName("maximumSize")
+                    .defaultValue(DEFAULT_MAXIMUM_SIZE).op(IntegerOp.DEFAULT).build(),
+            Property.<Duration> builder().configClass(CaffeineConfig.class).propertyName("expireAfterWrite")
+                    .defaultValue(DEFAULT_EXPIRE_AFTER_WIRTER).op(DurationOp.DEFAULT).build());
 
     @Override
     public Collection<Property<?>> properties() {
         return PROPERTIES;
+    }
+
+    @Override
+    public LocalCacheConfig buildAnother(String name, Class<?> valueClass) {
+        return toBuilder().name(name).valueClass(valueClass).build();
     }
 
 }

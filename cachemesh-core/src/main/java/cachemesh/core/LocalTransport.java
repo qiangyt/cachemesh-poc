@@ -62,7 +62,9 @@ public class LocalTransport implements Transport {
             return (GetResult<byte[]>) GetResult.NO_CHANGE;
         }
 
-        var data = v.isNullValue() ? null : v.getBytes(cache.getConfig().getSerder());
+        var cfg = cache.getConfig();
+        var serder = cfg.getSerder().getInstance();
+        var data = v.isNullValue() ? null : v.getBytes(serder);
         return new GetResult<>(ResultStatus.OK, data, dataVer);
     }
 
@@ -91,7 +93,8 @@ public class LocalTransport implements Transport {
         }
 
         var cfg = cache.getConfig();
-        return v.isNullValue() ? null : v.getObject(cfg.getSerder(), cfg.getValueClass());
+        var serder = cfg.getSerder().getInstance();
+        return v.isNullValue() ? null : v.getObject(serder, cfg.getValueClass());
     }
 
     @Override

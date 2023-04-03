@@ -22,7 +22,6 @@ import cachemesh.common.util.Reflect;
 import lombok.AccessLevel;
 import lombok.Builder;
 
-
 public class Property<T> {
 
     private final String propertyName;
@@ -31,15 +30,15 @@ public class Property<T> {
 
     private final Method getter;
 
-	private final T defaultValue;
+    private final T defaultValue;
 
-	private final Operator<? extends T> op;
+    private final Operator<? extends T> op;
 
-	@Builder(access = AccessLevel.PUBLIC)
+    @Builder(access = AccessLevel.PUBLIC)
     public Property(Class<?> configClass, String propertyName, T defaultValue, Operator<? extends T> op) {
         this.propertyName = propertyName;
-		this.defaultValue = defaultValue;
-		this.op = op;
+        this.defaultValue = defaultValue;
+        this.op = op;
 
         var propClass = op.propertyClass();
         this.setter = Reflect.setter(configClass, propertyName, propClass);

@@ -1,6 +1,8 @@
 package cachemesh.common.hash;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.SortedMap;
 
@@ -21,15 +23,22 @@ public class ConsistentHash<T extends ConsistentHash.Node> {
         default String getName() {
             return getKey();
         }
+
+        @Override
+        default Map<String, Object> toMap() {
+            var r = new HashMap<String, Object>();
+            r.put("name", getName());
+            return r;
+        }
     }
 
     @lombok.Getter
     public static class VirtualNode<T extends Node> {
 
-        private final T      realNode;
-        private final int    index;
+        private final T realNode;
+        private final int index;
         private final String key;
-        private final long   hash;
+        private final long hash;
 
         public VirtualNode(T realNode, int index, String key, long hash) {
             this.realNode = realNode;
@@ -40,13 +49,13 @@ public class ConsistentHash<T extends ConsistentHash.Node> {
 
     }
 
-    private static final Logger                 LOG   = LoggerFactory.getLogger(ConsistentHash.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConsistentHash.class);
 
-    private final TreeMap<Long, VirtualNode<T>> ring  = new TreeMap<>();
+    private final TreeMap<Long, VirtualNode<T>> ring = new TreeMap<>();
 
-    private final SortedMap<String, T>          nodes = new TreeMap<>();
+    private final SortedMap<String, T> nodes = new TreeMap<>();
 
-    private final Hashing                       algo;
+    private final Hashing algo;
 
     public ConsistentHash(Hashing algo) {
         this.algo = algo;

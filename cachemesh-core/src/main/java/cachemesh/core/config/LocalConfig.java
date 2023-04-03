@@ -36,7 +36,7 @@ import lombok.Singular;
 @Builder
 public class LocalConfig implements SomeConfig {
 
-	public static NestedOp<LocalConfig> OP = new NestedOp<>(LocalConfig.class);
+    public static NestedOp<LocalConfig> OP = new NestedOp<>(LocalConfig.class);
 
     public enum Kind {
         caffeine
@@ -44,32 +44,23 @@ public class LocalConfig implements SomeConfig {
 
     public static final Kind DEFAULT_KIND = Kind.caffeine;
 
-	@Builder.Default
+    @Builder.Default
     private Kind kind = DEFAULT_KIND;
 
-	@Builder.Default
+    @Builder.Default
     private LocalCacheConfig defaultCache = CaffeineConfig.builder().name("default").valueClass(byte[].class).build();
 
-	@Singular
+    @Singular
     private List<LocalCacheConfig> caches;
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-		Property.<Kind>builder().configClass(LocalConfig.class)
-			.propertyName("kind")
-			.defaultValue(DEFAULT_KIND)
-			.op(new EnumOp<>(Kind.class))
-			.build(),
-		Property.<LocalCacheConfig>builder().configClass(LocalConfig.class)
-			.propertyName("defaultCache")
-			.defaultValue(CaffeineConfig.builder().name("default").valueClass(byte[].class).build())
-			.op(CaffeineConfig.OP)
-			.build(),
-		Property.<List<LocalCacheConfig>>builder().configClass(LocalConfig.class)
-			.propertyName("caches")
-			.defaultValue(new ArrayList<>())
-			.op(new ListOp<>(CaffeineConfig.OP))
-			.build()
-	);
+            Property.<Kind> builder().configClass(LocalConfig.class).propertyName("kind").defaultValue(DEFAULT_KIND)
+                    .op(new EnumOp<>(Kind.class)).build(),
+            Property.<LocalCacheConfig> builder().configClass(LocalConfig.class).propertyName("defaultCache")
+                    .defaultValue(CaffeineConfig.builder().name("default").valueClass(byte[].class).build())
+                    .op(CaffeineConfig.OP).build(),
+            Property.<List<LocalCacheConfig>> builder().configClass(LocalConfig.class).propertyName("caches")
+                    .defaultValue(new ArrayList<>()).op(new ListOp<>(CaffeineConfig.OP)).build());
 
     @Override
     public Collection<Property<?>> properties() {

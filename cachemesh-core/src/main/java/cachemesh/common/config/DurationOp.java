@@ -26,7 +26,7 @@ import lombok.Getter;
 @Getter
 public class DurationOp extends Operator<Duration> {
 
-	public static final DurationOp DEFAULT = new DurationOp();
+    public static final DurationOp DEFAULT = new DurationOp();
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(String.class));

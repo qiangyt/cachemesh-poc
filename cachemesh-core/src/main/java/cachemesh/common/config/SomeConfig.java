@@ -30,14 +30,14 @@ public interface SomeConfig extends Mappable {
     Collection<Property<?>> properties();
 
     static Collection<Property<?>> buildProperties(Property<?>... array) {
-		var list = Arrays.asList(array);
+        var list = Arrays.asList(array);
         return Collections.unmodifiableList(list);
     }
 
     static Collection<Property<?>> buildProperties(Collection<Property<?>> supers, Property<?>... array) {
-		var list = new ArrayList<Property<?>>(supers.size() + array.length);
-		list.addAll(supers);
-		list.addAll(Arrays.asList(array));
+        var list = new ArrayList<Property<?>>(supers.size() + array.length);
+        list.addAll(supers);
+        list.addAll(Arrays.asList(array));
         return Collections.unmodifiableList(list);
     }
 
@@ -60,13 +60,10 @@ public interface SomeConfig extends Mappable {
         }
     }
 
-    /*@SuppressWarnings("unchecked")
-    default void withAny(String path, Object object) {
-    	if (object instanceof Map) {
-    		withMap(path, (Map<String, Object>)object);
-    		return;
-    	}
-    	throw new IllegalArgumentException(getClass() + " expects to read a map only");
-    }*/
+    /*
+     * @SuppressWarnings("unchecked") default void withAny(String path, Object object) { if (object instanceof Map) {
+     * withMap(path, (Map<String, Object>)object); return; } throw new IllegalArgumentException(getClass() +
+     * " expects to read a map only"); }
+     */
 
 }

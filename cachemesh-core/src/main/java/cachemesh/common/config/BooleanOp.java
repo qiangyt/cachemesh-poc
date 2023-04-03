@@ -22,7 +22,7 @@ import java.util.List;
 
 public class BooleanOp extends Operator<Boolean> {
 
-	public static final BooleanOp DEFAULT = new BooleanOp();
+    public static final BooleanOp DEFAULT = new BooleanOp();
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(String.class, Character.class, Number.class));

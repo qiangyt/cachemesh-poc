@@ -18,7 +18,7 @@ package cachemesh.common.config;
 
 public class StringOp extends Operator<String> {
 
-	public static final StringOp DEFAULT = new StringOp();
+    public static final StringOp DEFAULT = new StringOp();
 
     @Override
     public Class<?> propertyClass() {

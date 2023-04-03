@@ -16,6 +16,7 @@
  */
 package cachemesh.core;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -35,32 +36,39 @@ import lombok.AccessLevel;
 @Getter
 public class MeshNetwork implements Shutdownable, HasName {
 
-    private final MeshConfig               config;
+    private final MeshConfig config;
 
     @Getter(AccessLevel.PROTECTED)
     private final ConsistentHash<MeshNode> route;
 
-    private final LocalCacheManager        localCacheManager;
+    private final LocalCacheManager localCacheManager;
 
-    private final TransportRegistry        transportRegistry;
+    private final TransportRegistry transportRegistry;
 
-    private final Logger                   logger;
+    private final Logger logger;
 
-    private final LifeStage                lifeStage;
+    private final LifeStage lifeStage;
 
-    private final MeshCacheManager         meshCacheManager;
+    private final MeshCacheManager meshCacheManager;
 
     public MeshNetwork(MeshConfig config, LocalCacheManager nearCacheManager, LocalCacheManager localCacheManager,
-                       TransportRegistry transportRegistry) {
+            TransportRegistry transportRegistry) {
 
         this.config = config;
-        this.route = new ConsistentHash<>(config.getHashing());
+        this.route = new ConsistentHash<>(config.getHashing().instance);
         this.localCacheManager = localCacheManager;
         this.transportRegistry = transportRegistry;
         this.logger = LogHelper.getLogger(this);
         this.lifeStage = new LifeStage("meshnetwork", config.getName(), getLogger());
         this.meshCacheManager = new MeshCacheManager(nearCacheManager, this);
 
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = new HashMap<String, Object>();
+        r.put("name", getName());
+        return r;
     }
 
     @Override

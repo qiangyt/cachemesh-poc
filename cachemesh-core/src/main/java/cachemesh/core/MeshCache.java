@@ -28,12 +28,15 @@ import cachemesh.core.spi.Transport;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Getter
 public class MeshCache<T> implements HasName {
 
-    private final Logger      logger;
+    private final Logger logger;
 
-    private final LocalCache  nearCache;
+    private final LocalCache nearCache;
 
     private final MeshNetwork network;
 
@@ -42,6 +45,13 @@ public class MeshCache<T> implements HasName {
         this.network = network;
 
         this.logger = LogHelper.getLogger(this);
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = new HashMap<String, Object>();
+        r.put("name", getName());
+        return r;
     }
 
     @Override
@@ -69,6 +79,7 @@ public class MeshCache<T> implements HasName {
     protected T getRemoteSingle(Transport nodeCache, String key) {
         var near = getNearCache();
         var cfg = near.getConfig();
+        var serder = cfg.getSerder().getInstance();
 
         @SuppressWarnings("unchecked")
         var valueClass = (Class<T>) cfg.getValueClass();
@@ -79,24 +90,24 @@ public class MeshCache<T> implements HasName {
         var r = nodeCache.getSingle(getName(), key, version);
 
         switch (r.getStatus()) {
-            case OK: {
-                var valueBytes = r.getValue();
-                T valueObj = cfg.getSerder().deserialize(valueBytes, valueClass);
-                near.putSingle(key, (k, v) -> new ValueImpl(valueObj, valueBytes, r.getVersion()));
-                return valueObj;
-            }
-            case NO_CHANGE:
-                return nearValue.getObject(cfg.getSerder(), valueClass);
-            case NOT_FOUND: {
-                near.invalidateSingle(key);
-                return null;
-            }
-            case REDIRECT: {
-                near.invalidateSingle(key);
-                throw new InternalException("TODO");
-            }
-            default:
-                throw new ServiceException("unexpected status");
+        case OK: {
+            var valueBytes = r.getValue();
+            T valueObj = serder.deserialize(valueBytes, valueClass);
+            near.putSingle(key, (k, v) -> new ValueImpl(valueObj, valueBytes, r.getVersion()));
+            return valueObj;
+        }
+        case NO_CHANGE:
+            return nearValue.getObject(serder, valueClass);
+        case NOT_FOUND: {
+            near.invalidateSingle(key);
+            return null;
+        }
+        case REDIRECT: {
+            near.invalidateSingle(key);
+            throw new InternalException("TODO");
+        }
+        default:
+            throw new ServiceException("unexpected status");
         }
     }
 
@@ -119,8 +130,10 @@ public class MeshCache<T> implements HasName {
 
     protected void putRemoteSingle(Transport nodeCache, String key, Object object) {
         var near = getNearCache();
+        var cfg = near.getConfig();
+        var serder = cfg.getSerder().getInstance();
 
-        var valueBytes = near.getConfig().getSerder().serialize(object);
+        var valueBytes = serder.serialize(object);
         long version = nodeCache.putSingle(getName(), key, valueBytes);
 
         near.putSingle(key, (k, v) -> new ValueImpl(object, valueBytes, version));

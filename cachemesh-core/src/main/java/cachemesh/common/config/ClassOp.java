@@ -25,7 +25,7 @@ import lombok.Getter;
 @Getter
 public class ClassOp extends Operator<Class<?>> {
 
-	public static final ClassOp DEFAULT = new ClassOp();
+    public static final ClassOp DEFAULT = new ClassOp();
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(String.class));

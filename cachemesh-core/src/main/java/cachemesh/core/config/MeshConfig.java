@@ -48,40 +48,27 @@ public class MeshConfig implements SomeConfig, HasName {
 
     public static final HashingKind DEFAULT_HASHING = HashingKind.murmur;
 
-	@Builder.Default
+    @Builder.Default
     private String name = DEFAULT_NAME;
 
-	@Builder.Default
+    @Builder.Default
     private HashingKind hashing = DEFAULT_HASHING;
 
-	@Builder.Default
+    @Builder.Default
     private NodesConfig nodes = NodesConfig.builder().build();
 
-	@Builder.Default
+    @Builder.Default
     private LocalConfig local = LocalConfig.builder().build();
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-		Property.<String>builder().configClass(MeshConfig.class)
-			.propertyName("name")
-			.defaultValue(DEFAULT_NAME)
-			.op(StringOp.DEFAULT)
-			.build(),
-		Property.<HashingKind>builder().configClass(MeshConfig.class)
-			.propertyName("hashing")
-			.defaultValue(DEFAULT_HASHING)
-			.op(new EnumOp<>(HashingKind.class))
-			.build(),
-		Property.<NodesConfig>builder().configClass(MeshConfig.class)
-			.propertyName("nodes")
-			.defaultValue(NodesConfig.builder().build())
-			.op(NodesConfig.OP)
-			.build(),
-		Property.<LocalConfig>builder().configClass(MeshConfig.class)
-			.propertyName("local")
-			.defaultValue(LocalConfig.builder().build())
-			.op(LocalConfig.OP)
-			.build()
-	);
+            Property.<String> builder().configClass(MeshConfig.class).propertyName("name").defaultValue(DEFAULT_NAME)
+                    .op(StringOp.DEFAULT).build(),
+            Property.<HashingKind> builder().configClass(MeshConfig.class).propertyName("hashing")
+                    .defaultValue(DEFAULT_HASHING).op(new EnumOp<>(HashingKind.class)).build(),
+            Property.<NodesConfig> builder().configClass(MeshConfig.class).propertyName("nodes")
+                    .defaultValue(NodesConfig.builder().build()).op(NodesConfig.OP).build(),
+            Property.<LocalConfig> builder().configClass(MeshConfig.class).propertyName("local")
+                    .defaultValue(LocalConfig.builder().build()).op(LocalConfig.OP).build());
 
     @Override
     public Collection<Property<?>> properties() {

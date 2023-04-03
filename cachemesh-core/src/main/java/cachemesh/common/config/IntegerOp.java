@@ -22,7 +22,7 @@ import java.util.List;
 
 public class IntegerOp extends Operator<Integer> {
 
-	public static final IntegerOp DEFAULT = new IntegerOp();
+    public static final IntegerOp DEFAULT = new IntegerOp();
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(Character.class, Number.class, String.class));

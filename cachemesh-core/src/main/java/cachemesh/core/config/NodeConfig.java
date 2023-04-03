@@ -32,26 +32,19 @@ import lombok.Builder;
 @Builder
 public class NodeConfig implements SomeConfig {
 
-	public static final NestedOp<NodeConfig> OP = new NestedOp<>(NodeConfig.class);
+    public static final NestedOp<NodeConfig> OP = new NestedOp<>(NodeConfig.class);
 
-	public static final boolean DEFAULT_LOCAL = false;
+    public static final boolean DEFAULT_LOCAL = false;
 
     private String url;
 
-	@Builder.Default
-    private boolean  local = DEFAULT_LOCAL;
+    @Builder.Default
+    private boolean local = DEFAULT_LOCAL;
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-		Property.<String>builder().configClass(NodeConfig.class)
-			.propertyName("url")
-			.op(StringOp.DEFAULT)
-			.build(),
-		Property.<Boolean>builder().configClass(NodeConfig.class)
-			.propertyName("local")
-			.defaultValue(DEFAULT_LOCAL)
-			.op(BooleanOp.DEFAULT)
-			.build()
-	);
+            Property.<String> builder().configClass(NodeConfig.class).propertyName("url").op(StringOp.DEFAULT).build(),
+            Property.<Boolean> builder().configClass(NodeConfig.class).propertyName("local").defaultValue(DEFAULT_LOCAL)
+                    .op(BooleanOp.DEFAULT).build());
 
     @Override
     public Collection<Property<?>> properties() {

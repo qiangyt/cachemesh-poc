@@ -35,7 +35,7 @@ import lombok.Singular;
 @Builder
 public class NodesConfig implements SomeConfig {
 
-	public static NestedOp<NodesConfig> OP = new NestedOp<>(NodesConfig.class);
+    public static NestedOp<NodesConfig> OP = new NestedOp<>(NodesConfig.class);
 
     public static final Kind DEFAULT_KIND = Kind.inline;
 
@@ -43,24 +43,17 @@ public class NodesConfig implements SomeConfig {
         inline, jgroup, k8s
     }
 
-	@Builder.Default
-    private Kind  kind = DEFAULT_KIND;
+    @Builder.Default
+    private Kind kind = DEFAULT_KIND;
 
-	@Singular("inline")
+    @Singular("inline")
     private List<NodeConfig> inline;
 
-    public static final Collection<Property<?>>  PROPERTIES = SomeConfig.buildProperties(
-		Property.<Kind>builder().configClass(NodesConfig.class)
-			.propertyName("kind")
-			.defaultValue(DEFAULT_KIND)
-			.op(new EnumOp<>(Kind.class))
-			.build(),
-		Property.<List<NodeConfig>>builder().configClass(NodesConfig.class)
-			.propertyName("inline")
-			.defaultValue(new ArrayList<>())
-			.op(new ListOp<>(NodeConfig.OP))
-			.build()
-	);
+    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
+            Property.<Kind> builder().configClass(NodesConfig.class).propertyName("kind").defaultValue(DEFAULT_KIND)
+                    .op(new EnumOp<>(Kind.class)).build(),
+            Property.<List<NodeConfig>> builder().configClass(NodesConfig.class).propertyName("inline")
+                    .defaultValue(new ArrayList<>()).op(new ListOp<>(NodeConfig.OP)).build());
 
     @Override
     public Collection<Property<?>> properties() {

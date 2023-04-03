@@ -52,6 +52,9 @@ public class CaffeineConfig extends LocalCacheConfig {
             Property.<Duration> builder().configClass(CaffeineConfig.class).propertyName("expireAfterWrite")
                     .defaultValue(DEFAULT_EXPIRE_AFTER_WIRTER).op(DurationOp.DEFAULT).build());
 
+    public CaffeineConfig() {
+    }
+
     @Override
     public Collection<Property<?>> properties() {
         return PROPERTIES;

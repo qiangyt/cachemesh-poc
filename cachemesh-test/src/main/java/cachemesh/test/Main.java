@@ -16,18 +16,12 @@
  */
 package cachemesh.test;
 
-import cachemesh.grpc.GrpcTransportProvider;
 import cachemesh.core.MeshNetwork;
+import cachemesh.core.config.MeshConfig;
 import cachemesh.jgroup.JGroupsListener;
 import cachemesh.jgroup.JGroupsMembers;
-import cachemesh.redis.lettuce.LettuceTransportProvider;
 
 public class Main {
-
-    static {
-        GrpcTransportProvider.register();
-        LettuceTransportProvider.register();
-    }
 
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
@@ -41,12 +35,13 @@ public class Main {
         String primaryUrl = args[1];
 
         System.out.println("mesh bootstrap: ...");
-        var mesh = new MeshNetwork("example");
-        mesh.addLocalNode(primaryUrl);
-        // mesh.addRedisNode("redis://localhost:6379");
-        // mesh.addRemoteNode("grpc://localhost:20001");
 
-        mesh.bootstrap();
+        var configYamlStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("example.yaml");
+        var config = MeshConfig.fromYaml(configYamlStream);
+        var mesh = MeshNetwork.build(config);
+
+        mesh.start();
+
         Thread.sleep(5000);
         System.out.println("mesh bootstrap: done");
 
@@ -113,7 +108,7 @@ public class Main {
             e.printStackTrace(System.err);
         } finally {
             jgroups.stop();
-            mesh.close();
+            mesh.shutdown(0);
         }
     }
 

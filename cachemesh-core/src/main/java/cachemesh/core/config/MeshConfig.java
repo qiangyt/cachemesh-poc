@@ -27,7 +27,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.Collection;
+import java.util.Map;
+
+import org.yaml.snakeyaml.Yaml;
 
 @Getter
 @Setter
@@ -70,9 +75,49 @@ public class MeshConfig implements SomeConfig, HasName {
             Property.<LocalConfig> builder().configClass(MeshConfig.class).propertyName("local")
                     .defaultValue(LocalConfig.builder().build()).op(LocalConfig.OP).build());
 
+    public MeshConfig() {
+    }
+
+    protected MeshConfig(String name, HashingKind hashing, NodesConfig nodes, LocalConfig local) {
+        this.name = name;
+        this.hashing = hashing;
+        this.nodes = nodes;
+        this.local = local;
+    }
+
     @Override
     public Collection<Property<?>> properties() {
         return PROPERTIES;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static MeshConfig fromYaml(String yamlText) {
+        var yaml = new Yaml();
+        var map = (Map<String, Object>) yaml.load(yamlText);
+
+        var r = new MeshConfig();
+        r.withMap("", map);
+        return r;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static MeshConfig fromYaml(InputStream yamlStream) {
+        var yaml = new Yaml();
+        var map = (Map<String, Object>) yaml.load(yamlStream);
+
+        var r = new MeshConfig();
+        r.withMap("", map);
+        return r;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static MeshConfig fromYaml(Reader yamlReader) {
+        var yaml = new Yaml();
+        var map = (Map<String, Object>) yaml.load(yamlReader);
+
+        var r = new MeshConfig();
+        r.withMap("", map);
+        return r;
     }
 
 }

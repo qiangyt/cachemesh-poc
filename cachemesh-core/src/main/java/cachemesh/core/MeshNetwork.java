@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 
 import cachemesh.common.HasName;
 import cachemesh.common.LifeStage;
+import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.common.shutdown.Shutdownable;
 import cachemesh.common.util.LogHelper;
 import lombok.Getter;
@@ -51,6 +52,18 @@ public class MeshNetwork implements Shutdownable, HasName {
 
     private final MeshCacheManager meshCacheManager;
 
+    public static MeshNetwork build(MeshConfig config) {
+        var name = config.getName();
+
+        var localConfig = config.getLocal();
+        var localCacheProvider = localConfig.getKind().provider;
+        var localCacheManager = new LocalCacheManager(name, localConfig.getDefaultCache(), localCacheProvider,
+                ShutdownManager.DEFAULT);
+        var nearCacheManager = localCacheManager;
+
+        return new MeshNetwork(config, nearCacheManager, localCacheManager, TransportRegistry.DEFAULT);
+    }
+
     public MeshNetwork(MeshConfig config, LocalCacheManager nearCacheManager, LocalCacheManager localCacheManager,
             TransportRegistry transportRegistry) {
 
@@ -62,6 +75,10 @@ public class MeshNetwork implements Shutdownable, HasName {
         this.lifeStage = new LifeStage("meshnetwork", config.getName(), getLogger());
         this.meshCacheManager = new MeshCacheManager(nearCacheManager, this);
 
+    }
+
+    public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
+        return getMeshCacheManager().resolveCache(cacheName, valueClass);
     }
 
     @Override

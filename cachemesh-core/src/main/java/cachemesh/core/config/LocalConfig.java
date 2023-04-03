@@ -23,11 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 
+import cachemesh.caffeine.CaffeineProvider;
 import cachemesh.common.config.EnumOp;
 import cachemesh.common.config.ListOp;
 import cachemesh.common.config.NestedOp;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.SomeConfig;
+import cachemesh.core.spi.LocalCacheProvider;
 import lombok.Setter;
 import lombok.Singular;
 
@@ -39,7 +41,13 @@ public class LocalConfig implements SomeConfig {
     public static NestedOp<LocalConfig> OP = new NestedOp<>(LocalConfig.class);
 
     public enum Kind {
-        caffeine
+        caffeine(CaffeineProvider.DEFAULT);
+
+        public final LocalCacheProvider provider;
+
+        private Kind(LocalCacheProvider provider) {
+            this.provider = provider;
+        }
     }
 
     public static final Kind DEFAULT_KIND = Kind.caffeine;
@@ -61,6 +69,15 @@ public class LocalConfig implements SomeConfig {
                     .op(CaffeineConfig.OP).build(),
             Property.<List<LocalCacheConfig>> builder().configClass(LocalConfig.class).propertyName("caches")
                     .defaultValue(new ArrayList<>()).op(new ListOp<>(CaffeineConfig.OP)).build());
+
+    public LocalConfig() {
+    }
+
+    protected LocalConfig(Kind kind, LocalCacheConfig defaultCache, List<LocalCacheConfig> caches) {
+        this.kind = kind;
+        this.defaultCache = defaultCache;
+        this.caches = caches;
+    }
 
     @Override
     public Collection<Property<?>> properties() {

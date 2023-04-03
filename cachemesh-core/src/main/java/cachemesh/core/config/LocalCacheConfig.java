@@ -39,8 +39,6 @@ public abstract class LocalCacheConfig implements SomeConfig {
     @Builder.Default
     private SerderConfig serder = SerderConfig.builder().build();
 
-    public abstract LocalCacheConfig buildAnother(String name, Class<?> valueClass);
-
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
             Property.<String> builder().configClass(LocalCacheConfig.class).propertyName("name").op(StringOp.DEFAULT)
                     .build(),
@@ -48,6 +46,17 @@ public abstract class LocalCacheConfig implements SomeConfig {
                     .defaultValue(byte[].class).op(ClassOp.DEFAULT).build(),
             Property.<SerderConfig> builder().configClass(LocalCacheConfig.class).propertyName("serder")
                     .defaultValue(SerderConfig.builder().build()).op(SerderConfig.OP).build());
+
+    protected LocalCacheConfig() {
+    }
+
+    protected LocalCacheConfig(String name, Class<?> valueClass, SerderConfig serder) {
+        this.name = name;
+        this.valueClass = valueClass;
+        this.serder = serder;
+    }
+
+    public abstract LocalCacheConfig buildAnother(String name, Class<?> valueClass);
 
     @Override
     public Collection<Property<?>> properties() {

@@ -18,10 +18,19 @@ package cachemesh.core;
 
 import cachemesh.common.Registry;
 import cachemesh.core.spi.TransportProvider;
+import cachemesh.grpc.GrpcConfig;
+import cachemesh.grpc.GrpcTransportProvider;
+import cachemesh.redis.lettuce.LettuceConfig;
+import cachemesh.redis.lettuce.LettuceTransportProvider;
 
 public class TransportRegistry extends Registry<String, TransportProvider> {
 
     public static final TransportRegistry DEFAULT = new TransportRegistry();
+
+    static {
+        TransportRegistry.DEFAULT.register(GrpcConfig.PROTOCOL, GrpcTransportProvider.DEFAULT);
+        TransportRegistry.DEFAULT.register(LettuceConfig.PROTOCOL, LettuceTransportProvider.DEFAULT);
+    }
 
     @Override
     protected String retrieveKey(String protocol) {

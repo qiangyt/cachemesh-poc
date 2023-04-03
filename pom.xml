@@ -480,7 +480,7 @@
                         <compilerTargetPlatform>${java.target.version}</compilerTargetPlatform>
                         <lineEnding>LF</lineEnding>
                         <encoding>${project.encoding}</encoding>
-                        <configFile>${user.dir}/tools/codestyle/formatter.xml</configFile>
+                        <!--<configFile>${user.dir}/tools/codestyle/formatter.xml</configFile>-->
                         <removeTrailingWhitespace>true</removeTrailingWhitespace>
                     </configuration>
                     <executions>

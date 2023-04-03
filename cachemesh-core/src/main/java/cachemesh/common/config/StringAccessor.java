@@ -14,22 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common;
+package cachemesh.common.config;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+import lombok.Getter;
 
-public interface Mappable {
+@Getter
+public class StringAccessor extends Accessor<String> {
 
-    Map<String, Object> toMap();
+    private String defaultValue;
 
-    static List<Map<String, Object>> convertList(List<? extends Mappable> list) {
-        var r = new ArrayList<Map<String, Object>>();
-        for (var item : list) {
-            r.add(item.toMap());
-        }
-        return r;
+    public StringAccessor(Class<?> ownerClass, String name, String defaultValue) {
+        super(ownerClass, name);
+        this.defaultValue = defaultValue;
+
+    }
+
+    @Override
+    public String defaultValue() {
+        return this.defaultValue;
+    }
+
+    @Override
+    public Class<?> propertyClass() {
+        return String.class;
+    }
+
+    @Override
+    public String createEmptyValue() {
+        return "";
     }
 
 }

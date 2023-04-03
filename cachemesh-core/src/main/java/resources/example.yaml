@@ -15,30 +15,26 @@
 # limitations under the License.
 #
 
+name: hello
+
+hashing: murmur
+
 nodes:
-  provider: inline # jgroup, k8s, auto
+  kind: inline # jgroup, k8s, auto
   inline:
     - url: grpc://localhost:50001
-      remote: false
+      local: true
     - url: grpc://localhost:50002
     - url: redis://localhost:6371
 
 local:
-  provider: caffeine
-  default:
-    caffeine:
-      maximumSize: 100_000
-      expireAfterWrite: 5min
+  kind: caffeine # caffeine, auto
+  defaultCache:
+    maximumSize: 100_000
+    expireAfterWrite: 5min
   caches:
-    testA:
+    - name: testA
       valueClass: java.lang.String
-      serders:
-        provider: jackson
-        jackson:
-
-transports:
-  grpc:
-    provider: cachemesh.grpc.GrpcTransportProvider
-  redis:
-    provider: cachemesh.redis.lettuce.LettuceTransportProvider
-
+      #serder:
+      #  provider: jackson
+      #  jackson:

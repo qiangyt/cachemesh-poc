@@ -23,6 +23,13 @@ import com.google.common.collect.Lists;
 
 public class StringHelper {
 
+    public static String capitalize(String t) {
+        if (t == null || t.isBlank()) {
+            return t;
+        }
+        return t.substring(0, 1).toUpperCase() + t.substring(1);
+    }
+
     public static <T> String toString(T[] array) {
         if (array == null) {
             return null;

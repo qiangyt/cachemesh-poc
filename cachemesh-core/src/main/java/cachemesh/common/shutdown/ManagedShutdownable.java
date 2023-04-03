@@ -16,6 +16,9 @@
  */
 package cachemesh.common.shutdown;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 
 import cachemesh.common.HasName;
@@ -29,5 +32,12 @@ public interface ManagedShutdownable extends Shutdownable, HasName {
     }
 
     Logger getLogger();
+
+    @Override
+    default Map<String, Object> toMap() {
+        var r = new HashMap<String, Object>();
+        r.put("name", getName());
+        return r;
+    }
 
 }

@@ -20,20 +20,21 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import cachemesh.common.shutdown.ShutdownManager;
+import cachemesh.core.config.CaffeineConfig;
+import cachemesh.core.config.LocalCacheConfig;
 import cachemesh.core.spi.LocalCache;
-import cachemesh.core.spi.LocalCacheConfig;
-import cachemesh.core.spi.LocalCacheFactory;
+import cachemesh.core.spi.LocalCacheProvider;
 import cachemesh.core.spi.Value;
 import lombok.Getter;
 
 @Getter
-public class CaffeineFactory implements LocalCacheFactory {
+public class CaffeineProvider implements LocalCacheProvider {
 
-    public static final CaffeineFactory DEFAULT = new CaffeineFactory(ShutdownManager.DEFAULT);
+    public static final CaffeineProvider DEFAULT = new CaffeineProvider(ShutdownManager.DEFAULT);
 
-    private final ShutdownManager       shutdownManager;
+    private final ShutdownManager        shutdownManager;
 
-    public CaffeineFactory(ShutdownManager shutdownManager) {
+    public CaffeineProvider(ShutdownManager shutdownManager) {
         this.shutdownManager = shutdownManager;
     }
 
@@ -43,11 +44,6 @@ public class CaffeineFactory implements LocalCacheFactory {
         Cache<String, Value> instance = Caffeine.newBuilder().maximumSize(cconfig.getMaximumSize())
             .expireAfterWrite(cconfig.getExpireAfterWrite()).build();
         return new CaffeineCache(cconfig, instance, getShutdownManager());
-    }
-
-    @Override
-    public String getName() {
-        return "caffeine";
     }
 
 }

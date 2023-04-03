@@ -43,11 +43,6 @@ public class JacksonSerderializer implements Serderializer {
     }
 
     @Override
-    public String getName() {
-        return "jackson";
-    }
-
-    @Override
     public byte[] serialize(Object obj) {
         return this.jackson.toBytes(obj);
     }

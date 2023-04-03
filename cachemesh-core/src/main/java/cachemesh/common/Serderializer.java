@@ -16,7 +16,7 @@
  */
 package cachemesh.common;
 
-public interface Serderializer extends HasName {
+public interface Serderializer {
 
     byte[] serialize(Object obj);
 

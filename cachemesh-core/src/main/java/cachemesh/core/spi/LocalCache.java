@@ -17,21 +17,14 @@
 package cachemesh.core.spi;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
 import cachemesh.common.HasName;
 import cachemesh.common.shutdown.Shutdownable;
+import cachemesh.core.config.LocalCacheConfig;
 
 public interface LocalCache extends Shutdownable, HasName {
-
-    @Override
-    default Map<String, Object> toMap() {
-        Map<String, Object> r = new HashMap<>();
-        r.put("config", getConfig().toMap());
-        return r;
-    }
 
     @Override
     default String getName() {

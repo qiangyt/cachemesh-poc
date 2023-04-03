@@ -14,22 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common;
+package cachemesh.core;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-
-public interface Mappable {
-
-    Map<String, Object> toMap();
-
-    static List<Map<String, Object>> convertList(List<? extends Mappable> list) {
-        var r = new ArrayList<Map<String, Object>>();
-        for (var item : list) {
-            r.add(item.toMap());
-        }
-        return r;
-    }
+public interface MembersProvider {
 
 }

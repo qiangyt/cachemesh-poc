@@ -19,6 +19,8 @@ package cachemesh.common.shutdown;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,13 @@ public class ShutdownLogger implements HasName {
 
     public ShutdownLogger(Logger logger) {
         this.logger = logger;
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = new HashMap<String, Object>();
+        r.put("name", getName());
+        return r;
     }
 
     public void info(String msgFormat, Object... args) {

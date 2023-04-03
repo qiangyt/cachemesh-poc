@@ -27,6 +27,7 @@ import cachemesh.common.util.LogHelper;
 import lombok.Getter;
 
 import cachemesh.common.hash.ConsistentHash;
+import cachemesh.core.config.MeshConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
 import lombok.AccessLevel;
@@ -34,7 +35,7 @@ import lombok.AccessLevel;
 @Getter
 public class MeshNetwork implements Shutdownable, HasName {
 
-    private final MeshNetworkConfig        config;
+    private final MeshConfig               config;
 
     @Getter(AccessLevel.PROTECTED)
     private final ConsistentHash<MeshNode> route;
@@ -49,8 +50,8 @@ public class MeshNetwork implements Shutdownable, HasName {
 
     private final MeshCacheManager         meshCacheManager;
 
-    public MeshNetwork(MeshNetworkConfig config, LocalCacheManager nearCacheManager,
-                       LocalCacheManager localCacheManager, TransportRegistry transportRegistry) {
+    public MeshNetwork(MeshConfig config, LocalCacheManager nearCacheManager, LocalCacheManager localCacheManager,
+                       TransportRegistry transportRegistry) {
 
         this.config = config;
         this.route = new ConsistentHash<>(config.getHashing());

@@ -27,13 +27,13 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public abstract class TransportConfig implements Mappable {
 
-	public static final int DEFAULT_START_TIMEOUT_SECONDS = 1;
+    public static final int DEFAULT_START_TIMEOUT_SECONDS = 1;
 
-    private int startTimeoutSeconds = DEFAULT_START_TIMEOUT_SECONDS;
+    private int             startTimeoutSeconds           = DEFAULT_START_TIMEOUT_SECONDS;
 
-	public static final int DEFAULT_STOP_TIMEOUT_SECONDS = 2;
+    public static final int DEFAULT_STOP_TIMEOUT_SECONDS  = 2;
 
-    private int stopTimeoutSeconds = DEFAULT_STOP_TIMEOUT_SECONDS;
+    private int             stopTimeoutSeconds            = DEFAULT_STOP_TIMEOUT_SECONDS;
 
     public abstract String getProtocol();
 

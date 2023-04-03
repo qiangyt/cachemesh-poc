@@ -30,8 +30,9 @@ import cachemesh.common.shutdown.ManagedShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.common.util.LogHelper;
+import cachemesh.core.config.LocalCacheConfig;
 import cachemesh.core.spi.LocalCache;
-import cachemesh.core.spi.LocalCacheConfig;
+import cachemesh.core.spi.LocalCacheProvider;
 import lombok.Getter;
 import org.slf4j.Logger;
 
@@ -44,19 +45,23 @@ public class LocalCacheManager implements ManagedShutdownable {
         LocalCacheConfig config;
     }
 
-    private final Logger            logger = LoggerFactory.getLogger(getClass());
+    private final Logger             logger = LoggerFactory.getLogger(getClass());
 
-    private final Map<String, Item> items  = new ConcurrentHashMap<>();
+    private final Map<String, Item>  items  = new ConcurrentHashMap<>();
 
-    private final LocalCacheConfig  defaultConfig;
+    private final LocalCacheConfig   defaultConfig;
 
-    private final ShutdownManager   shutdownManager;
+    private final LocalCacheProvider provider;
 
-    private final String            name;
+    private final ShutdownManager    shutdownManager;
 
-    public LocalCacheManager(String name, LocalCacheConfig defaultConfig, ShutdownManager shutdownManager) {
+    private final String             name;
+
+    public LocalCacheManager(String name, LocalCacheConfig defaultConfig, LocalCacheProvider provider,
+                             ShutdownManager shutdownManager) {
         this.name = name;
         this.defaultConfig = defaultConfig;
+        this.provider = provider;
 
         this.shutdownManager = shutdownManager;
         if (shutdownManager != null) {
@@ -94,7 +99,7 @@ public class LocalCacheManager implements ManagedShutdownable {
             }
 
             if (item.cache == null) {
-                item.cache = item.config.getFactory().create(item.config);
+                item.cache = getProvider().create(item.config);
                 if (this.logger.isDebugEnabled()) {
                     this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", item.config));
                 }

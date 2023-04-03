@@ -14,28 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core;
+package cachemesh.core.spi;
 
-import cachemesh.common.hash.Hashing;
-import cachemesh.common.hash.MurmurHash;
-import lombok.Getter;
-import lombok.Builder;
+import cachemesh.core.config.LocalCacheConfig;
 
-@Getter
-@Builder
-public class MeshNetworkConfig {
+public interface LocalCacheProvider {
 
-    private final String name;
-
-    private Hashing      hashing;
-
-    public MeshNetworkConfig(String name, Hashing hashing) {
-        this.name = name;
-        this.hashing = hashing;
-    }
-
-    public MeshNetworkConfig(String name) {
-        this(name, MurmurHash.DEFAULT);
-    }
+    LocalCache create(LocalCacheConfig config);
 
 }

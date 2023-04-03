@@ -14,12 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.spi;
+package cachemesh.core.config;
 
-import cachemesh.common.HasName;
+import java.util.Map;
+import java.util.Collection;
 
-public interface LocalCacheFactory extends HasName {
+import cachemesh.common.config.BooleanAccessor;
+import cachemesh.common.config.Accessor;
+import cachemesh.common.config.SomeConfig;
+import cachemesh.common.config.StringAccessor;
+import lombok.Getter;
+import lombok.Setter;
 
-    LocalCache create(LocalCacheConfig config);
+@Getter
+@Setter
+public class NodeConfig implements SomeConfig {
+
+    private String                              url;
+
+    private boolean                             local;
+
+    public static final Collection<Accessor<?>> ACCESSORS = SomeConfig.buildAccessors(
+        new StringAccessor(NodeConfig.class, "url", null),
+        new BooleanAccessor(NodeConfig.class, "local", Boolean.FALSE));
+
+    @Override
+    public Collection<Accessor<?>> accessors() {
+        return ACCESSORS;
+    }
 
 }

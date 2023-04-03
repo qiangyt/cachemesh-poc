@@ -25,6 +25,7 @@ import lombok.Getter;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
+import cachemesh.core.config.CaffeineConfig;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.Value;
 
@@ -40,6 +41,13 @@ public class CaffeineCache extends AbstractShutdownable implements LocalCache {
 
         this.config = config;
         this.instance = instance;
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        Map<String, Object> r = super.toMap();
+        r.put("config", getConfig().toMap());
+        return r;
     }
 
     @Override

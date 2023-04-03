@@ -25,6 +25,7 @@ import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
 import io.grpc.ManagedChannel;
 import lombok.Getter;
+import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -35,6 +36,7 @@ public class GrpcConfig extends TransportConfig {
 
     public static final String DEFAULT_HOST = "localhost";
 
+	@Builder.Default
     private String host = DEFAULT_HOST;
 
     private int port;

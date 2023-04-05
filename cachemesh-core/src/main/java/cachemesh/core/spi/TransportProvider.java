@@ -18,7 +18,7 @@ package cachemesh.core.spi;
 import java.util.Map;
 
 import cachemesh.core.LocalTransport;
-import cachemesh.core.TransportConfig;
+import cachemesh.core.config.TransportConfig;
 
 public interface TransportProvider extends NodeHook {
 

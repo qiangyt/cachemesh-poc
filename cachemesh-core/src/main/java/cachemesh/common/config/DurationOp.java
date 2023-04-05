@@ -23,7 +23,7 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class DurationOp extends Operator<Duration> {
+public class DurationOp implements Operator<Duration> {
 
     public static final DurationOp DEFAULT = new DurationOp();
 

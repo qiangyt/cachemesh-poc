@@ -46,9 +46,9 @@ public class CaffeineConfig extends LocalCacheConfig {
     private Duration expireAfterWrite = DEFAULT_EXPIRE_AFTER_WIRTER;
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(LocalCacheConfig.PROPERTIES,
-            Property.<Integer> builder().configClass(CaffeineConfig.class).propertyName("maximumSize")
+            Property.builder().configClass(CaffeineConfig.class).propertyName("maximumSize")
                     .defaultValue(DEFAULT_MAXIMUM_SIZE).op(IntegerOp.DEFAULT).build(),
-            Property.<Duration> builder().configClass(CaffeineConfig.class).propertyName("expireAfterWrite")
+            Property.builder().configClass(CaffeineConfig.class).propertyName("expireAfterWrite")
                     .defaultValue(DEFAULT_EXPIRE_AFTER_WIRTER).op(DurationOp.DEFAULT).build());
 
     public CaffeineConfig() {

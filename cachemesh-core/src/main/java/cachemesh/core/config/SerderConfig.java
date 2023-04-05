@@ -47,7 +47,7 @@ public class SerderConfig implements SomeConfig {
     private Serderializer instance = JacksonSerderializer.DEFAULT;
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig
-            .buildProperties(Property.<Kind> builder().configClass(SerderConfig.class).propertyName("kind")
+            .buildProperties(Property.builder().configClass(SerderConfig.class).propertyName("kind")
                     .defaultValue(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build());
 
     @Override

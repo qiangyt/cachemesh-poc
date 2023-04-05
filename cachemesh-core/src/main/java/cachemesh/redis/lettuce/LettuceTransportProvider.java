@@ -19,9 +19,10 @@ import java.util.Map;
 
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
-import cachemesh.core.TransportConfig;
 import cachemesh.core.TransportRegistry;
 import cachemesh.core.TransportURL;
+import cachemesh.core.config.LettuceConfig;
+import cachemesh.core.config.TransportConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
 import lombok.Getter;

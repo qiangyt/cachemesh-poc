@@ -25,7 +25,7 @@ import cachemesh.common.util.Reflect;
 import lombok.Getter;
 
 @Getter
-public class NestedOp<T extends SomeConfig> extends Operator<T> {
+public class NestedOp<T extends SomeConfig> implements Operator<T> {
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(Map.class));

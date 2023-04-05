@@ -49,10 +49,10 @@ public class NodesConfig implements SomeConfig {
     private List<NodeConfig> inline;
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-            Property.<Kind> builder().configClass(NodesConfig.class).propertyName("kind").defaultValue(DEFAULT_KIND)
+            Property.builder().configClass(NodesConfig.class).propertyName("kind").defaultValue(DEFAULT_KIND)
                     .op(new EnumOp<>(Kind.class)).build(),
-            Property.<List<NodeConfig>> builder().configClass(NodesConfig.class).propertyName("inline")
-                    .defaultValue(new ArrayList<>()).op(new ListOp<>(NodeConfig.OP)).build());
+            Property.builder().configClass(NodesConfig.class).propertyName("inline").defaultValue(new ArrayList<>())
+                    .op(new ListOp<>(NodeConfig.OP)).build());
 
     @Override
     public Collection<Property<?>> properties() {

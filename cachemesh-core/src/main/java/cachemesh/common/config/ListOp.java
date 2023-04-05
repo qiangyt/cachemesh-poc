@@ -23,7 +23,7 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class ListOp<T> extends Operator<List<T>> {
+public class ListOp<T> implements Operator<List<T>> {
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(Iterable.class));
@@ -61,14 +61,16 @@ public class ListOp<T> extends Operator<List<T>> {
 
     @Override
     public List<T> doConvert(String hint, Object value) {
-        var r = new ArrayList<T>();
+		return doConvert(getElementOp(), hint, value);
+    }
 
-        var eltOp = getElementOp();
+    public List<T> doConvert(Operator<? extends T> elementOp, String hint, Object value) {
+        var r = new ArrayList<T>();
         int i = 0;
 
         for (var childObj : (Iterable<?>) value) {
             var childHint = String.format("%s[%d]", hint, i);
-            var child = eltOp.convert(childHint, childObj);
+            var child = elementOp.convert(childHint, childObj);
             r.add(child);
             i++;
         }

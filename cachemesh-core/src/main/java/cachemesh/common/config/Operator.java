@@ -20,28 +20,28 @@ import java.util.Collection;
 
 import cachemesh.common.util.StringHelper;
 
-public abstract class Operator<T> {
+public interface Operator<T> {
 
-    public abstract Class<?> propertyClass();
+    Class<?> propertyClass();
 
-    public Collection<Class<?>> convertableClasses() {
+    default Collection<Class<?>> convertableClasses() {
         return null;
     }
 
-    public T createZeroValue() {
+    default T createZeroValue() {
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    public T supply(String hint, Object value) {
+    default T supply(String hint, Object value) {
         return (T) value;
     }
 
-    public T copy(String hint, T value) {
+    default T copy(String hint, T value) {
         return value;
     }
 
-    public T convert(String hint, Object value) {
+    default T convert(String hint, Object value) {
         if (value == null) {
             return null;
         }
@@ -56,7 +56,7 @@ public abstract class Operator<T> {
         return doConvert(hint, value);
     }
 
-    public boolean isConvertable(Object value) {
+    default boolean isConvertable(Object value) {
         var classes = convertableClasses();
         if (classes == null || classes.isEmpty()) {
             return false;
@@ -72,11 +72,11 @@ public abstract class Operator<T> {
         return false;
     }
 
-    public T doConvert(String hint, Object value) {
+    default T doConvert(String hint, Object value) {
         throw new UnsupportedOperationException("To be implemented");
     }
 
-    public IllegalArgumentException invalidValueClassError(String hint, Object value) {
+    default IllegalArgumentException invalidValueClassError(String hint, Object value) {
         var classes = new ArrayList<Class<?>>();
         classes.add(propertyClass());
 

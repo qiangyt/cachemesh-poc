@@ -24,6 +24,7 @@ import cachemesh.common.LifeStage;
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.util.LogHelper;
 import cachemesh.core.spi.Transport;
+import cachemesh.core.config.TransportConfig;
 import cachemesh.core.spi.NodeHook;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -65,13 +65,13 @@ public class MeshConfig implements SomeConfig, HasName {
     private LocalConfig local = LocalConfig.builder().build();
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-            Property.<String> builder().configClass(MeshConfig.class).propertyName("name").defaultValue(DEFAULT_NAME)
+            Property.builder().configClass(MeshConfig.class).propertyName("name").defaultValue(DEFAULT_NAME)
                     .op(StringOp.DEFAULT).build(),
-            Property.<HashingKind> builder().configClass(MeshConfig.class).propertyName("hashing")
-                    .defaultValue(DEFAULT_HASHING).op(new EnumOp<>(HashingKind.class)).build(),
-            Property.<NodesConfig> builder().configClass(MeshConfig.class).propertyName("nodes")
+            Property.builder().configClass(MeshConfig.class).propertyName("hashing").defaultValue(DEFAULT_HASHING)
+                    .op(new EnumOp<>(HashingKind.class)).build(),
+            Property.builder().configClass(MeshConfig.class).propertyName("nodes")
                     .defaultValue(NodesConfig.builder().build()).op(NodesConfig.OP).build(),
-            Property.<LocalConfig> builder().configClass(MeshConfig.class).propertyName("local")
+            Property.builder().configClass(MeshConfig.class).propertyName("local")
                     .defaultValue(LocalConfig.builder().build()).op(LocalConfig.OP).build());
 
     public MeshConfig() {

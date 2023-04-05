@@ -18,7 +18,6 @@ package cachemesh.common.config;
 import java.lang.reflect.Method;
 
 import cachemesh.common.util.Reflect;
-import lombok.AccessLevel;
 import lombok.Builder;
 
 public class Property<T> {
@@ -33,7 +32,7 @@ public class Property<T> {
 
     private final Operator<? extends T> op;
 
-    @Builder(access = AccessLevel.PUBLIC)
+    @Builder
     public Property(Class<?> configClass, String propertyName, T defaultValue, Operator<? extends T> op) {
         this.propertyName = propertyName;
         this.defaultValue = defaultValue;
@@ -48,10 +47,6 @@ public class Property<T> {
         return this.defaultValue;
     }
 
-    public Operator<? extends T> op() {
-        return this.op;
-    }
-
     public String propertyName() {
         return this.propertyName;
     }
@@ -64,6 +59,10 @@ public class Property<T> {
         return this.getter;
     }
 
+	public Operator<? extends T> op(Object object) {
+		return this.op;
+	}
+
     @SuppressWarnings("unchecked")
     public T get(Object object) {
         try {
@@ -74,7 +73,11 @@ public class Property<T> {
     }
 
     public void set(String hint, Object object, Object value) {
-        var v = op().convert(hint, value);
+        doSet(op(object), hint, object, value);
+    }
+
+    public void doSet(Operator<? extends T> op, String hint, Object object, Object value) {
+        var v = op.convert(hint, value);
 
         try {
             setter().invoke(object, v);

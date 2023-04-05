@@ -22,7 +22,7 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class ClassOp extends Operator<Class<?>> {
+public class ClassOp implements Operator<Class<?>> {
 
     public static final ClassOp DEFAULT = new ClassOp();
 

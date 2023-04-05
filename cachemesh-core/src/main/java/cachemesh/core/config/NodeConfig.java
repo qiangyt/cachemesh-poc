@@ -35,14 +35,28 @@ public class NodeConfig implements SomeConfig {
 
     public static final boolean DEFAULT_LOCAL = false;
 
+    public static final int DEFAULT_START_TIMEOUT_SECONDS = 1;
+
+    public static final int DEFAULT_STOP_TIMEOUT_SECONDS = 2;
+
     private String url;
 
     @Builder.Default
     private boolean local = DEFAULT_LOCAL;
 
+    private String protocol;
+
+    private String target;
+
+    @Builder.Default
+    private int startTimeoutSeconds = DEFAULT_START_TIMEOUT_SECONDS;
+
+    @Builder.Default
+    private int stopTimeoutSeconds = DEFAULT_STOP_TIMEOUT_SECONDS;
+
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-            Property.<String> builder().configClass(NodeConfig.class).propertyName("url").op(StringOp.DEFAULT).build(),
-            Property.<Boolean> builder().configClass(NodeConfig.class).propertyName("local").defaultValue(DEFAULT_LOCAL)
+            Property.builder().configClass(NodeConfig.class).propertyName("url").op(StringOp.DEFAULT).build(),
+            Property.builder().configClass(NodeConfig.class).propertyName("local").defaultValue(DEFAULT_LOCAL)
                     .op(BooleanOp.DEFAULT).build());
 
     @Override

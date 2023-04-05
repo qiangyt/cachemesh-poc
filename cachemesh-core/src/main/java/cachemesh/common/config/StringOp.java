@@ -15,7 +15,7 @@
  */
 package cachemesh.common.config;
 
-public class StringOp extends Operator<String> {
+public class StringOp implements Operator<String> {
 
     public static final StringOp DEFAULT = new StringOp();
 

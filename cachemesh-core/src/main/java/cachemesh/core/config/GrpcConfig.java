@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.grpc;
+package cachemesh.core.config;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import cachemesh.common.util.StringHelper;
-import cachemesh.core.TransportConfig;
 import cachemesh.core.TransportURL;
 import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
@@ -36,7 +35,7 @@ public class GrpcConfig extends TransportConfig {
 
     public static final String DEFAULT_HOST = "localhost";
 
-	@Builder.Default
+    @Builder.Default
     private String host = DEFAULT_HOST;
 
     private int port;

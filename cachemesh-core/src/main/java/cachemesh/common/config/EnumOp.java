@@ -22,7 +22,7 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-public class EnumOp<T extends Enum<T>> extends Operator<T> {
+public class EnumOp<T extends Enum<T>> implements Operator<T> {
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(String.class));

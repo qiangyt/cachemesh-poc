@@ -20,12 +20,16 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Collection;
 
 import cachemesh.caffeine.CaffeineProvider;
+import cachemesh.common.config.DependingListProperty;
+import cachemesh.common.config.DependingProperty;
 import cachemesh.common.config.EnumOp;
 import cachemesh.common.config.ListOp;
 import cachemesh.common.config.NestedOp;
+import cachemesh.common.config.Operator;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.SomeConfig;
 import cachemesh.core.spi.LocalCacheProvider;
@@ -57,17 +61,20 @@ public class LocalConfig implements SomeConfig {
     @Builder.Default
     private LocalCacheConfig defaultCache = CaffeineConfig.builder().name("default").valueClass(byte[].class).build();
 
-    @Singular
+    @Singular("cache")
     private List<LocalCacheConfig> caches;
 
-    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-            Property.<Kind> builder().configClass(LocalConfig.class).propertyName("kind").defaultValue(DEFAULT_KIND)
-                    .op(new EnumOp<>(Kind.class)).build(),
-            Property.<LocalCacheConfig> builder().configClass(LocalConfig.class).propertyName("defaultCache")
-                    .defaultValue(CaffeineConfig.builder().name("default").valueClass(byte[].class).build())
-                    .op(CaffeineConfig.OP).build(),
-            Property.<List<LocalCacheConfig>> builder().configClass(LocalConfig.class).propertyName("caches")
-                    .defaultValue(new ArrayList<>()).op(new ListOp<>(CaffeineConfig.OP)).build());
+    public static final Property<Kind> KIND_PROPERTY = Property.<Kind> builder().configClass(LocalConfig.class)
+            .propertyName("kind").defaultValue(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build();
+
+	public static final Map<Kind, Operator<? extends LocalCacheConfig>> CACHE_DISPATCH_OP_MAP = Map.of(Kind.caffeine, CaffeineConfig.OP);
+
+    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(KIND_PROPERTY,
+            new DependingProperty<>(LocalConfig.class, "defaultCache", KIND_PROPERTY, CACHE_DISPATCH_OP_MAP),
+            Property.builder().configClass(LocalConfig.class).propertyName("caches").defaultValue(new ArrayList<>())
+                    .op(new ListOp<>(CaffeineConfig.OP)).build(),
+			new DependingListProperty<>(LocalConfig.class, "caches", KIND_PROPERTY,	CACHE_DISPATCH_OP_MAP)
+	);
 
     public LocalConfig() {
     }

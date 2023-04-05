@@ -29,6 +29,7 @@ import lombok.Getter;
 
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.core.config.MeshConfig;
+import cachemesh.core.config.TransportConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
 import lombok.AccessLevel;

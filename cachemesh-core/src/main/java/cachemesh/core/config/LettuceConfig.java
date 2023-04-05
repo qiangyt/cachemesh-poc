@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.redis.lettuce;
+package cachemesh.core.config;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import cachemesh.common.util.StringHelper;
-import cachemesh.core.TransportConfig;
 import cachemesh.core.TransportURL;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;

@@ -16,10 +16,10 @@
 package cachemesh.core;
 
 import cachemesh.common.Registry;
+import cachemesh.core.config.GrpcConfig;
+import cachemesh.core.config.LettuceConfig;
 import cachemesh.core.spi.TransportProvider;
-import cachemesh.grpc.GrpcConfig;
 import cachemesh.grpc.GrpcTransportProvider;
-import cachemesh.redis.lettuce.LettuceConfig;
 import cachemesh.redis.lettuce.LettuceTransportProvider;
 
 public class TransportRegistry extends Registry<String, TransportProvider> {

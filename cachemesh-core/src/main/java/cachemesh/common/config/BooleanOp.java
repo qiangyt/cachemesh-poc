@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class BooleanOp extends Operator<Boolean> {
+public class BooleanOp implements Operator<Boolean> {
 
     public static final BooleanOp DEFAULT = new BooleanOp();
 

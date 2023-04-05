@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.google.protobuf.ByteString;
 import lombok.Getter;
 import cachemesh.core.LocalTransport;
+import cachemesh.core.config.GrpcConfig;
 
 @Getter
 public class GrpcService extends CacheMeshGrpc.CacheMeshImplBase {

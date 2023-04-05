@@ -24,6 +24,7 @@ import lombok.Getter;
 
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.core.GetResult;
+import cachemesh.core.config.GrpcConfig;
 import cachemesh.core.spi.Transport;
 
 import com.google.protobuf.ByteString;

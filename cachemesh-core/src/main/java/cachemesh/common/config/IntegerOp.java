@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class IntegerOp extends Operator<Integer> {
+public class IntegerOp implements Operator<Integer> {
 
     public static final IntegerOp DEFAULT = new IntegerOp();
 

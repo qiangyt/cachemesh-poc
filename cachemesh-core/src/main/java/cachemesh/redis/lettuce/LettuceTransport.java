@@ -17,6 +17,7 @@ package cachemesh.redis.lettuce;
 
 import cachemesh.core.GetResult;
 import cachemesh.core.ResultStatus;
+import cachemesh.core.config.LettuceConfig;
 import cachemesh.core.spi.Transport;
 import io.lettuce.core.api.sync.RedisCommands;
 import cachemesh.common.shutdown.AbstractShutdownable;

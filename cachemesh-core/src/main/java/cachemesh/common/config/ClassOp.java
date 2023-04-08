@@ -51,7 +51,7 @@ public class ClassOp implements Operator<Class<?>> {
     }
 
     @Override
-    public Class<?> doConvert(String hint, Object value) {
+    public Class<?> doConvert(String hint, Object parentObject, Object value) {
         return this.cache.resolve(getClassLoader(), (String) value);
     }
 

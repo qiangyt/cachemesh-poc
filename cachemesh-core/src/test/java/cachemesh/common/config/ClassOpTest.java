@@ -29,10 +29,10 @@ public class ClassOpTest {
 	public void test_happy() {
 		var t = ClassOp.DEFAULT;
 
-		assertSame(Sample.class, t.convert("", Sample.class));
-		assertSame(Sample.class, t.convert("", Sample.class.getName()));
+		assertSame(Sample.class, t.convert("", null, Sample.class));
+		assertSame(Sample.class, t.convert("", null, Sample.class.getName()));
 
-		assertThrows(IllegalArgumentException.class, () -> t.convert("", new Object()));
+		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
 	}
 
 }

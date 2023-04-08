@@ -41,12 +41,12 @@ public class NodeConfigOp extends NestedDynamicOp<NodeConfig> {
             throw new IllegalArgumentException(hint + ": url is required");
         }
 
-        var urlText = StringOp.DEFAULT.convert(hint, map.get("url"));
+        var urlText = StringOp.DEFAULT.convert(hint, null, map.get("url"));
         URL url;
         try {
             url = new URL(urlText);
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
         return url.getProtocol();
     }

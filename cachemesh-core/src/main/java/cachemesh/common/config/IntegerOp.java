@@ -37,7 +37,7 @@ public class IntegerOp implements Operator<Integer> {
     }
 
     @Override
-    public Integer doConvert(String hint, Object value) {
+    public Integer doConvert(String hint, Object parentObject, Object value) {
         var clazz = value.getClass();
 
         if (clazz == Character.class) {

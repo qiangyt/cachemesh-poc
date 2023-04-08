@@ -65,7 +65,17 @@ public class SimpleURL {
     }
 
     public boolean equals(Object obj) {
-        return this.url.equals(obj);
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof SimpleURL) {
+            var that = (SimpleURL) obj;
+            return this.url.equals(that.url);
+        }
+        if (obj instanceof URL) {
+            return this.url.equals((URL) obj);
+        }
+        return false;
     }
 
     public int hashCode() {

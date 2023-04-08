@@ -18,7 +18,6 @@ package cachemesh.core.config;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -27,10 +26,8 @@ import cachemesh.caffeine.CaffeineProvider;
 import cachemesh.common.config.DependingListProperty;
 import cachemesh.common.config.DependingProperty;
 import cachemesh.common.config.EnumOp;
-import cachemesh.common.config.ListOp;
 import cachemesh.common.config.NestedOp;
 import cachemesh.common.config.NestedStaticOp;
-import cachemesh.common.config.Operator;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.SomeConfig;
 import cachemesh.core.spi.LocalCacheProvider;
@@ -68,14 +65,17 @@ public class LocalConfig implements SomeConfig {
     public static final Property<Kind> KIND_PROPERTY = Property.<Kind> builder().config(LocalConfig.class).name("kind")
             .devault(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build();
 
-    public static final Map<Kind, Operator<? extends LocalCacheConfig>> CACHE_DISPATCH_OP_MAP = Map.of(Kind.caffeine,
-            CaffeineConfig.OP);
+    public static final Map<Kind, ? extends NestedOp<? extends LocalCacheConfig>> CACHE_DISPATCH_OP_MAP = Map
+            .of(Kind.caffeine, CaffeineConfig.OP);
+
+    public static final DependingProperty<LocalCacheConfig, Kind> DEFAULT_CACHE_PROPERTY = new DependingProperty<>(
+            LocalConfig.class, LocalCacheConfig.class, "defaultCache", KIND_PROPERTY, CACHE_DISPATCH_OP_MAP);
+
+    public static final DependingListProperty<LocalCacheConfig, Kind> CACHES_PROPERTY = new DependingListProperty<LocalCacheConfig, Kind>(
+            LocalConfig.class, LocalCacheConfig.class, "caches", KIND_PROPERTY, CACHE_DISPATCH_OP_MAP);
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(KIND_PROPERTY,
-            new DependingProperty<>(LocalConfig.class, "defaultCache", KIND_PROPERTY, CACHE_DISPATCH_OP_MAP),
-            Property.builder().config(LocalConfig.class).name("caches").devault(new ArrayList<>())
-                    .op(new ListOp<>(CaffeineConfig.OP)).build(),
-            new DependingListProperty<>(LocalConfig.class, "caches", KIND_PROPERTY, CACHE_DISPATCH_OP_MAP));
+            DEFAULT_CACHE_PROPERTY, CACHES_PROPERTY);
 
     public LocalConfig() {
     }

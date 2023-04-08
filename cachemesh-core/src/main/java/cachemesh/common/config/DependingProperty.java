@@ -17,29 +17,18 @@ package cachemesh.common.config;
 
 import java.util.Map;
 
-public class DependingProperty<T, K> extends Property<T> {
+public class DependingProperty<T extends SomeConfig, K> extends Property<T> {
 
-    private final Property<K> dependedProperty;
-
-    private final Map<K, ? extends Operator<? extends T>> dispatchOpMap;
-
-    public DependingProperty(Class<?> configClass, String propertyName, Property<K> dependedProperty,
-            Map<K, ? extends Operator<? extends T>> dispatchOpMap) {
-        super(configClass, propertyName, null, null);
-
-        this.dependedProperty = dependedProperty;
-        this.dispatchOpMap = dispatchOpMap;
-    }
-
-    public Operator<? extends T> dispatchOp(Object object) {
-        var dependedValue = this.dependedProperty.get(object);
-        return this.dispatchOpMap.get(dependedValue);
-    }
-
-    @Override
-    public void set(String hint, Object object, Object value) {
-        var dispatchOp = dispatchOp(object);
-        doSet(dispatchOp, hint, object, value);
+    public DependingProperty(Class<?> configClass, Class<T> propertyClass, String propertyName,
+            Property<K> dependedProperty, Map<K, ? extends NestedOp<? extends T>> dispatchOpMap) {
+        super(configClass, propertyName, null, new NestedOp<T>(propertyClass) {
+            @Override
+            public T newValue(String hint, Map<String, Object> parentObject, Map<String, Object> map) {
+                var dependedValue = parentObject.get(dependedProperty.name());
+                var targetOp = dispatchOpMap.get(dependedValue);
+                return targetOp.newValue(hint, parentObject, map);
+            }
+        });
     }
 
 }

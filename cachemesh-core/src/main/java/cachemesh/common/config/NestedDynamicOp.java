@@ -28,9 +28,9 @@ public abstract class NestedDynamicOp<T extends SomeConfig> extends NestedOp<T> 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(Map.class));
 
-    private final Map<Object, NestedOp<T>> factory;
+    private final Map<Object, ? extends NestedOp<? extends T>> factory;
 
-    public NestedDynamicOp(Class<T> propertyClass, Map<Object, NestedOp<T>> factory) {
+    public NestedDynamicOp(Class<T> propertyClass, Map<Object, ? extends NestedOp<? extends T>> factory) {
         super(propertyClass);
 
         this.factory = factory;
@@ -39,10 +39,10 @@ public abstract class NestedDynamicOp<T extends SomeConfig> extends NestedOp<T> 
     public abstract Object extractKey(String hint, Map<String, Object> map);
 
     @Override
-    public T newValue(String hint, Map<String, Object> map) {
+    public T newValue(String hint, Map<String, Object> parentObject, Map<String, Object> map) {
         var key = extractKey(hint, map);
         var targetOp = getFactory().get(key);
-        return targetOp.newValue(hint, map);
+        return targetOp.newValue(hint, parentObject, map);
     }
 
 }

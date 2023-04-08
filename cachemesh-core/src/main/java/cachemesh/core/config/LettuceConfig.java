@@ -108,7 +108,7 @@ public class LettuceConfig extends NodeConfig {
         var q = url.getQuery();
 
         if (q.containsKey("database")) {
-            setDatabase(IntegerOp.DEFAULT.convert("", q.get("database")));
+            setDatabase(IntegerOp.DEFAULT.convert("", null, q.get("database")));
         }
         if (q.containsKey("keySeparator")) {
             setKeySeparator(q.get("keySeparator"));

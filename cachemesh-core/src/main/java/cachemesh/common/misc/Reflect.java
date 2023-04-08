@@ -21,11 +21,14 @@ import java.lang.reflect.Method;
 public class Reflect {
 
     public static <T> Constructor<T> noArgsConstructor(Class<T> propertyClass) {
+        Constructor<T> r;
         try {
-            return propertyClass.getConstructor();
+            r = propertyClass.getConstructor();
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(e);
         }
+        r.setAccessible(true);
+        return r;
     }
 
     public static <T> T newInstance(Constructor<T> ctor, Object... args) {
@@ -44,17 +47,21 @@ public class Reflect {
 
     public static Method getter(Class<?> ownerClass, String propertyName, Class<?> propertyClass) {
         var methodName = Reflect.getterName(propertyName, propertyClass);
+
+        Method r;
         try {
-            Method method = ownerClass.getDeclaredMethod(methodName);
-            if (method.getReturnType() != propertyClass) {
+            r = ownerClass.getDeclaredMethod(methodName);
+            if (r.getReturnType() != propertyClass) {
                 var msg = String.format("expect getter %s returns %s, but got %s", methodName, propertyClass,
-                        method.getReturnType());
+                        r.getReturnType());
                 throw new IllegalArgumentException(msg);
             }
-            return method;
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("no getter method for property " + propertyName);
         }
+
+        r.setAccessible(true);
+        return r;
     }
 
     public static String setterName(String name) {
@@ -63,11 +70,16 @@ public class Reflect {
 
     public static Method setter(Class<?> ownerClass, String propertyName, Class<?> propertyClass) {
         var methodName = Reflect.setterName(propertyName);
+
+        Method r;
         try {
-            return ownerClass.getDeclaredMethod(methodName, propertyClass);
+            r = ownerClass.getDeclaredMethod(methodName, propertyClass);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("no setter method for property " + propertyName, e);
         }
+
+        r.setAccessible(true);
+        return r;
     }
 
     @SuppressWarnings("unchecked")

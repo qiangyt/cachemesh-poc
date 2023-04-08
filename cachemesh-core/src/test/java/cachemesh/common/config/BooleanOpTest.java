@@ -28,49 +28,49 @@ public class BooleanOpTest {
 		var t = BooleanOp.DEFAULT;
 
 
-		assertTrue(t.convert("", Boolean.TRUE));
-		assertTrue(t.convert("", true));
-		assertFalse(t.convert("", Boolean.FALSE));
-		assertFalse(t.convert("", false));
+		assertTrue(t.convert("", null, Boolean.TRUE));
+		assertTrue(t.convert("", null, true));
+		assertFalse(t.convert("", null, Boolean.FALSE));
+		assertFalse(t.convert("", null, false));
 
-		assertTrue(t.convert("", "True"));
-		assertTrue(t.convert("", "TRUE"));
-		assertTrue(t.convert("", "true"));
-		assertTrue(t.convert("", "T"));
-		assertTrue(t.convert("", "t"));
-		assertFalse(t.convert("", "False"));
-		assertFalse(t.convert("", "FALSE"));
-		assertFalse(t.convert("", "false"));
-		assertTrue(t.convert("", "Yes"));
-		assertTrue(t.convert("", "YES"));
-		assertTrue(t.convert("", "yes"));
-		assertTrue(t.convert("", "Y"));
-		assertTrue(t.convert("", "y"));
-		assertFalse(t.convert("", "No"));
-		assertFalse(t.convert("", "NO"));
-		assertFalse(t.convert("", "no"));
-		assertTrue(t.convert("", "Ok"));
-		assertTrue(t.convert("", "ok"));
-		assertTrue(t.convert("", "OK"));
-		assertTrue(t.convert("", "Okay"));
-		assertTrue(t.convert("", "OKAY"));
-		assertTrue(t.convert("", "okay"));
+		assertTrue(t.convert("", null, "True"));
+		assertTrue(t.convert("", null, "TRUE"));
+		assertTrue(t.convert("", null, "true"));
+		assertTrue(t.convert("", null, "T"));
+		assertTrue(t.convert("", null, "t"));
+		assertFalse(t.convert("", null, "False"));
+		assertFalse(t.convert("", null, "FALSE"));
+		assertFalse(t.convert("", null, "false"));
+		assertTrue(t.convert("", null, "Yes"));
+		assertTrue(t.convert("", null, "YES"));
+		assertTrue(t.convert("", null, "yes"));
+		assertTrue(t.convert("", null, "Y"));
+		assertTrue(t.convert("", null, "y"));
+		assertFalse(t.convert("", null, "No"));
+		assertFalse(t.convert("", null, "NO"));
+		assertFalse(t.convert("", null, "no"));
+		assertTrue(t.convert("", null, "Ok"));
+		assertTrue(t.convert("", null, "ok"));
+		assertTrue(t.convert("", null, "OK"));
+		assertTrue(t.convert("", null, "Okay"));
+		assertTrue(t.convert("", null, "OKAY"));
+		assertTrue(t.convert("", null, "okay"));
 
-		assertTrue(t.convert("", 'T'));
-		assertTrue(t.convert("", 't'));
-		assertFalse(t.convert("", 'F'));
-		assertFalse(t.convert("", 'f'));
-		assertTrue(t.convert("", 'Y'));
-		assertTrue(t.convert("", 'y'));
-		assertFalse(t.convert("", 'N'));
-		assertFalse(t.convert("", 'n'));
+		assertTrue(t.convert("", null, 'T'));
+		assertTrue(t.convert("", null, 't'));
+		assertFalse(t.convert("", null, 'F'));
+		assertFalse(t.convert("", null, 'f'));
+		assertTrue(t.convert("", null, 'Y'));
+		assertTrue(t.convert("", null, 'y'));
+		assertFalse(t.convert("", null, 'N'));
+		assertFalse(t.convert("", null, 'n'));
 
 		for (int i = -10; i < 0; i++) {
-			assertTrue(t.convert("", i));
+			assertTrue(t.convert("", null, i));
 		}
-		assertFalse(t.convert("", 0));
+		assertFalse(t.convert("", null, 0));
 		for (int i = 1; i <= 10; i++) {
-			assertTrue(t.convert("", i));
+			assertTrue(t.convert("",null,  i));
 		}
 	}
 
@@ -78,7 +78,7 @@ public class BooleanOpTest {
 	public void test_failure() {
 		var t = BooleanOp.DEFAULT;
 
-		assertThrows(IllegalArgumentException.class, () -> t.convert("", new Object()));
+		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
 	}
 
 }

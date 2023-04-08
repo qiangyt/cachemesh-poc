@@ -32,7 +32,7 @@ public class NestedStaticOp<T extends SomeConfig> extends NestedOp<T> {
     }
 
     @Override
-    public T newValue(String hint, Map<String, Object> map) {
+    public T newValue(String hint, Map<String, Object> parentObject, Map<String, Object> map) {
         return Reflect.newInstance(getConstructor());
     }
 

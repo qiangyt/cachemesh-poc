@@ -34,7 +34,7 @@ public abstract class NestedOp<T extends SomeConfig> implements Operator<T> {
         this.propertyClass = propertyClass;
     }
 
-    public abstract T newValue(String hint, Map<String, Object> map);
+    public abstract T newValue(String hint, Map<String, Object> parentObject, Map<String, Object> map);
 
     @Override
     public Class<?> propertyClass() {
@@ -48,9 +48,9 @@ public abstract class NestedOp<T extends SomeConfig> implements Operator<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public T doConvert(String hint, Object value) {
+    public T doConvert(String hint, Object parentObject, Object value) {
         var map = (Map<String, Object>) value;
-        T r = newValue(hint, map);
+        T r = newValue(hint, (Map<String, Object>) parentObject, map);
         r.withMap(hint, map);
         return r;
     }

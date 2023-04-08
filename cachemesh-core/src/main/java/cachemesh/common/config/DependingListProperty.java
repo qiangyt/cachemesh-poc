@@ -15,27 +15,23 @@
  */
 package cachemesh.common.config;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DependingListProperty<T, K> extends DependingProperty<List<T>, K> {
+public class DependingListProperty<T extends SomeConfig, K> extends Property<List<T>> {
 
-    public DependingListProperty(Class<?> configClass, String propertyName, Property<K> dependedProperty,
-            Map<K, Operator<? extends T>> dispatchOpMap) {
-        super(configClass, propertyName, dependedProperty, buildListDispatchOpMap(dispatchOpMap));
-    }
+    public DependingListProperty(Class<?> configClass, Class<T> propertyElementClass, String propertyName,
+            Property<K> dependedProperty, Map<K, ? extends NestedOp<? extends T>> dispatchOpMap) {
+        super(configClass, propertyName, null, new ListOp<T>(null) {
 
-    public static <T, K> Map<K, ListOp<T>> buildListDispatchOpMap(Map<K, Operator<? extends T>> dispatchOpMap) {
-
-        var r = new HashMap<K, ListOp<T>>();
-        for (var entry : dispatchOpMap.entrySet()) {
-            var kind = entry.getKey();
-            var dispatchOp = entry.getValue();
-            r.put(kind, new ListOp<T>(dispatchOp));
-        }
-
-        return r;
+            @Override
+            @SuppressWarnings("unchecked")
+            public Operator<? extends T> getElementOp(String hint, Object parentObject, Object value) {
+                var map = (Map<String, Object>) parentObject;
+                var key = map.get(dependedProperty.name());
+                return dispatchOpMap.get(key);
+            }
+        });
     }
 
 }

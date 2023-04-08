@@ -42,7 +42,7 @@ public class DurationOp implements Operator<Duration> {
     }
 
     @Override
-    public Duration doConvert(String hint, Object value) {
+    public Duration doConvert(String hint, Object parentObject, Object value) {
         return DurationHelper.parse((String) value);
     }
 

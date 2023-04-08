@@ -19,20 +19,27 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.Duration;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.junit.jupiter.api.Test;
 
-public class DurationOpTest {
+import cachemesh.common.misc.SimpleURL;
+
+public class SimpleUrlOpTest {
 
 	@Test
-	public void test_happy() {
-		var t = DurationOp.DEFAULT;
+	public void test_happy() throws MalformedURLException {
+		var t = SimpleUrlOp.DEFAULT;
 
-		var d1 =Duration.ofDays(123);
-		assertSame(d1, t.convert("", null, d1));
+		assertEquals(new SimpleURL("ftp://example1.com"),
+					t.convert("", null, "ftp://example1.com"));
 
-		var d2 =Duration.ofSeconds(123);
-		assertEquals(d2, t.convert("", null, "123s"));
+		SimpleURL u2 = new SimpleURL("ftp://example2.com");
+		assertSame(u2, t.convert("", null, u2));
+
+		assertEquals(new SimpleURL("ftp://example3.com"),
+					t.convert("", null, new URL("ftp://example3.com")));
 
 		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
 	}

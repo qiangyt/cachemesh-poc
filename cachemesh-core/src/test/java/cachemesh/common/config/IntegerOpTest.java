@@ -16,23 +16,23 @@
 package cachemesh.common.config;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
-public class DurationOpTest {
+public class IntegerOpTest {
 
 	@Test
 	public void test_happy() {
-		var t = DurationOp.DEFAULT;
+		var t = IntegerOp.DEFAULT;
 
-		var d1 =Duration.ofDays(123);
-		assertSame(d1, t.convert("", null, d1));
-
-		var d2 =Duration.ofSeconds(123);
-		assertEquals(d2, t.convert("", null, "123s"));
+		assertEquals(1, t.convert("", null, "1"));
+		assertEquals('2', t.convert("", null, '2'));
+		assertEquals(3, t.convert("", null, Byte.valueOf("3")));
+		assertEquals(4, t.convert("", null, Short.valueOf("4")));
+		assertEquals(5, t.convert("", null, Integer.valueOf(5)));
+		assertEquals(6, t.convert("", null, Long.valueOf(6)));
+		assertEquals(7, t.convert("", null, Float.valueOf(7)));
+		assertEquals(8, t.convert("", null, Double.valueOf(8)));
 
 		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
 	}

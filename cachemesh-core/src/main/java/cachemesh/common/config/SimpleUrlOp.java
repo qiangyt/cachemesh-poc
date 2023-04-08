@@ -25,7 +25,7 @@ import cachemesh.common.misc.SimpleURL;
 
 public class SimpleUrlOp implements Operator<SimpleURL> {
 
-    public static final IntegerOp DEFAULT = new IntegerOp();
+    public static final SimpleUrlOp DEFAULT = new SimpleUrlOp();
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(String.class, URL.class));
@@ -41,14 +41,14 @@ public class SimpleUrlOp implements Operator<SimpleURL> {
     }
 
     @Override
-    public SimpleURL doConvert(String hint, Object value) {
+    public SimpleURL doConvert(String hint, Object parentObject, Object value) {
         var clazz = value.getClass();
 
         if (clazz == String.class) {
             try {
                 return new SimpleURL((String) value);
             } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
         }
 

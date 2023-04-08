@@ -37,7 +37,7 @@ public class BooleanOp implements Operator<Boolean> {
     }
 
     @Override
-    public Boolean doConvert(String hint, Object value) {
+    public Boolean doConvert(String hint, Object parentObject, Object value) {
         var clazz = value.getClass();
 
         if (clazz == String.class) {

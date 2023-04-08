@@ -15,7 +15,6 @@
  */
 package cachemesh.common.config;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +42,7 @@ public class UrlOp implements Operator<URL> {
         try {
             return new URL((String) value);
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 

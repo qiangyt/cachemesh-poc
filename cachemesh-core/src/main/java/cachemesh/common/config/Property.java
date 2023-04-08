@@ -72,12 +72,12 @@ public class Property<T> {
         return map.get(name());
     }
 
-    public void set(String hint, Object object, Object value) {
-        doSet(op(object), hint, object, value);
+    public void set(String hint, Object parentObject, Object object, Object value) {
+        doSet(op(object), hint, parentObject, object, value);
     }
 
-    public void doSet(Operator<? extends T> op, String hint, Object object, Object value) {
-        var v = op.convert(hint, value);
+    public void doSet(Operator<? extends T> op, String hint, Object parentObject, Object object, Object value) {
+        var v = op.convert(hint, parentObject, value);
         Reflect.set(setter(), object, v);
     }
 

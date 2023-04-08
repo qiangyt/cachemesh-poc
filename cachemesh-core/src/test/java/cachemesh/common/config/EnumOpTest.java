@@ -17,24 +17,23 @@ package cachemesh.common.config;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
 public class EnumOpTest {
 
+	enum Sample {
+		a, b, c
+	}
+
 	@Test
 	public void test_happy() {
-		var t = DurationOp.DEFAULT;
+		var t = new EnumOp<Sample>(Sample.class);
 
-		var d1 =Duration.ofDays(123);
-		assertSame(d1, t.convert("", d1));
+		assertSame(Sample.a, t.convert("", null, "a"));
+		assertSame(Sample.b, t.convert("", null, "b"));
+		assertSame(Sample.c, t.convert("", null, Sample.c));
 
-		var d2 =Duration.ofSeconds(123);
-		assertEquals(d2, t.convert("", "123s"));
-
-		assertThrows(IllegalArgumentException.class, () -> t.convert("", new Object()));
+		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
 	}
 
 }

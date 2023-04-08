@@ -44,7 +44,7 @@ public class EnumOp<T extends Enum<T>> implements Operator<T> {
     }
 
     @Override
-    public T doConvert(String hint, Object value) {
+    public T doConvert(String hint, Object parentObject, Object value) {
         return Enum.valueOf(getEnumClass(), (String) value);
     }
 

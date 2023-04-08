@@ -20,9 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.Getter;
-
-@Getter
 public class ListOp<T> implements Operator<List<T>> {
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
@@ -32,6 +29,10 @@ public class ListOp<T> implements Operator<List<T>> {
 
     public ListOp(Operator<? extends T> elementOp) {
         this.elementOp = elementOp;
+    }
+
+    public Operator<? extends T> getElementOp(String hint, Object parentObject, Object value) {
+        return this.elementOp;
     }
 
     @Override
@@ -45,22 +46,22 @@ public class ListOp<T> implements Operator<List<T>> {
     }
 
     @Override
-    public List<T> supply(String hint, Object value) {
-        return doConvert(hint, value);
+    public List<T> supply(String hint, Object parentObject, Object value) {
+        return doConvert(hint, parentObject, value);
     }
 
     @Override
-    public List<T> doConvert(String hint, Object value) {
-        return doConvert(getElementOp(), hint, value);
+    public List<T> doConvert(String hint, Object parentObject, Object value) {
+        return doConvert(getElementOp(hint, parentObject, value), hint, parentObject, value);
     }
 
-    public List<T> doConvert(Operator<? extends T> elementOp, String hint, Object value) {
+    public List<T> doConvert(Operator<? extends T> elementOp, String hint, Object parentObject, Object value) {
         var r = new ArrayList<T>();
         int i = 0;
 
         for (var childObj : (Iterable<?>) value) {
             var childHint = String.format("%s[%d]", hint, i);
-            var child = elementOp.convert(childHint, childObj);
+            var child = elementOp.convert(childHint, parentObject, childObj);
             r.add(child);
             i++;
         }

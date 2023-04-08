@@ -91,7 +91,7 @@ public abstract class NodeConfig implements SomeConfig {
             try {
                 this.url = buildUrl();
             } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
         }
         return this.url;
@@ -105,23 +105,23 @@ public abstract class NodeConfig implements SomeConfig {
         var query = url.getQuery();
 
         if (query.containsKey("startTimeout")) {
-            var startTimeout = IntegerOp.DEFAULT.convert("", query.get("startTimeout"));
+            var startTimeout = IntegerOp.DEFAULT.convert("", null, query.get("startTimeout"));
             setStartTimeout(startTimeout);
         }
 
         if (query.containsKey("stopTimeout")) {
-            var stopTimeout = IntegerOp.DEFAULT.convert("", query.get("stopTimeout"));
+            var stopTimeout = IntegerOp.DEFAULT.convert("", null, query.get("stopTimeout"));
             setStopTimeout(stopTimeout);
         }
 
         if (query.containsKey("local")) {
-            var local = BooleanOp.DEFAULT.convert("", query.get("local"));
+            var local = BooleanOp.DEFAULT.convert("", null, query.get("local"));
             setLocal(local);
         }
     }
 
     public static NodeConfig fromUrl(String url) {
-        return NodeConfigOp.DEFAULT.convert("", url);
+        return NodeConfigOp.DEFAULT.convert("", null, url);
     }
 
 }

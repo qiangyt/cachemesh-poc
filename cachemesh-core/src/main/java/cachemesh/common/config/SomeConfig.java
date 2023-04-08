@@ -54,7 +54,7 @@ public interface SomeConfig extends Mappable {
             var name = p.name();
             if (m.containsKey(name)) {
                 Object value = m.get(name);
-                p.set(path, this, value);
+                p.set(path, m, this, value);
             }
         }
     }

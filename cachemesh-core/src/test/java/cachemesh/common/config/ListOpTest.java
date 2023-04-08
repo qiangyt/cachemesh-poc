@@ -15,26 +15,18 @@
  */
 package cachemesh.common.config;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.Duration;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
-public class DurationOpTest {
+public class ListOpTest {
 
 	@Test
 	public void test_happy() {
-		var t = DurationOp.DEFAULT;
-
-		var d1 =Duration.ofDays(123);
-		assertSame(d1, t.convert("", null, d1));
-
-		var d2 =Duration.ofSeconds(123);
-		assertEquals(d2, t.convert("", null, "123s"));
-
-		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
+		var t = new ListOp<Integer>(IntegerOp.DEFAULT);
+		assertEquals(List.of(1, 2), t.convert("", null, List.of("1", "2")));
 	}
 
 }

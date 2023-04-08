@@ -29,23 +29,23 @@ public interface Operator<T> {
     }
 
     @SuppressWarnings("unchecked")
-    default T supply(String hint, Object value) {
+    default T supply(String hint, Object parentObject, Object value) {
         return (T) value;
     }
 
-    default T convert(String hint, Object value) {
+    default T convert(String hint, Object parentObject, Object value) {
         if (value == null) {
             return null;
         }
         if (propertyClass().isAssignableFrom(value.getClass())) {
-            return supply(hint, value);
+            return supply(hint, parentObject, value);
         }
 
         if (isConvertable(value) == false) {
             throw invalidValueClassError(hint, value);
         }
 
-        return doConvert(hint, value);
+        return doConvert(hint, parentObject, value);
     }
 
     default boolean isConvertable(Object value) {
@@ -64,7 +64,7 @@ public interface Operator<T> {
         return false;
     }
 
-    default T doConvert(String hint, Object value) {
+    default T doConvert(String hint, Object parentObject, Object value) {
         throw new UnsupportedOperationException("To be implemented");
     }
 

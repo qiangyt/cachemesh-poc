@@ -15,26 +15,43 @@
  */
 package cachemesh.common.config;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.Duration;
+import java.util.Collection;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
-public class DurationOpTest {
+public class NestedStaticOpTest {
+
+	public static class Sample implements SomeConfig {
+		private Integer num;
+
+		public Sample() {}
+
+		public void setNum(Integer num) {
+			this.num = num;
+		}
+
+		public Integer getNum() {
+			return this.num;
+		}
+
+		@Override
+		public Collection<Property<?>> properties() {
+			return SomeConfig.buildProperties(
+						Property.builder()
+							.config(Sample.class).name("num").op(IntegerOp.DEFAULT)
+							.build());
+		}
+	}
 
 	@Test
 	public void test_happy() {
-		var t = DurationOp.DEFAULT;
+		var t = new NestedStaticOp<Sample>(Sample.class);
 
-		var d1 =Duration.ofDays(123);
-		assertSame(d1, t.convert("", null, d1));
-
-		var d2 =Duration.ofSeconds(123);
-		assertEquals(d2, t.convert("", null, "123s"));
-
-		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
+		var sample = t.convert("", null, Map.of("num", 345));
+		assertEquals(345, sample.num);
 	}
 
 }

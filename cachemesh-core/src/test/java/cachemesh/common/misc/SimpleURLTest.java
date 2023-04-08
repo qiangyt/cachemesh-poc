@@ -17,8 +17,10 @@ package cachemesh.common.misc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.net.URL;
 
 import org.junit.jupiter.api.Test;
 
@@ -46,6 +48,7 @@ public class SimpleURLTest {
 		assertEquals("ref", t2.getRef());
 		assertNotEquals(t1.hashCode(), t2.hashCode());
 		assertFalse(t2.equals(t1));
+		assertTrue(t2.equals(new URL("http://user:pwd@example.com:7086/base#ref")));
 	}
 
 }

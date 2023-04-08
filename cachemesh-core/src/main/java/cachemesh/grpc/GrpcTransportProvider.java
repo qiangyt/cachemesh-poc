@@ -51,7 +51,7 @@ public class GrpcTransportProvider implements TransportProvider {
     }
 
     @Override
-    public boolean setUpLocalTransport(NodeConfig transportConfig, LocalTransport localTranport) {
+    public boolean bindLocalTransport(NodeConfig transportConfig, LocalTransport localTranport) {
         var config = (GrpcConfig) transportConfig;
         var server = new DedicatedGrpcServer(config, getShutdownManager());
 

@@ -22,7 +22,7 @@ public interface TransportProvider extends NodeHook {
 
     String getProtocol();
 
-    default boolean setUpLocalTransport(NodeConfig nodeConfig, LocalTransport localTranport) {
+    default boolean bindLocalTransport(NodeConfig nodeConfig, LocalTransport localTranport) {
         return false;
     }
 

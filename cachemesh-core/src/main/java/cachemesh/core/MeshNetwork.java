@@ -137,7 +137,7 @@ public class MeshNetwork implements Shutdownable, HasName {
         var pdr = loadTransportProvider(nodeConfig.getProtocol());
         var tp = new LocalTransport(getLocalCacheManager());
 
-        if (pdr.setUpLocalTransport(nodeConfig, tp) == false) {
+        if (pdr.bindLocalTransport(nodeConfig, tp) == false) {
             throw new IllegalArgumentException("transport " + pdr.getProtocol() + " doesn't support local node");
         }
 

@@ -16,8 +16,8 @@
 package cachemesh.common;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import cachemesh.common.util.LogHelper;
 import lombok.Getter;
 
 @Getter
@@ -36,7 +36,7 @@ public class LifeStage {
     private final Logger logger;
 
     public LifeStage(String hintKey, String hintValue) {
-        this(hintKey, hintValue, LogHelper.getLogger(hintKey, hintValue));
+        this(hintKey, hintValue, LoggerFactory.getLogger(hintValue + "@" + hintKey));
     }
 
     public LifeStage(String hintKey, String hintValue, Logger logger) {

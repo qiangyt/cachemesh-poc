@@ -35,7 +35,7 @@ public abstract class AbstractShutdownable implements ManagedShutdownable {
 
     protected AbstractShutdownable(String name, ShutdownManager shutdownManager, int shutdownTimeoutSeconds) {
         this.name = name;
-        this.logger = LogHelper.getLogger(this);
+        this.logger = LogHelper.getLogger(getClass(), name);
 
         this.shutdownManager = shutdownManager;
         if (shutdownManager != null) {

@@ -19,16 +19,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import cachemesh.common.HasName;
 import cachemesh.common.shutdown.Shutdownable;
 import cachemesh.core.config.LocalCacheConfig;
 
-public interface LocalCache extends Shutdownable, HasName {
-
-    @Override
-    default String getName() {
-        return getConfig().getName();
-    }
+public interface LocalCache extends Shutdownable {
 
     LocalCacheConfig getConfig();
 

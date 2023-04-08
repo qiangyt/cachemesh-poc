@@ -18,45 +18,35 @@ package cachemesh.common.shutdown;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import cachemesh.common.HasName;
 import cachemesh.common.util.DateHelper;
+import cachemesh.common.util.LogHelper;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-public class ShutdownLogger implements HasName {
+public class ShutdownLogger {
 
-    public static final ShutdownLogger DEFAULT = new ShutdownLogger(ShutdownLogger.class);
+    public static final ShutdownLogger DEFAULT = new ShutdownLogger(ShutdownLogger.class, "default");
 
     private final Logger logger;
 
+	@Getter
     @Setter
     private volatile boolean inShutdownHook;
 
-    public ShutdownLogger(Class<?> klass) {
-        this(klass.getSimpleName());
-    }
-
-    public ShutdownLogger(String name) {
-        this(LoggerFactory.getLogger(name));
+    public ShutdownLogger(Class<?> klass, String name) {
+        this(LogHelper.getLogger(klass, name));
     }
 
     public ShutdownLogger(Logger logger) {
         this.logger = logger;
     }
 
-    @Override
-    public Map<String, Object> toMap() {
-        var r = new HashMap<String, Object>();
-        r.put("name", getName());
-        return r;
-    }
+	public String getName() {
+		return this.logger.getName();
+	}
 
     public void info(String msgFormat, Object... args) {
         String msg = String.format(msgFormat, args);
@@ -65,7 +55,7 @@ public class ShutdownLogger implements HasName {
             System.out.printf("%s INFO (SHUTDOWN) - %s: %s \n", LocalDateTime.now().format(DateHelper.DAYTIME),
                     getName(), msg);
         } else {
-            logger.info("{}: %s", kv("name", getName()), msg);
+            this.logger.info("{}: %s", kv("name", getName()), msg);
         }
     }
 
@@ -79,13 +69,8 @@ public class ShutdownLogger implements HasName {
                 cause.printStackTrace(System.err);
             }
         } else {
-            logger.error("{}: %s", kv("name", getName()), msg);
+            this.logger.error("{}: %s", kv("name", getName()), msg);
         }
-    }
-
-    @Override
-    public String getName() {
-        return this.logger.getName();
     }
 
 }

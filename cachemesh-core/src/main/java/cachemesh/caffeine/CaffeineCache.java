@@ -43,13 +43,6 @@ public class CaffeineCache extends AbstractShutdownable implements LocalCache {
     }
 
     @Override
-    public Map<String, Object> toMap() {
-        Map<String, Object> r = super.toMap();
-        r.put("config", getConfig().toMap());
-        return r;
-    }
-
-    @Override
     public String toString() {
         return getConfig().toString();
     }

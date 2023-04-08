@@ -34,7 +34,7 @@ public class ShutdownManager {
 
     private Thread thread;
 
-    private final ShutdownLogger logger = new ShutdownLogger(ShutdownManager.class);
+    private final ShutdownLogger logger = new ShutdownLogger(ShutdownManager.class, "default");
 
     public void register(ManagedShutdownable target) {
         register(target, DEFAULT_TIMEOUT_SECONDS);

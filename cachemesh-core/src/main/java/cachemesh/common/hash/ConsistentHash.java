@@ -1,35 +1,20 @@
 package cachemesh.common.hash;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.SortedMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
 
 // originally, it is based on github.com/redis/jedis: redis.clients.jedis.providers.ShardedConnectionProvider
 // TODO: another choice is akka.routing.ConsistentHash
 public class ConsistentHash<T extends ConsistentHash.Node> {
 
-    public static interface Node extends HasName {
+    public static interface Node {
         String getKey();
-
-        @Override
-        default String getName() {
-            return getKey();
-        }
-
-        @Override
-        default Map<String, Object> toMap() {
-            var r = new HashMap<String, Object>();
-            r.put("name", getName());
-            return r;
-        }
     }
 
     @lombok.Getter

@@ -18,7 +18,6 @@ package cachemesh.core;
 import org.slf4j.Logger;
 import lombok.Getter;
 
-import cachemesh.common.HasName;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.err.ServiceException;
 import cachemesh.common.util.LogHelper;
@@ -31,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public class MeshCache<T> implements HasName {
+public class MeshCache<T> {
 
     private final Logger logger;
 
@@ -43,25 +42,17 @@ public class MeshCache<T> implements HasName {
         this.nearCache = nearCacheManager.get(name);
         this.network = network;
 
-        this.logger = LogHelper.getLogger(this);
+        this.logger = LogHelper.getLogger(getClass(), name);
     }
 
-    @Override
-    public Map<String, Object> toMap() {
-        var r = new HashMap<String, Object>();
-        r.put("name", getName());
-        return r;
-    }
-
-    @Override
     public String getName() {
-        return this.nearCache.getName();
+        return this.nearCache.getConfig().getName();
     }
 
     public Transport resolveTransport(String key) {
         var n = getNetwork().findNode(key);
         if (this.logger.isDebugEnabled()) {
-            this.logger.debug("find node for {}: {}", kv("key", key), LogHelper.kv("node", n));
+            this.logger.debug("find node for {}: {}", kv("key", key), LogHelper.kv("node", n.getConfig()));
         }
 
         return n.getTransport();

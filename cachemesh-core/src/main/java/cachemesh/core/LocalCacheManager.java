@@ -16,7 +16,6 @@
 package cachemesh.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -107,16 +106,6 @@ public class LocalCacheManager implements ManagedShutdownable {
             return item;
         });
         return i.cache;
-    }
-
-    @Override
-    public Map<String, Object> toMap() {
-        var r = new HashMap<String, Object>();
-
-        // r.put("caches", HasName.toMaps(this.caches));
-        r.put("defaultConfig", this.defaultConfig.toMap());
-
-        return r;
     }
 
     @Override

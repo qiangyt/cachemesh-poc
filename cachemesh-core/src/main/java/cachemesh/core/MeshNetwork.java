@@ -15,13 +15,8 @@
  */
 package cachemesh.core;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.slf4j.Logger;
 
-import cachemesh.common.HasName;
 import cachemesh.common.LifeStage;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.common.shutdown.Shutdownable;
@@ -36,7 +31,7 @@ import cachemesh.core.spi.TransportProvider;
 import lombok.AccessLevel;
 
 @Getter
-public class MeshNetwork implements Shutdownable, HasName {
+public class MeshNetwork implements Shutdownable {
 
     private final MeshConfig config;
 
@@ -72,7 +67,7 @@ public class MeshNetwork implements Shutdownable, HasName {
         this.route = new ConsistentHash<>(config.getHashing().instance);
         this.localCacheManager = localCacheManager;
         this.transportRegistry = transportRegistry;
-        this.logger = LogHelper.getLogger(this);
+        this.logger = LogHelper.getLogger(getClass(), config.getName());
         this.lifeStage = new LifeStage("meshnetwork", config.getName(), getLogger());
         this.meshCacheManager = new MeshCacheManager(nearCacheManager, this);
 
@@ -80,18 +75,6 @@ public class MeshNetwork implements Shutdownable, HasName {
 
     public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
         return getMeshCacheManager().resolveCache(cacheName, valueClass);
-    }
-
-    @Override
-    public Map<String, Object> toMap() {
-        var r = new HashMap<String, Object>();
-        r.put("name", getName());
-        return r;
-    }
-
-    @Override
-    public String getName() {
-        return getConfig().getName();
     }
 
     public void start() throws InterruptedException {

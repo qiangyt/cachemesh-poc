@@ -15,7 +15,6 @@
  */
 package cachemesh.core.config;
 
-import cachemesh.common.HasName;
 import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
 import cachemesh.common.config.EnumOp;
@@ -36,7 +35,7 @@ import org.yaml.snakeyaml.Yaml;
 @Getter
 @Setter
 @Builder
-public class MeshConfig implements SomeConfig, HasName {
+public class MeshConfig implements SomeConfig {
 
     public static enum HashingKind {
         murmur(MurmurHash.DEFAULT);

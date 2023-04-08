@@ -18,19 +18,14 @@ package cachemesh.common.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cachemesh.common.HasName;
 import cachemesh.common.Mappable;
 import net.logstash.logback.argument.StructuredArgument;
 import net.logstash.logback.argument.StructuredArguments;
 
 public class LogHelper {
 
-    public static Logger getLogger(HasName hasName) {
-        return getLogger(hasName.getClass().getName(), hasName.getName());
-    }
-
-    public static Logger getLogger(String type, String name) {
-        return LoggerFactory.getLogger(name + "@" + type);
+    public static Logger getLogger(Class<?> klass, String name) {
+        return LoggerFactory.getLogger(name + "@" + klass.getCanonicalName());
     }
 
     public static StructuredArgument entries(Mappable mappable) {

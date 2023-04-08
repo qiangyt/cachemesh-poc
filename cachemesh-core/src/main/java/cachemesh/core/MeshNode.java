@@ -52,7 +52,7 @@ public class MeshNode implements ConsistentHash.Node {
         var key = getKey();
 
         this.hashCode = key.hashCode();
-        this.logger = LogHelper.getLogger(this);
+        this.logger = LogHelper.getLogger(getClass(), key);
 
         this.lifeStage = new LifeStage("meshnode", key, getLogger());
     }

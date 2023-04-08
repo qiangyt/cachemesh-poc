@@ -18,8 +18,8 @@ package cachemesh.grpc;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import cachemesh.common.LifeStage;
 import cachemesh.common.err.InternalException;
+import cachemesh.common.misc.LifeStage;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
@@ -57,7 +57,7 @@ public class DedicatedGrpcServer extends AbstractShutdownable implements GrpcSer
 
     @Override
     public boolean isStarted() {
-        return getLifeStage().getType() == LifeStage.Type.started;
+        return getLifeStage().getStage() == LifeStage.Stage.started;
     }
 
     @Override

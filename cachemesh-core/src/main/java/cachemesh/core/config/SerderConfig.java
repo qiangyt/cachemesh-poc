@@ -17,8 +17,8 @@ package cachemesh.core.config;
 
 import java.util.Collection;
 
-import cachemesh.common.Serderializer;
 import cachemesh.common.jackson.JacksonSerderializer;
+import cachemesh.common.misc.Serderializer;
 import cachemesh.common.config.EnumOp;
 import cachemesh.common.config.NestedOp;
 import cachemesh.common.config.NestedStaticOp;

@@ -25,7 +25,7 @@ import cachemesh.common.config.NestedStaticOp;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.SimpleUrlOp;
 import cachemesh.common.config.SomeConfig;
-import cachemesh.common.util.SimpleURL;
+import cachemesh.common.misc.SimpleURL;
 import lombok.Getter;
 import lombok.Setter;
 

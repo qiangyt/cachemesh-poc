@@ -18,7 +18,7 @@ package cachemesh.core;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
-import cachemesh.common.Serderializer;
+import cachemesh.common.misc.Serderializer;
 import cachemesh.core.spi.Value;
 
 public class ValueImpl implements Value {

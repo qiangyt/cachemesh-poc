@@ -24,10 +24,10 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.LoggerFactory;
 
 import cachemesh.common.err.InternalException;
+import cachemesh.common.misc.LogHelper;
 import cachemesh.common.shutdown.ManagedShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.common.util.LogHelper;
 import cachemesh.core.config.LocalCacheConfig;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.LocalCacheProvider;

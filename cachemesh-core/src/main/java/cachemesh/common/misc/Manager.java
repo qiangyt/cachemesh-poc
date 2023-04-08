@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common;
+package cachemesh.common.misc;
 
 public abstract class Manager<C, T> extends Registry<C, T> {
 

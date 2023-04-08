@@ -15,7 +15,7 @@
  */
 package cachemesh.core;
 
-import cachemesh.common.Registry;
+import cachemesh.common.misc.Registry;
 import cachemesh.core.config.GrpcConfig;
 import cachemesh.core.config.LettuceConfig;
 import cachemesh.core.spi.TransportProvider;

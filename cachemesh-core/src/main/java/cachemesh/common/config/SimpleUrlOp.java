@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import cachemesh.common.util.SimpleURL;
+import cachemesh.common.misc.SimpleURL;
 
 public class SimpleUrlOp implements Operator<SimpleURL> {
 

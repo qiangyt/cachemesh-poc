@@ -21,8 +21,8 @@ import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 
-import cachemesh.common.util.DateHelper;
-import cachemesh.common.util.LogHelper;
+import cachemesh.common.misc.DateHelper;
+import cachemesh.common.misc.LogHelper;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,7 +32,7 @@ public class ShutdownLogger {
 
     private final Logger logger;
 
-	@Getter
+    @Getter
     @Setter
     private volatile boolean inShutdownHook;
 
@@ -44,9 +44,9 @@ public class ShutdownLogger {
         this.logger = logger;
     }
 
-	public String getName() {
-		return this.logger.getName();
-	}
+    public String getName() {
+        return this.logger.getName();
+    }
 
     public void info(String msgFormat, Object... args) {
         String msg = String.format(msgFormat, args);

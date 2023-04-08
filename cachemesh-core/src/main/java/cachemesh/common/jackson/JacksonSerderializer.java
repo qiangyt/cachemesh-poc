@@ -18,7 +18,7 @@ package cachemesh.common.jackson;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import cachemesh.common.Serderializer;
+import cachemesh.common.misc.Serderializer;
 import lombok.Getter;
 
 @Getter

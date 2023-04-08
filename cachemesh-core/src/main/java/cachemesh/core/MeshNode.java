@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
-import cachemesh.common.LifeStage;
 import cachemesh.common.hash.ConsistentHash;
-import cachemesh.common.util.LogHelper;
+import cachemesh.common.misc.LifeStage;
+import cachemesh.common.misc.LogHelper;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.NodeHook;

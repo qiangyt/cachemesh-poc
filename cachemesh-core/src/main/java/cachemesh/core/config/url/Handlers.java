@@ -17,7 +17,7 @@ package cachemesh.core.config.url;
 
 import java.net.URL;
 
-import cachemesh.common.util.URLHelper;
+import cachemesh.common.misc.URLHelper;
 
 public class Handlers {
 

@@ -18,7 +18,7 @@ package cachemesh.common.config;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import cachemesh.common.util.StringHelper;
+import cachemesh.common.misc.StringHelper;
 
 public interface Operator<T> {
 

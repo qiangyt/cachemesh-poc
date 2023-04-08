@@ -20,7 +20,7 @@ import lombok.Getter;
 
 import cachemesh.common.err.InternalException;
 import cachemesh.common.err.ServiceException;
-import cachemesh.common.util.LogHelper;
+import cachemesh.common.misc.LogHelper;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.Transport;
 

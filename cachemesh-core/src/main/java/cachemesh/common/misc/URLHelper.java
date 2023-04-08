@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.util;
+package cachemesh.common.misc;
 
 import java.net.URLStreamHandler;
 import java.util.HashMap;
@@ -29,8 +29,8 @@ public class URLHelper {
         for (var pair : pairs) {
             int pos = pair.indexOf('=');
             if (pos > 0) {
-                String key = pair.substring(0, pos);
-                String value = pair.substring(pos + 1);
+                String key = pair.substring(0, pos).trim();
+                String value = pair.substring(pos + 1).trim();
                 r.put(key, value);
             }
         }

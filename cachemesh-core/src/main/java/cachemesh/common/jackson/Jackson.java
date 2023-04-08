@@ -31,8 +31,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.protobuf.ByteString;
 
 import cachemesh.common.err.RequestException;
-import cachemesh.common.util.StringHelper;
-
+import cachemesh.common.misc.StringHelper;
 import lombok.Getter;
 
 @Getter

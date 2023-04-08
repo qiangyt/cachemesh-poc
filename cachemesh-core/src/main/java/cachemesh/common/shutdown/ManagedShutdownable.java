@@ -27,6 +27,6 @@ public interface ManagedShutdownable extends Shutdownable {
 
     Logger getLogger();
 
-	String getName();
+    String getName();
 
 }

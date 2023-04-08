@@ -18,7 +18,7 @@ package cachemesh.common.config;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
-import cachemesh.common.util.Reflect;
+import cachemesh.common.misc.Reflect;
 import lombok.Getter;
 
 @Getter

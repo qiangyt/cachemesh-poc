@@ -17,7 +17,7 @@ package cachemesh.common.shutdown;
 
 import org.slf4j.Logger;
 
-import cachemesh.common.util.LogHelper;
+import cachemesh.common.misc.LogHelper;
 import lombok.Getter;
 
 @Getter

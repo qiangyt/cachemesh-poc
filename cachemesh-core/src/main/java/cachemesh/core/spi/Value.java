@@ -18,7 +18,7 @@ package cachemesh.core.spi;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
-import cachemesh.common.Serderializer;
+import cachemesh.common.misc.Serderializer;
 
 public interface Value {
 

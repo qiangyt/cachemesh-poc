@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common;
+package cachemesh.common.misc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +23,11 @@ import lombok.Getter;
 @Getter
 public class LifeStage {
 
-    public static enum Type {
+    public static enum Stage {
         created, starting, started, stopping, stopped
     }
 
-    private volatile Type type = Type.created;
+    private volatile Stage stage = Stage.created;
 
     private final String hintKey;
 
@@ -45,16 +45,16 @@ public class LifeStage {
         this.logger = logger;
     }
 
-    public void expect(Type expectedType) {
-        var t = getType();
+    public void expect(Stage expectedType) {
+        var t = getStage();
         if (t != expectedType) {
             var msg = String.format("%s %s: expected be %s, but be %s", getHintKey(), getHintValue(), expectedType, t);
             throw new IllegalStateException(msg);
         }
     }
 
-    public void expectNot(Type... expectedTypes) {
-        var t = getType();
+    public void expectNot(Stage... expectedTypes) {
+        var t = getStage();
         for (var expectedType : expectedTypes) {
             if (t == expectedType) {
                 var msg = String.format("%s %s: expected not %s", getHintKey(), getHintValue(), expectedType);
@@ -64,25 +64,25 @@ public class LifeStage {
     }
 
     public void starting() {
-        step(Type.created, Type.starting);
+        step(Stage.created, Stage.starting);
     }
 
     public void started() {
-        step(Type.starting, Type.started);
+        step(Stage.starting, Stage.started);
     }
 
     public void stopping() {
-        step(Type.started, Type.stopping);
+        step(Stage.started, Stage.stopping);
     }
 
     public void stopped() {
-        step(Type.stopping, Type.stopped);
+        step(Stage.stopping, Stage.stopped);
     }
 
-    public void step(Type current, Type next) {
+    public void step(Stage current, Stage next) {
         expect(current);
         getLogger().info(next.name());
-        this.type = next;
+        this.stage = next;
     }
 
 }

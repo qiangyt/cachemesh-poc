@@ -14,4 +14,12 @@
     <name>${project.artifactId} ${project.version}</name>
     <url>https://github.com/qiangyt/cachemesh</url>
 
+    <dependencies>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.12.5</version>
+        </dependency>
+    </dependencies>
+
 </project>

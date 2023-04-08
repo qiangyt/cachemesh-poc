@@ -32,16 +32,16 @@ public abstract class Manager<C, T> extends Registry<C, T> {
         });
     }
 
-    public T release(C config, int timeoutSeconds) throws InterruptedException {
+    public T destroy(C config, int timeoutSeconds) throws InterruptedException {
         T r = unregister(config);
         if (r != null) {
-            doRelease(config, r, timeoutSeconds);
+            doDestroy(config, r, timeoutSeconds);
         }
         return r;
     }
 
     protected abstract T doCreate(C config);
 
-    protected abstract void doRelease(C config, T item, int timeoutSeconds) throws InterruptedException;
+    protected abstract void doDestroy(C config, T item, int timeoutSeconds) throws InterruptedException;
 
 }

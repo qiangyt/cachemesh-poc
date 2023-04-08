@@ -33,10 +33,6 @@ public interface Operator<T> {
         return (T) value;
     }
 
-    default T copy(String hint, T value) {
-        return value;
-    }
-
     default T convert(String hint, Object value) {
         if (value == null) {
             return null;

@@ -37,7 +37,7 @@ public class StringHelper {
     }
 
     public static <T> String join(String separator, Collection<T> texts) {
-        return join(separator, texts.toArray(new String[texts.size()]));
+        return join(separator, texts.toArray());
     }
 
     public static <T> String join(String separator, T[] array) {

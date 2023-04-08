@@ -64,13 +64,8 @@ public class Property<T> {
         return this.op;
     }
 
-    @SuppressWarnings("unchecked")
     public T get(Object object) {
-        try {
-            return (T) getter().invoke(object);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+        return Reflect.get(getter(), object);
     }
 
     public Object readMap(Map<String, Object> map) {
@@ -83,12 +78,7 @@ public class Property<T> {
 
     public void doSet(Operator<? extends T> op, String hint, Object object, Object value) {
         var v = op.convert(hint, value);
-
-        try {
-            setter().invoke(object, v);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+        Reflect.set(setter(), object, v);
     }
 
 }

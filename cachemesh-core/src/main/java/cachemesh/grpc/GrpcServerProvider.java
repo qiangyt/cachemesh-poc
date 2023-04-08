@@ -42,7 +42,7 @@ public class GrpcServerProvider extends Manager<GrpcConfig, GrpcServer> {
     }
 
     @Override
-    protected void doRelease(GrpcConfig config, GrpcServer server, int timeoutSeconds) throws InterruptedException {
+    protected void doDestroy(GrpcConfig config, GrpcServer server, int timeoutSeconds) throws InterruptedException {
         server.stop(timeoutSeconds);
     }
 

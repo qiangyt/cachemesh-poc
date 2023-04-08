@@ -13,12 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.misc;
+package cachemesh.common.config;
 
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public interface Mappable {
+import java.time.Duration;
+import org.junit.jupiter.api.Test;
 
-    Map<String, Object> toMap();
+public class DurationOpTest {
+
+	@Test
+	public void test_happy() {
+		var t = DurationOp.DEFAULT;
+
+		var d1 =Duration.ofDays(123);
+		assertSame(d1, t.convert("", d1));
+
+		var d2 =Duration.ofSeconds(123);
+		assertEquals(d2, t.convert("", "123s"));
+
+		assertThrows(IllegalArgumentException.class, () -> t.convert("", new Object()));
+	}
 
 }

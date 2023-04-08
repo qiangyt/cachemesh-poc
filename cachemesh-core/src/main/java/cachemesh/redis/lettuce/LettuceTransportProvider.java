@@ -46,7 +46,7 @@ public class LettuceTransportProvider implements TransportProvider {
     @Override
     public void afterNodeStop(MeshNode node, int timeoutSeconds) throws InterruptedException {
         var tp = (LettuceTransport) node.getTransport();
-        getClientProvider().release(tp.getConfig(), timeoutSeconds);
+        getClientProvider().destroy(tp.getConfig(), timeoutSeconds);
     }
 
     @Override

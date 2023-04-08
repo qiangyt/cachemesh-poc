@@ -11,14 +11,10 @@ import cachemesh.common.err.InternalException;
 
 // originally, it is based on github.com/redis/jedis: redis.clients.jedis.providers.ShardedConnectionProvider
 // TODO: another choice is akka.routing.ConsistentHash
-public class ConsistentHash<T extends ConsistentHash.Node> {
-
-    public static interface Node {
-        String getKey();
-    }
+public class ConsistentHash<T extends HasKey> {
 
     @lombok.Getter
-    public static class VirtualNode<T extends Node> {
+    public static class VirtualNode<T extends HasKey> {
 
         private final T realNode;
         private final int index;
@@ -50,6 +46,14 @@ public class ConsistentHash<T extends ConsistentHash.Node> {
         return this.nodes.values();
     }
 
+    public int nodeSize() {
+        return this.nodes.size();
+    }
+
+    public int virtualNodeSize() {
+        return this.ring.size();
+    }
+
     public void join(List<T> nodes) {
         LOG.info("got {} nodes to join", nodes.size());
         nodes.forEach(this::join);
@@ -70,7 +74,7 @@ public class ConsistentHash<T extends ConsistentHash.Node> {
         var rg = this.ring;
 
         for (int i = 0; i < 160; i++) {
-            String virtualNodeKey = String.format("%s-%d", nodeKey, i);
+            String virtualNodeKey = nodeKey + i;
             long h = hash(virtualNodeKey);
             VirtualNode<T> virtualNode = new VirtualNode<>(node, i, virtualNodeKey, h);
 
@@ -94,8 +98,12 @@ public class ConsistentHash<T extends ConsistentHash.Node> {
         return key != null ? virtualNodeFor(h) : null;
     }
 
-    public VirtualNode<T> virtualNodeFor(long hash) {
+    VirtualNode<T> virtualNodeFor(long hash) {
         var r = this.ring;
+        if (r.isEmpty()) {
+            return null;
+        }
+
         var tail = r.tailMap(hash);
         if (tail.isEmpty()) {
             return r.get(r.firstKey());
@@ -106,7 +114,7 @@ public class ConsistentHash<T extends ConsistentHash.Node> {
     public T findNode(String key) {
         long hash = hash(key);
         var virtualNode = virtualNodeFor(hash);
-        return virtualNode.getRealNode();
+        return (virtualNode == null) ? null : virtualNode.getRealNode();
     }
 
 }

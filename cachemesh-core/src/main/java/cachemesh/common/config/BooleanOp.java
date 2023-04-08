@@ -41,14 +41,14 @@ public class BooleanOp implements Operator<Boolean> {
         var clazz = value.getClass();
 
         if (clazz == String.class) {
-            var s = (String) value;
-            if (s.equalsIgnoreCase("true") || s.equals("t")) {
+            var s = ((String) value).toLowerCase();
+            if (s.equals("true") || s.equals("t")) {
                 return Boolean.TRUE;
             }
-            if (s.equalsIgnoreCase("yes") || s.equals("y")) {
+            if (s.equals("yes") || s.equals("y")) {
                 return Boolean.TRUE;
             }
-            if (s.equalsIgnoreCase("ok") || s.equalsIgnoreCase("okay")) {
+            if (s.equals("ok") || s.equals("okay")) {
                 return Boolean.TRUE;
             }
             return Boolean.FALSE;

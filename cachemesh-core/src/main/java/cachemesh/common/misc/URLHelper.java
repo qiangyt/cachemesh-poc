@@ -24,6 +24,10 @@ public class URLHelper {
     // https://github.com/anthonynsimon/jurl/tree/master/src/main/java/com/anthonynsimon/url
     // this is not a standard-compliant URL query parser.
     public static Map<String, String> parseQuery(String query) {
+        if (StringHelper.isBlank(query)) {
+            return new HashMap<>();
+        }
+
         var r = new HashMap<String, String>();
         String[] pairs = query.split("&");
         for (var pair : pairs) {

@@ -24,7 +24,7 @@ import lombok.Getter;
 public abstract class Registry<C, T> {
 
     @Getter(AccessLevel.PROTECTED)
-    private Map<String, T> itemMap;
+    private Map<String, T> itemMap = createItemMap();
 
     protected Map<String, T> createItemMap() {
         return new HashMap<>();

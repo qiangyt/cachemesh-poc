@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import cachemesh.common.misc.DurationHelper;
 import lombok.Getter;
 
 @Getter
@@ -42,7 +43,7 @@ public class DurationOp implements Operator<Duration> {
 
     @Override
     public Duration doConvert(String hint, Object value) {
-        return Duration.parse((String) value);
+        return DurationHelper.parse((String) value);
     }
 
 }

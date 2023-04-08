@@ -15,10 +15,33 @@
  */
 package cachemesh.common.misc;
 
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public interface Mappable {
+import org.junit.jupiter.api.Test;
 
-    Map<String, Object> toMap();
+import lombok.Getter;
+import lombok.Setter;
+
+public class ReflectTest {
+
+	@Getter
+	@Setter
+	class Bean {
+		String firstName;
+		String lastName;
+		boolean local;
+	}
+
+	@Test
+	public void test_getterName() {
+		assertEquals("getTarget", Reflect.getterName("target", String.class));
+		assertEquals("isOk", Reflect.getterName("ok", boolean.class));
+		assertEquals("isRight", Reflect.getterName("right", Boolean.class));
+	}
+
+	@Test
+	public void test_setterName() {
+		assertEquals("setTarget", Reflect.setterName("target"));
+	}
 
 }

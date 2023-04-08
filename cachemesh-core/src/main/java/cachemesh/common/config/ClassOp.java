@@ -19,15 +19,22 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
 
 @Getter
 public class ClassOp implements Operator<Class<?>> {
 
-    public static final ClassOp DEFAULT = new ClassOp();
+    public static final ClassOp DEFAULT = new ClassOp(ClassCache.DEFAULT);
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(String.class));
+
+    private final ClassCache cache;
+
+    public ClassOp(ClassCache cache) {
+        this.cache = cache;
+    }
 
     @Override
     public Class<?> propertyClass() {
@@ -39,14 +46,13 @@ public class ClassOp implements Operator<Class<?>> {
         return CONVERTABLE_CLASSES;
     }
 
+    public ClassLoader getClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
+    }
+
     @Override
     public Class<?> doConvert(String hint, Object value) {
-        var className = (String) value;
-        try {
-            return Thread.currentThread().getContextClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return this.cache.resolve(getClassLoader(), (String) value);
     }
 
 }

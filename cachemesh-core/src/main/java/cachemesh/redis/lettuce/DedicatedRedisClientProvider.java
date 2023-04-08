@@ -36,7 +36,7 @@ public class DedicatedRedisClientProvider extends Manager<LettuceConfig, RedisCl
     }
 
     @Override
-    protected void doRelease(LettuceConfig config, RedisClient client, int timeoutSeconds) throws InterruptedException {
+    protected void doDestroy(LettuceConfig config, RedisClient client, int timeoutSeconds) throws InterruptedException {
         var timeout = Duration.ofSeconds(timeoutSeconds);
         client.shutdown(timeout, timeout);
     }

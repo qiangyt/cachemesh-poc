@@ -24,7 +24,7 @@ public class Reflect {
         try {
             return propertyClass.getConstructor();
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -32,7 +32,7 @@ public class Reflect {
         try {
             return ctor.newInstance(args);
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -49,11 +49,11 @@ public class Reflect {
             if (method.getReturnType() != propertyClass) {
                 var msg = String.format("expect getter %s returns %s, but got %s", methodName, propertyClass,
                         method.getReturnType());
-                throw new RuntimeException(msg);
+                throw new IllegalArgumentException(msg);
             }
             return method;
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException("no getter method for property " + propertyName);
         }
     }
 
@@ -66,6 +66,23 @@ public class Reflect {
         try {
             return ownerClass.getDeclaredMethod(methodName, propertyClass);
         } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("no setter method for property " + propertyName, e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T get(Method getter, Object object) {
+        try {
+            return (T) getter.invoke(object);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void set(Method setter, Object object, Object value) {
+        try {
+            setter.invoke(object, value);
+        } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }

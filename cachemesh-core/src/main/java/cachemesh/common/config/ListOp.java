@@ -35,11 +35,6 @@ public class ListOp<T> implements Operator<List<T>> {
     }
 
     @Override
-    public List<T> copy(String hint, List<T> value) {
-        return new ArrayList<>(value);
-    }
-
-    @Override
     public Class<?> propertyClass() {
         return List.class;
     }

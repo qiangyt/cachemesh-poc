@@ -13,12 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.misc;
+package cachemesh.common.config;
 
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-public interface Mappable {
+import org.junit.jupiter.api.Test;
 
-    Map<String, Object> toMap();
+public class ClassOpTest {
+
+	class Sample {
+	}
+
+	@Test
+	public void test_happy() {
+		var t = ClassOp.DEFAULT;
+
+		assertSame(Sample.class, t.convert("", Sample.class));
+		assertSame(Sample.class, t.convert("", Sample.class.getName()));
+
+		assertThrows(IllegalArgumentException.class, () -> t.convert("", new Object()));
+	}
 
 }

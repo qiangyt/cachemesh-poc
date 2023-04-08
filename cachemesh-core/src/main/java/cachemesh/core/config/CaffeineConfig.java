@@ -21,6 +21,7 @@ import java.util.Collection;
 import cachemesh.common.config.DurationOp;
 import cachemesh.common.config.IntegerOp;
 import cachemesh.common.config.NestedOp;
+import cachemesh.common.config.NestedStaticOp;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.SomeConfig;
 import lombok.Getter;
@@ -33,7 +34,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class CaffeineConfig extends LocalCacheConfig {
 
-    public static final NestedOp<CaffeineConfig> OP = new NestedOp<>(CaffeineConfig.class);
+    public static final NestedOp<CaffeineConfig> OP = new NestedStaticOp<>(CaffeineConfig.class);
 
     public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
 
@@ -46,10 +47,10 @@ public class CaffeineConfig extends LocalCacheConfig {
     private Duration expireAfterWrite = DEFAULT_EXPIRE_AFTER_WIRTER;
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(LocalCacheConfig.PROPERTIES,
-            Property.builder().configClass(CaffeineConfig.class).propertyName("maximumSize")
-                    .defaultValue(DEFAULT_MAXIMUM_SIZE).op(IntegerOp.DEFAULT).build(),
-            Property.builder().configClass(CaffeineConfig.class).propertyName("expireAfterWrite")
-                    .defaultValue(DEFAULT_EXPIRE_AFTER_WIRTER).op(DurationOp.DEFAULT).build());
+            Property.builder().config(CaffeineConfig.class).name("maximumSize").devault(DEFAULT_MAXIMUM_SIZE)
+                    .op(IntegerOp.DEFAULT).build(),
+            Property.builder().config(CaffeineConfig.class).name("expireAfterWrite")
+                    .devault(DEFAULT_EXPIRE_AFTER_WIRTER).op(DurationOp.DEFAULT).build());
 
     public CaffeineConfig() {
     }

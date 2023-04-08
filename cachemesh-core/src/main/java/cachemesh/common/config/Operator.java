@@ -28,10 +28,6 @@ public interface Operator<T> {
         return null;
     }
 
-    default T createZeroValue() {
-        return null;
-    }
-
     @SuppressWarnings("unchecked")
     default T supply(String hint, Object value) {
         return (T) value;

@@ -44,14 +44,14 @@ public interface SomeConfig extends Mappable {
     default Map<String, Object> toMap() {
         var r = new HashMap<String, Object>();
         for (var p : properties()) {
-            r.put(p.propertyName(), p.get(this));
+            r.put(p.name(), p.get(this));
         }
         return r;
     }
 
     default void withMap(String path, Map<String, Object> m) {
         for (var p : properties()) {
-            var name = p.propertyName();
+            var name = p.name();
             if (m.containsKey(name)) {
                 Object value = m.get(name);
                 p.set(path, this, value);

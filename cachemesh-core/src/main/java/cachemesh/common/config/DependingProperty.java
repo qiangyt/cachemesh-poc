@@ -31,13 +31,13 @@ public class DependingProperty<T, K> extends Property<T> {
         this.dispatchOpMap = dispatchOpMap;
     }
 
-	public Operator<? extends T> dispatchOp(Object object) {
-		var dependedValue = this.dependedProperty.get(object);
+    public Operator<? extends T> dispatchOp(Object object) {
+        var dependedValue = this.dependedProperty.get(object);
         return this.dispatchOpMap.get(dependedValue);
-	}
+    }
 
     @Override
-	public void set(String hint, Object object, Object value) {
+    public void set(String hint, Object object, Object value) {
         var dispatchOp = dispatchOp(object);
         doSet(dispatchOp, hint, object, value);
     }

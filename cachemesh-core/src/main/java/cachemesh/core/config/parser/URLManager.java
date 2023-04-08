@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.spi;
+package cachemesh.core.config.parser;
 
-import cachemesh.core.LocalTransport;
-import cachemesh.core.config.NodeConfig;
+import java.net.URLStreamHandler;
+import java.net.spi.URLStreamHandlerProvider;
 
-public interface TransportProvider extends NodeHook {
+public class URLManager extends URLStreamHandlerProvider {
 
-    String getProtocol();
-
-    default boolean setUpLocalTransport(NodeConfig nodeConfig, LocalTransport localTranport) {
-        return false;
+    @Override
+    public URLStreamHandler createURLStreamHandler(String protocol) {
+        return null;
     }
-
-    Transport createRemoteTransport(NodeConfig nodeConfig);
 
 }

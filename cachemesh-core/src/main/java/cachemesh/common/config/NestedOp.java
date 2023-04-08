@@ -15,34 +15,26 @@
  */
 package cachemesh.common.config;
 
-import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import cachemesh.common.util.Reflect;
 import lombok.Getter;
 
 @Getter
-public class NestedOp<T extends SomeConfig> implements Operator<T> {
+public abstract class NestedOp<T extends SomeConfig> implements Operator<T> {
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
             .unmodifiableCollection(List.of(Map.class));
 
-    private final Constructor<T> constructor;
-
     private final Class<T> propertyClass;
 
     public NestedOp(Class<T> propertyClass) {
-        this.constructor = Reflect.noArgsConstructor(propertyClass);
         this.propertyClass = propertyClass;
     }
 
-    @Override
-    public T createZeroValue() {
-        return Reflect.newInstance(getConstructor());
-    }
+    public abstract T newValue(String hint, Map<String, Object> map);
 
     @Override
     public Class<?> propertyClass() {
@@ -58,7 +50,7 @@ public class NestedOp<T extends SomeConfig> implements Operator<T> {
     @SuppressWarnings("unchecked")
     public T doConvert(String hint, Object value) {
         var map = (Map<String, Object>) value;
-        T r = createZeroValue();
+        T r = newValue(hint, map);
         r.withMap(hint, map);
         return r;
     }

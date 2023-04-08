@@ -36,11 +36,6 @@ public class DurationOp implements Operator<Duration> {
     }
 
     @Override
-    public Duration createZeroValue() {
-        return Duration.ZERO;
-    }
-
-    @Override
     public Collection<Class<?>> convertableClasses() {
         return CONVERTABLE_CLASSES;
     }

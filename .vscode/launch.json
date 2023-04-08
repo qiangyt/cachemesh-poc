@@ -6,11 +6,36 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Handlers",
+            "request": "launch",
+            "mainClass": "cachemesh.core.config.url.Handlers",
+            "projectName": "cachemesh-core"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "cachemesh.core.config.url.Main",
+            "projectName": "cachemesh-core"
+        },
+        {
+            "type": "java",
+            "name": "ParserTest",
+            "request": "launch",
+            "mainClass": "com.mycompany.ParserTest",
+            "projectName": "cachemesh-core",
+            "vmArgs": []
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "cachemesh.Main",
             "projectName": "cachemesh",
-            "args": ["true", "grpc://localhost:8001"]
+            "args": [
+                "true",
+                "grpc://localhost:8001"
+            ]
         }
     ]
 }

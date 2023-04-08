@@ -45,11 +45,6 @@ public class ListOp<T> implements Operator<List<T>> {
     }
 
     @Override
-    public List<T> createZeroValue() {
-        return new ArrayList<T>();
-    }
-
-    @Override
     public Collection<Class<?>> convertableClasses() {
         return CONVERTABLE_CLASSES;
     }
@@ -61,7 +56,7 @@ public class ListOp<T> implements Operator<List<T>> {
 
     @Override
     public List<T> doConvert(String hint, Object value) {
-		return doConvert(getElementOp(), hint, value);
+        return doConvert(getElementOp(), hint, value);
     }
 
     public List<T> doConvert(Operator<? extends T> elementOp, String hint, Object value) {

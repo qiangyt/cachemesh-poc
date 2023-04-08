@@ -15,14 +15,11 @@
  */
 package cachemesh.grpc;
 
-import java.util.Map;
-
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.LocalTransport;
 import cachemesh.core.MeshNode;
-import cachemesh.core.TransportURL;
 import cachemesh.core.config.GrpcConfig;
-import cachemesh.core.config.TransportConfig;
+import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
 import lombok.Getter;
@@ -45,7 +42,7 @@ public class GrpcTransportProvider implements TransportProvider {
     @Override
     public void beforeNodeStart(MeshNode node, int timeoutSeconds) throws InterruptedException {
         var cfg = (GrpcConfig) node.getConfig();
-        if (cfg.isRemote()) {
+        if (cfg.isLocal() == false) {
             return;
         }
 
@@ -54,7 +51,7 @@ public class GrpcTransportProvider implements TransportProvider {
     }
 
     @Override
-    public boolean setUpLocalTransport(TransportConfig transportConfig, LocalTransport localTranport) {
+    public boolean setUpLocalTransport(NodeConfig transportConfig, LocalTransport localTranport) {
         var config = (GrpcConfig) transportConfig;
         var server = new DedicatedGrpcServer(config, getShutdownManager());
 
@@ -72,23 +69,21 @@ public class GrpcTransportProvider implements TransportProvider {
         return GrpcConfig.PROTOCOL;
     }
 
-    @Override
-    public TransportConfig parseConfig(Map<String, Object> configMap) {
-        return GrpcConfig.from(configMap);
-    }
+    /*
+     * @Override public NodeConfig parseConfig(Map<String, Object> configMap) { return GrpcConfig.from(configMap); }
+     */
 
     @Override
-    public Transport createRemoteTransport(TransportConfig transportConfig) {
-        var config = (GrpcConfig) transportConfig;
+    public Transport createRemoteTransport(NodeConfig nodeConfig) {
+        var config = (GrpcConfig) nodeConfig;
         return new GrpcTransport(config, getShutdownManager());
     }
 
-    @Override
-    public Map<String, Object> parseUrl(String url) {
-        var transport = TransportURL.parseUrl(url);
-        transport.ensureProtocol(GrpcConfig.PROTOCOL);
-
-        return GrpcConfig.parseTarget(transport.getTarget());
-    }
+    /*
+     * @Override public Map<String, Object> parseUrl(String url) { var transport = TransportURL.parseUrl(url);
+     * transport.ensureProtocol(GrpcConfig.PROTOCOL);
+     *
+     * return GrpcConfig.parseTarget(transport.getTarget()); }
+     */
 
 }

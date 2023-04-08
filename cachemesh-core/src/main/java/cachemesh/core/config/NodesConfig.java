@@ -22,6 +22,7 @@ import java.util.Collection;
 import cachemesh.common.config.EnumOp;
 import cachemesh.common.config.ListOp;
 import cachemesh.common.config.NestedOp;
+import cachemesh.common.config.NestedStaticOp;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.SomeConfig;
 import lombok.Getter;
@@ -34,7 +35,7 @@ import lombok.Singular;
 @Builder
 public class NodesConfig implements SomeConfig {
 
-    public static NestedOp<NodesConfig> OP = new NestedOp<>(NodesConfig.class);
+    public static NestedOp<NodesConfig> OP = new NestedStaticOp<>(NodesConfig.class);
 
     public static final Kind DEFAULT_KIND = Kind.inline;
 
@@ -49,10 +50,10 @@ public class NodesConfig implements SomeConfig {
     private List<NodeConfig> inline;
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-            Property.builder().configClass(NodesConfig.class).propertyName("kind").defaultValue(DEFAULT_KIND)
-                    .op(new EnumOp<>(Kind.class)).build(),
-            Property.builder().configClass(NodesConfig.class).propertyName("inline").defaultValue(new ArrayList<>())
-                    .op(new ListOp<>(NodeConfig.OP)).build());
+            Property.builder().config(NodesConfig.class).name("kind").devault(DEFAULT_KIND).op(new EnumOp<>(Kind.class))
+                    .build(),
+            Property.builder().config(NodesConfig.class).name("inline").devault(new ArrayList<>())
+                    .op(new ListOp<>(NodeConfigOp.DEFAULT)).build());
 
     @Override
     public Collection<Property<?>> properties() {

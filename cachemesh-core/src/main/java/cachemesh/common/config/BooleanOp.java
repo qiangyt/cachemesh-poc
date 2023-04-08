@@ -37,11 +37,6 @@ public class BooleanOp implements Operator<Boolean> {
     }
 
     @Override
-    public Boolean createZeroValue() {
-        return Boolean.FALSE;
-    }
-
-    @Override
     public Boolean doConvert(String hint, Object value) {
         var clazz = value.getClass();
 

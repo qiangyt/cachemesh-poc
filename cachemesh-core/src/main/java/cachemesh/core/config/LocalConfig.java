@@ -29,6 +29,7 @@ import cachemesh.common.config.DependingProperty;
 import cachemesh.common.config.EnumOp;
 import cachemesh.common.config.ListOp;
 import cachemesh.common.config.NestedOp;
+import cachemesh.common.config.NestedStaticOp;
 import cachemesh.common.config.Operator;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.SomeConfig;
@@ -41,7 +42,7 @@ import lombok.Singular;
 @Builder
 public class LocalConfig implements SomeConfig {
 
-    public static NestedOp<LocalConfig> OP = new NestedOp<>(LocalConfig.class);
+    public static NestedOp<LocalConfig> OP = new NestedStaticOp<>(LocalConfig.class);
 
     public enum Kind {
         caffeine(CaffeineProvider.DEFAULT);
@@ -64,17 +65,17 @@ public class LocalConfig implements SomeConfig {
     @Singular("cache")
     private List<LocalCacheConfig> caches;
 
-    public static final Property<Kind> KIND_PROPERTY = Property.<Kind> builder().configClass(LocalConfig.class)
-            .propertyName("kind").defaultValue(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build();
+    public static final Property<Kind> KIND_PROPERTY = Property.<Kind> builder().config(LocalConfig.class).name("kind")
+            .devault(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build();
 
-	public static final Map<Kind, Operator<? extends LocalCacheConfig>> CACHE_DISPATCH_OP_MAP = Map.of(Kind.caffeine, CaffeineConfig.OP);
+    public static final Map<Kind, Operator<? extends LocalCacheConfig>> CACHE_DISPATCH_OP_MAP = Map.of(Kind.caffeine,
+            CaffeineConfig.OP);
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(KIND_PROPERTY,
             new DependingProperty<>(LocalConfig.class, "defaultCache", KIND_PROPERTY, CACHE_DISPATCH_OP_MAP),
-            Property.builder().configClass(LocalConfig.class).propertyName("caches").defaultValue(new ArrayList<>())
+            Property.builder().config(LocalConfig.class).name("caches").devault(new ArrayList<>())
                     .op(new ListOp<>(CaffeineConfig.OP)).build(),
-			new DependingListProperty<>(LocalConfig.class, "caches", KIND_PROPERTY,	CACHE_DISPATCH_OP_MAP)
-	);
+            new DependingListProperty<>(LocalConfig.class, "caches", KIND_PROPERTY, CACHE_DISPATCH_OP_MAP));
 
     public LocalConfig() {
     }

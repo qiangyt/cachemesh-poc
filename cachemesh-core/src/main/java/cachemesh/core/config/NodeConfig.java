@@ -15,53 +15,113 @@
  */
 package cachemesh.core.config;
 
+import java.net.MalformedURLException;
 import java.util.Collection;
 
 import cachemesh.common.config.BooleanOp;
+import cachemesh.common.config.IntegerOp;
 import cachemesh.common.config.NestedOp;
+import cachemesh.common.config.NestedStaticOp;
 import cachemesh.common.config.Property;
+import cachemesh.common.config.SimpleUrlOp;
 import cachemesh.common.config.SomeConfig;
-import cachemesh.common.config.StringOp;
+import cachemesh.common.util.SimpleURL;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Builder;
 
 @Getter
 @Setter
-@Builder
-public class NodeConfig implements SomeConfig {
+public abstract class NodeConfig implements SomeConfig {
 
-    public static final NestedOp<NodeConfig> OP = new NestedOp<>(NodeConfig.class);
+    public static final NestedOp<NodeConfig> OP = new NestedStaticOp<>(NodeConfig.class);
 
     public static final boolean DEFAULT_LOCAL = false;
 
-    public static final int DEFAULT_START_TIMEOUT_SECONDS = 1;
+    public static final int DEFAULT_START_TIMEOUT = 1;
 
-    public static final int DEFAULT_STOP_TIMEOUT_SECONDS = 2;
+    public static final int DEFAULT_STOP_TIMEOUT = 2;
 
-    private String url;
+    private SimpleURL url;
 
-    @Builder.Default
+    // @Builder.Default
     private boolean local = DEFAULT_LOCAL;
 
-    private String protocol;
+    // @Builder.Default
+    private int startTimeout = DEFAULT_START_TIMEOUT;
 
-    private String target;
-
-    @Builder.Default
-    private int startTimeoutSeconds = DEFAULT_START_TIMEOUT_SECONDS;
-
-    @Builder.Default
-    private int stopTimeoutSeconds = DEFAULT_STOP_TIMEOUT_SECONDS;
+    // @Builder.Default
+    private int stopTimeout = DEFAULT_STOP_TIMEOUT;
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-            Property.builder().configClass(NodeConfig.class).propertyName("url").op(StringOp.DEFAULT).build(),
-            Property.builder().configClass(NodeConfig.class).propertyName("local").defaultValue(DEFAULT_LOCAL)
-                    .op(BooleanOp.DEFAULT).build());
+            Property.builder().config(NodeConfig.class).name("url").op(SimpleUrlOp.DEFAULT).build(),
+            Property.builder().config(NodeConfig.class).name("local").devault(DEFAULT_LOCAL).op(BooleanOp.DEFAULT)
+                    .build(),
+            Property.builder().config(NodeConfig.class).name("startTimeout").op(IntegerOp.DEFAULT).build(),
+            Property.builder().config(NodeConfig.class).name("stopTimeout").op(IntegerOp.DEFAULT).build());
+
+    public NodeConfig(SimpleURL url) {
+        setUrl(url);
+    }
+
+    public NodeConfig(SimpleURL url, boolean local, int startTimeout, int stopTimeout) {
+        this(url);
+
+        this.local = local;
+        this.startTimeout = startTimeout;
+        this.stopTimeout = stopTimeout;
+    }
+
+    public NodeConfig(boolean local, int startTimeout, int stopTimeout) {
+        this.local = local;
+        this.startTimeout = startTimeout;
+        this.stopTimeout = stopTimeout;
+    }
+
+    public abstract String getProtocol();
 
     @Override
     public Collection<Property<?>> properties() {
         return PROPERTIES;
+    }
+
+    public abstract String getTarget();
+
+    public SimpleURL getUrl() {
+        if (this.url == null) {
+            try {
+                this.url = buildUrl();
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return this.url;
+    }
+
+    protected SimpleURL buildUrl() throws MalformedURLException {
+        return new SimpleURL(String.format("%s://%s", getProtocol(), getTarget()));
+    }
+
+    public void setUrl(SimpleURL url) {
+        var query = url.getQuery();
+
+        if (query.containsKey("startTimeout")) {
+            var startTimeout = IntegerOp.DEFAULT.convert("", query.get("startTimeout"));
+            setStartTimeout(startTimeout);
+        }
+
+        if (query.containsKey("stopTimeout")) {
+            var stopTimeout = IntegerOp.DEFAULT.convert("", query.get("stopTimeout"));
+            setStopTimeout(stopTimeout);
+        }
+
+        if (query.containsKey("local")) {
+            var local = BooleanOp.DEFAULT.convert("", query.get("local"));
+            setLocal(local);
+        }
+    }
+
+    public static NodeConfig fromUrl(String url) {
+        return NodeConfigOp.DEFAULT.convert("", url);
     }
 
 }

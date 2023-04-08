@@ -16,39 +16,40 @@
 package cachemesh.common.config;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import cachemesh.common.util.Reflect;
 import lombok.Builder;
 
 public class Property<T> {
 
-    private final String propertyName;
+    private final String name;
 
     private final Method setter;
 
     private final Method getter;
 
-    private final T defaultValue;
+    private final T devault;
 
     private final Operator<? extends T> op;
 
     @Builder
-    public Property(Class<?> configClass, String propertyName, T defaultValue, Operator<? extends T> op) {
-        this.propertyName = propertyName;
-        this.defaultValue = defaultValue;
+    public Property(Class<?> config, String name, T devault, Operator<? extends T> op) {
+        this.name = name;
+        this.devault = devault;
         this.op = op;
 
         var propClass = op.propertyClass();
-        this.setter = Reflect.setter(configClass, propertyName, propClass);
-        this.getter = Reflect.getter(configClass, propertyName, propClass);
+        this.setter = Reflect.setter(config, name, propClass);
+        this.getter = Reflect.getter(config, name, propClass);
     }
 
-    public T defaultValue() {
-        return this.defaultValue;
+    public T devault() {
+        return this.devault;
     }
 
-    public String propertyName() {
-        return this.propertyName;
+    public String name() {
+        return this.name;
     }
 
     public Method setter() {
@@ -59,9 +60,9 @@ public class Property<T> {
         return this.getter;
     }
 
-	public Operator<? extends T> op(Object object) {
-		return this.op;
-	}
+    public Operator<? extends T> op(Object object) {
+        return this.op;
+    }
 
     @SuppressWarnings("unchecked")
     public T get(Object object) {
@@ -70,6 +71,10 @@ public class Property<T> {
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Object readMap(Map<String, Object> map) {
+        return map.get(name());
     }
 
     public void set(String hint, Object object, Object value) {

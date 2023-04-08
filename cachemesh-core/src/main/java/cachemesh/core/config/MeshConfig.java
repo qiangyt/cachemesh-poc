@@ -65,14 +65,13 @@ public class MeshConfig implements SomeConfig, HasName {
     private LocalConfig local = LocalConfig.builder().build();
 
     public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-            Property.builder().configClass(MeshConfig.class).propertyName("name").defaultValue(DEFAULT_NAME)
-                    .op(StringOp.DEFAULT).build(),
-            Property.builder().configClass(MeshConfig.class).propertyName("hashing").defaultValue(DEFAULT_HASHING)
+            Property.builder().config(MeshConfig.class).name("name").devault(DEFAULT_NAME).op(StringOp.DEFAULT).build(),
+            Property.builder().config(MeshConfig.class).name("hashing").devault(DEFAULT_HASHING)
                     .op(new EnumOp<>(HashingKind.class)).build(),
-            Property.builder().configClass(MeshConfig.class).propertyName("nodes")
-                    .defaultValue(NodesConfig.builder().build()).op(NodesConfig.OP).build(),
-            Property.builder().configClass(MeshConfig.class).propertyName("local")
-                    .defaultValue(LocalConfig.builder().build()).op(LocalConfig.OP).build());
+            Property.builder().config(MeshConfig.class).name("nodes").devault(NodesConfig.builder().build())
+                    .op(NodesConfig.OP).build(),
+            Property.builder().config(MeshConfig.class).name("local").devault(LocalConfig.builder().build())
+                    .op(LocalConfig.OP).build());
 
     public MeshConfig() {
     }
@@ -93,27 +92,24 @@ public class MeshConfig implements SomeConfig, HasName {
     public static MeshConfig fromYaml(String yamlText) {
         var yaml = new Yaml();
         var map = (Map<String, Object>) yaml.load(yamlText);
-
-        var r = new MeshConfig();
-        r.withMap("", map);
-        return r;
+        return fromMap(map);
     }
 
     @SuppressWarnings("unchecked")
     public static MeshConfig fromYaml(InputStream yamlStream) {
         var yaml = new Yaml();
         var map = (Map<String, Object>) yaml.load(yamlStream);
-
-        var r = new MeshConfig();
-        r.withMap("", map);
-        return r;
+        return fromMap(map);
     }
 
     @SuppressWarnings("unchecked")
     public static MeshConfig fromYaml(Reader yamlReader) {
         var yaml = new Yaml();
         var map = (Map<String, Object>) yaml.load(yamlReader);
+        return fromMap(map);
+    }
 
+    public static MeshConfig fromMap(Map<String, Object> map) {
         var r = new MeshConfig();
         r.withMap("", map);
         return r;

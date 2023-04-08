@@ -22,21 +22,20 @@ import java.util.Map;
 public class DependingListProperty<T, K> extends DependingProperty<List<T>, K> {
 
     public DependingListProperty(Class<?> configClass, String propertyName, Property<K> dependedProperty,
-		Map<K, Operator<? extends T>> dispatchOpMap) {
+            Map<K, Operator<? extends T>> dispatchOpMap) {
         super(configClass, propertyName, dependedProperty, buildListDispatchOpMap(dispatchOpMap));
     }
 
-	public static <T, K>
-		Map<K, ListOp<T>> buildListDispatchOpMap(Map<K, Operator<? extends T>> dispatchOpMap) {
+    public static <T, K> Map<K, ListOp<T>> buildListDispatchOpMap(Map<K, Operator<? extends T>> dispatchOpMap) {
 
-		var r = new HashMap<K, ListOp<T>>();
-		for (var entry: dispatchOpMap.entrySet()) {
-			var kind = entry.getKey();
-			var dispatchOp = entry.getValue();
-			r.put(kind, new ListOp<T>(dispatchOp));
-		}
+        var r = new HashMap<K, ListOp<T>>();
+        for (var entry : dispatchOpMap.entrySet()) {
+            var kind = entry.getKey();
+            var dispatchOp = entry.getValue();
+            r.put(kind, new ListOp<T>(dispatchOp));
+        }
 
-		return r;
-	}
+        return r;
+    }
 
 }

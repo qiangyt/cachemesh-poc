@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.spi;
+package cachemesh.core.config.parser;
 
-import cachemesh.core.LocalTransport;
-import cachemesh.core.config.NodeConfig;
+@lombok.Getter
+public class URLLocation {
 
-public interface TransportProvider extends NodeHook {
+    private final int startIndex;
 
-    String getProtocol();
+    private final int endIndex;
 
-    default boolean setUpLocalTransport(NodeConfig nodeConfig, LocalTransport localTranport) {
-        return false;
+    public URLLocation(int startIndex, int endIndex) {
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
     }
-
-    Transport createRemoteTransport(NodeConfig nodeConfig);
 
 }

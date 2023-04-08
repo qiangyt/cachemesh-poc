@@ -15,20 +15,22 @@
  */
 package cachemesh.common.config;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class IntegerOp implements Operator<Integer> {
+public class UrlOp implements Operator<URL> {
 
     public static final IntegerOp DEFAULT = new IntegerOp();
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
-            .unmodifiableCollection(List.of(Character.class, Number.class, String.class));
+            .unmodifiableCollection(List.of(String.class));
 
     @Override
     public Class<?> propertyClass() {
-        return Integer.class;
+        return URL.class;
     }
 
     @Override
@@ -37,17 +39,12 @@ public class IntegerOp implements Operator<Integer> {
     }
 
     @Override
-    public Integer doConvert(String hint, Object value) {
-        var clazz = value.getClass();
-
-        if (clazz == Character.class) {
-            return (int) ((Character) value).charValue();
+    public URL doConvert(String hint, Object value) {
+        try {
+            return new URL((String) value);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
-        if (clazz == String.class) {
-            return Integer.valueOf((String) value);
-        }
-
-        return ((Number) value).intValue();
     }
 
 }

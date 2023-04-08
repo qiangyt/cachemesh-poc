@@ -24,9 +24,4 @@ public class StringOp implements Operator<String> {
         return String.class;
     }
 
-    @Override
-    public String createZeroValue() {
-        return "";
-    }
-
 }

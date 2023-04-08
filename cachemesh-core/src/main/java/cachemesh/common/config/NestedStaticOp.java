@@ -13,19 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.spi;
+package cachemesh.common.config;
 
-import cachemesh.core.LocalTransport;
-import cachemesh.core.config.NodeConfig;
+import java.lang.reflect.Constructor;
+import java.util.Map;
 
-public interface TransportProvider extends NodeHook {
+import cachemesh.common.util.Reflect;
+import lombok.Getter;
 
-    String getProtocol();
+@Getter
+public class NestedStaticOp<T extends SomeConfig> extends NestedOp<T> {
 
-    default boolean setUpLocalTransport(NodeConfig nodeConfig, LocalTransport localTranport) {
-        return false;
+    private final Constructor<T> constructor;
+
+    public NestedStaticOp(Class<T> propertyClass) {
+        super(propertyClass);
+        this.constructor = Reflect.noArgsConstructor(propertyClass);
     }
 
-    Transport createRemoteTransport(NodeConfig nodeConfig);
+    @Override
+    public T newValue(String hint, Map<String, Object> map) {
+        return Reflect.newInstance(getConstructor());
+    }
 
 }

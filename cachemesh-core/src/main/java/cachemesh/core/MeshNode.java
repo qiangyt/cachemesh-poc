@@ -24,7 +24,7 @@ import cachemesh.common.LifeStage;
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.util.LogHelper;
 import cachemesh.core.spi.Transport;
-import cachemesh.core.config.TransportConfig;
+import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.NodeHook;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,7 +34,7 @@ public class MeshNode implements ConsistentHash.Node {
 
     protected final Logger logger;
 
-    private final TransportConfig config;
+    private final NodeConfig config;
 
     private final int hashCode;
 
@@ -45,7 +45,7 @@ public class MeshNode implements ConsistentHash.Node {
 
     private final LifeStage lifeStage;
 
-    public MeshNode(TransportConfig config, Transport transport) {
+    public MeshNode(NodeConfig config, Transport transport) {
         this.config = config;
         this.transport = transport;
 
@@ -69,7 +69,7 @@ public class MeshNode implements ConsistentHash.Node {
     void beforeStart() throws InterruptedException {
         getLifeStage().starting();
 
-        int timeout = getConfig().getStartTimeoutSeconds();
+        int timeout = getConfig().getStartTimeout();
         for (var hook : getHooks()) {
             hook.beforeNodeStart(this, timeout);
         }
@@ -78,7 +78,7 @@ public class MeshNode implements ConsistentHash.Node {
     void afterStart() throws InterruptedException {
         getLifeStage().started();
 
-        int timeout = getConfig().getStartTimeoutSeconds();
+        int timeout = getConfig().getStartTimeout();
         for (var hook : getHooks()) {
             hook.afterNodeStart(this, timeout);
         }
@@ -87,7 +87,7 @@ public class MeshNode implements ConsistentHash.Node {
     void beforeStop() throws InterruptedException {
         getLifeStage().stopping();
 
-        int timeout = getConfig().getStopTimeoutSeconds();
+        int timeout = getConfig().getStopTimeout();
         for (var hook : getHooks()) {
             hook.beforeNodeStop(this, timeout);
         }
@@ -96,7 +96,7 @@ public class MeshNode implements ConsistentHash.Node {
     void afterStop() throws InterruptedException {
         getLifeStage().stopped();
 
-        int timeout = getConfig().getStopTimeoutSeconds();
+        int timeout = getConfig().getStopTimeout();
         for (var hook : getHooks()) {
             hook.afterNodeStop(this, timeout);
         }
@@ -105,7 +105,7 @@ public class MeshNode implements ConsistentHash.Node {
     public void start() throws InterruptedException {
         beforeStart();
 
-        int timeout = getConfig().getStopTimeoutSeconds();
+        int timeout = getConfig().getStopTimeout();
         getTransport().start(timeout);
 
         afterStart();
@@ -114,7 +114,7 @@ public class MeshNode implements ConsistentHash.Node {
     public void stop() throws InterruptedException {
         beforeStop();
 
-        int timeout = getConfig().getStopTimeoutSeconds();
+        int timeout = getConfig().getStopTimeout();
         getTransport().stop(timeout);
 
         afterStop();
@@ -146,7 +146,7 @@ public class MeshNode implements ConsistentHash.Node {
 
     @Override
     public String toString() {
-        return getKey() + "@" + (getConfig().isRemote() ? "remote" : "local");
+        return getKey() + "@" + (getConfig().isLocal() ? "local" : "remote");
     }
 
 }

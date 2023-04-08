@@ -18,36 +18,31 @@ package cachemesh.common.config;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
-public class IntegerOp implements Operator<Integer> {
+import lombok.Getter;
 
-    public static final IntegerOp DEFAULT = new IntegerOp();
+@Getter
+public abstract class NestedDynamicOp<T extends SomeConfig> extends NestedOp<T> {
 
     public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
-            .unmodifiableCollection(List.of(Character.class, Number.class, String.class));
+            .unmodifiableCollection(List.of(Map.class));
 
-    @Override
-    public Class<?> propertyClass() {
-        return Integer.class;
+    private final Map<Object, NestedOp<T>> factory;
+
+    public NestedDynamicOp(Class<T> propertyClass, Map<Object, NestedOp<T>> factory) {
+        super(propertyClass);
+
+        this.factory = factory;
     }
 
-    @Override
-    public Collection<Class<?>> convertableClasses() {
-        return CONVERTABLE_CLASSES;
-    }
+    public abstract Object extractKey(String hint, Map<String, Object> map);
 
     @Override
-    public Integer doConvert(String hint, Object value) {
-        var clazz = value.getClass();
-
-        if (clazz == Character.class) {
-            return (int) ((Character) value).charValue();
-        }
-        if (clazz == String.class) {
-            return Integer.valueOf((String) value);
-        }
-
-        return ((Number) value).intValue();
+    public T newValue(String hint, Map<String, Object> map) {
+        var key = extractKey(hint, map);
+        var targetOp = getFactory().get(key);
+        return targetOp.newValue(hint, map);
     }
 
 }

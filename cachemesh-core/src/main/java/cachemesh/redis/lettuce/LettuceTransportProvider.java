@@ -15,14 +15,11 @@
  */
 package cachemesh.redis.lettuce;
 
-import java.util.Map;
-
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
 import cachemesh.core.TransportRegistry;
-import cachemesh.core.TransportURL;
 import cachemesh.core.config.LettuceConfig;
-import cachemesh.core.config.TransportConfig;
+import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
 import lombok.Getter;
@@ -58,25 +55,12 @@ public class LettuceTransportProvider implements TransportProvider {
     }
 
     @Override
-    public TransportConfig parseConfig(Map<String, Object> configMap) {
-        return LettuceConfig.from(configMap);
-    }
-
-    @Override
-    public Transport createRemoteTransport(TransportConfig transportConfig) {
-        var config = (LettuceConfig) transportConfig;
+    public Transport createRemoteTransport(NodeConfig nodeConfig) {
+        var config = (LettuceConfig) nodeConfig;
         var client = getClientProvider().resolve(config);
 
         var r = new LettuceTransport(config, client, getShutdownManager());
         return r;
-    }
-
-    @Override
-    public Map<String, Object> parseUrl(String url) {
-        var transport = TransportURL.parseUrl(url);
-        transport.ensureProtocol(LettuceConfig.PROTOCOL);
-
-        return LettuceConfig.parseTarget(transport.getTarget());
     }
 
 }

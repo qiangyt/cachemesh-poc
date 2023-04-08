@@ -46,7 +46,7 @@ public class GrpcTransport extends AbstractShutdownable implements Transport {
 
     @Override
     public boolean isRemote() {
-        return getConfig().isRemote();
+        return !getConfig().isLocal();
     }
 
     @Override

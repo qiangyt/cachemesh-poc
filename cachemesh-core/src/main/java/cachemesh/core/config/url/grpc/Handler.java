@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.spi;
+package cachemesh.core.config.url.grpc;
 
-import cachemesh.core.LocalTransport;
-import cachemesh.core.config.NodeConfig;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 
-public interface TransportProvider extends NodeHook {
+public class Handler extends URLStreamHandler {
 
-    String getProtocol();
-
-    default boolean setUpLocalTransport(NodeConfig nodeConfig, LocalTransport localTranport) {
-        return false;
+    public Handler() {
     }
 
-    Transport createRemoteTransport(NodeConfig nodeConfig);
-
+    @Override
+    protected URLConnection openConnection(URL url) throws IOException {
+        return null;
+    }
 }

@@ -17,8 +17,8 @@ package cachemesh.lettuce;
 
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
-import cachemesh.core.TransportRegistry;
-import cachemesh.core.config.LettuceConfig;
+import cachemesh.core.Transports;
+import cachemesh.core.config.LettuceNodeConfig;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
@@ -30,8 +30,12 @@ public class LettuceTransportProvider implements TransportProvider {
     public static final LettuceTransportProvider DEFAULT = new LettuceTransportProvider(
             DedicatedRedisClientProvider.DEFAULT, ShutdownManager.DEFAULT);
 
+    public static void register(Transports registry) {
+        registry.register(LettuceNodeConfig.PROTOCOL, DEFAULT);
+    }
+
     public static void register() {
-        TransportRegistry.DEFAULT.register(LettuceConfig.PROTOCOL, DEFAULT);
+        register(Transports.DEFAULT);
     }
 
     private final ShutdownManager shutdownManager;
@@ -51,12 +55,12 @@ public class LettuceTransportProvider implements TransportProvider {
 
     @Override
     public String getProtocol() {
-        return LettuceConfig.PROTOCOL;
+        return LettuceNodeConfig.PROTOCOL;
     }
 
     @Override
     public Transport createRemoteTransport(NodeConfig nodeConfig) {
-        var config = (LettuceConfig) nodeConfig;
+        var config = (LettuceNodeConfig) nodeConfig;
         var client = getClientProvider().resolve(config);
 
         var r = new LettuceTransport(config, client, getShutdownManager());

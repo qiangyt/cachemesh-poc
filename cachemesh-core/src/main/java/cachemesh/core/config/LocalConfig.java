@@ -29,6 +29,7 @@ import cachemesh.common.config.EnumOp;
 import cachemesh.common.config.NestedOp;
 import cachemesh.common.config.NestedStaticOp;
 import cachemesh.common.config.Property;
+import cachemesh.common.config.PropertyHelper;
 import cachemesh.common.config.SomeConfig;
 import cachemesh.core.spi.LocalCacheProvider;
 import lombok.Setter;
@@ -74,7 +75,7 @@ public class LocalConfig implements SomeConfig {
     public static final DependingListProperty<LocalCacheConfig, Kind> CACHES_PROPERTY = new DependingListProperty<LocalCacheConfig, Kind>(
             LocalConfig.class, LocalCacheConfig.class, "caches", KIND_PROPERTY, CACHE_DISPATCH_OP_MAP);
 
-    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(KIND_PROPERTY,
+    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(KIND_PROPERTY,
             DEFAULT_CACHE_PROPERTY, CACHES_PROPERTY);
 
     public LocalConfig() {

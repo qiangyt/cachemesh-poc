@@ -16,8 +16,7 @@
 package cachemesh.common.shutdown;
 
 import java.util.ArrayList;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.LinkedHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +26,7 @@ public class ShutdownManager {
 
     public static final ShutdownManager DEFAULT = new ShutdownManager();
 
-    private SortedMap<String, ShutdownItem> items = new TreeMap<>();
+    private LinkedHashMap<String, ShutdownItem> items = new LinkedHashMap<>();
 
     @lombok.Getter
     private int maxTimeoutSeconds;
@@ -201,7 +200,7 @@ public class ShutdownManager {
             }
         }
 
-        var newItems = new TreeMap<String, ShutdownItem>();
+        var newItems = new LinkedHashMap<String, ShutdownItem>();
         currItems.forEach(item -> {
             if (item.isShutdownNeeded()) {
                 newItems.put(item.getTarget().getName(), item);

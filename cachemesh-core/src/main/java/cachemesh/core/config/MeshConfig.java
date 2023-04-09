@@ -19,6 +19,7 @@ import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
 import cachemesh.common.config.EnumOp;
 import cachemesh.common.config.Property;
+import cachemesh.common.config.PropertyHelper;
 import cachemesh.common.config.SomeConfig;
 import cachemesh.common.config.StringOp;
 import lombok.Getter;
@@ -42,6 +43,8 @@ public class MeshConfig implements SomeConfig {
 
         public final Hashing instance;
 
+        public static final EnumOp<HashingKind> OP = new EnumOp<>(HashingKind.class);
+
         private HashingKind(Hashing instance) {
             this.instance = instance;
         }
@@ -51,26 +54,31 @@ public class MeshConfig implements SomeConfig {
 
     public static final HashingKind DEFAULT_HASHING = HashingKind.murmur;
 
+    public static final Property<String> NAME_PROPERTY = Property.<String> builder().config(MeshConfig.class)
+            .name("name").devault(DEFAULT_NAME).op(StringOp.DEFAULT).build();
+
+    public static final Property<HashingKind> HASHING_PROPERTY = Property.<HashingKind> builder()
+            .config(MeshConfig.class).name("hashing").devault(DEFAULT_HASHING).op(HashingKind.OP).build();
+
+    public static final Property<NodesConfig> NODES_PROPERTY = Property.<NodesConfig> builder().config(MeshConfig.class)
+            .name("nodes").devault(null).op(NodesConfig.OP).build();
+
+    public static final Property<LocalConfig> LOCAL_PROPERTY = Property.<LocalConfig> builder().config(MeshConfig.class)
+            .name("local").devault(LocalConfig.builder().build()).op(LocalConfig.OP).build();
+
+    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(NAME_PROPERTY,
+            HASHING_PROPERTY, NODES_PROPERTY, LOCAL_PROPERTY);
+
     @Builder.Default
     private String name = DEFAULT_NAME;
 
     @Builder.Default
     private HashingKind hashing = DEFAULT_HASHING;
 
-    @Builder.Default
-    private NodesConfig nodes = NodesConfig.builder().build();
+    private NodesConfig nodes;
 
     @Builder.Default
     private LocalConfig local = LocalConfig.builder().build();
-
-    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-            Property.builder().config(MeshConfig.class).name("name").devault(DEFAULT_NAME).op(StringOp.DEFAULT).build(),
-            Property.builder().config(MeshConfig.class).name("hashing").devault(DEFAULT_HASHING)
-                    .op(new EnumOp<>(HashingKind.class)).build(),
-            Property.builder().config(MeshConfig.class).name("nodes").devault(NodesConfig.builder().build())
-                    .op(NodesConfig.OP).build(),
-            Property.builder().config(MeshConfig.class).name("local").devault(LocalConfig.builder().build())
-                    .op(LocalConfig.OP).build());
 
     public MeshConfig() {
     }

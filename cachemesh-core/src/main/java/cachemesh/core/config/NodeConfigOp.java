@@ -26,8 +26,8 @@ import cachemesh.common.config.NestedDynamicOp;
 
 public class NodeConfigOp extends NestedDynamicOp<NodeConfig> {
 
-    public static final Map<Object, NestedOp<NodeConfig>> FACTORY = Map.of(LettuceConfig.PROTOCOL, LettuceConfig.OP,
-            GrpcConfig.PROTOCOL, GrpcConfig.OP);
+    public static final Map<Object, NestedOp<NodeConfig>> FACTORY = Map.of(LettuceNodeConfig.PROTOCOL,
+            LettuceNodeConfig.OP, GrpcNodeConfig.PROTOCOL, GrpcNodeConfig.OP);
 
     public static final NodeConfigOp DEFAULT = new NodeConfigOp();
 

@@ -46,27 +46,26 @@ public class LocalTransport implements Transport {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
         var cache = getLocalCacheManager().get(cacheName);
         if (cache == null) {
-            return (GetResult<byte[]>) GetResult.NOT_FOUND;
+            return GetResult.notFound();
         }
 
         var v = cache.getSingle(key);
         if (v == null || v.hasValue() == false) {
-            return (GetResult<byte[]>) GetResult.NOT_FOUND;
+            return GetResult.notFound();
         }
 
         long dataVer = v.getVersion();
         if (dataVer == version) {
-            return (GetResult<byte[]>) GetResult.NO_CHANGE;
+            return GetResult.noChange();
         }
 
         var cfg = cache.getConfig();
         var serder = cfg.getSerder().getInstance();
         var data = v.isNullValue() ? null : v.getBytes(serder);
-        return new GetResult<>(ResultStatus.OK, data, dataVer);
+        return GetResult.ok(data, dataVer);
     }
 
     @Override

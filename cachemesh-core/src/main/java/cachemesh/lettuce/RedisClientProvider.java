@@ -15,15 +15,15 @@
  */
 package cachemesh.lettuce;
 
-import cachemesh.core.config.LettuceConfig;
+import cachemesh.core.config.LettuceNodeConfig;
 import io.lettuce.core.RedisClient;
 
 public interface RedisClientProvider {
 
-    RedisClient get(LettuceConfig config);
+    RedisClient get(LettuceNodeConfig config);
 
-    RedisClient resolve(LettuceConfig config);
+    RedisClient resolve(LettuceNodeConfig config);
 
-    RedisClient destroy(LettuceConfig config, int timeoutSeconds) throws InterruptedException;
+    RedisClient destroy(LettuceNodeConfig config, int timeoutSeconds) throws InterruptedException;
 
 }

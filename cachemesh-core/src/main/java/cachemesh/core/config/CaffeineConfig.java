@@ -23,7 +23,7 @@ import cachemesh.common.config.IntegerOp;
 import cachemesh.common.config.NestedOp;
 import cachemesh.common.config.NestedStaticOp;
 import cachemesh.common.config.Property;
-import cachemesh.common.config.SomeConfig;
+import cachemesh.common.config.PropertyHelper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
@@ -46,7 +46,7 @@ public class CaffeineConfig extends LocalCacheConfig {
     @Builder.Default
     private Duration expireAfterWrite = DEFAULT_EXPIRE_AFTER_WIRTER;
 
-    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(LocalCacheConfig.PROPERTIES,
+    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(LocalCacheConfig.PROPERTIES,
             Property.builder().config(CaffeineConfig.class).name("maximumSize").devault(DEFAULT_MAXIMUM_SIZE)
                     .op(IntegerOp.DEFAULT).build(),
             Property.builder().config(CaffeineConfig.class).name("expireAfterWrite")

@@ -46,7 +46,7 @@ public class DependingPropertyTest {
 
 		@Override
 		public Collection<Property<?>> properties() {
-			return SomeConfig.buildProperties(
+			return PropertyHelper.buildProperties(
 						Property.builder()
 							.config(Sample1.class).name("num").op(IntegerOp.DEFAULT)
 							.build());
@@ -68,7 +68,7 @@ public class DependingPropertyTest {
 
 		@Override
 		public Collection<Property<?>> properties() {
-			return SomeConfig.buildProperties(
+			return PropertyHelper.buildProperties(
 						Property.builder()
 							.config(Sample2.class).name("ok").op(BooleanOp.DEFAULT)
 							.build());
@@ -102,7 +102,7 @@ public class DependingPropertyTest {
 			var dispatchOpMap = Map.of("1", new NestedStaticOp<>(Sample1.class),
 									"2", new NestedStaticOp<>(Sample2.class));
 			var targetProp = new DependingProperty<Base, String>(TestConfig.class, Base.class, "target", kindProp, dispatchOpMap);
-			return SomeConfig.buildProperties(kindProp, targetProp);
+			return PropertyHelper.buildProperties(kindProp, targetProp);
 		}
 	}
 

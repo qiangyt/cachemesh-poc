@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import cachemesh.common.config.ClassOp;
 import cachemesh.common.config.Property;
+import cachemesh.common.config.PropertyHelper;
 import cachemesh.common.config.SomeConfig;
 import cachemesh.common.config.StringOp;
 import lombok.Getter;
@@ -38,7 +39,7 @@ public abstract class LocalCacheConfig implements SomeConfig {
     @Builder.Default
     private SerderConfig serder = SerderConfig.builder().build();
 
-    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
+    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(
             Property.builder().config(LocalCacheConfig.class).name("name").op(StringOp.DEFAULT).build(),
             Property.builder().config(LocalCacheConfig.class).name("valueClass").devault(byte[].class)
                     .op(ClassOp.DEFAULT).build(),

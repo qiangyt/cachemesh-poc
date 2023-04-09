@@ -43,7 +43,7 @@ public class ManagerTest {
 		int counterForCreate;
 
 		@Override
-		protected String retrieveKey(Config config) {
+		protected String supplyKey(Config config) {
 			return config.name;
 		}
 

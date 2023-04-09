@@ -40,7 +40,7 @@ public class MeshNetwork implements Shutdownable {
 
     private final LocalCacheManager localCacheManager;
 
-    private final TransportRegistry transportRegistry;
+    private final Transports transportRegistry;
 
     private final Logger logger;
 
@@ -57,11 +57,11 @@ public class MeshNetwork implements Shutdownable {
                 ShutdownManager.DEFAULT);
         var nearCacheManager = localCacheManager;
 
-        return new MeshNetwork(config, nearCacheManager, localCacheManager, TransportRegistry.DEFAULT);
+        return new MeshNetwork(config, nearCacheManager, localCacheManager, Transports.DEFAULT);
     }
 
     public MeshNetwork(MeshConfig config, LocalCacheManager nearCacheManager, LocalCacheManager localCacheManager,
-            TransportRegistry transportRegistry) {
+            Transports transportRegistry) {
 
         this.config = config;
         this.route = new ConsistentHash<>(config.getHashing().instance);

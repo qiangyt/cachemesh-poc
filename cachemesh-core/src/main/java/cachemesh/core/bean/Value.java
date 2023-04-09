@@ -15,20 +15,15 @@
  */
 package cachemesh.core.bean;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-
 import cachemesh.common.misc.Serderializer;
 
 public interface Value {
 
-    static final Object NULL_OBJECT = new Object();
+    public static enum Status {
 
-    static final byte[] NULL_BYTES = new byte[] {};
+        NOT_FOUND, OK, NO_CHANGE, REDIRECT,
 
-    static final Reference<byte[]> NULL_BYTES_R = new WeakReference<>(NULL_BYTES);
-
-    static final Reference<Object> NULL_OBJECT_R = new WeakReference<>(NULL_OBJECT);
+    }
 
     boolean hasValue();
 

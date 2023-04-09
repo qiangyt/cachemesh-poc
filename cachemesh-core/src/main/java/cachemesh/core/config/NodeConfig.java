@@ -23,6 +23,7 @@ import cachemesh.common.config.IntegerOp;
 import cachemesh.common.config.NestedOp;
 import cachemesh.common.config.NestedStaticOp;
 import cachemesh.common.config.Property;
+import cachemesh.common.config.PropertyHelper;
 import cachemesh.common.config.SimpleUrlOp;
 import cachemesh.common.config.SomeConfig;
 import cachemesh.common.misc.SimpleURL;
@@ -52,7 +53,7 @@ public abstract class NodeConfig implements SomeConfig {
     // @Builder.Default
     private int stopTimeout = DEFAULT_STOP_TIMEOUT;
 
-    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
+    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(
             Property.builder().config(NodeConfig.class).name("url").op(SimpleUrlOp.DEFAULT).build(),
             Property.builder().config(NodeConfig.class).name("local").devault(DEFAULT_LOCAL).op(BooleanOp.DEFAULT)
                     .build(),

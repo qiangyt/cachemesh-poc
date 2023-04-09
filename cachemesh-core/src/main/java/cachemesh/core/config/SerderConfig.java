@@ -23,6 +23,7 @@ import cachemesh.common.config.EnumOp;
 import cachemesh.common.config.NestedOp;
 import cachemesh.common.config.NestedStaticOp;
 import cachemesh.common.config.Property;
+import cachemesh.common.config.PropertyHelper;
 import cachemesh.common.config.SomeConfig;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,7 +48,7 @@ public class SerderConfig implements SomeConfig {
     @Builder.Default
     private Serderializer instance = JacksonSerderializer.DEFAULT;
 
-    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(Property.builder()
+    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(Property.builder()
             .config(SerderConfig.class).name("kind").devault(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build());
 
     @Override

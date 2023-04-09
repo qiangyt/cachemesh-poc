@@ -15,10 +15,7 @@
  */
 package cachemesh.common.config;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,18 +24,6 @@ import cachemesh.common.misc.Mappable;
 public interface SomeConfig extends Mappable {
 
     Collection<Property<?>> properties();
-
-    static Collection<Property<?>> buildProperties(Property<?>... array) {
-        var list = Arrays.asList(array);
-        return Collections.unmodifiableList(list);
-    }
-
-    static Collection<Property<?>> buildProperties(Collection<Property<?>> supers, Property<?>... array) {
-        var list = new ArrayList<Property<?>>(supers.size() + array.length);
-        list.addAll(supers);
-        list.addAll(Arrays.asList(array));
-        return Collections.unmodifiableList(list);
-    }
 
     @Override
     default Map<String, Object> toMap() {

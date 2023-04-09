@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "URLHandlers",
+            "request": "launch",
+            "mainClass": "cachemesh.core.config.url.URLHandlers",
+            "projectName": "cachemesh-core"
+        },
+        {
+            "type": "java",
+            "name": "Handlers",
+            "request": "launch",
+            "mainClass": "cachemesh.core.url.Handlers",
+            "projectName": "cachemesh-core"
+        },
+        {
+            "type": "java",
             "name": "Handlers",
             "request": "launch",
             "mainClass": "cachemesh.core.config.url.Handlers",

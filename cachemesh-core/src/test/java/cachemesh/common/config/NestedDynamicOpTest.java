@@ -39,7 +39,7 @@ public class NestedDynamicOpTest {
 
 		@Override
 		public Collection<Property<?>> properties() {
-			return SomeConfig.buildProperties(
+			return PropertyHelper.buildProperties(
 						Property.builder()
 							.config(Base.class).name("kind").op(StringOp.DEFAULT)
 							.build());
@@ -62,7 +62,7 @@ public class NestedDynamicOpTest {
 		@Override
 		public Collection<Property<?>> properties() {
 			var base = super.properties();
-			return SomeConfig.buildProperties(
+			return PropertyHelper.buildProperties(
 						base,
 						Property.builder()
 							.config(Sample1.class).name("num").op(IntegerOp.DEFAULT)
@@ -86,7 +86,7 @@ public class NestedDynamicOpTest {
 		@Override
 		public Collection<Property<?>> properties() {
 			var base = super.properties();
-			return SomeConfig.buildProperties(
+			return PropertyHelper.buildProperties(
 						base,
 						Property.builder()
 							.config(Sample2.class).name("ok").op(BooleanOp.DEFAULT)

@@ -31,7 +31,7 @@ public abstract class Registry<C, T> {
     }
 
     public void register(C config, T item) {
-        var key = retrieveKey(config);
+        var key = supplyKey(config);
         getItemMap().compute(key, (k, existing) -> {
             if (existing != null) {
                 throw new IllegalArgumentException("duplicated: " + key);
@@ -41,12 +41,12 @@ public abstract class Registry<C, T> {
     }
 
     public T unregister(C config) {
-        String key = retrieveKey(config);
+        String key = supplyKey(config);
         return getItemMap().remove(key);
     }
 
     public T get(C config) {
-        String key = retrieveKey(config);
+        String key = supplyKey(config);
         return getByKey(key);
     }
 
@@ -54,6 +54,6 @@ public abstract class Registry<C, T> {
         return getItemMap().get(key);
     }
 
-    protected abstract String retrieveKey(C config);
+    protected abstract String supplyKey(C config);
 
 }

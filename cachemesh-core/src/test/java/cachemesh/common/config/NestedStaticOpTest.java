@@ -39,7 +39,7 @@ public class NestedStaticOpTest {
 
 		@Override
 		public Collection<Property<?>> properties() {
-			return SomeConfig.buildProperties(
+			return PropertyHelper.buildProperties(
 						Property.builder()
 							.config(Sample.class).name("num").op(IntegerOp.DEFAULT)
 							.build());

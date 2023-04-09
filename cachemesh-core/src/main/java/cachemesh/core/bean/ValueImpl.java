@@ -22,6 +22,14 @@ import cachemesh.common.misc.Serderializer;
 
 public class ValueImpl implements Value {
 
+    static final Object NULL_OBJECT = new Object();
+
+    static final byte[] NULL_BYTES = new byte[] {};
+
+    static final Reference<byte[]> NULL_BYTES_R = new WeakReference<>(NULL_BYTES);
+
+    static final Reference<Object> NULL_OBJECT_R = new WeakReference<>(NULL_OBJECT);
+
     private Reference<byte[]> bytesR; // TODO: or use SoftReference; have this configurable
 
     private Object object;

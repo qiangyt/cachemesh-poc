@@ -24,21 +24,24 @@ import lombok.Getter;
 
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.core.bean.GetResult;
-import cachemesh.core.config.GrpcConfig;
+import cachemesh.core.config.GrpcNodeConfig;
 import cachemesh.core.spi.Transport;
+import cachemesh.grpc.cache.CacheServiceGrpc;
+import cachemesh.grpc.cache.GetSingleRequest;
+import cachemesh.grpc.cache.PutSingleRequest;
 
 import com.google.protobuf.ByteString;
 
 @Getter
 public class GrpcTransport extends AbstractShutdownable implements Transport {
 
-    private CacheMeshGrpc.CacheMeshBlockingStub stub;
+    private CacheServiceGrpc.CacheServiceBlockingStub stub;
 
     private ManagedChannel channel;
 
-    private final GrpcConfig config;
+    private final GrpcNodeConfig config;
 
-    public GrpcTransport(GrpcConfig config, ShutdownManager shutdownManager) {
+    public GrpcTransport(GrpcNodeConfig config, ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);
 
         this.config = config;
@@ -53,7 +56,7 @@ public class GrpcTransport extends AbstractShutdownable implements Transport {
     public void start(int timeoutSeconds) throws InterruptedException {
         var ch = getConfig().createClientChannel();
         this.channel = ch;
-        this.stub = CacheMeshGrpc.newBlockingStub(ch);
+        this.stub = CacheServiceGrpc.newBlockingStub(ch);
     }
 
     @Override

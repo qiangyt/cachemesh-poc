@@ -19,7 +19,12 @@ import java.net.URLStreamHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class URLHelper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(URLHelper.class);
 
     // https://github.com/anthonynsimon/jurl/tree/master/src/main/java/com/anthonynsimon/url
     // this is not a standard-compliant URL query parser.
@@ -42,10 +47,18 @@ public class URLHelper {
     }
 
     public static void registerHandler(Class<? extends URLStreamHandler> handlerClass) {
+        if (handlerClass.getName().equals("Handler")) {
+            throw new IllegalArgumentException("handler class must be named 'Handler'");
+        }
+
         final String KEY = "java.protocol.handler.pkgs";
 
         var enclosingPkg = handlerClass.getPackageName();
-        var pkg = enclosingPkg.substring(0, enclosingPkg.lastIndexOf('.'));
+        var lastDot = enclosingPkg.lastIndexOf('.');
+        var pkg = enclosingPkg.substring(0, lastDot);
+        var protocol = enclosingPkg.substring(lastDot + 1);
+
+        LOG.info("registers URL protocol: {}, handler: {}", protocol, handlerClass.getCanonicalName());
 
         var prev = System.getProperty(KEY);
         if (prev == null) {

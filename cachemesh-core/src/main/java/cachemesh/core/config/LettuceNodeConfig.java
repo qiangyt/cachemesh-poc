@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import cachemesh.common.config.IntegerOp;
 import cachemesh.common.config.Property;
-import cachemesh.common.config.SomeConfig;
+import cachemesh.common.config.PropertyHelper;
 import cachemesh.common.config.StringOp;
 import cachemesh.common.misc.SimpleURL;
 import lombok.Builder;
@@ -29,7 +29,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LettuceConfig extends NodeConfig {
+public class LettuceNodeConfig extends NodeConfig {
 
     public static final String PROTOCOL = "lettuce";
 
@@ -49,22 +49,22 @@ public class LettuceConfig extends NodeConfig {
 
     private String keySeparator;
 
-    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(NodeConfig.PROPERTIES,
-            Property.builder().config(GrpcConfig.class).name("host").op(StringOp.DEFAULT).build(),
-            Property.builder().config(GrpcConfig.class).name("port").devault(DEFAULT_PORT).op(IntegerOp.DEFAULT)
+    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(NodeConfig.PROPERTIES,
+            Property.builder().config(GrpcNodeConfig.class).name("host").op(StringOp.DEFAULT).build(),
+            Property.builder().config(GrpcNodeConfig.class).name("port").devault(DEFAULT_PORT).op(IntegerOp.DEFAULT)
                     .build(),
-            Property.builder().config(GrpcConfig.class).name("database").devault(DEFAULT_DATABASE).op(StringOp.DEFAULT)
-                    .build(),
-            Property.builder().config(GrpcConfig.class).name("keySeparator").devault(DEFAULT_SEPARATOR)
+            Property.builder().config(GrpcNodeConfig.class).name("database").devault(DEFAULT_DATABASE)
+                    .op(StringOp.DEFAULT).build(),
+            Property.builder().config(GrpcNodeConfig.class).name("keySeparator").devault(DEFAULT_SEPARATOR)
                     .op(StringOp.DEFAULT).build());
 
     @Builder
-    public LettuceConfig(SimpleURL url) {
+    public LettuceNodeConfig(SimpleURL url) {
         super(url);
     }
 
     @Builder
-    public LettuceConfig(SimpleURL url, int database, String keySeparator, boolean local, int startTimeout,
+    public LettuceNodeConfig(SimpleURL url, int database, String keySeparator, boolean local, int startTimeout,
             int stopTimeout) {
         super(url, local, startTimeout, stopTimeout);
 
@@ -73,7 +73,7 @@ public class LettuceConfig extends NodeConfig {
     }
 
     @Builder
-    public LettuceConfig(String host, int port, int database, String keySeparator, boolean local, int startTimeout,
+    public LettuceNodeConfig(String host, int port, int database, String keySeparator, boolean local, int startTimeout,
             int stopTimeout) {
         super(local, startTimeout, stopTimeout);
 

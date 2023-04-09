@@ -18,8 +18,9 @@ package cachemesh.core.config;
 import java.util.Collection;
 
 import cachemesh.common.config.IntegerOp;
+import cachemesh.common.config.NestedStaticOp;
 import cachemesh.common.config.Property;
-import cachemesh.common.config.SomeConfig;
+import cachemesh.common.config.PropertyHelper;
 import cachemesh.common.config.StringOp;
 import cachemesh.common.misc.SimpleURL;
 import io.grpc.Grpc;
@@ -31,7 +32,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GrpcConfig extends NodeConfig {
+public class GrpcNodeConfig extends NodeConfig {
 
     public static final String PROTOCOL = "grpc";
 
@@ -45,22 +46,25 @@ public class GrpcConfig extends NodeConfig {
 
     private int port;
 
-    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(NodeConfig.PROPERTIES,
-            Property.builder().config(GrpcConfig.class).name("host").op(StringOp.DEFAULT).build(), Property.builder()
-                    .config(GrpcConfig.class).name("port").devault(DEFAULT_PORT).op(IntegerOp.DEFAULT).build());
+    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(NodeConfig.PROPERTIES,
+            Property.builder().config(GrpcNodeConfig.class).name("host").op(StringOp.DEFAULT).build(),
+            Property.builder().config(GrpcNodeConfig.class).name("port").devault(DEFAULT_PORT).op(IntegerOp.DEFAULT)
+                    .build());
+
+    public static final NestedStaticOp<GrpcNodeConfig> OP = new NestedStaticOp<>(GrpcNodeConfig.class);
 
     @Builder
-    public GrpcConfig(SimpleURL url) {
+    public GrpcNodeConfig(SimpleURL url) {
         super(url);
     }
 
     @Builder
-    public GrpcConfig(SimpleURL url, boolean local, int startTimeout, int stopTimeout) {
+    public GrpcNodeConfig(SimpleURL url, boolean local, int startTimeout, int stopTimeout) {
         super(url, local, startTimeout, stopTimeout);
     }
 
     @Builder
-    public GrpcConfig(String host, int port, boolean local, int startTimeout, int stopTimeout) {
+    public GrpcNodeConfig(String host, int port, boolean local, int startTimeout, int stopTimeout) {
         super(local, startTimeout, stopTimeout);
 
         this.host = host;

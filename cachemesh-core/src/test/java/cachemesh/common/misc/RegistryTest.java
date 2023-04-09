@@ -34,7 +34,7 @@ public class RegistryTest {
 
 	class TargetRegistry extends Registry<Config, String> {
 		@Override
-		protected String retrieveKey(Config config) {
+		protected String supplyKey(Config config) {
 			return config.name;
 		}
 	}

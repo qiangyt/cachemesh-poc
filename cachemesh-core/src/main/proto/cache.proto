@@ -1,15 +1,14 @@
 syntax = "proto3";
 
-option go_package = "cachemesh/grpc";
+option go_package = "cachemesh/grpc/cache";
 option java_multiple_files = true;
-option java_package = "cachemesh.grpc";
-option java_outer_classname = "CacheMeshProto";
-option objc_class_prefix = "CMP";
+option java_package = "cachemesh.grpc.cache";
+option java_outer_classname = "CacheServiceProto";
 
-package cachemesh;
+package cache;
 
 // The service definition.
-service CacheMesh {
+service CacheService {
   rpc GetSingle (GetSingleRequest) returns (GetSingleResponse) {}
   rpc PutSingle (PutSingleRequest) returns (PutSingleResponse) {}
 }

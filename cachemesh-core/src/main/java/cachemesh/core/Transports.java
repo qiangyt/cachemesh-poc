@@ -15,8 +15,16 @@
  */
 package cachemesh.core;
 
-public enum ResultStatus {
+import cachemesh.common.misc.Registry;
+import cachemesh.core.spi.TransportProvider;
 
-    NOT_FOUND, OK, NO_CHANGE, REDIRECT,
+public class Transports extends Registry<String, TransportProvider> {
+
+    public static final Transports DEFAULT = new Transports();
+
+    @Override
+    protected String supplyKey(String protocol) {
+        return protocol;
+    }
 
 }

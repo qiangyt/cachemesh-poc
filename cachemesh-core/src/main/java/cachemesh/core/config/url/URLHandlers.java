@@ -19,7 +19,7 @@ import java.net.URL;
 
 import cachemesh.common.misc.URLHelper;
 
-public class Handlers {
+public class URLHandlers {
 
     public static void registerAll() {
         URLHelper.registerHandler(cachemesh.core.config.url.grpc.Handler.class);

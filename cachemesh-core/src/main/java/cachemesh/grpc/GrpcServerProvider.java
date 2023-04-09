@@ -17,11 +17,11 @@ package cachemesh.grpc;
 
 import cachemesh.common.misc.Manager;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.config.GrpcConfig;
+import cachemesh.core.config.GrpcNodeConfig;
 import lombok.Getter;
 
 @Getter
-public class GrpcServerProvider extends Manager<GrpcConfig, GrpcServer> {
+public class GrpcServerProvider extends Manager<GrpcNodeConfig, GrpcServer> {
 
     public static final GrpcServerProvider DEFAULT = new GrpcServerProvider(ShutdownManager.DEFAULT);
 
@@ -32,17 +32,17 @@ public class GrpcServerProvider extends Manager<GrpcConfig, GrpcServer> {
     }
 
     @Override
-    protected String retrieveKey(GrpcConfig config) {
+    protected String supplyKey(GrpcNodeConfig config) {
         return config.getTarget();
     }
 
     @Override
-    protected GrpcServer doCreate(GrpcConfig config) {
+    protected GrpcServer doCreate(GrpcNodeConfig config) {
         return new DedicatedGrpcServer(config, getShutdownManager());
     }
 
     @Override
-    protected void doDestroy(GrpcConfig config, GrpcServer server, int timeoutSeconds) throws InterruptedException {
+    protected void doDestroy(GrpcNodeConfig config, GrpcServer server, int timeoutSeconds) throws InterruptedException {
         server.stop(timeoutSeconds);
     }
 

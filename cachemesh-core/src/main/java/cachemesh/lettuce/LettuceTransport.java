@@ -15,9 +15,8 @@
  */
 package cachemesh.lettuce;
 
-import cachemesh.core.ResultStatus;
 import cachemesh.core.bean.GetResult;
-import cachemesh.core.config.LettuceConfig;
+import cachemesh.core.config.LettuceNodeConfig;
 import cachemesh.core.spi.Transport;
 import io.lettuce.core.api.sync.RedisCommands;
 import cachemesh.common.shutdown.AbstractShutdownable;
@@ -34,9 +33,9 @@ public class LettuceTransport extends AbstractShutdownable implements Transport 
 
     private final RedisClient client;
 
-    private final LettuceConfig config;
+    private final LettuceNodeConfig config;
 
-    public LettuceTransport(LettuceConfig config, RedisClient client, ShutdownManager shutdownManager) {
+    public LettuceTransport(LettuceNodeConfig config, RedisClient client, ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);
 
         this.config = config;
@@ -78,17 +77,16 @@ public class LettuceTransport extends AbstractShutdownable implements Transport 
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
         var redisKey = generateRedisKey(cacheName, key);
 
         var cmds = syncCommand();
         var value = cmds.get(redisKey);
         if (value == null) {// TODO: how to indicate we do have the value but the value is null
-            return (GetResult<byte[]>) GetResult.NOT_FOUND;
+            return GetResult.notFound();
         }
 
-        return new GetResult<>(ResultStatus.OK, value, 0);
+        return GetResult.ok(value, 0);
     }
 
     @Override

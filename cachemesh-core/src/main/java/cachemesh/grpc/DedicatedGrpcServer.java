@@ -23,7 +23,7 @@ import cachemesh.common.misc.LifeStage;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.config.GrpcConfig;
+import cachemesh.core.config.GrpcNodeConfig;
 import io.grpc.BindableService;
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
@@ -42,11 +42,11 @@ public class DedicatedGrpcServer extends AbstractShutdownable implements GrpcSer
     @Setter(AccessLevel.PROTECTED)
     private Server instance;
 
-    private final GrpcConfig config;
+    private final GrpcNodeConfig config;
 
     private final LifeStage lifeStage;
 
-    public DedicatedGrpcServer(GrpcConfig config, ShutdownManager shutdownManager) {
+    public DedicatedGrpcServer(GrpcNodeConfig config, ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);
 
         this.config = config;

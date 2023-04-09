@@ -15,45 +15,29 @@
  */
 package cachemesh.core.config;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Collection;
 
-import cachemesh.common.config.EnumOp;
-import cachemesh.common.config.ListOp;
 import cachemesh.common.config.NestedOp;
 import cachemesh.common.config.NestedStaticOp;
 import cachemesh.common.config.Property;
+import cachemesh.common.config.PropertyHelper;
 import cachemesh.common.config.SomeConfig;
+import cachemesh.common.config.StringOp;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Builder;
-import lombok.Singular;
 
-@Getter
-@Setter
-@Builder
-public class NodesConfig implements SomeConfig {
+public abstract class NodesConfig implements SomeConfig {
 
-    public static NestedOp<NodesConfig> OP = new NestedStaticOp<>(NodesConfig.class);
+    public static final NestedOp<NodesConfig> OP = new NestedStaticOp<>(NodesConfig.class);
 
-    public static final Kind DEFAULT_KIND = Kind.inline;
+    public static final Property<String> KIND_PROPERTY = Property.<String> builder().config(NodesConfig.class)
+            .name("kind").devault("inline").op(StringOp.DEFAULT).build();
 
-    public enum Kind {
-        inline, jgroup, k8s
-    }
+    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(KIND_PROPERTY);
 
-    @Builder.Default
-    private Kind kind = DEFAULT_KIND;
-
-    @Singular("inline")
-    private List<NodeConfig> inline;
-
-    public static final Collection<Property<?>> PROPERTIES = SomeConfig.buildProperties(
-            Property.builder().config(NodesConfig.class).name("kind").devault(DEFAULT_KIND).op(new EnumOp<>(Kind.class))
-                    .build(),
-            Property.builder().config(NodesConfig.class).name("inline").devault(new ArrayList<>())
-                    .op(new ListOp<>(NodeConfigOp.DEFAULT)).build());
+    @Getter
+    @Setter
+    private String kind;
 
     @Override
     public Collection<Property<?>> properties() {

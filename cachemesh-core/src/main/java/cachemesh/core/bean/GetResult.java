@@ -15,26 +15,40 @@
  */
 package cachemesh.core.bean;
 
-import cachemesh.core.ResultStatus;
 import lombok.Getter;
+import cachemesh.core.bean.Value.Status;
 
 @Getter
 public class GetResult<T> {
 
-    public static final GetResult<?> NOT_FOUND = new GetResult<>(ResultStatus.NOT_FOUND, null, 0);
+    private static final GetResult<?> NOT_FOUND = new GetResult<>(Status.NOT_FOUND, null, 0);
 
-    public static final GetResult<?> NO_CHANGE = new GetResult<>(ResultStatus.NO_CHANGE, null, 0);
+    private static final GetResult<?> NO_CHANGE = new GetResult<>(Status.NO_CHANGE, null, 0);
 
-    private final ResultStatus status;
+    private final Status status;
 
     private final T value;
 
     private final long version;
 
-    public GetResult(ResultStatus status, T value, long version) {
+    public GetResult(Status status, T value, long version) {
         this.status = status;
         this.value = value;
         this.version = version;
+    }
+
+    public static <T> GetResult<T> ok(T value, long version) {
+        return new GetResult<>(Status.OK, value, version);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> GetResult<T> notFound() {
+        return (GetResult<T>) NOT_FOUND;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> GetResult<T> noChange() {
+        return (GetResult<T>) NO_CHANGE;
     }
 
 }

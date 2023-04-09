@@ -18,12 +18,12 @@ package cachemesh.common.misc;
 public abstract class Manager<C, T> extends Registry<C, T> {
 
     public T resolve(C config) {
-        String key = retrieveKey(config);
+        String key = supplyKey(config);
         return getItemMap().computeIfAbsent(key, k -> doCreate(config));
     }
 
     public T create(C config) {
-        String key = retrieveKey(config);
+        String key = supplyKey(config);
         return getItemMap().compute(key, (k, existing) -> {
             if (existing != null) {
                 throw new IllegalArgumentException("duplicated: " + key);

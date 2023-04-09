@@ -18,7 +18,8 @@ package cachemesh.grpc;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.LocalTransport;
 import cachemesh.core.MeshNode;
-import cachemesh.core.config.GrpcConfig;
+import cachemesh.core.Transports;
+import cachemesh.core.config.GrpcNodeConfig;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
@@ -29,6 +30,14 @@ public class GrpcTransportProvider implements TransportProvider {
 
     public static final GrpcTransportProvider DEFAULT = new GrpcTransportProvider(GrpcServerProvider.DEFAULT,
             ShutdownManager.DEFAULT);
+
+    public static void register(Transports registry) {
+        registry.register(GrpcNodeConfig.PROTOCOL, GrpcTransportProvider.DEFAULT);
+    }
+
+    public static void register() {
+        register(Transports.DEFAULT);
+    }
 
     private final GrpcServerProvider serverProvider;
 
@@ -41,7 +50,7 @@ public class GrpcTransportProvider implements TransportProvider {
 
     @Override
     public void beforeNodeStart(MeshNode node, int timeoutSeconds) throws InterruptedException {
-        var cfg = (GrpcConfig) node.getConfig();
+        var cfg = (GrpcNodeConfig) node.getConfig();
         if (cfg.isLocal() == false) {
             return;
         }
@@ -52,7 +61,7 @@ public class GrpcTransportProvider implements TransportProvider {
 
     @Override
     public boolean bindLocalTransport(NodeConfig transportConfig, LocalTransport localTranport) {
-        var config = (GrpcConfig) transportConfig;
+        var config = (GrpcNodeConfig) transportConfig;
         var server = new DedicatedGrpcServer(config, getShutdownManager());
 
         if (server.isStarted()) {
@@ -66,7 +75,7 @@ public class GrpcTransportProvider implements TransportProvider {
 
     @Override
     public String getProtocol() {
-        return GrpcConfig.PROTOCOL;
+        return GrpcNodeConfig.PROTOCOL;
     }
 
     /*
@@ -75,7 +84,7 @@ public class GrpcTransportProvider implements TransportProvider {
 
     @Override
     public Transport createRemoteTransport(NodeConfig nodeConfig) {
-        var config = (GrpcConfig) nodeConfig;
+        var config = (GrpcNodeConfig) nodeConfig;
         return new GrpcTransport(config, getShutdownManager());
     }
 

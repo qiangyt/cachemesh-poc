@@ -15,16 +15,14 @@
  */
 package cachemesh.core.config;
 
-import java.util.Collection;
-
 import cachemesh.common.jackson.JacksonSerderializer;
 import cachemesh.common.misc.Serderializer;
-import cachemesh.common.config.EnumOp;
-import cachemesh.common.config.NestedOp;
-import cachemesh.common.config.NestedStaticOp;
-import cachemesh.common.config.Property;
-import cachemesh.common.config.PropertyHelper;
-import cachemesh.common.config.SomeConfig;
+import cachemesh.common.config.Prop;
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Bean;
+import cachemesh.common.config.op.BeanOp;
+import cachemesh.common.config.op.EnumOp;
+import cachemesh.common.config.op.ReflectBeanOp;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
@@ -32,13 +30,13 @@ import lombok.Builder;
 @Getter
 @Setter
 @Builder
-public class SerderConfig implements SomeConfig {
+public class SerderConfig implements Bean {
 
     public static enum Kind {
         jackson
     }
 
-    public static final NestedOp<SerderConfig> OP = new NestedStaticOp<>(SerderConfig.class);
+    public static final BeanOp<SerderConfig> OP = new ReflectBeanOp<>(SerderConfig.class);
 
     public static final Kind DEFAULT_KIND = Kind.jackson;
 
@@ -48,12 +46,12 @@ public class SerderConfig implements SomeConfig {
     @Builder.Default
     private Serderializer instance = JacksonSerderializer.DEFAULT;
 
-    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(Property.builder()
-            .config(SerderConfig.class).name("kind").devault(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build());
+    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(Prop.builder().config(SerderConfig.class)
+            .name("kind").devault(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build());
 
     @Override
-    public Collection<Property<?>> properties() {
-        return PROPERTIES;
+    public Iterable<Prop<?>> props() {
+        return PROPS;
     }
 
 }

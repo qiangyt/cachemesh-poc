@@ -16,41 +16,42 @@
 package cachemesh.common.config;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Map;
 
 import cachemesh.common.misc.StringHelper;
 
-public interface Operator<T> {
+public interface Op<T> {
 
-    Class<?> propertyClass();
+    Class<?> type();
 
-    default Collection<Class<?>> convertableClasses() {
+    default Iterable<Class<?>> convertableTypes() {
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    default T supply(String hint, Object parentObject, Object value) {
+    default T supply(String hint, Map<String, Object> parent, Object value) {
         return (T) value;
     }
 
-    default T convert(String hint, Object parentObject, Object value) {
+    default T build(String hint, Map<String, Object> parent, Object value) {
         if (value == null) {
             return null;
         }
-        if (propertyClass().isAssignableFrom(value.getClass())) {
-            return supply(hint, parentObject, value);
+
+        if (type().isAssignableFrom(value.getClass())) {
+            return supply(hint, parent, value);
         }
 
         if (isConvertable(value) == false) {
             throw invalidValueClassError(hint, value);
         }
 
-        return doConvert(hint, parentObject, value);
+        return convert(hint, parent, value);
     }
 
     default boolean isConvertable(Object value) {
-        var classes = convertableClasses();
-        if (classes == null || classes.isEmpty()) {
+        var classes = convertableTypes();
+        if (classes == null) {
             return false;
         }
 
@@ -64,17 +65,19 @@ public interface Operator<T> {
         return false;
     }
 
-    default T doConvert(String hint, Object parentObject, Object value) {
+    default T convert(String hint, Map<String, Object> parent, Object value) {
         throw new UnsupportedOperationException("To be implemented");
     }
 
     default IllegalArgumentException invalidValueClassError(String hint, Object value) {
         var classes = new ArrayList<Class<?>>();
-        classes.add(propertyClass());
+        classes.add(type());
 
-        var others = convertableClasses();
-        if (others != null && others.isEmpty() == false) {
-            classes.addAll(others);
+        var others = convertableTypes();
+        if (others != null) {
+            for (var other : others) {
+                classes.add(other);
+            }
         }
 
         var msg = String.format("%s: expect be %s, but got %s", hint, StringHelper.join("/", classes),

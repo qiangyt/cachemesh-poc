@@ -17,16 +17,18 @@ package cachemesh.common.config;
 
 import java.util.Map;
 
-public class DependingProperty<T extends SomeConfig, K> extends Property<T> {
+import cachemesh.common.config.op.BeanOp;
 
-    public DependingProperty(Class<?> configClass, Class<T> propertyClass, String propertyName,
-            Property<K> dependedProperty, Map<K, ? extends NestedOp<? extends T>> dispatchOpMap) {
-        super(configClass, propertyName, null, new NestedOp<T>(propertyClass) {
+public class DependingProp<T extends Bean, K> extends Prop<T> {
+
+    public DependingProp(Class<?> configClass, Class<T> type, String name, Prop<K> dependedProp,
+            Map<K, ? extends BeanOp<? extends T>> opMap) {
+        super(configClass, name, null, new BeanOp<T>(type) {
             @Override
-            public T newValue(String hint, Map<String, Object> parentObject, Map<String, Object> map) {
-                var dependedValue = parentObject.get(dependedProperty.name());
-                var targetOp = dispatchOpMap.get(dependedValue);
-                return targetOp.newValue(hint, parentObject, map);
+            public T newValue(String hint, Map<String, Object> parent, Map<String, Object> value) {
+                var dependedValue = parent.get(dependedProp.name());
+                var targetOp = opMap.get(dependedValue);
+                return targetOp.newValue(hint, parent, value);
             }
         });
     }

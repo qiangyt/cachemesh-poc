@@ -13,31 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config;
+package cachemesh.common.config.op;
 
-import cachemesh.common.config.Prop;
-import cachemesh.common.config.ConfigHelper;
+import java.util.Map;
+
 import cachemesh.common.config.Bean;
-import cachemesh.common.config.op.StringOp;
 import lombok.Getter;
-import lombok.Setter;
 
-public abstract class NodesConfig implements Bean {
+@Getter
+public abstract class DynamicOp<T extends Bean> extends BeanOp<T> {
 
-    public static final NodesConfigOp OP = new NodesConfigOp();
+    private final Map<Object, ? extends BeanOp<? extends T>> factory;
 
-    public static final Prop<String> KIND_PROP = Prop.<String> builder().config(NodesConfig.class).name("kind")
-            .devault("inline").op(StringOp.DEFAULT).build();
+    public DynamicOp(Class<T> type, Map<Object, ? extends BeanOp<? extends T>> factory) {
+        super(type);
 
-    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(KIND_PROP);
+        this.factory = factory;
+    }
 
-    @Getter
-    @Setter
-    private String kind;
+    public abstract Object extractKey(String hint, Map<String, Object> parent, Map<String, Object> value);
 
     @Override
-    public Iterable<Prop<?>> props() {
-        return PROPS;
+    public T newValue(String hint, Map<String, Object> parent, Map<String, Object> value) {
+        var key = extractKey(hint, parent, value);
+        var targetOp = getFactory().get(key);
+        return targetOp.newValue(hint, parent, value);
     }
 
 }

@@ -15,23 +15,19 @@
  */
 package cachemesh.core.config;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-import cachemesh.common.config.DependingListProperty;
-import cachemesh.common.config.Property;
-import cachemesh.common.config.PropertyHelper;
+import cachemesh.common.config.Prop;
+import cachemesh.common.config.op.ListOp;
+import cachemesh.common.config.ConfigHelper;
 import lombok.Singular;
 
 public class InlineNodesConfig extends NodesConfig {
 
-    public static final DependingListProperty<NodeConfig, String> INLINE_PROPERTY = new DependingListProperty<>(
-            InlineNodesConfig.class, NodeConfig.class, "inline", NodesConfig.KIND_PROPERTY,
-            Map.of(GrpcNodeConfig.PROTOCOL, GrpcNodeConfig.OP));
+    public static final Prop<List<NodeConfig>> INLINE_PROP = Prop.<List<NodeConfig>> builder()
+            .config(InlineNodesConfig.class).name("inline").op(new ListOp<NodeConfig>(NodeConfig.OP)).build();
 
-    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(NodesConfig.PROPERTIES,
-            INLINE_PROPERTY);
+    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NodesConfig.PROPS, INLINE_PROP);
 
     @Singular("inline")
     private List<NodeConfig> inline;

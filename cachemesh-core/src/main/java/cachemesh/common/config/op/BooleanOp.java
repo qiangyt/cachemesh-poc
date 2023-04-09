@@ -13,31 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
-public class BooleanOp implements Operator<Boolean> {
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Op;
+
+public class BooleanOp implements Op<Boolean> {
 
     public static final BooleanOp DEFAULT = new BooleanOp();
 
-    public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
-            .unmodifiableCollection(List.of(String.class, Character.class, Number.class));
+    public static final Iterable<Class<?>> CONVERTABLES = ConfigHelper.convertables(String.class, Character.class,
+            Number.class);
 
     @Override
-    public Class<?> propertyClass() {
+    public Class<?> type() {
         return Boolean.class;
     }
 
     @Override
-    public Collection<Class<?>> convertableClasses() {
-        return CONVERTABLE_CLASSES;
+    public Iterable<Class<?>> convertableTypes() {
+        return CONVERTABLES;
     }
 
     @Override
-    public Boolean doConvert(String hint, Object parentObject, Object value) {
+    public Boolean convert(String hint, Map<String, Object> parent, Object value) {
         var clazz = value.getClass();
 
         if (clazz == String.class) {

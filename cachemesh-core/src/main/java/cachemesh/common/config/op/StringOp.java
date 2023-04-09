@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import cachemesh.common.config.Op;
 
-import org.junit.jupiter.api.Test;
+public class StringOp implements Op<String> {
 
-public class StringOpTest {
+    public static final StringOp DEFAULT = new StringOp();
 
-	@Test
-	public void test_happy() {
-		var t = StringOp.DEFAULT;
-
-		assertSame("test", t.convert("", null, "test"));
-		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
-	}
+    @Override
+    public Class<?> type() {
+        return String.class;
+    }
 
 }

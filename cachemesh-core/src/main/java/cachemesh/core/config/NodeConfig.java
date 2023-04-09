@@ -16,25 +16,22 @@
 package cachemesh.core.config;
 
 import java.net.MalformedURLException;
-import java.util.Collection;
 
-import cachemesh.common.config.BooleanOp;
-import cachemesh.common.config.IntegerOp;
-import cachemesh.common.config.NestedOp;
-import cachemesh.common.config.NestedStaticOp;
-import cachemesh.common.config.Property;
-import cachemesh.common.config.PropertyHelper;
-import cachemesh.common.config.SimpleUrlOp;
-import cachemesh.common.config.SomeConfig;
+import cachemesh.common.config.Prop;
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Bean;
+import cachemesh.common.config.op.BooleanOp;
+import cachemesh.common.config.op.IntegerOp;
+import cachemesh.common.config.op.SimpleUrlOp;
 import cachemesh.common.misc.SimpleURL;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class NodeConfig implements SomeConfig {
+public abstract class NodeConfig implements Bean {
 
-    public static final NestedOp<NodeConfig> OP = new NestedStaticOp<>(NodeConfig.class);
+    public static final NodeConfigOp OP = new NodeConfigOp();
 
     public static final boolean DEFAULT_LOCAL = false;
 
@@ -53,12 +50,20 @@ public abstract class NodeConfig implements SomeConfig {
     // @Builder.Default
     private int stopTimeout = DEFAULT_STOP_TIMEOUT;
 
-    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(
-            Property.builder().config(NodeConfig.class).name("url").op(SimpleUrlOp.DEFAULT).build(),
-            Property.builder().config(NodeConfig.class).name("local").devault(DEFAULT_LOCAL).op(BooleanOp.DEFAULT)
-                    .build(),
-            Property.builder().config(NodeConfig.class).name("startTimeout").op(IntegerOp.DEFAULT).build(),
-            Property.builder().config(NodeConfig.class).name("stopTimeout").op(IntegerOp.DEFAULT).build());
+    public static final Prop<SimpleURL> URL_PROP = Prop.<SimpleURL> builder().config(NodeConfig.class).name("url")
+            .op(SimpleUrlOp.DEFAULT).build();
+
+    public static final Prop<Boolean> LOCAL_PROP = Prop.<Boolean> builder().config(NodeConfig.class).name("local")
+            .devault(DEFAULT_LOCAL).op(BooleanOp.DEFAULT).build();
+
+    public static final Prop<Integer> START_TIMEOUT_PROP = Prop.<Integer> builder().config(NodeConfig.class)
+            .name("startTimeout").op(IntegerOp.DEFAULT).build();
+
+    public static final Prop<Integer> STOP_TIMEOUT_PROP = Prop.<Integer> builder().config(NodeConfig.class)
+            .name("stopTimeout").op(IntegerOp.DEFAULT).build();
+
+    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(URL_PROP, LOCAL_PROP, START_TIMEOUT_PROP,
+            STOP_TIMEOUT_PROP);
 
     public NodeConfig(SimpleURL url) {
         setUrl(url);
@@ -81,8 +86,8 @@ public abstract class NodeConfig implements SomeConfig {
     public abstract String getProtocol();
 
     @Override
-    public Collection<Property<?>> properties() {
-        return PROPERTIES;
+    public Iterable<Prop<?>> props() {
+        return PROPS;
     }
 
     public abstract String getTarget();
@@ -106,23 +111,23 @@ public abstract class NodeConfig implements SomeConfig {
         var query = url.getQuery();
 
         if (query.containsKey("startTimeout")) {
-            var startTimeout = IntegerOp.DEFAULT.convert("", null, query.get("startTimeout"));
+            var startTimeout = IntegerOp.DEFAULT.build("", null, query.get("startTimeout"));
             setStartTimeout(startTimeout);
         }
 
         if (query.containsKey("stopTimeout")) {
-            var stopTimeout = IntegerOp.DEFAULT.convert("", null, query.get("stopTimeout"));
+            var stopTimeout = IntegerOp.DEFAULT.build("", null, query.get("stopTimeout"));
             setStopTimeout(stopTimeout);
         }
 
         if (query.containsKey("local")) {
-            var local = BooleanOp.DEFAULT.convert("", null, query.get("local"));
+            var local = BooleanOp.DEFAULT.build("", null, query.get("local"));
             setLocal(local);
         }
     }
 
     public static NodeConfig fromUrl(String url) {
-        return NodeConfigOp.DEFAULT.convert("", null, url);
+        return OP.build("", null, url);
     }
 
 }

@@ -17,21 +17,37 @@ package cachemesh.common.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
-public class PropertyHelper {
+public class ConfigHelper {
 
-    public static Collection<Property<?>> buildProperties(Property<?>... array) {
+    public static Iterable<Prop<?>> props(Prop<?>... array) {
         var list = Arrays.asList(array);
         return Collections.unmodifiableList(list);
     }
 
-    public static Collection<Property<?>> buildProperties(Collection<Property<?>> supers, Property<?>... array) {
-        var list = new ArrayList<Property<?>>(supers.size() + array.length);
-        list.addAll(supers);
+    public static Iterable<Prop<?>> props(Iterable<Prop<?>> supers, Prop<?>... array) {
+        var list = new ArrayList<Prop<?>>(2 * array.length);
+
+        for (var p : supers) {
+            list.add(p);
+        }
+
         list.addAll(Arrays.asList(array));
         return Collections.unmodifiableList(list);
+    }
+
+    public static final Iterable<Class<?>> STRING = convertables(String.class);
+
+    public static final Iterable<Class<?>> MAP = convertables(Map.class);
+
+    public static Iterable<Class<?>> convertables(Class<?>... types) {
+        var r = new ArrayList<Class<?>>(types.length);
+        for (var type : types) {
+            r.add(type);
+        }
+        return Collections.unmodifiableCollection(r);
     }
 
 }

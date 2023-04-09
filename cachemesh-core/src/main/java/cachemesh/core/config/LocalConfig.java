@@ -20,17 +20,16 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 import cachemesh.caffeine.CaffeineProvider;
-import cachemesh.common.config.DependingListProperty;
-import cachemesh.common.config.DependingProperty;
-import cachemesh.common.config.EnumOp;
-import cachemesh.common.config.NestedOp;
-import cachemesh.common.config.NestedStaticOp;
-import cachemesh.common.config.Property;
-import cachemesh.common.config.PropertyHelper;
-import cachemesh.common.config.SomeConfig;
+import cachemesh.common.config.DependingListProp;
+import cachemesh.common.config.DependingProp;
+import cachemesh.common.config.Prop;
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Bean;
+import cachemesh.common.config.op.BeanOp;
+import cachemesh.common.config.op.EnumOp;
+import cachemesh.common.config.op.ReflectBeanOp;
 import cachemesh.core.spi.LocalCacheProvider;
 import lombok.Setter;
 import lombok.Singular;
@@ -38,9 +37,7 @@ import lombok.Singular;
 @Getter
 @Setter
 @Builder
-public class LocalConfig implements SomeConfig {
-
-    public static NestedOp<LocalConfig> OP = new NestedStaticOp<>(LocalConfig.class);
+public class LocalConfig implements Bean {
 
     public enum Kind {
         caffeine(CaffeineProvider.DEFAULT);
@@ -52,7 +49,23 @@ public class LocalConfig implements SomeConfig {
         }
     }
 
+    public static BeanOp<LocalConfig> OP = new ReflectBeanOp<>(LocalConfig.class);
+
     public static final Kind DEFAULT_KIND = Kind.caffeine;
+
+    public static final Prop<Kind> KIND_PROP = Prop.<Kind> builder().config(LocalConfig.class).name("kind")
+            .devault(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build();
+
+    public static final Map<Kind, ? extends BeanOp<? extends LocalCacheConfig>> CACHE_OP_MAP = Map.of(Kind.caffeine,
+            CaffeineConfig.OP);
+
+    public static final DependingProp<LocalCacheConfig, Kind> DEFAULT_CACHE_PROP = new DependingProp<>(
+            LocalConfig.class, LocalCacheConfig.class, "defaultCache", KIND_PROP, CACHE_OP_MAP);
+
+    public static final DependingListProp<LocalCacheConfig, Kind> CACHES_PROP = new DependingListProp<LocalCacheConfig, Kind>(
+            LocalConfig.class, LocalCacheConfig.class, "caches", KIND_PROP, CACHE_OP_MAP);
+
+    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(KIND_PROP, DEFAULT_CACHE_PROP, CACHES_PROP);
 
     @Builder.Default
     private Kind kind = DEFAULT_KIND;
@@ -62,21 +75,6 @@ public class LocalConfig implements SomeConfig {
 
     @Singular("cache")
     private List<LocalCacheConfig> caches;
-
-    public static final Property<Kind> KIND_PROPERTY = Property.<Kind> builder().config(LocalConfig.class).name("kind")
-            .devault(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build();
-
-    public static final Map<Kind, ? extends NestedOp<? extends LocalCacheConfig>> CACHE_DISPATCH_OP_MAP = Map
-            .of(Kind.caffeine, CaffeineConfig.OP);
-
-    public static final DependingProperty<LocalCacheConfig, Kind> DEFAULT_CACHE_PROPERTY = new DependingProperty<>(
-            LocalConfig.class, LocalCacheConfig.class, "defaultCache", KIND_PROPERTY, CACHE_DISPATCH_OP_MAP);
-
-    public static final DependingListProperty<LocalCacheConfig, Kind> CACHES_PROPERTY = new DependingListProperty<LocalCacheConfig, Kind>(
-            LocalConfig.class, LocalCacheConfig.class, "caches", KIND_PROPERTY, CACHE_DISPATCH_OP_MAP);
-
-    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(KIND_PROPERTY,
-            DEFAULT_CACHE_PROPERTY, CACHES_PROPERTY);
 
     public LocalConfig() {
     }
@@ -88,8 +86,8 @@ public class LocalConfig implements SomeConfig {
     }
 
     @Override
-    public Collection<Property<?>> properties() {
-        return PROPERTIES;
+    public Iterable<Prop<?>> props() {
+        return PROPS;
     }
 
 }

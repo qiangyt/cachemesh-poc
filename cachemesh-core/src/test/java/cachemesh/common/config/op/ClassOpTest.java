@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -29,10 +29,10 @@ public class ClassOpTest {
 	public void test_happy() {
 		var t = ClassOp.DEFAULT;
 
-		assertSame(Sample.class, t.convert("", null, Sample.class));
-		assertSame(Sample.class, t.convert("", null, Sample.class.getName()));
+		assertSame(Sample.class, t.build("", null, Sample.class));
+		assertSame(Sample.class, t.build("", null, Sample.class.getName()));
 
-		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
+		assertThrows(IllegalArgumentException.class, () -> t.build("", null, new Object()));
 	}
 
 }

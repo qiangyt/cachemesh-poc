@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.core.config;
 
-import java.lang.reflect.Constructor;
 import java.util.Map;
 
-import cachemesh.common.misc.Reflect;
-import lombok.Getter;
+import cachemesh.common.config.op.BeanOp;
+import cachemesh.common.config.op.DynamicOp;
 
-@Getter
-public class NestedStaticOp<T extends SomeConfig> extends NestedOp<T> {
+public class NodesConfigOp extends DynamicOp<NodesConfig> {
 
-    private final Constructor<T> constructor;
+    public static final Map<Object, ? extends BeanOp<? extends NodesConfig>> FACTORY = Map.of("inline",
+            InlineNodesConfig.OP);
 
-    public NestedStaticOp(Class<T> propertyClass) {
-        super(propertyClass);
-        this.constructor = Reflect.noArgsConstructor(propertyClass);
+    public NodesConfigOp() {
+        super(NodesConfig.class, FACTORY);
     }
 
     @Override
-    public T newValue(String hint, Map<String, Object> parentObject, Map<String, Object> map) {
-        return Reflect.newInstance(getConstructor());
+    public Object extractKey(String hint, Map<String, Object> parent, Map<String, Object> value) {
+        if (value.containsKey("kind") == false) {
+            throw new IllegalArgumentException(hint + ": kind is required");
+        }
+        return value.get("kind");
     }
 
 }

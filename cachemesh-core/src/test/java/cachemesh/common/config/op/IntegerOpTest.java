@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
-public class EnumOpTest {
-
-	enum Sample {
-		a, b, c
-	}
+public class IntegerOpTest {
 
 	@Test
 	public void test_happy() {
-		var t = new EnumOp<Sample>(Sample.class);
+		var t = IntegerOp.DEFAULT;
 
-		assertSame(Sample.a, t.convert("", null, "a"));
-		assertSame(Sample.b, t.convert("", null, "b"));
-		assertSame(Sample.c, t.convert("", null, Sample.c));
+		assertEquals(1, t.build("", null, "1"));
+		assertEquals('2', t.build("", null, '2'));
+		assertEquals(3, t.build("", null, Byte.valueOf("3")));
+		assertEquals(4, t.build("", null, Short.valueOf("4")));
+		assertEquals(5, t.build("", null, Integer.valueOf(5)));
+		assertEquals(6, t.build("", null, Long.valueOf(6)));
+		assertEquals(7, t.build("", null, Float.valueOf(7)));
+		assertEquals(8, t.build("", null, Double.valueOf(8)));
 
-		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
+		assertThrows(IllegalArgumentException.class, () -> t.build("", null, new Object()));
 	}
 
 }

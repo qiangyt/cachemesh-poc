@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -33,15 +33,15 @@ public class SimpleUrlOpTest {
 		var t = SimpleUrlOp.DEFAULT;
 
 		assertEquals(new SimpleURL("ftp://example1.com"),
-					t.convert("", null, "ftp://example1.com"));
+					t.build("", null, "ftp://example1.com"));
 
 		SimpleURL u2 = new SimpleURL("ftp://example2.com");
-		assertSame(u2, t.convert("", null, u2));
+		assertSame(u2, t.build("", null, u2));
 
 		assertEquals(new SimpleURL("ftp://example3.com"),
-					t.convert("", null, new URL("ftp://example3.com")));
+					t.build("", null, new URL("ftp://example3.com")));
 
-		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
+		assertThrows(IllegalArgumentException.class, () -> t.build("", null, new Object()));
 	}
 
 }

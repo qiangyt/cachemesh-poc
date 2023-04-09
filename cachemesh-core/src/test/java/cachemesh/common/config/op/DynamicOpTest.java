@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
-import java.util.Collection;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-public class NestedDynamicOpTest {
+import cachemesh.common.config.Bean;
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Prop;
 
-	public static class Base implements SomeConfig {
+public class DynamicOpTest {
+
+	public static class Base implements Bean {
 		private String kind;
 
 		public void setKind(String kind) {
@@ -38,9 +41,9 @@ public class NestedDynamicOpTest {
 		}
 
 		@Override
-		public Collection<Property<?>> properties() {
-			return PropertyHelper.buildProperties(
-						Property.builder()
+		public Iterable<Prop<?>> props() {
+			return ConfigHelper.props(
+						Prop.builder()
 							.config(Base.class).name("kind").op(StringOp.DEFAULT)
 							.build());
 		}
@@ -60,11 +63,10 @@ public class NestedDynamicOpTest {
 		}
 
 		@Override
-		public Collection<Property<?>> properties() {
-			var base = super.properties();
-			return PropertyHelper.buildProperties(
-						base,
-						Property.builder()
+		public Iterable<Prop<?>> props() {
+			return ConfigHelper.props(
+						super.props(),
+						Prop.builder()
 							.config(Sample1.class).name("num").op(IntegerOp.DEFAULT)
 							.build());
 		}
@@ -84,26 +86,25 @@ public class NestedDynamicOpTest {
 		}
 
 		@Override
-		public Collection<Property<?>> properties() {
-			var base = super.properties();
-			return PropertyHelper.buildProperties(
-						base,
-						Property.builder()
+		public Iterable<Prop<?>> props() {
+			return ConfigHelper.props(
+						super.props(),
+						Prop.builder()
 							.config(Sample2.class).name("ok").op(BooleanOp.DEFAULT)
 							.build());
 		}
 	}
 
-	public static class SampleOp extends NestedDynamicOp<Base> {
+	public static class SampleOp extends DynamicOp<Base> {
 
 		public SampleOp() {
 			super(Base.class,
-				Map.of("1", new NestedStaticOp<>(Sample1.class),
-				"2", new NestedStaticOp<>(Sample2.class)));
+				Map.of("1", new ReflectBeanOp<>(Sample1.class),
+				"2", new ReflectBeanOp<>(Sample2.class)));
 		}
 
-		@Override public Object extractKey(String hint, Map<String, Object> map) {
-			return map.get("kind");
+		@Override public Object extractKey(String hint, Map<String, Object> parent, Map<String, Object> value) {
+			return value.get("kind");
 		}
 
 	}
@@ -113,12 +114,12 @@ public class NestedDynamicOpTest {
 		var t = new SampleOp();
 
 		var map1 = Map.of("kind", "1", "num", 678);
-		var sample1 = t.convert("", null, map1);
+		var sample1 = t.build("", null, map1);
 		assertInstanceOf(Sample1.class, sample1);
 		assertEquals(678, ((Sample1)sample1).getNum());
 
 		var map2 = Map.of("kind", "2", "ok", true);
-		var sample2 = t.convert("", null, map2);
+		var sample2 = t.build("", null, map2);
 		assertInstanceOf(Sample2.class, sample2);
 		assertTrue(((Sample2)sample2).isOk());
 	}

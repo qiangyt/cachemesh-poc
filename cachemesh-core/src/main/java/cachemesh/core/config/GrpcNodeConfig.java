@@ -15,13 +15,11 @@
  */
 package cachemesh.core.config;
 
-import java.util.Collection;
-
-import cachemesh.common.config.IntegerOp;
-import cachemesh.common.config.NestedStaticOp;
-import cachemesh.common.config.Property;
-import cachemesh.common.config.PropertyHelper;
-import cachemesh.common.config.StringOp;
+import cachemesh.common.config.Prop;
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.op.IntegerOp;
+import cachemesh.common.config.op.ReflectBeanOp;
+import cachemesh.common.config.op.StringOp;
 import cachemesh.common.misc.SimpleURL;
 import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
@@ -34,9 +32,19 @@ import lombok.Setter;
 @Setter
 public class GrpcNodeConfig extends NodeConfig {
 
+    public static final ReflectBeanOp<GrpcNodeConfig> OP = new ReflectBeanOp<>(GrpcNodeConfig.class);
+
     public static final String PROTOCOL = "grpc";
 
     public static final int DEFAULT_PORT = 12001;
+
+    public static final Prop<String> HOST_PROP = Prop.<String> builder().config(GrpcNodeConfig.class).name("host")
+            .op(StringOp.DEFAULT).build();
+
+    public static final Prop<Integer> PORT_PROP = Prop.<Integer> builder().config(GrpcNodeConfig.class).name("port")
+            .devault(DEFAULT_PORT).op(IntegerOp.DEFAULT).build();
+
+    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NodeConfig.PROPS, HOST_PROP, PORT_PROP);
 
     // TODO: credential
 
@@ -45,13 +53,6 @@ public class GrpcNodeConfig extends NodeConfig {
     private String host;
 
     private int port;
-
-    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(NodeConfig.PROPERTIES,
-            Property.builder().config(GrpcNodeConfig.class).name("host").op(StringOp.DEFAULT).build(),
-            Property.builder().config(GrpcNodeConfig.class).name("port").devault(DEFAULT_PORT).op(IntegerOp.DEFAULT)
-                    .build());
-
-    public static final NestedStaticOp<GrpcNodeConfig> OP = new NestedStaticOp<>(GrpcNodeConfig.class);
 
     @Builder
     public GrpcNodeConfig(SimpleURL url) {
@@ -77,8 +78,8 @@ public class GrpcNodeConfig extends NodeConfig {
     }
 
     @Override
-    public Collection<Property<?>> properties() {
-        return PROPERTIES;
+    public Iterable<Prop<?>> props() {
+        return PROPS;
     }
 
     public String getTarget() {

@@ -13,35 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Op;
 import cachemesh.common.misc.SimpleURL;
 
-public class SimpleUrlOp implements Operator<SimpleURL> {
+public class SimpleUrlOp implements Op<SimpleURL> {
 
     public static final SimpleUrlOp DEFAULT = new SimpleUrlOp();
 
-    public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
-            .unmodifiableCollection(List.of(String.class, URL.class));
+    public static final Iterable<Class<?>> CONVERTABLES = ConfigHelper.convertables(String.class, URL.class);
 
     @Override
-    public Class<?> propertyClass() {
+    public Class<?> type() {
         return SimpleURL.class;
     }
 
     @Override
-    public Collection<Class<?>> convertableClasses() {
-        return CONVERTABLE_CLASSES;
+    public Iterable<Class<?>> convertableTypes() {
+        return CONVERTABLES;
     }
 
     @Override
-    public SimpleURL doConvert(String hint, Object parentObject, Object value) {
+    public SimpleURL convert(String hint, Map<String, Object> parent, Object value) {
         var clazz = value.getClass();
 
         if (clazz == String.class) {

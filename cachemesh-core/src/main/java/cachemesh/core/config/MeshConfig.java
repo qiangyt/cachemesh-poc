@@ -17,18 +17,17 @@ package cachemesh.core.config;
 
 import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
-import cachemesh.common.config.EnumOp;
-import cachemesh.common.config.Property;
-import cachemesh.common.config.PropertyHelper;
-import cachemesh.common.config.SomeConfig;
-import cachemesh.common.config.StringOp;
+import cachemesh.common.config.Prop;
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Bean;
+import cachemesh.common.config.op.EnumOp;
+import cachemesh.common.config.op.StringOp;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Collection;
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
@@ -36,7 +35,7 @@ import org.yaml.snakeyaml.Yaml;
 @Getter
 @Setter
 @Builder
-public class MeshConfig implements SomeConfig {
+public class MeshConfig implements Bean {
 
     public static enum HashingKind {
         murmur(MurmurHash.DEFAULT);
@@ -54,20 +53,19 @@ public class MeshConfig implements SomeConfig {
 
     public static final HashingKind DEFAULT_HASHING = HashingKind.murmur;
 
-    public static final Property<String> NAME_PROPERTY = Property.<String> builder().config(MeshConfig.class)
-            .name("name").devault(DEFAULT_NAME).op(StringOp.DEFAULT).build();
+    public static final Prop<String> NAME_PROP = Prop.<String> builder().config(MeshConfig.class).name("name")
+            .devault(DEFAULT_NAME).op(StringOp.DEFAULT).build();
 
-    public static final Property<HashingKind> HASHING_PROPERTY = Property.<HashingKind> builder()
-            .config(MeshConfig.class).name("hashing").devault(DEFAULT_HASHING).op(HashingKind.OP).build();
+    public static final Prop<HashingKind> HASHING_PROP = Prop.<HashingKind> builder().config(MeshConfig.class)
+            .name("hashing").devault(DEFAULT_HASHING).op(HashingKind.OP).build();
 
-    public static final Property<NodesConfig> NODES_PROPERTY = Property.<NodesConfig> builder().config(MeshConfig.class)
+    public static final Prop<NodesConfig> NODES_PROP = Prop.<NodesConfig> builder().config(MeshConfig.class)
             .name("nodes").devault(null).op(NodesConfig.OP).build();
 
-    public static final Property<LocalConfig> LOCAL_PROPERTY = Property.<LocalConfig> builder().config(MeshConfig.class)
+    public static final Prop<LocalConfig> LOCAL_PROP = Prop.<LocalConfig> builder().config(MeshConfig.class)
             .name("local").devault(LocalConfig.builder().build()).op(LocalConfig.OP).build();
 
-    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(NAME_PROPERTY,
-            HASHING_PROPERTY, NODES_PROPERTY, LOCAL_PROPERTY);
+    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NAME_PROP, HASHING_PROP, NODES_PROP, LOCAL_PROP);
 
     @Builder.Default
     private String name = DEFAULT_NAME;
@@ -91,8 +89,8 @@ public class MeshConfig implements SomeConfig {
     }
 
     @Override
-    public Collection<Property<?>> properties() {
-        return PROPERTIES;
+    public Iterable<Prop<?>> props() {
+        return PROPS;
     }
 
     @SuppressWarnings("unchecked")
@@ -118,7 +116,7 @@ public class MeshConfig implements SomeConfig {
 
     public static MeshConfig fromMap(Map<String, Object> map) {
         var r = new MeshConfig();
-        r.withMap("", map);
+        r.withMap("", null, map);
         return r;
     }
 

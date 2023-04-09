@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,7 +26,7 @@ public class ListOpTest {
 	@Test
 	public void test_happy() {
 		var t = new ListOp<Integer>(IntegerOp.DEFAULT);
-		assertEquals(List.of(1, 2), t.convert("", null, List.of("1", "2")));
+		assertEquals(List.of(1, 2), t.build("", null, List.of("1", "2")));
 	}
 
 }

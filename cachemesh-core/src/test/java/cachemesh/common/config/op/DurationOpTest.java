@@ -13,45 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Collection;
-import java.util.Map;
-
+import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
-public class NestedStaticOpTest {
-
-	public static class Sample implements SomeConfig {
-		private Integer num;
-
-		public Sample() {}
-
-		public void setNum(Integer num) {
-			this.num = num;
-		}
-
-		public Integer getNum() {
-			return this.num;
-		}
-
-		@Override
-		public Collection<Property<?>> properties() {
-			return PropertyHelper.buildProperties(
-						Property.builder()
-							.config(Sample.class).name("num").op(IntegerOp.DEFAULT)
-							.build());
-		}
-	}
+public class DurationOpTest {
 
 	@Test
 	public void test_happy() {
-		var t = new NestedStaticOp<Sample>(Sample.class);
+		var t = DurationOp.DEFAULT;
 
-		var sample = t.convert("", null, Map.of("num", 345));
-		assertEquals(345, sample.num);
+		var d1 =Duration.ofDays(123);
+		assertSame(d1, t.build("", null, d1));
+
+		var d2 =Duration.ofSeconds(123);
+		assertEquals(d2, t.build("", null, "123s"));
+
+		assertThrows(IllegalArgumentException.class, () -> t.build("", null, new Object()));
 	}
 
 }

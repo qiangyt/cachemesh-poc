@@ -13,39 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Op;
 import lombok.Getter;
 
 @Getter
-public class EnumOp<T extends Enum<T>> implements Operator<T> {
+public class EnumOp<T extends Enum<T>> implements Op<T> {
 
-    public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
-            .unmodifiableCollection(List.of(String.class));
+    private final Class<T> enumType;
 
-    private final Class<T> enumClass;
-
-    public EnumOp(Class<T> enumClass) {
-        this.enumClass = enumClass;
+    public EnumOp(Class<T> enumType) {
+        this.enumType = enumType;
     }
 
     @Override
-    public Class<?> propertyClass() {
-        return this.enumClass;
+    public Class<?> type() {
+        return this.enumType;
     }
 
     @Override
-    public Collection<Class<?>> convertableClasses() {
-        return CONVERTABLE_CLASSES;
+    public Iterable<Class<?>> convertableTypes() {
+        return ConfigHelper.STRING;
     }
 
     @Override
-    public T doConvert(String hint, Object parentObject, Object value) {
-        return Enum.valueOf(getEnumClass(), (String) value);
+    public T convert(String hint, Map<String, Object> parent, Object value) {
+        return Enum.valueOf(getEnumType(), (String) value);
     }
 
 }

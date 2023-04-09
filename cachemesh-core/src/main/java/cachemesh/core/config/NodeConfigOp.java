@@ -15,39 +15,39 @@
  */
 package cachemesh.core.config;
 
-import cachemesh.common.config.NestedOp;
-import cachemesh.common.config.StringOp;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 
-import cachemesh.common.config.NestedDynamicOp;
+import cachemesh.common.config.op.BeanOp;
+import cachemesh.common.config.op.DynamicOp;
+import cachemesh.common.config.op.SimpleUrlOp;
+import cachemesh.common.misc.SimpleURL;
 
-public class NodeConfigOp extends NestedDynamicOp<NodeConfig> {
+public class NodeConfigOp extends DynamicOp<NodeConfig> {
 
-    public static final Map<Object, NestedOp<NodeConfig>> FACTORY = Map.of(LettuceNodeConfig.PROTOCOL,
+    public static final Map<Object, ? extends BeanOp<? extends NodeConfig>> FACTORY = Map.of(LettuceNodeConfig.PROTOCOL,
             LettuceNodeConfig.OP, GrpcNodeConfig.PROTOCOL, GrpcNodeConfig.OP);
-
-    public static final NodeConfigOp DEFAULT = new NodeConfigOp();
 
     public NodeConfigOp() {
         super(NodeConfig.class, FACTORY);
     }
 
     @Override
-    public Object extractKey(String hint, Map<String, Object> map) {
-        if (map.containsKey("url") == false) {
+    public Object extractKey(String hint, Map<String, Object> parent, Map<String, Object> value) {
+        if (value.containsKey("url") == false) {
             throw new IllegalArgumentException(hint + ": url is required");
         }
 
-        var urlText = StringOp.DEFAULT.convert(hint, null, map.get("url"));
-        URL url;
-        try {
-            url = new URL(urlText);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(e);
+        SimpleURL url;
+
+        var urlObj = value.get("url");
+        if (urlObj instanceof SimpleURL) {
+            // got cached url
+            url = (SimpleURL) urlObj;
+        } else {
+            url = SimpleUrlOp.DEFAULT.build(hint, parent, urlObj);
+            value.put("url", url); // cache it to prevent conversion again and again
         }
+
         return url.getProtocol();
     }
 

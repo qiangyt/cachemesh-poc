@@ -21,7 +21,7 @@ import java.util.Map;
 import cachemesh.common.misc.Reflect;
 import lombok.Builder;
 
-public class Property<T> {
+public class Prop<T> {
 
     private final String name;
 
@@ -31,15 +31,15 @@ public class Property<T> {
 
     private final T devault;
 
-    private final Operator<? extends T> op;
+    private final Op<? extends T> op;
 
     @Builder
-    public Property(Class<?> config, String name, T devault, Operator<? extends T> op) {
+    public Prop(Class<?> config, String name, T devault, Op<? extends T> op) {
         this.name = name;
         this.devault = devault;
         this.op = op;
 
-        var propClass = op.propertyClass();
+        var propClass = op.type();
         this.setter = Reflect.setter(config, name, propClass);
         this.getter = Reflect.getter(config, name, propClass);
     }
@@ -60,7 +60,7 @@ public class Property<T> {
         return this.getter;
     }
 
-    public Operator<? extends T> op(Object object) {
+    public Op<? extends T> op(Map<String, Object> object) {
         return this.op;
     }
 
@@ -72,12 +72,14 @@ public class Property<T> {
         return map.get(name());
     }
 
-    public void set(String hint, Object parentObject, Object object, Object value) {
-        doSet(op(object), hint, parentObject, object, value);
+    public void set(String hint, Map<String, Object> object) {
+        var op = op(object);
+        Object value = object.get(name());
+        doSet(op, hint, object, value);
     }
 
-    public void doSet(Operator<? extends T> op, String hint, Object parentObject, Object object, Object value) {
-        var v = op.convert(hint, parentObject, value);
+    public void doSet(Op<? extends T> op, String hint, Map<String, Object> object, Object value) {
+        var v = op.build(hint, object, value);
         Reflect.set(setter(), object, v);
     }
 

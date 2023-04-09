@@ -15,13 +15,11 @@
  */
 package cachemesh.core.config;
 
-import java.util.Collection;
-
-import cachemesh.common.config.ClassOp;
-import cachemesh.common.config.Property;
-import cachemesh.common.config.PropertyHelper;
-import cachemesh.common.config.SomeConfig;
-import cachemesh.common.config.StringOp;
+import cachemesh.common.config.Prop;
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Bean;
+import cachemesh.common.config.op.ClassOp;
+import cachemesh.common.config.op.StringOp;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
@@ -30,7 +28,18 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder(toBuilder = true)
-public abstract class LocalCacheConfig implements SomeConfig {
+public abstract class LocalCacheConfig implements Bean {
+
+    public static final Prop<String> NAME_PROP = Prop.<String> builder().config(LocalCacheConfig.class).name("name")
+            .op(StringOp.DEFAULT).build();
+
+    public static final Prop<Class<?>> VALUE_CLASS_PROP = Prop.<Class<?>> builder().config(LocalCacheConfig.class)
+            .name("valueClass").devault(byte[].class).op(ClassOp.DEFAULT).build();
+
+    public static final Prop<SerderConfig> SERDER_PROP = Prop.<SerderConfig> builder().config(LocalCacheConfig.class)
+            .name("serder").devault(SerderConfig.builder().build()).op(SerderConfig.OP).build();
+
+    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NAME_PROP, VALUE_CLASS_PROP, SERDER_PROP);
 
     private String name;
 
@@ -38,13 +47,6 @@ public abstract class LocalCacheConfig implements SomeConfig {
 
     @Builder.Default
     private SerderConfig serder = SerderConfig.builder().build();
-
-    public static final Collection<Property<?>> PROPERTIES = PropertyHelper.buildProperties(
-            Property.builder().config(LocalCacheConfig.class).name("name").op(StringOp.DEFAULT).build(),
-            Property.builder().config(LocalCacheConfig.class).name("valueClass").devault(byte[].class)
-                    .op(ClassOp.DEFAULT).build(),
-            Property.builder().config(LocalCacheConfig.class).name("serder").devault(SerderConfig.builder().build())
-                    .op(SerderConfig.OP).build());
 
     protected LocalCacheConfig() {
     }
@@ -58,8 +60,8 @@ public abstract class LocalCacheConfig implements SomeConfig {
     public abstract LocalCacheConfig buildAnother(String name, Class<?> valueClass);
 
     @Override
-    public Collection<Property<?>> properties() {
-        return PROPERTIES;
+    public Iterable<Prop<?>> props() {
+        return PROPS;
     }
 
 }

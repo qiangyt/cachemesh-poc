@@ -22,23 +22,20 @@ import java.util.List;
 
 public class UrlOp implements Operator<URL> {
 
-    public static final IntegerOp DEFAULT = new IntegerOp();
-
-    public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
-            .unmodifiableCollection(List.of(String.class));
+    public static final UrlOp DEFAULT = new UrlOp();
 
     @Override
-    public Class<?> propertyClass() {
+    public Class<?> type() {
         return URL.class;
     }
 
     @Override
-    public Collection<Class<?>> convertableClasses() {
-        return CONVERTABLE_CLASSES;
+    public Collection<Class<?>> convertableTypes() {
+        return ConfigHelper.STRING;
     }
 
     @Override
-    public URL doConvert(String hint, Object value) {
+    public URL convert(String hint, Object value) {
         try {
             return new URL((String) value);
         } catch (MalformedURLException e) {

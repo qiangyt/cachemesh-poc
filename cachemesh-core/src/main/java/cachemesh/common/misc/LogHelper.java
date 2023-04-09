@@ -18,6 +18,7 @@ package cachemesh.common.misc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cachemesh.common.config.Bean;
 import net.logstash.logback.argument.StructuredArgument;
 import net.logstash.logback.argument.StructuredArguments;
 
@@ -27,13 +28,13 @@ public class LogHelper {
         return LoggerFactory.getLogger(name + "@" + klass.getCanonicalName());
     }
 
-    public static StructuredArgument entries(Mappable mappable) {
-        var map = mappable.toMap();
+    public static StructuredArgument entries(Bean bean) {
+        var map = bean.toMap();
         return StructuredArguments.entries(map);
     }
 
-    public static StructuredArgument kv(String key, Mappable mappable) {
-        var map = mappable.toMap();
+    public static StructuredArgument kv(String key, Bean bean) {
+        var map = bean.toMap();
         return StructuredArguments.kv(key, map);
     }
 

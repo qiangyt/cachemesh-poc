@@ -13,31 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
-public class IntegerOp implements Operator<Integer> {
+import cachemesh.common.config.Op;
+
+public class IntegerOp implements Op<Integer> {
 
     public static final IntegerOp DEFAULT = new IntegerOp();
 
-    public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
+    public static final Iterable<Class<?>> CONVERTABLES = Collections
             .unmodifiableCollection(List.of(Character.class, Number.class, String.class));
 
     @Override
-    public Class<?> propertyClass() {
+    public Class<?> type() {
         return Integer.class;
     }
 
     @Override
-    public Collection<Class<?>> convertableClasses() {
-        return CONVERTABLE_CLASSES;
+    public Iterable<Class<?>> convertableTypes() {
+        return CONVERTABLES;
     }
 
     @Override
-    public Integer doConvert(String hint, Object parentObject, Object value) {
+    public Integer convert(String hint, Map<String, Object> parent, Object value) {
         var clazz = value.getClass();
 
         if (clazz == Character.class) {

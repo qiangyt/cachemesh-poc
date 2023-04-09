@@ -15,13 +15,27 @@
  */
 package cachemesh.common.config;
 
-public class StringOp implements Operator<String> {
+import java.util.HashMap;
+import java.util.Map;
 
-    public static final StringOp DEFAULT = new StringOp();
+public interface Bean {
 
-    @Override
-    public Class<?> propertyClass() {
-        return String.class;
+    Iterable<Prop<?>> props();
+
+    default Map<String, Object> toMap() {
+        var r = new HashMap<String, Object>();
+        for (var p : props()) {
+            r.put(p.name(), p.get(this));
+        }
+        return r;
+    }
+
+    default void withMap(String path, Map<String, Object> parent, Map<String, Object> value) {
+        for (var p : props()) {
+            if (value.containsKey(p.name())) {
+                p.set(path, value);
+            }
+        }
     }
 
 }

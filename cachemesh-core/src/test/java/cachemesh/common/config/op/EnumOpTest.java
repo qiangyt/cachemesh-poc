@@ -13,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
-public class DurationOpTest {
+public class EnumOpTest {
+
+	enum Sample {
+		a, b, c
+	}
 
 	@Test
 	public void test_happy() {
-		var t = DurationOp.DEFAULT;
+		var t = new EnumOp<Sample>(Sample.class);
 
-		var d1 =Duration.ofDays(123);
-		assertSame(d1, t.convert("", null, d1));
+		assertSame(Sample.a, t.build("", null, "a"));
+		assertSame(Sample.b, t.build("", null, "b"));
+		assertSame(Sample.c, t.build("", null, Sample.c));
 
-		var d2 =Duration.ofSeconds(123);
-		assertEquals(d2, t.convert("", null, "123s"));
-
-		assertThrows(IllegalArgumentException.class, () -> t.convert("", null, new Object()));
+		assertThrows(IllegalArgumentException.class, () -> t.build("", null, new Object()));
 	}
 
 }

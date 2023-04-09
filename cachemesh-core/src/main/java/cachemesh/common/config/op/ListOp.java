@@ -13,55 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
-public class ListOp<T> implements Operator<List<T>> {
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Op;
 
-    public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
-            .unmodifiableCollection(List.of(Iterable.class));
+public class ListOp<T> implements Op<List<T>> {
 
-    private final Operator<? extends T> elementOp;
+    public static final Iterable<Class<?>> CONVERTABLES = ConfigHelper.convertables(Iterable.class);
 
-    public ListOp(Operator<? extends T> elementOp) {
+    private final Op<? extends T> elementOp;
+
+    public ListOp(Op<? extends T> elementOp) {
         this.elementOp = elementOp;
     }
 
-    public Operator<? extends T> getElementOp(String hint, Object parentObject, Object value) {
+    public Op<? extends T> elementOp(String hint, Object value) {
         return this.elementOp;
     }
 
     @Override
-    public Class<?> propertyClass() {
+    public Class<?> type() {
         return List.class;
     }
 
     @Override
-    public Collection<Class<?>> convertableClasses() {
-        return CONVERTABLE_CLASSES;
+    public Iterable<Class<?>> convertableTypes() {
+        return CONVERTABLES;
     }
 
     @Override
-    public List<T> supply(String hint, Object parentObject, Object value) {
-        return doConvert(hint, parentObject, value);
+    public List<T> supply(String hint, Map<String, Object> parent, Object value) {
+        return build(hint, parent, value);
     }
 
     @Override
-    public List<T> doConvert(String hint, Object parentObject, Object value) {
-        return doConvert(getElementOp(hint, parentObject, value), hint, parentObject, value);
+    public List<T> convert(String hint, Map<String, Object> parent, Object value) {
+        return build(hint, parent, value);
     }
 
-    public List<T> doConvert(Operator<? extends T> elementOp, String hint, Object parentObject, Object value) {
+    public List<T> build(String hint, Map<String, Object> parent, Object value) {
+        var elementOp = elementOp(hint, value);
+
         var r = new ArrayList<T>();
         int i = 0;
 
         for (var childObj : (Iterable<?>) value) {
             var childHint = String.format("%s[%d]", hint, i);
-            var child = elementOp.convert(childHint, parentObject, childObj);
+            var child = elementOp.build(childHint, parent, childObj);
             r.add(child);
             i++;
         }

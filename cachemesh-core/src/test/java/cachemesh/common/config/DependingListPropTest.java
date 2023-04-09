@@ -19,15 +19,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import cachemesh.common.config.op.BooleanOp;
+import cachemesh.common.config.op.IntegerOp;
+import cachemesh.common.config.op.ReflectBeanOp;
+import cachemesh.common.config.op.StringOp;
 
-public class DependingPropertyTest {
 
-	public static abstract class Base implements SomeConfig {
+public class DependingListPropTest {
+
+	public static abstract class Base implements Bean {
 
 	}
 
@@ -45,9 +50,9 @@ public class DependingPropertyTest {
 		}
 
 		@Override
-		public Collection<Property<?>> properties() {
-			return PropertyHelper.buildProperties(
-						Property.builder()
+		public Iterable<Prop<?>> props() {
+			return ConfigHelper.props(
+						Prop.builder()
 							.config(Sample1.class).name("num").op(IntegerOp.DEFAULT)
 							.build());
 		}
@@ -67,18 +72,18 @@ public class DependingPropertyTest {
 		}
 
 		@Override
-		public Collection<Property<?>> properties() {
-			return PropertyHelper.buildProperties(
-						Property.builder()
+		public Iterable<Prop<?>> props() {
+			return ConfigHelper.props(
+						Prop.builder()
 							.config(Sample2.class).name("ok").op(BooleanOp.DEFAULT)
 							.build());
 		}
 	}
 
-	public static class TestConfig implements SomeConfig {
+	public static class TestConfig implements Bean {
 		private String kind;
 
-		private Base target;
+		private List<Base> target;
 
 		public void setKind(String kind) {
 			this.kind = kind;
@@ -88,46 +93,53 @@ public class DependingPropertyTest {
 			return this.kind;
 		}
 
-		public void setTarget(Base target) {
+		public void setTarget(List<Base> target) {
 			this.target = target;
 		}
 
-		public Base getTarget() {
+		public List<Base> getTarget() {
 			return this.target;
 		}
 
 		@Override
-		public Collection<Property<?>> properties() {
-			var kindProp = new Property<>(TestConfig.class, "kind", null, StringOp.DEFAULT);
-			var dispatchOpMap = Map.of("1", new NestedStaticOp<>(Sample1.class),
-									"2", new NestedStaticOp<>(Sample2.class));
-			var targetProp = new DependingProperty<Base, String>(TestConfig.class, Base.class, "target", kindProp, dispatchOpMap);
-			return PropertyHelper.buildProperties(kindProp, targetProp);
+		public Iterable<Prop<?>> props() {
+			var kindProp = new Prop<>(TestConfig.class, "kind", null, StringOp.DEFAULT);
+			var dispatchOpMap = Map.of("1", new ReflectBeanOp<>(Sample1.class),
+									"2", new ReflectBeanOp<>(Sample2.class));
+			var targetProp = new DependingListProp<Base, String>(TestConfig.class, Base.class, "target", kindProp, dispatchOpMap);
+			return ConfigHelper.props(kindProp, targetProp);
 		}
 	}
 
 	@Test
 	public void test_happy() {
-		var t = new NestedStaticOp<TestConfig>(TestConfig.class) {
+		var t = new ReflectBeanOp<TestConfig>(TestConfig.class) {
 			@Override
-			public TestConfig newValue(String hint, Map<String, Object> parentObject, Map<String, Object> map) {
+			public TestConfig newValue(String hint, Map<String, Object> parent, Map<String, Object> value) {
 				return new TestConfig();
 			}
 		};
 
-		var map1 = Map.of("kind", "1", "target", Map.of("num", 678));
-		var c1 = t.convert("", null, map1);
+		var map1 = Map.of("kind", "1", "target", List.of(Map.of("num", 678), Map.of("num", 543)));
+		var c1 = t.build("", null, map1);
 		assertEquals("1", c1.getKind());
 
-		var sample1 = c1.getTarget();
-		assertInstanceOf(Sample1.class, sample1);
-		assertEquals(678, ((Sample1)sample1).getNum());
 
-		var map2 = Map.of("kind", "2", "target", Map.of("ok", true));
-		var c2 = t.convert("", null, map2);
+		assertEquals(2, c1.getTarget().size());
+
+		var sample11 = c1.getTarget().get(0);
+		assertInstanceOf(Sample1.class, sample11);
+		assertEquals(678, ((Sample1)sample11).getNum());
+
+		var sample12 = c1.getTarget().get(1);
+		assertInstanceOf(Sample1.class, sample12);
+		assertEquals(543, ((Sample1)sample12).getNum());
+
+		var map2 = Map.of("kind", "2", "target", List.of(Map.of("ok", true)));
+		var c2 = t.build("", null, map2);
 		assertEquals("2", c2.getKind());
 
-		var sample2 = c2.getTarget();
+		var sample2 = c2.getTarget().get(0);
 		assertInstanceOf(Sample2.class, sample2);
 		assertTrue(((Sample2)sample2).isOk());
 	}

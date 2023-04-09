@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.op;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
+import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Op;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
 
 @Getter
-public class ClassOp implements Operator<Class<?>> {
+public class ClassOp implements Op<Class<?>> {
 
     public static final ClassOp DEFAULT = new ClassOp(ClassCache.DEFAULT);
-
-    public static final Collection<Class<?>> CONVERTABLE_CLASSES = Collections
-            .unmodifiableCollection(List.of(String.class));
 
     private final ClassCache cache;
 
@@ -37,13 +34,13 @@ public class ClassOp implements Operator<Class<?>> {
     }
 
     @Override
-    public Class<?> propertyClass() {
+    public Class<?> type() {
         return Class.class;
     }
 
     @Override
-    public Collection<Class<?>> convertableClasses() {
-        return CONVERTABLE_CLASSES;
+    public Iterable<Class<?>> convertableTypes() {
+        return ConfigHelper.STRING;
     }
 
     public ClassLoader getClassLoader() {
@@ -51,7 +48,7 @@ public class ClassOp implements Operator<Class<?>> {
     }
 
     @Override
-    public Class<?> doConvert(String hint, Object parentObject, Object value) {
+    public Class<?> convert(String hint, Map<String, Object> parent, Object value) {
         return this.cache.resolve(getClassLoader(), (String) value);
     }
 

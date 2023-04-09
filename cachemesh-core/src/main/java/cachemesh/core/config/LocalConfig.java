@@ -15,79 +15,63 @@
  */
 package cachemesh.core.config;
 
-import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.Map;
 
-import cachemesh.caffeine.CaffeineProvider;
-import cachemesh.common.config.DependingListProp;
-import cachemesh.common.config.DependingProp;
 import cachemesh.common.config.Prop;
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.Bean;
 import cachemesh.common.config.op.BeanOp;
-import cachemesh.common.config.op.EnumOp;
 import cachemesh.common.config.op.ReflectBeanOp;
+import cachemesh.common.config.Bean;
+import cachemesh.core.LocalCacheRegistry;
 import cachemesh.core.spi.LocalCacheProvider;
 import lombok.Setter;
 import lombok.Singular;
 
 @Getter
 @Setter
-@Builder
 public class LocalConfig implements Bean {
-
-    public enum Kind {
-        caffeine(CaffeineProvider.DEFAULT);
-
-        public final LocalCacheProvider provider;
-
-        private Kind(LocalCacheProvider provider) {
-            this.provider = provider;
-        }
-    }
 
     public static BeanOp<LocalConfig> OP = new ReflectBeanOp<>(LocalConfig.class);
 
-    public static final Kind DEFAULT_KIND = Kind.caffeine;
+    private String kind;
 
-    public static final Prop<Kind> KIND_PROP = Prop.<Kind> builder().config(LocalConfig.class).name("kind")
-            .devault(DEFAULT_KIND).op(new EnumOp<>(Kind.class)).build();
-
-    public static final Map<Kind, ? extends BeanOp<? extends LocalCacheConfig>> CACHE_OP_MAP = Map.of(Kind.caffeine,
-            CaffeineConfig.OP);
-
-    public static final DependingProp<LocalCacheConfig, Kind> DEFAULT_CACHE_PROP = new DependingProp<>(
-            LocalConfig.class, LocalCacheConfig.class, "defaultCache", KIND_PROP, CACHE_OP_MAP);
-
-    public static final DependingListProp<LocalCacheConfig, Kind> CACHES_PROP = new DependingListProp<LocalCacheConfig, Kind>(
-            LocalConfig.class, LocalCacheConfig.class, "caches", KIND_PROP, CACHE_OP_MAP);
-
-    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(KIND_PROP, DEFAULT_CACHE_PROP, CACHES_PROP);
-
-    @Builder.Default
-    private Kind kind = DEFAULT_KIND;
-
-    @Builder.Default
-    private LocalCacheConfig defaultCache = CaffeineConfig.builder().name("default").valueClass(byte[].class).build();
+    private LocalCacheConfig defaultCache;
 
     @Singular("cache")
     private List<LocalCacheConfig> caches;
 
-    public LocalConfig() {
+    @Getter
+    private final LocalCacheRegistry registry;
+
+    protected LocalConfig() {
+        this(LocalCacheRegistry.DEFAULT);
     }
 
-    protected LocalConfig(Kind kind, LocalCacheConfig defaultCache, List<LocalCacheConfig> caches) {
-        this.kind = kind;
+    protected LocalConfig(LocalCacheRegistry registry) {
+        this.registry = registry;
+        this.kind = registry.defaultKind();
+        this.defaultCache = registry.get(this.kind).createDefaultConfig("default", byte[].class);
+    }
+
+    protected LocalConfig(LocalCacheConfig defaultCache, List<LocalCacheConfig> caches) {
+        this(LocalCacheRegistry.DEFAULT, defaultCache, caches);
+    }
+
+    protected LocalConfig(LocalCacheRegistry registry, LocalCacheConfig defaultCache, List<LocalCacheConfig> caches) {
+        this.registry = registry;
+        this.kind = defaultCache.getName();
         this.defaultCache = defaultCache;
         this.caches = caches;
     }
 
+    public LocalCacheProvider getCacheProvider() {
+        return getRegistry().get(getKind());
+    }
+
     @Override
     public Iterable<Prop<?>> props() {
-        return PROPS;
+        return getRegistry().configProps();
     }
 
 }

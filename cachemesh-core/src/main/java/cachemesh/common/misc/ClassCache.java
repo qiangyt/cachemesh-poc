@@ -39,14 +39,17 @@ public class ClassCache {
         }
 
         @Override
-        public boolean equals(Object object) {
-            if (object == null) {
+        public boolean equals(Object obj) {
+            if (obj == null) {
                 return false;
+            }
+            if (obj == this) {
+                return true;
             }
 
             Key that;
             try {
-                that = (Key) object;
+                that = (Key) obj;
             } catch (ClassCastException e) {
                 return false;
             }

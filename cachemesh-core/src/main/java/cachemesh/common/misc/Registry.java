@@ -21,28 +21,35 @@ import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-public abstract class Registry<C, T> {
+public abstract class Registry<C, T, S> {
 
     @Getter(AccessLevel.PROTECTED)
-    private Map<String, T> itemMap = createItemMap();
+    private Map<String, S> itemMap = createItemMap();
 
-    protected Map<String, T> createItemMap() {
+    protected Map<String, S> createItemMap() {
         return new HashMap<>();
     }
 
-    public void register(C config, T item) {
+    protected abstract S supplyItem(C config, T value);
+
+    protected abstract String supplyKey(C config);
+
+    protected abstract T supplyValue(S item);
+
+    public void register(C config, T value) {
         var key = supplyKey(config);
         getItemMap().compute(key, (k, existing) -> {
             if (existing != null) {
                 throw new IllegalArgumentException("duplicated: " + key);
             }
-            return item;
+            return supplyItem(config, value);
         });
     }
 
     public T unregister(C config) {
         String key = supplyKey(config);
-        return getItemMap().remove(key);
+        var item = getItemMap().remove(key);
+        return (item == null) ? null : supplyValue(item);
     }
 
     public T get(C config) {
@@ -51,9 +58,8 @@ public abstract class Registry<C, T> {
     }
 
     public T getByKey(String key) {
-        return getItemMap().get(key);
+        var item = getItemMap().get(key);
+        return (item == null) ? null : supplyValue(item);
     }
-
-    protected abstract String supplyKey(C config);
 
 }

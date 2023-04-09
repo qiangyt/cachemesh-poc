@@ -15,7 +15,7 @@
  */
 package cachemesh.common.misc;
 
-public abstract class Manager<C, T> extends SimpleRegistry<C, T> {
+public abstract class SimpleManager<C, T> extends SimpleRegistry<C, T> {
 
     public T resolve(C config) {
         String key = supplyKey(config);

@@ -18,9 +18,10 @@ package cachemesh.caffeine;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import cachemesh.common.config.op.BeanOp;
+import cachemesh.common.config.op.ReflectBeanOp;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.bean.Value;
-import cachemesh.core.config.CaffeineConfig;
 import cachemesh.core.config.LocalCacheConfig;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.LocalCacheProvider;
@@ -29,7 +30,8 @@ import lombok.Getter;
 @Getter
 public class CaffeineProvider implements LocalCacheProvider {
 
-    public static final CaffeineProvider DEFAULT = new CaffeineProvider(ShutdownManager.DEFAULT);
+    public static final BeanOp<? extends LocalCacheConfig> CONFIG_OP = new ReflectBeanOp<>(
+            cachemesh.caffeine.CaffeineConfig.class);
 
     private final ShutdownManager shutdownManager;
 
@@ -38,11 +40,21 @@ public class CaffeineProvider implements LocalCacheProvider {
     }
 
     @Override
-    public LocalCache create(LocalCacheConfig config) {
-        CaffeineConfig cconfig = (CaffeineConfig) config;
-        Cache<String, Value> instance = Caffeine.newBuilder().maximumSize(cconfig.getMaximumSize())
-                .expireAfterWrite(cconfig.getExpireAfterWrite()).build();
-        return new CaffeineCache(cconfig, instance, getShutdownManager());
+    public LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass) {
+        return CaffeineConfig.builder().name(name).valueClass(valueClass).build();
+    }
+
+    @Override
+    public LocalCache createCache(LocalCacheConfig config) {
+        var c = (CaffeineConfig) config;
+        Cache<String, Value> i = Caffeine.newBuilder().maximumSize(c.getMaximumSize())
+                .expireAfterWrite(c.getExpireAfterWrite()).build();
+        return new CaffeineCache(c, i, getShutdownManager());
+    }
+
+    @Override
+    public BeanOp<? extends LocalCacheConfig> configOp() {
+        return CONFIG_OP;
     }
 
 }

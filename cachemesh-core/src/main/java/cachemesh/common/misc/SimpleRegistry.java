@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.spi;
+package cachemesh.common.misc;
 
-import cachemesh.common.config.op.BeanOp;
-import cachemesh.core.config.LocalCacheConfig;
+public abstract class SimpleRegistry<C, T> extends Registry<C, T, T> {
 
-public interface LocalCacheProvider {
+    @Override
+    protected T supplyItem(C config, T value) {
+        return value;
+    }
 
-    LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass);
-
-    LocalCache createCache(LocalCacheConfig config);
-
-    BeanOp<? extends LocalCacheConfig> configOp();
+    @Override
+    protected T supplyValue(T item) {
+        return item;
+    }
 
 }

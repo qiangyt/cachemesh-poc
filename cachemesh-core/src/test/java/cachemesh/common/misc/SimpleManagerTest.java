@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 
-public class ManagerTest {
+public class SimpleManagerTest {
 
 	class Config {
 		final String name;
@@ -32,7 +32,7 @@ public class ManagerTest {
 		}
 	}
 
-	class TargetManager extends Manager<Config, String> {
+	class TargetManager extends SimpleManager<Config, String> {
 
 		Config configToDestroy;
 		String itemToDestroy;

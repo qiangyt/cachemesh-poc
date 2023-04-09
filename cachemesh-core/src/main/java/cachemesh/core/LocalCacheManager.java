@@ -97,7 +97,7 @@ public class LocalCacheManager implements ManagedShutdownable {
             }
 
             if (item.cache == null) {
-                item.cache = getProvider().create(item.config);
+                item.cache = getProvider().createCache(item.config);
                 if (this.logger.isDebugEnabled()) {
                     this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", item.config));
                 }

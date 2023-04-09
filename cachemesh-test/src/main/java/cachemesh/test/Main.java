@@ -16,7 +16,7 @@
 package cachemesh.test;
 
 import cachemesh.core.MeshNetwork;
-import cachemesh.core.config.MeshConfig;
+import cachemesh.core.config.MeshConfigFactory;
 
 public class Main {
 
@@ -34,7 +34,7 @@ public class Main {
         System.out.println("mesh bootstrap: ...");
 
         var configYamlStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(profile + ".yaml");
-        var config = MeshConfig.fromYaml(configYamlStream);
+        var config = new MeshConfigFactory().fromYaml(configYamlStream);
         var mesh = MeshNetwork.build(config);
 
         mesh.start();

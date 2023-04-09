@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-public class RegistryTest {
+public class SimpleRegistryTest {
 
 	class Config {
 		final String name;
@@ -32,7 +32,7 @@ public class RegistryTest {
 		}
 	}
 
-	class TargetRegistry extends Registry<Config, String> {
+	class TargetRegistry extends SimpleRegistry<Config, String> {
 		@Override
 		protected String supplyKey(Config config) {
 			return config.name;

@@ -40,8 +40,6 @@ public class MeshNetwork implements Shutdownable {
 
     private final LocalCacheManager localCacheManager;
 
-    private final Transports transportRegistry;
-
     private final Logger logger;
 
     private final LifeStage lifeStage;
@@ -52,21 +50,19 @@ public class MeshNetwork implements Shutdownable {
         var name = config.getName();
 
         var localConfig = config.getLocal();
-        var localCacheProvider = localConfig.getKind().provider;
+        var localCacheProvider = localConfig.getCacheProvider();
         var localCacheManager = new LocalCacheManager(name, localConfig.getDefaultCache(), localCacheProvider,
                 ShutdownManager.DEFAULT);
         var nearCacheManager = localCacheManager;
 
-        return new MeshNetwork(config, nearCacheManager, localCacheManager, Transports.DEFAULT);
+        return new MeshNetwork(config, nearCacheManager, localCacheManager);
     }
 
-    public MeshNetwork(MeshConfig config, LocalCacheManager nearCacheManager, LocalCacheManager localCacheManager,
-            Transports transportRegistry) {
+    public MeshNetwork(MeshConfig config, LocalCacheManager nearCacheManager, LocalCacheManager localCacheManager) {
 
         this.config = config;
         this.route = new ConsistentHash<>(config.getHashing().instance);
         this.localCacheManager = localCacheManager;
-        this.transportRegistry = transportRegistry;
         this.logger = LogHelper.getLogger(getClass(), config.getName());
         this.lifeStage = new LifeStage("meshnetwork", config.getName(), getLogger());
         this.meshCacheManager = new MeshCacheManager(nearCacheManager, this);
@@ -103,7 +99,7 @@ public class MeshNetwork implements Shutdownable {
     }
 
     public TransportProvider loadTransportProvider(String protocol) {
-        var r = getTransportRegistry().getByKey(protocol);
+        var r = getConfig().getTransportRegistry().getByKey(protocol);
         if (r == null) {
             throw new IllegalArgumentException("unsupported protocol: " + protocol);
         }

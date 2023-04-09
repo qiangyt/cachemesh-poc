@@ -18,9 +18,27 @@ package cachemesh.core;
 import cachemesh.common.misc.Registry;
 import cachemesh.core.spi.TransportProvider;
 
-public class Transports extends Registry<String, TransportProvider> {
+public class TransportRegistry extends Registry<String, TransportProvider, TransportRegistry.Item> {
 
-    public static final Transports DEFAULT = new Transports();
+    static class Item {
+        final TransportProvider provider;
+
+        Item(TransportProvider provider) {
+            this.provider = provider;
+        }
+    }
+
+    public static final TransportRegistry DEFAULT = new TransportRegistry();
+
+    @Override
+    protected Item supplyItem(String protocol, TransportProvider value) {
+        return new Item(value);
+    }
+
+    @Override
+    protected TransportProvider supplyValue(Item item) {
+        return item.provider;
+    }
 
     @Override
     protected String supplyKey(String protocol) {

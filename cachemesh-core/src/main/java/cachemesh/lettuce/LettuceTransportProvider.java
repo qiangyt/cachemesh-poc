@@ -17,7 +17,6 @@ package cachemesh.lettuce;
 
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
-import cachemesh.core.Transports;
 import cachemesh.core.config.LettuceNodeConfig;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
@@ -27,20 +26,13 @@ import lombok.Getter;
 @Getter
 public class LettuceTransportProvider implements TransportProvider {
 
-    public static final LettuceTransportProvider DEFAULT = new LettuceTransportProvider(
-            DedicatedRedisClientProvider.DEFAULT, ShutdownManager.DEFAULT);
-
-    public static void register(Transports registry) {
-        registry.register(LettuceNodeConfig.PROTOCOL, DEFAULT);
-    }
-
-    public static void register() {
-        register(Transports.DEFAULT);
-    }
-
     private final ShutdownManager shutdownManager;
 
     private final RedisClientProvider clientProvider;
+
+    public LettuceTransportProvider() {
+        this(DedicatedRedisClientProvider.DEFAULT, ShutdownManager.DEFAULT);
+    }
 
     public LettuceTransportProvider(RedisClientProvider clientProvider, ShutdownManager shutdownManager) {
         this.clientProvider = clientProvider;

@@ -18,7 +18,6 @@ package cachemesh.grpc;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.LocalTransport;
 import cachemesh.core.MeshNode;
-import cachemesh.core.Transports;
 import cachemesh.core.config.GrpcNodeConfig;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
@@ -28,20 +27,13 @@ import lombok.Getter;
 @Getter
 public class GrpcTransportProvider implements TransportProvider {
 
-    public static final GrpcTransportProvider DEFAULT = new GrpcTransportProvider(GrpcServerProvider.DEFAULT,
-            ShutdownManager.DEFAULT);
-
-    public static void register(Transports registry) {
-        registry.register(GrpcNodeConfig.PROTOCOL, GrpcTransportProvider.DEFAULT);
-    }
-
-    public static void register() {
-        register(Transports.DEFAULT);
-    }
-
     private final GrpcServerProvider serverProvider;
 
     private final ShutdownManager shutdownManager;
+
+    public GrpcTransportProvider() {
+        this(GrpcServerProvider.DEFAULT, ShutdownManager.DEFAULT);
+    }
 
     public GrpcTransportProvider(GrpcServerProvider serverProvider, ShutdownManager shutdownManager) {
         this.serverProvider = serverProvider;

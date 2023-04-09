@@ -17,6 +17,8 @@ package cachemesh.core.config;
 
 import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
+import cachemesh.core.TransportRegistry;
+import cachemesh.core.LocalCacheRegistry;
 import cachemesh.common.config.Prop;
 import cachemesh.common.config.ConfigHelper;
 import cachemesh.common.config.Bean;
@@ -26,15 +28,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.Map;
-
-import org.yaml.snakeyaml.Yaml;
-
 @Getter
 @Setter
-@Builder
 public class MeshConfig implements Bean {
 
     public static enum HashingKind {
@@ -63,25 +58,32 @@ public class MeshConfig implements Bean {
             .name("nodes").devault(null).op(NodesConfig.OP).build();
 
     public static final Prop<LocalConfig> LOCAL_PROP = Prop.<LocalConfig> builder().config(MeshConfig.class)
-            .name("local").devault(LocalConfig.builder().build()).op(LocalConfig.OP).build();
+            .name("local").op(LocalConfig.OP).build();
 
     public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NAME_PROP, HASHING_PROP, NODES_PROP, LOCAL_PROP);
 
-    @Builder.Default
     private String name = DEFAULT_NAME;
 
-    @Builder.Default
     private HashingKind hashing = DEFAULT_HASHING;
 
     private NodesConfig nodes;
 
-    @Builder.Default
-    private LocalConfig local = LocalConfig.builder().build();
+    private LocalConfig local;
 
-    public MeshConfig() {
+    private final TransportRegistry transportRegistry;
+
+    private final LocalCacheRegistry localCacheRegistry;
+
+    public MeshConfig(TransportRegistry transportRegistry, LocalCacheRegistry localCacheRegistry) {
+        this.transportRegistry = transportRegistry;
+        this.localCacheRegistry = localCacheRegistry;
     }
 
-    protected MeshConfig(String name, HashingKind hashing, NodesConfig nodes, LocalConfig local) {
+    @Builder
+    private MeshConfig(TransportRegistry transportRegistry, LocalCacheRegistry localCacheRegistry, String name,
+            HashingKind hashing, NodesConfig nodes, LocalConfig local) {
+        this(transportRegistry, localCacheRegistry);
+
         this.name = name;
         this.hashing = hashing;
         this.nodes = nodes;
@@ -91,33 +93,6 @@ public class MeshConfig implements Bean {
     @Override
     public Iterable<Prop<?>> props() {
         return PROPS;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static MeshConfig fromYaml(String yamlText) {
-        var yaml = new Yaml();
-        var map = (Map<String, Object>) yaml.load(yamlText);
-        return fromMap(map);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static MeshConfig fromYaml(InputStream yamlStream) {
-        var yaml = new Yaml();
-        var map = (Map<String, Object>) yaml.load(yamlStream);
-        return fromMap(map);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static MeshConfig fromYaml(Reader yamlReader) {
-        var yaml = new Yaml();
-        var map = (Map<String, Object>) yaml.load(yamlReader);
-        return fromMap(map);
-    }
-
-    public static MeshConfig fromMap(Map<String, Object> map) {
-        var r = new MeshConfig();
-        r.withMap("", null, map);
-        return r;
     }
 
 }

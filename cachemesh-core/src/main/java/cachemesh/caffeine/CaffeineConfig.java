@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config;
+package cachemesh.caffeine;
 
 import java.time.Duration;
 
@@ -23,6 +23,7 @@ import cachemesh.common.config.op.BeanOp;
 import cachemesh.common.config.op.DurationOp;
 import cachemesh.common.config.op.IntegerOp;
 import cachemesh.common.config.op.ReflectBeanOp;
+import cachemesh.core.config.LocalCacheConfig;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;

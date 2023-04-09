@@ -52,6 +52,31 @@ public class Prop<T> {
         return this.name;
     }
 
+    @Override
+    public int hashCode() {
+        return name().hashCode();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+
+        Prop<T> that;
+        try {
+            that = (Prop<T>) obj;
+        } catch (ClassCastException e) {
+            return false;
+        }
+
+        return that.name().equals(name());
+    }
+
     public Method setter() {
         return this.setter;
     }

@@ -68,6 +68,10 @@ public class SimpleURL {
         if (obj == null) {
             return false;
         }
+        if (obj == this) {
+            return true;
+        }
+
         if (obj instanceof SimpleURL) {
             var that = (SimpleURL) obj;
             return this.url.equals(that.url);

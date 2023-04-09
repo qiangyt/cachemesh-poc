@@ -15,34 +15,42 @@
  */
 package cachemesh.core;
 
-import cachemesh.common.misc.Registry;
+import java.util.Map;
+
+import cachemesh.common.config.op.BeanOp;
+import cachemesh.common.misc.SimpleRegistry;
+import cachemesh.core.config.NodeConfig;
+import cachemesh.core.config.NodeConfigOp;
 import cachemesh.core.spi.TransportProvider;
+import cachemesh.grpc.GrpcNodeConfig;
+import cachemesh.lettuce.LettuceNodeConfig;
 
-public class TransportRegistry extends Registry<String, TransportProvider, TransportRegistry.Item> {
+public class TransportRegistry extends SimpleRegistry<String, TransportProvider> {
 
-    static class Item {
-        final TransportProvider provider;
+    public static final Map<Object, ? extends BeanOp<? extends NodeConfig>> FACTORY = Map.of(LettuceNodeConfig.PROTOCOL,
+            LettuceNodeConfig.OP, GrpcNodeConfig.PROTOCOL, GrpcNodeConfig.OP);
 
-        Item(TransportProvider provider) {
-            this.provider = provider;
-        }
-    }
+	public static final NodeConfigOp OP = new NodeConfigOp(FACTORY);
 
     public static final TransportRegistry DEFAULT = new TransportRegistry();
 
     @Override
-    protected Item supplyItem(String protocol, TransportProvider value) {
-        return new Item(value);
+    protected TransportProvider supplyItem(String protocol, TransportProvider provider) {
+        return provider;
     }
 
     @Override
-    protected TransportProvider supplyValue(Item item) {
-        return item.provider;
+    protected TransportProvider supplyValue(TransportProvider provider) {
+        return provider;
     }
 
     @Override
     protected String supplyKey(String protocol) {
         return protocol;
     }
+
+	public NodeConfigOp configOp() {
+		return OP;
+	}
 
 }

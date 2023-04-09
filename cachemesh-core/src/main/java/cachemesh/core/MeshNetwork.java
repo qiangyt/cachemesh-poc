@@ -117,7 +117,7 @@ public class MeshNetwork implements Shutdownable {
         var tp = new LocalTransport(getLocalCacheManager());
 
         if (pdr.bindLocalTransport(nodeConfig, tp) == false) {
-            throw new IllegalArgumentException("transport " + pdr.getProtocol() + " doesn't support local node");
+            throw new IllegalArgumentException("transport " + nodeConfig.getProtocol() + " doesn't support local node");
         }
 
         return addNode(pdr, nodeConfig, tp);
@@ -137,7 +137,7 @@ public class MeshNetwork implements Shutdownable {
     protected MeshNode addRemoteNode(TransportProvider provider, NodeConfig nodeConfig) {
         var tp = provider.createRemoteTransport(nodeConfig);
         if (tp == null) {
-            throw new IllegalArgumentException("transport " + provider.getProtocol() + " doesn't support remote node");
+            throw new IllegalArgumentException("transport " + nodeConfig.getProtocol() + " doesn't support remote node");
         }
 
         return addNode(provider, nodeConfig, tp);

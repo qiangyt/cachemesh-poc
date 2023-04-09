@@ -24,11 +24,8 @@ import cachemesh.common.misc.SimpleURL;
 
 public class NodeConfigOp extends DynamicOp<NodeConfig> {
 
-    public static final Map<Object, ? extends BeanOp<? extends NodeConfig>> FACTORY = Map.of(LettuceNodeConfig.PROTOCOL,
-            LettuceNodeConfig.OP, GrpcNodeConfig.PROTOCOL, GrpcNodeConfig.OP);
-
-    public NodeConfigOp() {
-        super(NodeConfig.class, FACTORY);
+    public NodeConfigOp(Map<Object, ? extends BeanOp<? extends NodeConfig>> opMap) {
+        super(NodeConfig.class, opMap);
     }
 
     @Override

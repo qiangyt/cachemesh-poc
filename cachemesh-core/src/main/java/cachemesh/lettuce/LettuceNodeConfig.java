@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config;
+package cachemesh.lettuce;
 
 import java.net.MalformedURLException;
 
@@ -23,6 +23,7 @@ import cachemesh.common.config.op.IntegerOp;
 import cachemesh.common.config.op.ReflectBeanOp;
 import cachemesh.common.config.op.StringOp;
 import cachemesh.common.misc.SimpleURL;
+import cachemesh.core.config.NodeConfig;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

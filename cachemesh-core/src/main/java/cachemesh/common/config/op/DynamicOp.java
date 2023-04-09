@@ -23,12 +23,12 @@ import lombok.Getter;
 @Getter
 public abstract class DynamicOp<T extends Bean> extends BeanOp<T> {
 
-    private final Map<Object, ? extends BeanOp<? extends T>> factory;
+    private final Map<Object, ? extends BeanOp<? extends T>> opMap;
 
-    public DynamicOp(Class<T> type, Map<Object, ? extends BeanOp<? extends T>> factory) {
+    public DynamicOp(Class<T> type, Map<Object, ? extends BeanOp<? extends T>> opMap) {
         super(type);
 
-        this.factory = factory;
+        this.opMap = opMap;
     }
 
     public abstract Object extractKey(String hint, Map<String, Object> parent, Map<String, Object> value);
@@ -36,7 +36,7 @@ public abstract class DynamicOp<T extends Bean> extends BeanOp<T> {
     @Override
     public T newValue(String hint, Map<String, Object> parent, Map<String, Object> value) {
         var key = extractKey(hint, parent, value);
-        var targetOp = getFactory().get(key);
+        var targetOp = getOpMap().get(key);
         return targetOp.newValue(hint, parent, value);
     }
 

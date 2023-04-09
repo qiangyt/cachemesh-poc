@@ -41,7 +41,6 @@ public class LocalConfig implements Bean {
     @Singular("cache")
     private List<LocalCacheConfig> caches;
 
-    @Getter
     private final LocalCacheRegistry registry;
 
     protected LocalConfig() {

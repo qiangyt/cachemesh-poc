@@ -18,7 +18,6 @@ package cachemesh.lettuce;
 import java.time.Duration;
 
 import cachemesh.common.misc.Manager;
-import cachemesh.core.config.LettuceNodeConfig;
 import io.lettuce.core.RedisClient;
 
 public class DedicatedRedisClientProvider extends Manager<LettuceNodeConfig, RedisClient>

@@ -15,17 +15,19 @@
  */
 package cachemesh.core.spi;
 
+import cachemesh.common.config.op.BeanOp;
 import cachemesh.core.LocalTransport;
 import cachemesh.core.config.NodeConfig;
 
 public interface TransportProvider extends NodeHook {
-
-    String getProtocol();
 
     default boolean bindLocalTransport(NodeConfig nodeConfig, LocalTransport localTranport) {
         return false;
     }
 
     Transport createRemoteTransport(NodeConfig nodeConfig);
+
+	BeanOp<? extends NodeConfig> configOp();
+
 
 }

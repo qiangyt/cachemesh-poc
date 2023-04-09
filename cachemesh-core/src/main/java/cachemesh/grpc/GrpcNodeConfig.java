@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config;
+package cachemesh.grpc;
 
 import cachemesh.common.config.Prop;
 import cachemesh.common.config.ConfigHelper;
@@ -21,6 +21,7 @@ import cachemesh.common.config.op.IntegerOp;
 import cachemesh.common.config.op.ReflectBeanOp;
 import cachemesh.common.config.op.StringOp;
 import cachemesh.common.misc.SimpleURL;
+import cachemesh.core.config.NodeConfig;
 import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
 import io.grpc.ManagedChannel;

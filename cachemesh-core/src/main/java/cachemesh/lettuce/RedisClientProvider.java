@@ -15,7 +15,6 @@
  */
 package cachemesh.lettuce;
 
-import cachemesh.core.config.LettuceNodeConfig;
 import io.lettuce.core.RedisClient;
 
 public interface RedisClientProvider {

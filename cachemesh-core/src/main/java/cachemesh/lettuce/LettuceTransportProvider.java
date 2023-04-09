@@ -15,9 +15,9 @@
  */
 package cachemesh.lettuce;
 
+import cachemesh.common.config.op.BeanOp;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
-import cachemesh.core.config.LettuceNodeConfig;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
@@ -46,11 +46,6 @@ public class LettuceTransportProvider implements TransportProvider {
     }
 
     @Override
-    public String getProtocol() {
-        return LettuceNodeConfig.PROTOCOL;
-    }
-
-    @Override
     public Transport createRemoteTransport(NodeConfig nodeConfig) {
         var config = (LettuceNodeConfig) nodeConfig;
         var client = getClientProvider().resolve(config);
@@ -58,5 +53,10 @@ public class LettuceTransportProvider implements TransportProvider {
         var r = new LettuceTransport(config, client, getShutdownManager());
         return r;
     }
+
+	@Override
+	public BeanOp<? extends NodeConfig> configOp() {
+
+	}
 
 }

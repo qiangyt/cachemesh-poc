@@ -15,10 +15,10 @@
  */
 package cachemesh.grpc;
 
+import cachemesh.common.config.op.BeanOp;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.LocalTransport;
 import cachemesh.core.MeshNode;
-import cachemesh.core.config.GrpcNodeConfig;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
@@ -65,11 +65,6 @@ public class GrpcTransportProvider implements TransportProvider {
         return true;
     }
 
-    @Override
-    public String getProtocol() {
-        return GrpcNodeConfig.PROTOCOL;
-    }
-
     /*
      * @Override public NodeConfig parseConfig(Map<String, Object> configMap) { return GrpcConfig.from(configMap); }
      */
@@ -80,11 +75,8 @@ public class GrpcTransportProvider implements TransportProvider {
         return new GrpcTransport(config, getShutdownManager());
     }
 
-    /*
-     * @Override public Map<String, Object> parseUrl(String url) { var transport = TransportURL.parseUrl(url);
-     * transport.ensureProtocol(GrpcConfig.PROTOCOL);
-     *
-     * return GrpcConfig.parseTarget(transport.getTarget()); }
-     */
+	@Override
+	public BeanOp<? extends NodeConfig> configOp() {
 
+	}
 }

@@ -24,7 +24,6 @@ import lombok.Getter;
 
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.core.bean.GetResult;
-import cachemesh.core.config.GrpcNodeConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.grpc.cache.CacheServiceGrpc;
 import cachemesh.grpc.cache.GetSingleRequest;

@@ -27,7 +27,6 @@ public interface TransportProvider extends NodeHook {
 
     Transport createRemoteTransport(NodeConfig nodeConfig);
 
-	BeanOp<? extends NodeConfig> configOp();
-
+    BeanOp<? extends NodeConfig> configOp();
 
 }

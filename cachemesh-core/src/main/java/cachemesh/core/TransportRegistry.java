@@ -30,7 +30,7 @@ public class TransportRegistry extends SimpleRegistry<String, TransportProvider>
     public static final Map<Object, ? extends BeanOp<? extends NodeConfig>> FACTORY = Map.of(LettuceNodeConfig.PROTOCOL,
             LettuceNodeConfig.OP, GrpcNodeConfig.PROTOCOL, GrpcNodeConfig.OP);
 
-	public static final NodeConfigOp OP = new NodeConfigOp(FACTORY);
+    public static final NodeConfigOp OP = new NodeConfigOp(FACTORY);
 
     public static final TransportRegistry DEFAULT = new TransportRegistry();
 
@@ -49,8 +49,8 @@ public class TransportRegistry extends SimpleRegistry<String, TransportProvider>
         return protocol;
     }
 
-	public NodeConfigOp configOp() {
-		return OP;
-	}
+    public NodeConfigOp configOp() {
+        return OP;
+    }
 
 }

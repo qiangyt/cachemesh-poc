@@ -54,9 +54,9 @@ public class LettuceTransportProvider implements TransportProvider {
         return r;
     }
 
-	@Override
-	public BeanOp<? extends NodeConfig> configOp() {
+    @Override
+    public BeanOp<? extends NodeConfig> configOp() {
 
-	}
+    }
 
 }

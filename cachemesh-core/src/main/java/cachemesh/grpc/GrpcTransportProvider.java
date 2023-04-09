@@ -75,8 +75,8 @@ public class GrpcTransportProvider implements TransportProvider {
         return new GrpcTransport(config, getShutdownManager());
     }
 
-	@Override
-	public BeanOp<? extends NodeConfig> configOp() {
+    @Override
+    public BeanOp<? extends NodeConfig> configOp() {
 
-	}
+    }
 }

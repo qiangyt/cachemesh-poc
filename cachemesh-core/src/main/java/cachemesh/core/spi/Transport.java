@@ -17,7 +17,7 @@ package cachemesh.core.spi;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import cachemesh.core.GetResult;
+import cachemesh.core.bean.GetResult;
 
 @ThreadSafe
 public interface Transport {

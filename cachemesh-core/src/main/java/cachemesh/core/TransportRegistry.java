@@ -20,7 +20,7 @@ import cachemesh.core.config.GrpcConfig;
 import cachemesh.core.config.LettuceConfig;
 import cachemesh.core.spi.TransportProvider;
 import cachemesh.grpc.GrpcTransportProvider;
-import cachemesh.redis.lettuce.LettuceTransportProvider;
+import cachemesh.lettuce.LettuceTransportProvider;
 
 public class TransportRegistry extends Registry<String, TransportProvider> {
 

@@ -15,6 +15,8 @@
  */
 package cachemesh.core;
 
+import cachemesh.core.bean.GetResult;
+import cachemesh.core.bean.ValueImpl;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.Transport;
 import lombok.Getter;

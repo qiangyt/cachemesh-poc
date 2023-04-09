@@ -17,8 +17,6 @@ package cachemesh.test;
 
 import cachemesh.core.MeshNetwork;
 import cachemesh.core.config.MeshConfig;
-//import cachemesh.jgroup.JGroupsListener;
-//import cachemesh.jgroup.JGroupsMembers;
 
 public class Main {
 

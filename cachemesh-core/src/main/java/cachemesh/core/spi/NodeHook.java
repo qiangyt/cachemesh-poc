@@ -19,11 +19,6 @@ import cachemesh.core.MeshNode;
 
 public interface NodeHook {
 
-    @FunctionalInterface
-    public static interface Func {
-        void apply(MeshNode node);
-    }
-
     default void beforeNodeStart(MeshNode node, int timeoutSeconds) throws InterruptedException {
     }
 

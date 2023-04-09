@@ -24,9 +24,9 @@ import lombok.Getter;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
+import cachemesh.core.bean.Value;
 import cachemesh.core.config.CaffeineConfig;
 import cachemesh.core.spi.LocalCache;
-import cachemesh.core.spi.Value;
 
 @Getter
 public class CaffeineCache extends AbstractShutdownable implements LocalCache {

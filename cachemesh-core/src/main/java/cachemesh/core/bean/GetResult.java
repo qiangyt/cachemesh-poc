@@ -13,17 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.redis.lettuce;
+package cachemesh.core.bean;
 
-import cachemesh.core.config.LettuceConfig;
-import io.lettuce.core.RedisClient;
+import cachemesh.core.ResultStatus;
+import lombok.Getter;
 
-public interface RedisClientProvider {
+@Getter
+public class GetResult<T> {
 
-    RedisClient get(LettuceConfig config);
+    public static final GetResult<?> NOT_FOUND = new GetResult<>(ResultStatus.NOT_FOUND, null, 0);
 
-    RedisClient resolve(LettuceConfig config);
+    public static final GetResult<?> NO_CHANGE = new GetResult<>(ResultStatus.NO_CHANGE, null, 0);
 
-    RedisClient destroy(LettuceConfig config, int timeoutSeconds) throws InterruptedException;
+    private final ResultStatus status;
+
+    private final T value;
+
+    private final long version;
+
+    public GetResult(ResultStatus status, T value, long version) {
+        this.status = status;
+        this.value = value;
+        this.version = version;
+    }
 
 }

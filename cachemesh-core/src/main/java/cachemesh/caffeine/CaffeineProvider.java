@@ -19,11 +19,11 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import cachemesh.common.shutdown.ShutdownManager;
+import cachemesh.core.bean.Value;
 import cachemesh.core.config.CaffeineConfig;
 import cachemesh.core.config.LocalCacheConfig;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.LocalCacheProvider;
-import cachemesh.core.spi.Value;
 import lombok.Getter;
 
 @Getter

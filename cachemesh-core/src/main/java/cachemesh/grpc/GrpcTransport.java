@@ -23,7 +23,7 @@ import io.grpc.ManagedChannel;
 import lombok.Getter;
 
 import cachemesh.common.shutdown.AbstractShutdownable;
-import cachemesh.core.GetResult;
+import cachemesh.core.bean.GetResult;
 import cachemesh.core.config.GrpcConfig;
 import cachemesh.core.spi.Transport;
 

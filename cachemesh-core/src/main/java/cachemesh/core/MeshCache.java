@@ -21,13 +21,11 @@ import lombok.Getter;
 import cachemesh.common.err.InternalException;
 import cachemesh.common.err.ServiceException;
 import cachemesh.common.misc.LogHelper;
+import cachemesh.core.bean.ValueImpl;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.Transport;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 public class MeshCache<T> {

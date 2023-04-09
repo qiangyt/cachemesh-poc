@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core;
+package cachemesh.core.bean;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import cachemesh.core.spi.Value;
-
 import java.util.HashMap;
 import lombok.Getter;
 

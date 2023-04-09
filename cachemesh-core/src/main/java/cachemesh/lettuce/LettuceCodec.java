@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.redis.lettuce;
+package cachemesh.lettuce;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.redis.lettuce;
+package cachemesh.lettuce;
 
-import cachemesh.core.GetResult;
 import cachemesh.core.ResultStatus;
+import cachemesh.core.bean.GetResult;
 import cachemesh.core.config.LettuceConfig;
 import cachemesh.core.spi.Transport;
 import io.lettuce.core.api.sync.RedisCommands;

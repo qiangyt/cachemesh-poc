@@ -36,9 +36,9 @@ public class GrpcService extends CacheServiceGrpc.CacheServiceImplBase {
 
     private final LocalTransport localTransport;
 
-    private final GrpcNodeConfig config;
+    private final GrpcConfig config;
 
-    public GrpcService(GrpcNodeConfig config, LocalTransport localTransport) {
+    public GrpcService(GrpcConfig config, LocalTransport localTransport) {
         this.config = config;
         this.localTransport = localTransport;
     }

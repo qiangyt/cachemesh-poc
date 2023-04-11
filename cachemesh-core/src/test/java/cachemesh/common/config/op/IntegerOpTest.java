@@ -25,16 +25,16 @@ public class IntegerOpTest {
 	public void test_happy() {
 		var t = IntegerOp.DEFAULT;
 
-		assertEquals(1, t.build("", null, "1"));
-		assertEquals('2', t.build("", null, '2'));
-		assertEquals(3, t.build("", null, Byte.valueOf("3")));
-		assertEquals(4, t.build("", null, Short.valueOf("4")));
-		assertEquals(5, t.build("", null, Integer.valueOf(5)));
-		assertEquals(6, t.build("", null, Long.valueOf(6)));
-		assertEquals(7, t.build("", null, Float.valueOf(7)));
-		assertEquals(8, t.build("", null, Double.valueOf(8)));
+		assertEquals(1, t.populate("", null, "1"));
+		assertEquals('2', t.populate("", null, '2'));
+		assertEquals(3, t.populate("", null, Byte.valueOf("3")));
+		assertEquals(4, t.populate("", null, Short.valueOf("4")));
+		assertEquals(5, t.populate("", null, Integer.valueOf(5)));
+		assertEquals(6, t.populate("", null, Long.valueOf(6)));
+		assertEquals(7, t.populate("", null, Float.valueOf(7)));
+		assertEquals(8, t.populate("", null, Double.valueOf(8)));
 
-		assertThrows(IllegalArgumentException.class, () -> t.build("", null, new Object()));
+		assertThrows(IllegalArgumentException.class, () -> t.populate("", null, new Object()));
 	}
 
 }

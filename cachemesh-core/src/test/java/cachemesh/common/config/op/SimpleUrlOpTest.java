@@ -33,15 +33,15 @@ public class SimpleUrlOpTest {
 		var t = SimpleUrlOp.DEFAULT;
 
 		assertEquals(new SimpleURL("ftp://example1.com"),
-					t.build("", null, "ftp://example1.com"));
+					t.populate("", null, "ftp://example1.com"));
 
 		SimpleURL u2 = new SimpleURL("ftp://example2.com");
-		assertSame(u2, t.build("", null, u2));
+		assertSame(u2, t.populate("", null, u2));
 
 		assertEquals(new SimpleURL("ftp://example3.com"),
-					t.build("", null, new URL("ftp://example3.com")));
+					t.populate("", null, new URL("ftp://example3.com")));
 
-		assertThrows(IllegalArgumentException.class, () -> t.build("", null, new Object()));
+		assertThrows(IllegalArgumentException.class, () -> t.populate("", null, new Object()));
 	}
 
 }

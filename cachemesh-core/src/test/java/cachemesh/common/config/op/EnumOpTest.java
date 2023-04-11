@@ -29,11 +29,11 @@ public class EnumOpTest {
 	public void test_happy() {
 		var t = new EnumOp<Sample>(Sample.class);
 
-		assertSame(Sample.a, t.build("", null, "a"));
-		assertSame(Sample.b, t.build("", null, "b"));
-		assertSame(Sample.c, t.build("", null, Sample.c));
+		assertSame(Sample.a, t.populate("", null, "a"));
+		assertSame(Sample.b, t.populate("", null, "b"));
+		assertSame(Sample.c, t.populate("", null, Sample.c));
 
-		assertThrows(IllegalArgumentException.class, () -> t.build("", null, new Object()));
+		assertThrows(IllegalArgumentException.class, () -> t.populate("", null, new Object()));
 	}
 
 }

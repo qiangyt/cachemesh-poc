@@ -17,33 +17,19 @@ package cachemesh.core.config;
 
 import java.util.Map;
 
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.TypeOp;
+import cachemesh.common.config.op.BeanOp;
+import cachemesh.common.config.op.DynamicOp;
 import cachemesh.common.config.op.SimpleUrlOp;
 import cachemesh.common.misc.SimpleURL;
-import cachemesh.core.TransportRegistry;
-import lombok.Getter;
 
-@Getter
-public class NodeConfigOp implements TypeOp<NodeConfig> {
+public class NodeConfigOp extends DynamicOp<NodeConfig> {
 
-    private final TransportRegistry registry;
-
-    public NodeConfigOp(TransportRegistry registry) {
-        this.registry = registry;
+    public NodeConfigOp(Map<Object, ? extends BeanOp<? extends NodeConfig>> opMap) {
+        super(NodeConfig.class, opMap);
     }
 
     @Override
-    public Iterable<Class<?>> convertableClasses() {
-        return ConfigHelper.MAP;
-    }
-
-    @Override
-    public Class<?> klass() {
-        return NodeConfig.class;
-    }
-
-    public SimpleURL extractURL(String hint, Map<String, Object> parent, Map<String, Object> value) {
+    public Object extractKey(String hint, Map<String, Object> parent, Map<String, Object> value) {
         if (value.containsKey("url") == false) {
             throw new IllegalArgumentException(hint + ": url is required");
         }
@@ -55,22 +41,11 @@ public class NodeConfigOp implements TypeOp<NodeConfig> {
             // got cached url
             url = (SimpleURL) urlObj;
         } else {
-            url = SimpleUrlOp.DEFAULT.populate(hint, parent, urlObj);
+            url = SimpleUrlOp.DEFAULT.build(hint, parent, urlObj);
             value.put("url", url); // cache it to prevent conversion again and again
         }
 
-        return url;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public NodeConfig convert(String hint, Map<String, Object> parent, Object value) {
-        var map = (Map<String, Object>) value;
-
-        var url = extractURL(hint, parent, map);
-        var provider = getRegistry().get(url.getProtocol());
-
-        return provider.createConfig(hint, parent, map);
+        return url.getProtocol();
     }
 
 }

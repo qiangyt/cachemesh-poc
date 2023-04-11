@@ -18,9 +18,8 @@ package cachemesh.common.config.op;
 import java.util.Map;
 
 import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.Op;
 
-public class BooleanOp implements Op<Boolean> {
+public class BooleanOp extends AbstractOp<Boolean> {
 
     public static final BooleanOp DEFAULT = new BooleanOp();
 
@@ -28,12 +27,12 @@ public class BooleanOp implements Op<Boolean> {
             Number.class);
 
     @Override
-    public Class<?> type() {
+    public Class<?> klass() {
         return Boolean.class;
     }
 
     @Override
-    public Iterable<Class<?>> convertableTypes() {
+    public Iterable<Class<?>> convertableClasses() {
         return CONVERTABLES;
     }
 

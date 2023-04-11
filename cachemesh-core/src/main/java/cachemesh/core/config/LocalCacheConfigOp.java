@@ -13,18 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config.op;
+package cachemesh.core.config;
 
 import java.util.Map;
 
-import cachemesh.common.config.Bean;
 import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.TypeOp;
+import cachemesh.core.LocalCacheRegistry;
 import lombok.Getter;
 
 @Getter
-public abstract class BeanOp<T extends Bean> extends AbstractOp<T> {
+public class LocalCacheConfigOp implements TypeOp<LocalCacheConfig> {
 
-    public abstract T newBean(String hint, Map<String, Object> parent, Map<String, Object> value);
+    private final LocalCacheRegistry registry;
+
+    private final TypeOp<String> kindOp;
+
+    public LocalCacheConfigOp(LocalCacheRegistry registry, TypeOp<String> kindOp) {
+        this.registry = registry;
+        this.kindOp = kindOp;
+    }
 
     @Override
     public Iterable<Class<?>> convertableClasses() {
@@ -32,12 +40,18 @@ public abstract class BeanOp<T extends Bean> extends AbstractOp<T> {
     }
 
     @Override
+    public Class<?> klass() {
+        return LocalCacheConfig.class;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
-    public T convert(String hint, Map<String, Object> parent, Object value) {
-        var valueMap = (Map<String, Object>) value;
-        T r = newBean(hint, parent, valueMap);
-        r.withMap(hint, parent, valueMap);
-        return r;
+    public LocalCacheConfig convert(String hint, Map<String, Object> parent, Object value) {
+        var kind = getKindOp().populate(hint, null, parent);
+        var provider = getRegistry().get(kind);
+
+        var map = (Map<String, Object>) value;
+        return provider.createConfig(hint, parent, map);
     }
 
 }

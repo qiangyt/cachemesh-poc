@@ -19,9 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import cachemesh.common.config.Op;
-
-public class IntegerOp implements Op<Integer> {
+public class IntegerOp extends AbstractOp<Integer> {
 
     public static final IntegerOp DEFAULT = new IntegerOp();
 
@@ -29,12 +27,12 @@ public class IntegerOp implements Op<Integer> {
             .unmodifiableCollection(List.of(Character.class, Number.class, String.class));
 
     @Override
-    public Class<?> type() {
+    public Class<?> klass() {
         return Integer.class;
     }
 
     @Override
-    public Iterable<Class<?>> convertableTypes() {
+    public Iterable<Class<?>> convertableClasses() {
         return CONVERTABLES;
     }
 

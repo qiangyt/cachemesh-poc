@@ -15,10 +15,11 @@
  */
 package cachemesh.grpc;
 
-import cachemesh.common.config.Prop;
+import cachemesh.common.config.ReflectProp;
 import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Prop;
 import cachemesh.common.config.op.IntegerOp;
-import cachemesh.common.config.op.ReflectBeanOp;
+import cachemesh.common.config.op.ReflectOp;
 import cachemesh.common.config.op.StringOp;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.NodeConfig;
@@ -31,18 +32,18 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GrpcNodeConfig extends NodeConfig {
+public class GrpcConfig extends NodeConfig {
 
-    public static final ReflectBeanOp<GrpcNodeConfig> OP = new ReflectBeanOp<>(GrpcNodeConfig.class);
+    public static final ReflectOp<GrpcConfig> OP = new ReflectOp<>(GrpcConfig.class);
 
     public static final String PROTOCOL = "grpc";
 
     public static final int DEFAULT_PORT = 12001;
 
-    public static final Prop<String> HOST_PROP = Prop.<String> builder().config(GrpcNodeConfig.class).name("host")
+    public static final Prop<String> HOST_PROP = ReflectProp.<String> builder().config(GrpcConfig.class).name("host")
             .op(StringOp.DEFAULT).build();
 
-    public static final Prop<Integer> PORT_PROP = Prop.<Integer> builder().config(GrpcNodeConfig.class).name("port")
+    public static final Prop<Integer> PORT_PROP = ReflectProp.<Integer> builder().config(GrpcConfig.class).name("port")
             .devault(DEFAULT_PORT).op(IntegerOp.DEFAULT).build();
 
     public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NodeConfig.PROPS, HOST_PROP, PORT_PROP);
@@ -56,26 +57,21 @@ public class GrpcNodeConfig extends NodeConfig {
     private int port;
 
     @Builder
-    public GrpcNodeConfig(SimpleURL url) {
+    public GrpcConfig(SimpleURL url) {
         super(url);
     }
 
     @Builder
-    public GrpcNodeConfig(SimpleURL url, boolean local, int startTimeout, int stopTimeout) {
+    public GrpcConfig(SimpleURL url, boolean local, int startTimeout, int stopTimeout) {
         super(url, local, startTimeout, stopTimeout);
     }
 
     @Builder
-    public GrpcNodeConfig(String host, int port, boolean local, int startTimeout, int stopTimeout) {
+    public GrpcConfig(String host, int port, boolean local, int startTimeout, int stopTimeout) {
         super(local, startTimeout, stopTimeout);
 
         this.host = host;
         this.port = port;
-    }
-
-    @Override
-    public String getProtocol() {
-        return PROTOCOL;
     }
 
     @Override

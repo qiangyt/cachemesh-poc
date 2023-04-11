@@ -15,8 +15,9 @@
  */
 package cachemesh.core.config;
 
-import cachemesh.common.config.Prop;
+import cachemesh.common.config.ReflectProp;
 import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Prop;
 import cachemesh.common.config.Bean;
 import cachemesh.common.config.op.StringOp;
 import cachemesh.core.TransportRegistry;
@@ -29,7 +30,7 @@ public abstract class NodesConfig implements Bean {
 
     public static final NodesConfigOp OP = new NodesConfigOp();
 
-    public static final Prop<String> KIND_PROP = Prop.<String> builder().config(NodesConfig.class).name("kind")
+    public static final Prop<String> KIND_PROP = ReflectProp.<String> builder().config(NodesConfig.class).name("kind")
             .devault("inline").op(StringOp.DEFAULT).build();
 
     public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(KIND_PROP);
@@ -37,10 +38,6 @@ public abstract class NodesConfig implements Bean {
     private String kind;
 
     private final TransportRegistry registry;
-
-    protected NodesConfig() {
-        this(TransportRegistry.DEFAULT);
-    }
 
     protected NodesConfig(TransportRegistry registry) {
         this.registry = registry;

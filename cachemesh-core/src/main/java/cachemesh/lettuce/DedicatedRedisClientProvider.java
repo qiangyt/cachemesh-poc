@@ -20,24 +20,22 @@ import java.time.Duration;
 import cachemesh.common.misc.Manager;
 import io.lettuce.core.RedisClient;
 
-public class DedicatedRedisClientProvider extends Manager<LettuceNodeConfig, RedisClient>
-        implements RedisClientProvider {
+public class DedicatedRedisClientProvider extends Manager<LettuceConfig, RedisClient> implements RedisClientProvider {
 
     public static final DedicatedRedisClientProvider DEFAULT = new DedicatedRedisClientProvider();
 
     @Override
-    protected String supplyKey(LettuceNodeConfig config) {
+    protected String supplyKey(LettuceConfig config) {
         return config.getTarget();
     }
 
     @Override
-    protected RedisClient doCreate(LettuceNodeConfig config) {
+    protected RedisClient doCreate(LettuceConfig config) {
         return RedisClient.create(config.getTarget());
     }
 
     @Override
-    protected void doDestroy(LettuceNodeConfig config, RedisClient client, int timeoutSeconds)
-            throws InterruptedException {
+    protected void doDestroy(LettuceConfig config, RedisClient client, int timeoutSeconds) throws InterruptedException {
         var timeout = Duration.ofSeconds(timeoutSeconds);
         client.shutdown(timeout, timeout);
     }

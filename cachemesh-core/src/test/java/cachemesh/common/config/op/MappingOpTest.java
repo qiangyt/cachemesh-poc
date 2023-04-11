@@ -26,8 +26,9 @@ import org.junit.jupiter.api.Test;
 import cachemesh.common.config.Bean;
 import cachemesh.common.config.ConfigHelper;
 import cachemesh.common.config.Prop;
+import cachemesh.common.config.ReflectProp;
 
-public class DynamicOpTest {
+public class MappingOpTest {
 
 	public static class Base implements Bean {
 		private String kind;
@@ -43,7 +44,7 @@ public class DynamicOpTest {
 		@Override
 		public Iterable<Prop<?>> props() {
 			return ConfigHelper.props(
-						Prop.builder()
+						ReflectProp.builder()
 							.config(Base.class).name("kind").op(StringOp.DEFAULT)
 							.build());
 		}
@@ -66,7 +67,7 @@ public class DynamicOpTest {
 		public Iterable<Prop<?>> props() {
 			return ConfigHelper.props(
 						super.props(),
-						Prop.builder()
+						ReflectProp.builder()
 							.config(Sample1.class).name("num").op(IntegerOp.DEFAULT)
 							.build());
 		}
@@ -89,22 +90,26 @@ public class DynamicOpTest {
 		public Iterable<Prop<?>> props() {
 			return ConfigHelper.props(
 						super.props(),
-						Prop.builder()
+						ReflectProp.builder()
 							.config(Sample2.class).name("ok").op(BooleanOp.DEFAULT)
 							.build());
 		}
 	}
 
-	public static class SampleOp extends DynamicOp<Base> {
+	public static class SampleOp extends MappingOp<Base> {
 
 		public SampleOp() {
-			super(Base.class,
-				Map.of("1", new ReflectBeanOp<>(Sample1.class),
-				"2", new ReflectBeanOp<>(Sample2.class)));
+			super(Map.of("1", new ReflectOp<>(Sample1.class),
+				"2", new ReflectOp<>(Sample2.class)));
 		}
 
 		@Override public Object extractKey(String hint, Map<String, Object> parent, Map<String, Object> value) {
 			return value.get("kind");
+		}
+
+		@Override
+		public Class<?> klass() {
+			return Base.class;
 		}
 
 	}
@@ -114,12 +119,12 @@ public class DynamicOpTest {
 		var t = new SampleOp();
 
 		var map1 = Map.of("kind", "1", "num", 678);
-		var sample1 = t.build("", null, map1);
+		var sample1 = t.populate("", null, map1);
 		assertInstanceOf(Sample1.class, sample1);
 		assertEquals(678, ((Sample1)sample1).getNum());
 
 		var map2 = Map.of("kind", "2", "ok", true);
-		var sample2 = t.build("", null, map2);
+		var sample2 = t.populate("", null, map2);
 		assertInstanceOf(Sample2.class, sample2);
 		assertTrue(((Sample2)sample2).isOk());
 	}

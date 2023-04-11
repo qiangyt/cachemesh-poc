@@ -15,18 +15,13 @@
  */
 package cachemesh.lettuce;
 
-import cachemesh.common.config.op.BeanOp;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
-import cachemesh.core.config.NodeConfig;
-import cachemesh.core.spi.Transport;
-import cachemesh.core.spi.TransportProvider;
+import cachemesh.core.spi.support.AbstractTransportProvider;
 import lombok.Getter;
 
 @Getter
-public class LettuceTransportProvider implements TransportProvider {
-
-    private final ShutdownManager shutdownManager;
+public class LettuceTransportProvider extends AbstractTransportProvider<LettuceTransport, LettuceConfig> {
 
     private final RedisClientProvider clientProvider;
 
@@ -35,8 +30,8 @@ public class LettuceTransportProvider implements TransportProvider {
     }
 
     public LettuceTransportProvider(RedisClientProvider clientProvider, ShutdownManager shutdownManager) {
+        super(LettuceConfig.class, shutdownManager);
         this.clientProvider = clientProvider;
-        this.shutdownManager = shutdownManager;
     }
 
     @Override
@@ -46,17 +41,8 @@ public class LettuceTransportProvider implements TransportProvider {
     }
 
     @Override
-    public Transport createRemoteTransport(NodeConfig nodeConfig) {
-        var config = (LettuceNodeConfig) nodeConfig;
+    protected LettuceTransport doCreateRemoteTransport(LettuceConfig config) {
         var client = getClientProvider().resolve(config);
-
-        var r = new LettuceTransport(config, client, getShutdownManager());
-        return r;
+        return new LettuceTransport(config, client, getShutdownManager());
     }
-
-    @Override
-    public BeanOp<? extends NodeConfig> configOp() {
-
-    }
-
 }

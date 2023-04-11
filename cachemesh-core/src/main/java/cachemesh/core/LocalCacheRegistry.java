@@ -15,17 +15,17 @@
  */
 package cachemesh.core;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.DependingListProp;
-import cachemesh.common.config.DependingProp;
 import cachemesh.common.config.Prop;
-import cachemesh.common.config.op.BeanOp;
+import cachemesh.common.config.ReflectProp;
+import cachemesh.common.config.op.ListOp;
 import cachemesh.common.config.op.StringOp;
 import cachemesh.common.misc.SimpleRegistry;
 import cachemesh.core.config.LocalCacheConfig;
+import cachemesh.core.config.LocalCacheConfigOp;
 import cachemesh.core.config.LocalConfig;
 import cachemesh.core.spi.LocalCacheProvider;
 
@@ -35,26 +35,28 @@ public class LocalCacheRegistry extends SimpleRegistry<String, LocalCacheProvide
 
     public static final String DEFAULT_KIND = "caffeine";
 
-    private final Map<String, BeanOp<? extends LocalCacheConfig>> configOpMap = new ConcurrentHashMap<>();
-
     private final Iterable<Prop<?>> configProps;
 
-    private String defaultKind = "caffeine";
+    private String defaultKind = DEFAULT_KIND;
 
     public LocalCacheRegistry() {
-        var kindProp = Prop.<String> builder().config(LocalConfig.class).name("kind").devault(DEFAULT_KIND)
-                .op(StringOp.DEFAULT).build();
-        var defaultCacheProp = new DependingProp<>(LocalConfig.class, LocalCacheConfig.class, "defaultCache", kindProp,
-                this.configOpMap);
-        var cachesProp = new DependingListProp<LocalCacheConfig, String>(LocalConfig.class, LocalCacheConfig.class,
-                "caches", kindProp, this.configOpMap);
-        this.configProps = ConfigHelper.props(kindProp, defaultCacheProp, cachesProp);
+        this.configProps = buildConfigProps();
     }
 
-    @Override
-    protected LocalCacheProvider supplyItem(String kind, LocalCacheProvider provider) {
-        this.configOpMap.put(kind, provider.configOp());
-        return provider;
+    public Iterable<Prop<?>> buildConfigProps() {
+        var kindProp = ReflectProp.<String> builder().config(LocalConfig.class).name("kind").devault(defaultKind())
+                .op(StringOp.DEFAULT).build();
+
+        var defaultProvider = get(kindProp.devault());
+        var cacheOp = new LocalCacheConfigOp(this, StringOp.DEFAULT);
+
+        var defaultCacheProp = ReflectProp.<LocalCacheConfig> builder().config(LocalConfig.class).name("defaultCache")
+                .op(cacheOp).devault(defaultProvider.createDefaultConfig("default", byte[].class)).build();
+
+        var cachesProp = ReflectProp.<List<LocalCacheConfig>> builder().config(LocalConfig.class).name("caches")
+                .op(new ListOp<>(cacheOp)).devault(new ArrayList<>()).build();
+
+        return ConfigHelper.props(kindProp, defaultCacheProp, cachesProp);
     }
 
     @Override

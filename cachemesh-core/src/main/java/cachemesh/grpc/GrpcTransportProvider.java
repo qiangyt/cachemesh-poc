@@ -15,34 +15,30 @@
  */
 package cachemesh.grpc;
 
-import cachemesh.common.config.op.BeanOp;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.LocalTransport;
 import cachemesh.core.MeshNode;
-import cachemesh.core.config.NodeConfig;
-import cachemesh.core.spi.Transport;
-import cachemesh.core.spi.TransportProvider;
+import cachemesh.core.spi.support.AbstractTransportProvider;
 import lombok.Getter;
 
 @Getter
-public class GrpcTransportProvider implements TransportProvider {
+public class GrpcTransportProvider extends AbstractTransportProvider<GrpcTransport, GrpcConfig> {
 
     private final GrpcServerProvider serverProvider;
-
-    private final ShutdownManager shutdownManager;
 
     public GrpcTransportProvider() {
         this(GrpcServerProvider.DEFAULT, ShutdownManager.DEFAULT);
     }
 
     public GrpcTransportProvider(GrpcServerProvider serverProvider, ShutdownManager shutdownManager) {
+        super(GrpcConfig.class, shutdownManager);
         this.serverProvider = serverProvider;
-        this.shutdownManager = shutdownManager;
+
     }
 
     @Override
     public void beforeNodeStart(MeshNode node, int timeoutSeconds) throws InterruptedException {
-        var cfg = (GrpcNodeConfig) node.getConfig();
+        var cfg = (GrpcConfig) node.getConfig();
         if (cfg.isLocal() == false) {
             return;
         }
@@ -52,8 +48,7 @@ public class GrpcTransportProvider implements TransportProvider {
     }
 
     @Override
-    public boolean bindLocalTransport(NodeConfig transportConfig, LocalTransport localTranport) {
-        var config = (GrpcNodeConfig) transportConfig;
+    protected boolean doBindLocalTransport(GrpcConfig config, LocalTransport localTranport) {
         var server = new DedicatedGrpcServer(config, getShutdownManager());
 
         if (server.isStarted()) {
@@ -65,18 +60,9 @@ public class GrpcTransportProvider implements TransportProvider {
         return true;
     }
 
-    /*
-     * @Override public NodeConfig parseConfig(Map<String, Object> configMap) { return GrpcConfig.from(configMap); }
-     */
-
     @Override
-    public Transport createRemoteTransport(NodeConfig nodeConfig) {
-        var config = (GrpcNodeConfig) nodeConfig;
+    protected GrpcTransport doCreateRemoteTransport(GrpcConfig config) {
         return new GrpcTransport(config, getShutdownManager());
     }
 
-    @Override
-    public BeanOp<? extends NodeConfig> configOp() {
-
-    }
 }

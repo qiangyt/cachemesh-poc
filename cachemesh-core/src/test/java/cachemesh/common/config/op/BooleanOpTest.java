@@ -28,49 +28,49 @@ public class BooleanOpTest {
 		var t = BooleanOp.DEFAULT;
 
 
-		assertTrue(t.build("", null, Boolean.TRUE));
-		assertTrue(t.build("", null, true));
-		assertFalse(t.build("", null, Boolean.FALSE));
-		assertFalse(t.build("", null, false));
+		assertTrue(t.populate("", null, Boolean.TRUE));
+		assertTrue(t.populate("", null, true));
+		assertFalse(t.populate("", null, Boolean.FALSE));
+		assertFalse(t.populate("", null, false));
 
-		assertTrue(t.build("", null, "True"));
-		assertTrue(t.build("", null, "TRUE"));
-		assertTrue(t.build("", null, "true"));
-		assertTrue(t.build("", null, "T"));
-		assertTrue(t.build("", null, "t"));
-		assertFalse(t.build("", null, "False"));
-		assertFalse(t.build("", null, "FALSE"));
-		assertFalse(t.build("", null, "false"));
-		assertTrue(t.build("", null, "Yes"));
-		assertTrue(t.build("", null, "YES"));
-		assertTrue(t.build("", null, "yes"));
-		assertTrue(t.build("", null, "Y"));
-		assertTrue(t.build("", null, "y"));
-		assertFalse(t.build("", null, "No"));
-		assertFalse(t.build("", null, "NO"));
-		assertFalse(t.build("", null, "no"));
-		assertTrue(t.build("", null, "Ok"));
-		assertTrue(t.build("", null, "ok"));
-		assertTrue(t.build("", null, "OK"));
-		assertTrue(t.build("", null, "Okay"));
-		assertTrue(t.build("", null, "OKAY"));
-		assertTrue(t.build("", null, "okay"));
+		assertTrue(t.populate("", null, "True"));
+		assertTrue(t.populate("", null, "TRUE"));
+		assertTrue(t.populate("", null, "true"));
+		assertTrue(t.populate("", null, "T"));
+		assertTrue(t.populate("", null, "t"));
+		assertFalse(t.populate("", null, "False"));
+		assertFalse(t.populate("", null, "FALSE"));
+		assertFalse(t.populate("", null, "false"));
+		assertTrue(t.populate("", null, "Yes"));
+		assertTrue(t.populate("", null, "YES"));
+		assertTrue(t.populate("", null, "yes"));
+		assertTrue(t.populate("", null, "Y"));
+		assertTrue(t.populate("", null, "y"));
+		assertFalse(t.populate("", null, "No"));
+		assertFalse(t.populate("", null, "NO"));
+		assertFalse(t.populate("", null, "no"));
+		assertTrue(t.populate("", null, "Ok"));
+		assertTrue(t.populate("", null, "ok"));
+		assertTrue(t.populate("", null, "OK"));
+		assertTrue(t.populate("", null, "Okay"));
+		assertTrue(t.populate("", null, "OKAY"));
+		assertTrue(t.populate("", null, "okay"));
 
-		assertTrue(t.build("", null, 'T'));
-		assertTrue(t.build("", null, 't'));
-		assertFalse(t.build("", null, 'F'));
-		assertFalse(t.build("", null, 'f'));
-		assertTrue(t.build("", null, 'Y'));
-		assertTrue(t.build("", null, 'y'));
-		assertFalse(t.build("", null, 'N'));
-		assertFalse(t.build("", null, 'n'));
+		assertTrue(t.populate("", null, 'T'));
+		assertTrue(t.populate("", null, 't'));
+		assertFalse(t.populate("", null, 'F'));
+		assertFalse(t.populate("", null, 'f'));
+		assertTrue(t.populate("", null, 'Y'));
+		assertTrue(t.populate("", null, 'y'));
+		assertFalse(t.populate("", null, 'N'));
+		assertFalse(t.populate("", null, 'n'));
 
 		for (int i = -10; i < 0; i++) {
-			assertTrue(t.build("", null, i));
+			assertTrue(t.populate("", null, i));
 		}
-		assertFalse(t.build("", null, 0));
+		assertFalse(t.populate("", null, 0));
 		for (int i = 1; i <= 10; i++) {
-			assertTrue(t.build("", null, i));
+			assertTrue(t.populate("", null, i));
 		}
 	}
 
@@ -78,7 +78,7 @@ public class BooleanOpTest {
 	public void test_failure() {
 		var t = BooleanOp.DEFAULT;
 
-		assertThrows(IllegalArgumentException.class, () -> t.build("", null, new Object()));
+		assertThrows(IllegalArgumentException.class, () -> t.populate("", null, new Object()));
 	}
 
 }

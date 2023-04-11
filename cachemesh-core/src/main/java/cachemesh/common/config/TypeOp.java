@@ -13,28 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config.op;
+package cachemesh.common.config;
 
-import java.lang.reflect.Constructor;
 import java.util.Map;
 
-import cachemesh.common.config.Bean;
-import cachemesh.common.misc.Reflect;
-import lombok.Getter;
+public interface TypeOp<T> {
 
-@Getter
-public class ReflectBeanOp<T extends Bean> extends BeanOp<T> {
+    Class<?> klass();
 
-    private final Constructor<T> constructor;
+    //T supply(String hint, Map<String, Object> parent, Object value);
 
-    public ReflectBeanOp(Class<T> type) {
-        super(type);
-        this.constructor = Reflect.noArgsConstructor(type);
-    }
-
-    @Override
-    public T newValue(String hint, Map<String, Object> parent, Map<String, Object> value) {
-        return Reflect.newInstance(getConstructor());
-    }
+    T populate(String hint, Map<String, Object> parent, Object value);
 
 }

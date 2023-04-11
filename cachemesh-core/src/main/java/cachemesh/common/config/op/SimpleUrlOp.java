@@ -20,22 +20,21 @@ import java.net.URL;
 import java.util.Map;
 
 import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.Op;
 import cachemesh.common.misc.SimpleURL;
 
-public class SimpleUrlOp implements Op<SimpleURL> {
+public class SimpleUrlOp extends AbstractOp<SimpleURL> {
 
     public static final SimpleUrlOp DEFAULT = new SimpleUrlOp();
 
     public static final Iterable<Class<?>> CONVERTABLES = ConfigHelper.convertables(String.class, URL.class);
 
     @Override
-    public Class<?> type() {
+    public Class<?> klass() {
         return SimpleURL.class;
     }
 
     @Override
-    public Iterable<Class<?>> convertableTypes() {
+    public Iterable<Class<?>> convertableClasses() {
         return CONVERTABLES;
     }
 

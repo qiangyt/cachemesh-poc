@@ -18,31 +18,30 @@ package cachemesh.common.config.op;
 import java.util.Map;
 
 import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.Op;
 import lombok.Getter;
 
 @Getter
-public class EnumOp<T extends Enum<T>> implements Op<T> {
+public class EnumOp<T extends Enum<T>> extends AbstractOp<T> {
 
-    private final Class<T> enumType;
+    private final Class<T> enumClass;
 
-    public EnumOp(Class<T> enumType) {
-        this.enumType = enumType;
+    public EnumOp(Class<T> enumClass) {
+        this.enumClass = enumClass;
     }
 
     @Override
-    public Class<?> type() {
-        return this.enumType;
+    public Class<?> klass() {
+        return this.enumClass;
     }
 
     @Override
-    public Iterable<Class<?>> convertableTypes() {
+    public Iterable<Class<?>> convertableClasses() {
         return ConfigHelper.STRING;
     }
 
     @Override
     public T convert(String hint, Map<String, Object> parent, Object value) {
-        return Enum.valueOf(getEnumType(), (String) value);
+        return Enum.valueOf(getEnumClass(), (String) value);
     }
 
 }

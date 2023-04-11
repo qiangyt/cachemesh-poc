@@ -17,10 +17,11 @@ package cachemesh.lettuce;
 
 import java.net.MalformedURLException;
 
+import cachemesh.common.config.ReflectProp;
 import cachemesh.common.config.Prop;
 import cachemesh.common.config.ConfigHelper;
 import cachemesh.common.config.op.IntegerOp;
-import cachemesh.common.config.op.ReflectBeanOp;
+import cachemesh.common.config.op.ReflectOp;
 import cachemesh.common.config.op.StringOp;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.NodeConfig;
@@ -30,9 +31,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LettuceNodeConfig extends NodeConfig {
+public class LettuceConfig extends NodeConfig {
 
-    public static final ReflectBeanOp<LettuceNodeConfig> OP = new ReflectBeanOp<>(LettuceNodeConfig.class);
+    public static final ReflectOp<LettuceConfig> OP = new ReflectOp<>(LettuceConfig.class);
 
     public static final String PROTOCOL = "lettuce";
 
@@ -42,16 +43,16 @@ public class LettuceNodeConfig extends NodeConfig {
 
     public static final String DEFAULT_SEPARATOR = "%";
 
-    public static final Prop<String> HOST_PROP = Prop.<String> builder().config(LettuceNodeConfig.class).name("host")
+    public static final Prop<String> HOST_PROP = ReflectProp.<String> builder().config(LettuceConfig.class).name("host")
             .op(StringOp.DEFAULT).build();
 
-    public static final Prop<Integer> PORT_PROP = Prop.<Integer> builder().config(LettuceNodeConfig.class).name("port")
+    public static final Prop<Integer> PORT_PROP = ReflectProp.<Integer> builder().config(LettuceConfig.class).name("port")
             .devault(DEFAULT_PORT).op(IntegerOp.DEFAULT).build();
 
-    public static final Prop<Integer> DATABASE_PROP = Prop.<Integer> builder().config(LettuceNodeConfig.class)
+    public static final Prop<Integer> DATABASE_PROP = ReflectProp.<Integer> builder().config(LettuceConfig.class)
             .name("database").devault(DEFAULT_DATABASE).op(IntegerOp.DEFAULT).build();
 
-    public static final Prop<String> KEY_SEPARATOR_PROP = Prop.<String> builder().config(LettuceNodeConfig.class)
+    public static final Prop<String> KEY_SEPARATOR_PROP = ReflectProp.<String> builder().config(LettuceConfig.class)
             .name("keySeparator").devault(DEFAULT_SEPARATOR).op(StringOp.DEFAULT).build();
 
     public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NodeConfig.PROPS, HOST_PROP, PORT_PROP,
@@ -68,12 +69,12 @@ public class LettuceNodeConfig extends NodeConfig {
     private String keySeparator;
 
     @Builder
-    public LettuceNodeConfig(SimpleURL url) {
+    public LettuceConfig(SimpleURL url) {
         super(url);
     }
 
     @Builder
-    public LettuceNodeConfig(SimpleURL url, int database, String keySeparator, boolean local, int startTimeout,
+    public LettuceConfig(SimpleURL url, int database, String keySeparator, boolean local, int startTimeout,
             int stopTimeout) {
         super(url, local, startTimeout, stopTimeout);
 
@@ -82,17 +83,12 @@ public class LettuceNodeConfig extends NodeConfig {
     }
 
     @Builder
-    public LettuceNodeConfig(String host, int port, int database, String keySeparator, boolean local, int startTimeout,
+    public LettuceConfig(String host, int port, int database, String keySeparator, boolean local, int startTimeout,
             int stopTimeout) {
         super(local, startTimeout, stopTimeout);
 
         this.database = database;
         this.keySeparator = keySeparator;
-    }
-
-    @Override
-    public String getProtocol() {
-        return PROTOCOL;
     }
 
     @Override
@@ -117,7 +113,7 @@ public class LettuceNodeConfig extends NodeConfig {
         var q = url.getQuery();
 
         if (q.containsKey("database")) {
-            setDatabase(IntegerOp.DEFAULT.build("", null, q.get("database")));
+            setDatabase(IntegerOp.DEFAULT.populate("", null, q.get("database")));
         }
         if (q.containsKey("keySeparator")) {
             setKeySeparator(q.get("keySeparator"));

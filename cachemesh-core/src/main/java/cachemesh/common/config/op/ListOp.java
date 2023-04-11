@@ -20,43 +20,39 @@ import java.util.List;
 import java.util.Map;
 
 import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.Op;
+import cachemesh.common.config.TypeOp;
 
-public class ListOp<T> implements Op<List<T>> {
+public class ListOp<T> extends AbstractOp<List<T>> {
 
     public static final Iterable<Class<?>> CONVERTABLES = ConfigHelper.convertables(Iterable.class);
 
-    private final Op<? extends T> elementOp;
+    private final TypeOp<? extends T> elementOp;
 
-    public ListOp(Op<? extends T> elementOp) {
+    public ListOp(TypeOp<? extends T> elementOp) {
         this.elementOp = elementOp;
     }
 
-    public Op<? extends T> elementOp(String hint, Object value) {
+    public TypeOp<? extends T> elementOp(String hint, Object value) {
         return this.elementOp;
     }
 
     @Override
-    public Class<?> type() {
+    public Class<?> klass() {
         return List.class;
     }
 
     @Override
-    public Iterable<Class<?>> convertableTypes() {
+    public Iterable<Class<?>> convertableClasses() {
         return CONVERTABLES;
     }
 
     @Override
-    public List<T> supply(String hint, Map<String, Object> parent, Object value) {
-        return build(hint, parent, value);
-    }
-
-    @Override
     public List<T> convert(String hint, Map<String, Object> parent, Object value) {
-        return build(hint, parent, value);
+        return populate(hint, parent, value);
     }
 
-    public List<T> build(String hint, Map<String, Object> parent, Object value) {
+	@Override
+    public List<T> populate(String hint, Map<String, Object> parent, Object value) {
         var elementOp = elementOp(hint, value);
 
         var r = new ArrayList<T>();
@@ -64,7 +60,7 @@ public class ListOp<T> implements Op<List<T>> {
 
         for (var childObj : (Iterable<?>) value) {
             var childHint = String.format("%s[%d]", hint, i);
-            var child = elementOp.build(childHint, parent, childObj);
+            var child = elementOp.populate(childHint, parent, childObj);
             r.add(child);
             i++;
         }

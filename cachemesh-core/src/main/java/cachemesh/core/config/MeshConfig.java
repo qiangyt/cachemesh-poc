@@ -19,8 +19,9 @@ import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
 import cachemesh.core.TransportRegistry;
 import cachemesh.core.LocalCacheRegistry;
-import cachemesh.common.config.Prop;
+import cachemesh.common.config.ReflectProp;
 import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Prop;
 import cachemesh.common.config.Bean;
 import cachemesh.common.config.op.EnumOp;
 import cachemesh.common.config.op.StringOp;
@@ -48,16 +49,16 @@ public class MeshConfig implements Bean {
 
     public static final HashingKind DEFAULT_HASHING = HashingKind.murmur;
 
-    public static final Prop<String> NAME_PROP = Prop.<String> builder().config(MeshConfig.class).name("name")
+    public static final Prop<String> NAME_PROP = ReflectProp.<String> builder().config(MeshConfig.class).name("name")
             .devault(DEFAULT_NAME).op(StringOp.DEFAULT).build();
 
-    public static final Prop<HashingKind> HASHING_PROP = Prop.<HashingKind> builder().config(MeshConfig.class)
+    public static final Prop<HashingKind> HASHING_PROP = ReflectProp.<HashingKind> builder().config(MeshConfig.class)
             .name("hashing").devault(DEFAULT_HASHING).op(HashingKind.OP).build();
 
-    public static final Prop<NodesConfig> NODES_PROP = Prop.<NodesConfig> builder().config(MeshConfig.class)
+    public static final Prop<NodesConfig> NODES_PROP = ReflectProp.<NodesConfig> builder().config(MeshConfig.class)
             .name("nodes").devault(null).op(NodesConfig.OP).build();
 
-    public static final Prop<LocalConfig> LOCAL_PROP = Prop.<LocalConfig> builder().config(MeshConfig.class)
+    public static final Prop<LocalConfig> LOCAL_PROP = ReflectProp.<LocalConfig> builder().config(MeshConfig.class)
             .name("local").op(LocalConfig.OP).build();
 
     public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NAME_PROP, HASHING_PROP, NODES_PROP, LOCAL_PROP);

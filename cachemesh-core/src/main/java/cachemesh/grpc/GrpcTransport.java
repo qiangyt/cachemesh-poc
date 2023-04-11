@@ -38,9 +38,9 @@ public class GrpcTransport extends AbstractShutdownable implements Transport {
 
     private ManagedChannel channel;
 
-    private final GrpcNodeConfig config;
+    private final GrpcConfig config;
 
-    public GrpcTransport(GrpcNodeConfig config, ShutdownManager shutdownManager) {
+    public GrpcTransport(GrpcConfig config, ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);
 
         this.config = config;

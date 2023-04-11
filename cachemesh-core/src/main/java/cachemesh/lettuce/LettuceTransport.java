@@ -32,9 +32,9 @@ public class LettuceTransport extends AbstractShutdownable implements Transport 
 
     private final RedisClient client;
 
-    private final LettuceNodeConfig config;
+    private final LettuceConfig config;
 
-    public LettuceTransport(LettuceNodeConfig config, RedisClient client, ShutdownManager shutdownManager) {
+    public LettuceTransport(LettuceConfig config, RedisClient client, ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);
 
         this.config = config;

@@ -26,8 +26,8 @@ public class StringOpTest {
 	public void test_happy() {
 		var t = StringOp.DEFAULT;
 
-		assertSame("test", t.build("", null, "test"));
-		assertThrows(IllegalArgumentException.class, () -> t.build("", null, new Object()));
+		assertSame("test", t.populate("", null, "test"));
+		assertThrows(IllegalArgumentException.class, () -> t.populate("", null, new Object()));
 	}
 
 }

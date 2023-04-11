@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import cachemesh.common.config.op.BooleanOp;
 import cachemesh.common.config.op.IntegerOp;
-import cachemesh.common.config.op.ReflectBeanOp;
+import cachemesh.common.config.op.ReflectOp;
 import cachemesh.common.config.op.StringOp;
 
 
@@ -52,7 +52,7 @@ public class DependingListPropTest {
 		@Override
 		public Iterable<Prop<?>> props() {
 			return ConfigHelper.props(
-						Prop.builder()
+						ReflectProp.builder()
 							.config(Sample1.class).name("num").op(IntegerOp.DEFAULT)
 							.build());
 		}
@@ -74,7 +74,7 @@ public class DependingListPropTest {
 		@Override
 		public Iterable<Prop<?>> props() {
 			return ConfigHelper.props(
-						Prop.builder()
+						ReflectProp.builder()
 							.config(Sample2.class).name("ok").op(BooleanOp.DEFAULT)
 							.build());
 		}
@@ -103,9 +103,9 @@ public class DependingListPropTest {
 
 		@Override
 		public Iterable<Prop<?>> props() {
-			var kindProp = new Prop<>(TestConfig.class, "kind", null, StringOp.DEFAULT);
-			var dispatchOpMap = Map.of("1", new ReflectBeanOp<>(Sample1.class),
-									"2", new ReflectBeanOp<>(Sample2.class));
+			var kindProp = new ReflectProp<>(TestConfig.class, "kind", null, StringOp.DEFAULT);
+			var dispatchOpMap = Map.of("1", new ReflectOp<>(Sample1.class),
+									"2", new ReflectOp<>(Sample2.class));
 			var targetProp = new DependingListProp<Base, String>(TestConfig.class, Base.class, "target", kindProp, dispatchOpMap);
 			return ConfigHelper.props(kindProp, targetProp);
 		}
@@ -113,15 +113,15 @@ public class DependingListPropTest {
 
 	@Test
 	public void test_happy() {
-		var t = new ReflectBeanOp<TestConfig>(TestConfig.class) {
+		var t = new ReflectOp<TestConfig>(TestConfig.class) {
 			@Override
-			public TestConfig newValue(String hint, Map<String, Object> parent, Map<String, Object> value) {
+			public TestConfig newBean(String hint, Map<String, Object> parent, Map<String, Object> value) {
 				return new TestConfig();
 			}
 		};
 
 		var map1 = Map.of("kind", "1", "target", List.of(Map.of("num", 678), Map.of("num", 543)));
-		var c1 = t.build("", null, map1);
+		var c1 = t.populate("", null, map1);
 		assertEquals("1", c1.getKind());
 
 
@@ -136,7 +136,7 @@ public class DependingListPropTest {
 		assertEquals(543, ((Sample1)sample12).getNum());
 
 		var map2 = Map.of("kind", "2", "target", List.of(Map.of("ok", true)));
-		var c2 = t.build("", null, map2);
+		var c2 = t.populate("", null, map2);
 		assertEquals("2", c2.getKind());
 
 		var sample2 = c2.getTarget().get(0);

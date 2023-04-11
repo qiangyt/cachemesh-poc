@@ -15,14 +15,12 @@
  */
 package cachemesh.common.config.op;
 
-import cachemesh.common.config.Op;
-
-public class StringOp implements Op<String> {
+public class StringOp extends AbstractOp<String> {
 
     public static final StringOp DEFAULT = new StringOp();
 
     @Override
-    public Class<?> type() {
+    public Class<?> klass() {
         return String.class;
     }
 

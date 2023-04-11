@@ -18,15 +18,15 @@ package cachemesh.core.config;
 import java.util.Map;
 
 import cachemesh.common.config.op.BeanOp;
-import cachemesh.common.config.op.DynamicOp;
+import cachemesh.common.config.op.MappingOp;
 
-public class NodesConfigOp extends DynamicOp<NodesConfig> {
+public class NodesConfigOp extends MappingOp<NodesConfig> {
 
     public static final Map<Object, ? extends BeanOp<? extends NodesConfig>> FACTORY = Map.of("inline",
             InlineNodesConfig.OP);
 
     public NodesConfigOp() {
-        super(NodesConfig.class, FACTORY);
+        super(FACTORY);
     }
 
     @Override
@@ -36,5 +36,10 @@ public class NodesConfigOp extends DynamicOp<NodesConfig> {
         }
         return value.get("kind");
     }
+
+	@Override
+	public Class<?> klass() {
+		return NodesConfig.class;
+	}
 
 }

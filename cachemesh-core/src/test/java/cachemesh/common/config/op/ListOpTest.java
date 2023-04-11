@@ -26,7 +26,7 @@ public class ListOpTest {
 	@Test
 	public void test_happy() {
 		var t = new ListOp<Integer>(IntegerOp.DEFAULT);
-		assertEquals(List.of(1, 2), t.build("", null, List.of("1", "2")));
+		assertEquals(List.of(1, 2), t.populate("", null, List.of("1", "2")));
 	}
 
 }

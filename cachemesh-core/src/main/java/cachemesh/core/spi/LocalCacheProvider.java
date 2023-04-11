@@ -15,15 +15,16 @@
  */
 package cachemesh.core.spi;
 
-import cachemesh.common.config.op.BeanOp;
+import java.util.Map;
+
 import cachemesh.core.config.LocalCacheConfig;
 
 public interface LocalCacheProvider {
 
     LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass);
 
-    LocalCache createCache(LocalCacheConfig config);
+    LocalCacheConfig createConfig(String hint, Map<String, Object> parent, Map<String, Object> value);
 
-    BeanOp<? extends LocalCacheConfig> configOp();
+    LocalCache createCache(LocalCacheConfig config);
 
 }

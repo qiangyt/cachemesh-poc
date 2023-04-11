@@ -17,31 +17,30 @@ package cachemesh.core;
 
 import java.util.Map;
 
+import cachemesh.common.config.Prop;
+import cachemesh.common.config.ReflectProp;
 import cachemesh.common.config.op.BeanOp;
 import cachemesh.common.misc.SimpleRegistry;
 import cachemesh.core.config.NodeConfig;
-import cachemesh.core.config.NodeConfigOp;
 import cachemesh.core.spi.TransportProvider;
-import cachemesh.grpc.GrpcNodeConfig;
-import cachemesh.lettuce.LettuceNodeConfig;
+import cachemesh.grpc.GrpcConfig;
+import cachemesh.lettuce.LettuceConfig;
 
 public class TransportRegistry extends SimpleRegistry<String, TransportProvider> {
 
-    public static final Map<Object, ? extends BeanOp<? extends NodeConfig>> FACTORY = Map.of(LettuceNodeConfig.PROTOCOL,
-            LettuceNodeConfig.OP, GrpcNodeConfig.PROTOCOL, GrpcNodeConfig.OP);
-
-    public static final NodeConfigOp OP = new NodeConfigOp(FACTORY);
+    public static final Map<Object, ? extends BeanOp<? extends NodeConfig>> FACTORY = Map.of(LettuceConfig.PROTOCOL,
+            LettuceConfig.OP, GrpcConfig.PROTOCOL, GrpcConfig.OP);
 
     public static final TransportRegistry DEFAULT = new TransportRegistry();
 
-    @Override
-    protected TransportProvider supplyItem(String protocol, TransportProvider provider) {
-        return provider;
+    private final Iterable<Prop<?>> configProps;
+
+    public TransportRegistry() {
+        this.configProps = buildConfigProps();
     }
 
-    @Override
-    protected TransportProvider supplyValue(TransportProvider provider) {
-        return provider;
+    public Iterable<Prop<?>> buildConfigProps() {
+
     }
 
     @Override
@@ -49,8 +48,8 @@ public class TransportRegistry extends SimpleRegistry<String, TransportProvider>
         return protocol;
     }
 
-    public NodeConfigOp configOp() {
-        return OP;
+    public Iterable<Prop<?>> configProps() {
+        return this.configProps;
     }
 
 }

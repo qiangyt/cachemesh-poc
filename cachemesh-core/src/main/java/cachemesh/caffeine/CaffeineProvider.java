@@ -18,43 +18,25 @@ package cachemesh.caffeine;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import cachemesh.common.config.op.BeanOp;
-import cachemesh.common.config.op.ReflectBeanOp;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.bean.Value;
-import cachemesh.core.config.LocalCacheConfig;
-import cachemesh.core.spi.LocalCache;
-import cachemesh.core.spi.LocalCacheProvider;
+import cachemesh.core.spi.support.AbstractLocalCacheProvider;
 import lombok.Getter;
 
 @Getter
-public class CaffeineProvider implements LocalCacheProvider {
-
-    public static final BeanOp<? extends LocalCacheConfig> CONFIG_OP = new ReflectBeanOp<>(
-            cachemesh.caffeine.CaffeineConfig.class);
-
-    private final ShutdownManager shutdownManager;
+public class CaffeineProvider extends AbstractLocalCacheProvider<CaffeineCache, CaffeineConfig> {
 
     public CaffeineProvider(ShutdownManager shutdownManager) {
-        this.shutdownManager = shutdownManager;
+        super(CaffeineConfig.class, shutdownManager);
     }
 
     @Override
-    public LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass) {
-        return CaffeineConfig.builder().name(name).valueClass(valueClass).build();
-    }
+    protected CaffeineCache doCreateCache(CaffeineConfig config) {
+        var bldr = Caffeine.newBuilder();
+        bldr.maximumSize(config.getMaximumSize()).expireAfterWrite(config.getExpireAfterWrite());
 
-    @Override
-    public LocalCache createCache(LocalCacheConfig config) {
-        var c = (CaffeineConfig) config;
-        Cache<String, Value> i = Caffeine.newBuilder().maximumSize(c.getMaximumSize())
-                .expireAfterWrite(c.getExpireAfterWrite()).build();
-        return new CaffeineCache(c, i, getShutdownManager());
-    }
-
-    @Override
-    public BeanOp<? extends LocalCacheConfig> configOp() {
-        return CONFIG_OP;
+        Cache<String, Value> i = bldr.build();
+        return new CaffeineCache(config, i, getShutdownManager());
     }
 
 }

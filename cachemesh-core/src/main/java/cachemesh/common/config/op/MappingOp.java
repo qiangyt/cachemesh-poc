@@ -15,26 +15,26 @@
  */
 package cachemesh.common.config.op;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Map;
 
-import java.time.Duration;
-import org.junit.jupiter.api.Test;
+import cachemesh.common.config.Bean;
+import lombok.Getter;
 
-public class DurationOpTest {
+@Getter
+public abstract class MappingOp<T extends Bean> extends DynamicOp<T> {
 
-	@Test
-	public void test_happy() {
-		var t = DurationOp.DEFAULT;
+    private final Map<Object, ? extends BeanOp<? extends T>> opMap;
 
-		var d1 =Duration.ofDays(123);
-		assertSame(d1, t.populate("", null, d1));
+    public MappingOp(Map<Object, ? extends BeanOp<? extends T>> opMap) {
+        this.opMap = opMap;
+    }
 
-		var d2 =Duration.ofSeconds(123);
-		assertEquals(d2, t.populate("", null, "123s"));
+    public abstract Object extractKey(String hint, Map<String, Object> parent, Map<String, Object> value);
 
-		assertThrows(IllegalArgumentException.class, () -> t.populate("", null, new Object()));
+	@Override
+	public BeanOp<? extends T> op(String hint, Map<String, Object> parent, Map<String, Object> value) {
+		var key = extractKey(hint, parent, value);
+        return getOpMap().get(key);
 	}
 
 }

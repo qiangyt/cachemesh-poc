@@ -19,10 +19,10 @@ import lombok.Getter;
 
 import java.util.List;
 
-import cachemesh.common.config.Prop;
 import cachemesh.common.config.op.BeanOp;
-import cachemesh.common.config.op.ReflectBeanOp;
+import cachemesh.common.config.op.ReflectOp;
 import cachemesh.common.config.Bean;
+import cachemesh.common.config.Prop;
 import cachemesh.core.LocalCacheRegistry;
 import cachemesh.core.spi.LocalCacheProvider;
 import lombok.Setter;
@@ -32,7 +32,7 @@ import lombok.Singular;
 @Setter
 public class LocalConfig implements Bean {
 
-    public static BeanOp<LocalConfig> OP = new ReflectBeanOp<>(LocalConfig.class);
+    public static BeanOp<LocalConfig> OP = new ReflectOp<>(LocalConfig.class);
 
     private String kind;
 

@@ -15,97 +15,22 @@
  */
 package cachemesh.common.config;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
-import cachemesh.common.misc.Reflect;
-import lombok.Builder;
+public interface Prop<T> {
 
-public class Prop<T> {
+    public T devault();
 
-    private final String name;
+    public String name();
 
-    private final Method setter;
+    TypeOp<? extends T> op(Map<String, Object> object);
 
-    private final Method getter;
+    T get(Object object);
 
-    private final T devault;
-
-    private final Op<? extends T> op;
-
-    @Builder
-    public Prop(Class<?> config, String name, T devault, Op<? extends T> op) {
-        this.name = name;
-        this.devault = devault;
-        this.op = op;
-
-        var propClass = op.type();
-        this.setter = Reflect.setter(config, name, propClass);
-        this.getter = Reflect.getter(config, name, propClass);
-    }
-
-    public T devault() {
-        return this.devault;
-    }
-
-    public String name() {
-        return this.name;
-    }
-
-    @Override
-    public int hashCode() {
-        return name().hashCode();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (obj == this) {
-            return true;
-        }
-
-        Prop<T> that;
-        try {
-            that = (Prop<T>) obj;
-        } catch (ClassCastException e) {
-            return false;
-        }
-
-        return that.name().equals(name());
-    }
-
-    public Method setter() {
-        return this.setter;
-    }
-
-    public Method getter() {
-        return this.getter;
-    }
-
-    public Op<? extends T> op(Map<String, Object> object) {
-        return this.op;
-    }
-
-    public T get(Object object) {
-        return Reflect.get(getter(), object);
-    }
-
-    public Object readMap(Map<String, Object> map) {
+    /*public Object readMap(Map<String, Object> map) {
         return map.get(name());
-    }
+    }*/
 
-    public void set(String hint, Map<String, Object> object) {
-        var op = op(object);
-        Object value = object.get(name());
-        doSet(op, hint, object, value);
-    }
-
-    public void doSet(Op<? extends T> op, String hint, Map<String, Object> object, Object value) {
-        var v = op.build(hint, object, value);
-        Reflect.set(setter(), object, v);
-    }
+    void set(String hint, Map<String, Object> object);
 
 }

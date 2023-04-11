@@ -18,11 +18,12 @@ package cachemesh.caffeine;
 import java.time.Duration;
 
 import cachemesh.common.config.Prop;
+import cachemesh.common.config.ReflectProp;
 import cachemesh.common.config.ConfigHelper;
 import cachemesh.common.config.op.BeanOp;
 import cachemesh.common.config.op.DurationOp;
 import cachemesh.common.config.op.IntegerOp;
-import cachemesh.common.config.op.ReflectBeanOp;
+import cachemesh.common.config.op.ReflectOp;
 import cachemesh.core.config.LocalCacheConfig;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,16 +35,16 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class CaffeineConfig extends LocalCacheConfig {
 
-    public static final BeanOp<CaffeineConfig> OP = new ReflectBeanOp<>(CaffeineConfig.class);
+    public static final BeanOp<CaffeineConfig> OP = new ReflectOp<>(CaffeineConfig.class);
 
     public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
 
     public static final Duration DEFAULT_EXPIRE_AFTER_WIRTER = Duration.ofMinutes(5);
 
-    public static final Prop<Integer> MAXIMUM_SIZE_PROP = Prop.<Integer> builder().config(CaffeineConfig.class)
+    public static final Prop<Integer> MAXIMUM_SIZE_PROP = ReflectProp.<Integer> builder().config(CaffeineConfig.class)
             .name("maximumSize").devault(DEFAULT_MAXIMUM_SIZE).op(IntegerOp.DEFAULT).build();
 
-    public static final Prop<Duration> EXPIRE_AFTER_WRITE_PROP = Prop.<Duration> builder().config(CaffeineConfig.class)
+    public static final Prop<Duration> EXPIRE_AFTER_WRITE_PROP = ReflectProp.<Duration> builder().config(CaffeineConfig.class)
             .name("expireAfterWrite").devault(DEFAULT_EXPIRE_AFTER_WIRTER).op(DurationOp.DEFAULT).build();
 
     public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(LocalCacheConfig.PROPS, MAXIMUM_SIZE_PROP,

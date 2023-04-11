@@ -17,8 +17,9 @@ package cachemesh.core.config;
 
 import java.net.MalformedURLException;
 
-import cachemesh.common.config.Prop;
+import cachemesh.common.config.ReflectProp;
 import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Prop;
 import cachemesh.common.config.Bean;
 import cachemesh.common.config.op.BooleanOp;
 import cachemesh.common.config.op.IntegerOp;
@@ -30,8 +31,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class NodeConfig implements Bean {
-
-    public static final NodeConfigOp OP = new NodeConfigOp();
 
     public static final boolean DEFAULT_LOCAL = false;
 
@@ -50,22 +49,22 @@ public abstract class NodeConfig implements Bean {
     // @Builder.Default
     private int stopTimeout = DEFAULT_STOP_TIMEOUT;
 
-    public static final Prop<SimpleURL> URL_PROP = Prop.<SimpleURL> builder().config(NodeConfig.class).name("url")
+    public static final Prop<SimpleURL> URL_PROP = ReflectProp.<SimpleURL> builder().config(NodeConfig.class).name("url")
             .op(SimpleUrlOp.DEFAULT).build();
 
-    public static final Prop<Boolean> LOCAL_PROP = Prop.<Boolean> builder().config(NodeConfig.class).name("local")
+    public static final Prop<Boolean> LOCAL_PROP = ReflectProp.<Boolean> builder().config(NodeConfig.class).name("local")
             .devault(DEFAULT_LOCAL).op(BooleanOp.DEFAULT).build();
 
-    public static final Prop<Integer> START_TIMEOUT_PROP = Prop.<Integer> builder().config(NodeConfig.class)
+    public static final Prop<Integer> START_TIMEOUT_PROP = ReflectProp.<Integer> builder().config(NodeConfig.class)
             .name("startTimeout").op(IntegerOp.DEFAULT).build();
 
-    public static final Prop<Integer> STOP_TIMEOUT_PROP = Prop.<Integer> builder().config(NodeConfig.class)
+    public static final Prop<Integer> STOP_TIMEOUT_PROP = ReflectProp.<Integer> builder().config(NodeConfig.class)
             .name("stopTimeout").op(IntegerOp.DEFAULT).build();
 
-    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(URL_PROP, LOCAL_PROP, START_TIMEOUT_PROP,
+    protected static final Iterable<Prop<?>> PROPS = ConfigHelper.props(URL_PROP, LOCAL_PROP, START_TIMEOUT_PROP,
             STOP_TIMEOUT_PROP);
 
-    public NodeConfig(SimpleURL url) {
+    protected NodeConfig(SimpleURL url) {
         setUrl(url);
     }
 
@@ -83,7 +82,9 @@ public abstract class NodeConfig implements Bean {
         this.stopTimeout = stopTimeout;
     }
 
-    public abstract String getProtocol();
+    public String getProtocol() {
+        return getUrl().getProtocol();
+    }
 
     @Override
     public Iterable<Prop<?>> props() {
@@ -111,23 +112,23 @@ public abstract class NodeConfig implements Bean {
         var query = url.getQuery();
 
         if (query.containsKey("startTimeout")) {
-            var startTimeout = IntegerOp.DEFAULT.build("", null, query.get("startTimeout"));
+            var startTimeout = IntegerOp.DEFAULT.populate("", null, query.get("startTimeout"));
             setStartTimeout(startTimeout);
         }
 
         if (query.containsKey("stopTimeout")) {
-            var stopTimeout = IntegerOp.DEFAULT.build("", null, query.get("stopTimeout"));
+            var stopTimeout = IntegerOp.DEFAULT.populate("", null, query.get("stopTimeout"));
             setStopTimeout(stopTimeout);
         }
 
         if (query.containsKey("local")) {
-            var local = BooleanOp.DEFAULT.build("", null, query.get("local"));
+            var local = BooleanOp.DEFAULT.populate("", null, query.get("local"));
             setLocal(local);
         }
     }
 
     public static NodeConfig fromUrl(String url) {
-        return OP.build("", null, url);
+        return OP.populate("", null, url);
     }
 
 }

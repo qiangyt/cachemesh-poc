@@ -15,26 +15,33 @@
  */
 package cachemesh.common.config.op;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.lang.reflect.Constructor;
+import java.util.Map;
 
-import java.time.Duration;
-import org.junit.jupiter.api.Test;
+import cachemesh.common.config.Bean;
+import cachemesh.common.misc.Reflect;
+import lombok.Getter;
 
-public class DurationOpTest {
+@Getter
+public class ReflectOp<T extends Bean> extends BeanOp<T> {
 
-	@Test
-	public void test_happy() {
-		var t = DurationOp.DEFAULT;
+	private final Class<T> type;
 
-		var d1 =Duration.ofDays(123);
-		assertSame(d1, t.populate("", null, d1));
+    private final Constructor<T> ctor;
 
-		var d2 =Duration.ofSeconds(123);
-		assertEquals(d2, t.populate("", null, "123s"));
+    public ReflectOp(Class<T> type) {
+        this.type = type;
+        this.ctor = Reflect.noArgsConstructor(type);
+    }
 
-		assertThrows(IllegalArgumentException.class, () -> t.populate("", null, new Object()));
-	}
+    @Override
+    public Class<?> klass() {
+        return this.type;
+    }
+
+    @Override
+    public T newBean(String hint, Map<String, Object> parent, Map<String, Object> value) {
+        return Reflect.newInstance(getCtor());
+    }
 
 }

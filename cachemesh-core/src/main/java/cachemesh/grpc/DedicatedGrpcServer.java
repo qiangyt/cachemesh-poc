@@ -41,11 +41,11 @@ public class DedicatedGrpcServer extends AbstractShutdownable implements GrpcSer
     @Setter(AccessLevel.PROTECTED)
     private Server instance;
 
-    private final GrpcNodeConfig config;
+    private final GrpcConfig config;
 
     private final LifeStage lifeStage;
 
-    public DedicatedGrpcServer(GrpcNodeConfig config, ShutdownManager shutdownManager) {
+    public DedicatedGrpcServer(GrpcConfig config, ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);
 
         this.config = config;

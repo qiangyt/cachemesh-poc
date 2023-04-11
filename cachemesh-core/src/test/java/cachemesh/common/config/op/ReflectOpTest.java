@@ -24,8 +24,9 @@ import org.junit.jupiter.api.Test;
 import cachemesh.common.config.Bean;
 import cachemesh.common.config.ConfigHelper;
 import cachemesh.common.config.Prop;
+import cachemesh.common.config.ReflectProp;
 
-public class ReflectBeanOpTest {
+public class ReflectOpTest {
 
 	public static class Sample implements Bean {
 		private Integer num;
@@ -43,7 +44,7 @@ public class ReflectBeanOpTest {
 		@Override
 		public Iterable<Prop<?>> props() {
 			return ConfigHelper.props(
-						Prop.builder()
+						ReflectProp.builder()
 							.config(Sample.class).name("num").op(IntegerOp.DEFAULT)
 							.build());
 		}
@@ -51,9 +52,9 @@ public class ReflectBeanOpTest {
 
 	@Test
 	public void test_happy() {
-		var t = new ReflectBeanOp<Sample>(Sample.class);
+		var t = new ReflectOp<Sample>(Sample.class);
 
-		var sample = t.build("", null, Map.of("num", 345));
+		var sample = t.populate("", null, Map.of("num", 345));
 		assertEquals(345, sample.num);
 	}
 

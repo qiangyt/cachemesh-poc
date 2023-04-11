@@ -19,10 +19,10 @@ import io.lettuce.core.RedisClient;
 
 public interface RedisClientProvider {
 
-    RedisClient get(LettuceNodeConfig config);
+    RedisClient get(LettuceConfig config);
 
-    RedisClient resolve(LettuceNodeConfig config);
+    RedisClient resolve(LettuceConfig config);
 
-    RedisClient destroy(LettuceNodeConfig config, int timeoutSeconds) throws InterruptedException;
+    RedisClient destroy(LettuceConfig config, int timeoutSeconds) throws InterruptedException;
 
 }

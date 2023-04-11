@@ -20,7 +20,7 @@ import cachemesh.common.shutdown.ShutdownManager;
 import lombok.Getter;
 
 @Getter
-public class GrpcServerProvider extends Manager<GrpcNodeConfig, GrpcServer> {
+public class GrpcServerProvider extends Manager<GrpcConfig, GrpcServer> {
 
     public static final GrpcServerProvider DEFAULT = new GrpcServerProvider(ShutdownManager.DEFAULT);
 
@@ -31,17 +31,17 @@ public class GrpcServerProvider extends Manager<GrpcNodeConfig, GrpcServer> {
     }
 
     @Override
-    protected String supplyKey(GrpcNodeConfig config) {
+    protected String supplyKey(GrpcConfig config) {
         return config.getTarget();
     }
 
     @Override
-    protected GrpcServer doCreate(GrpcNodeConfig config) {
+    protected GrpcServer doCreate(GrpcConfig config) {
         return new DedicatedGrpcServer(config, getShutdownManager());
     }
 
     @Override
-    protected void doDestroy(GrpcNodeConfig config, GrpcServer server, int timeoutSeconds) throws InterruptedException {
+    protected void doDestroy(GrpcConfig config, GrpcServer server, int timeoutSeconds) throws InterruptedException {
         server.stop(timeoutSeconds);
     }
 

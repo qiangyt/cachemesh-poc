@@ -22,14 +22,14 @@ import java.util.Map;
 import cachemesh.common.config.op.BeanOp;
 import cachemesh.common.config.op.ListOp;
 
-public class DependingListProp<T extends Bean, K> extends Prop<List<T>> {
+public class DependingListProp<T extends Bean, K> extends ReflectProp<List<T>> {
 
     public DependingListProp(Class<?> configClass, Class<T> elementType, String name, Prop<K> dependedProp,
             Map<K, ? extends BeanOp<? extends T>> opMap) {
         super(configClass, name, null, new ListOp<T>(null) {
 
             @Override
-            public List<T> build(String hint, Map<String, Object> parent, Object value) {
+            public List<T> populate(String hint, Map<String, Object> parent, Object value) {
                 var elementOp = elementOp(hint, value);
 
                 var r = new ArrayList<T>();
@@ -37,7 +37,7 @@ public class DependingListProp<T extends Bean, K> extends Prop<List<T>> {
 
                 for (var childObj : (Iterable<?>) value) {
                     var childHint = String.format("%s[%d]", hint, i);
-                    var child = elementOp.build(childHint, parent, childObj);
+                    var child = elementOp.populate(childHint, parent, childObj);
                     r.add(child);
                     i++;
                 }
@@ -47,7 +47,7 @@ public class DependingListProp<T extends Bean, K> extends Prop<List<T>> {
 
             @Override
             @SuppressWarnings("unchecked")
-            public Op<? extends T> elementOp(String hint, Object value) {
+            public TypeOp<? extends T> elementOp(String hint, Object value) {
                 var map = (Map<String, Object>) value;
                 var key = map.get(dependedProp.name());
                 return opMap.get(key);

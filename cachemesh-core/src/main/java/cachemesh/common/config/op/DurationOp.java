@@ -19,22 +19,21 @@ import java.time.Duration;
 import java.util.Map;
 
 import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.Op;
 import cachemesh.common.misc.DurationHelper;
 import lombok.Getter;
 
 @Getter
-public class DurationOp implements Op<Duration> {
+public class DurationOp extends AbstractOp<Duration> {
 
     public static final DurationOp DEFAULT = new DurationOp();
 
     @Override
-    public Class<?> type() {
+    public Class<?> klass() {
         return Duration.class;
     }
 
     @Override
-    public Iterable<Class<?>> convertableTypes() {
+    public Iterable<Class<?>> convertableClasses() {
         return ConfigHelper.STRING;
     }
 

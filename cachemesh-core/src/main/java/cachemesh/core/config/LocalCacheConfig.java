@@ -15,8 +15,9 @@
  */
 package cachemesh.core.config;
 
-import cachemesh.common.config.Prop;
+import cachemesh.common.config.ReflectProp;
 import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Prop;
 import cachemesh.common.config.Bean;
 import cachemesh.common.config.op.ClassOp;
 import cachemesh.common.config.op.StringOp;
@@ -30,16 +31,16 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public abstract class LocalCacheConfig implements Bean {
 
-    public static final Prop<String> NAME_PROP = Prop.<String> builder().config(LocalCacheConfig.class).name("name")
+    public static final Prop<String> NAME_PROP = ReflectProp.<String> builder().config(LocalCacheConfig.class).name("name")
             .op(StringOp.DEFAULT).build();
 
-    public static final Prop<Class<?>> VALUE_CLASS_PROP = Prop.<Class<?>> builder().config(LocalCacheConfig.class)
+    public static final Prop<Class<?>> VALUE_CLASS_PROP = ReflectProp.<Class<?>> builder().config(LocalCacheConfig.class)
             .name("valueClass").devault(byte[].class).op(ClassOp.DEFAULT).build();
 
-    public static final Prop<SerderConfig> SERDER_PROP = Prop.<SerderConfig> builder().config(LocalCacheConfig.class)
+    public static final Prop<SerderConfig> SERDER_PROP = ReflectProp.<SerderConfig> builder().config(LocalCacheConfig.class)
             .name("serder").devault(SerderConfig.builder().build()).op(SerderConfig.OP).build();
 
-    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NAME_PROP, VALUE_CLASS_PROP, SERDER_PROP);
+    protected static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NAME_PROP, VALUE_CLASS_PROP, SERDER_PROP);
 
     private String name;
 

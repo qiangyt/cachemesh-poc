@@ -15,7 +15,8 @@
  */
 package cachemesh.core.spi;
 
-import cachemesh.common.config.op.BeanOp;
+import java.util.Map;
+
 import cachemesh.core.LocalTransport;
 import cachemesh.core.config.NodeConfig;
 
@@ -27,6 +28,6 @@ public interface TransportProvider extends NodeHook {
 
     Transport createRemoteTransport(NodeConfig nodeConfig);
 
-    BeanOp<? extends NodeConfig> configOp();
+    NodeConfig createConfig(String hint, Map<String, Object> parent, Map<String, Object> value);
 
 }

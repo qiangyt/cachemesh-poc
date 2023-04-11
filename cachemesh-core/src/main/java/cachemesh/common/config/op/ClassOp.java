@@ -18,12 +18,11 @@ package cachemesh.common.config.op;
 import java.util.Map;
 
 import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.Op;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
 
 @Getter
-public class ClassOp implements Op<Class<?>> {
+public class ClassOp extends AbstractOp<Class<?>> {
 
     public static final ClassOp DEFAULT = new ClassOp(ClassCache.DEFAULT);
 
@@ -34,12 +33,12 @@ public class ClassOp implements Op<Class<?>> {
     }
 
     @Override
-    public Class<?> type() {
+    public Class<?> klass() {
         return Class.class;
     }
 
     @Override
-    public Iterable<Class<?>> convertableTypes() {
+    public Iterable<Class<?>> convertableClasses() {
         return ConfigHelper.STRING;
     }
 

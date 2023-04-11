@@ -17,19 +17,28 @@ package cachemesh.core.config;
 
 import java.util.List;
 
-import cachemesh.common.config.Prop;
+import cachemesh.common.config.ReflectProp;
 import cachemesh.common.config.op.ListOp;
+import cachemesh.core.TransportRegistry;
 import cachemesh.common.config.ConfigHelper;
+import cachemesh.common.config.Prop;
 import lombok.Singular;
 
 public class InlineNodesConfig extends NodesConfig {
-
-    public static final Prop<List<NodeConfig>> INLINE_PROP = Prop.<List<NodeConfig>> builder()
-            .config(InlineNodesConfig.class).name("inline").op(new ListOp<NodeConfig>(NodeConfig.OP)).build();
-
-    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NodesConfig.PROPS, INLINE_PROP);
-
     @Singular("inline")
     private List<NodeConfig> inline;
+
+    protected InlineNodesConfig(TransportRegistry registry) {
+        super(registry);
+    }
+
+    @Override
+    public Iterable<Prop<?>> props() {
+        var inlinesProp = ReflectProp.<List<NodeConfig>> builder().config(InlineNodesConfig.class).name("inline")
+                .op(new ListOp<>(new NodeConfigOp(getRegistry()))).build();
+
+        return ConfigHelper.props(NodesConfig.PROPS, inlinesProp);
+        // return getRegistry().configProps();
+    }
 
 }

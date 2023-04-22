@@ -52,6 +52,19 @@ public abstract class Registry<C, T, S> {
         return (item == null) ? null : supplyValue(item);
     }
 
+    public T load(C config) {
+        String key = supplyKey(config);
+        return loadByKey(key);
+    }
+
+    public T loadByKey(String key) {
+        T r = getByKey(key);
+        if (r == null) {
+            throw new IllegalArgumentException(key + " not found");
+        }
+        return r;
+    }
+
     public T get(C config) {
         String key = supplyKey(config);
         return getByKey(key);

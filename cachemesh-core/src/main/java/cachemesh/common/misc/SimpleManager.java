@@ -42,6 +42,7 @@ public abstract class SimpleManager<C, T> extends SimpleRegistry<C, T> {
 
     protected abstract T doCreate(C config);
 
-    protected abstract void doDestroy(C config, T item, int timeoutSeconds) throws InterruptedException;
+    protected void doDestroy(C config, T item, int timeoutSeconds) throws InterruptedException {
+    }
 
 }

@@ -13,32 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config;
+package cachemesh.common.config2;
 
-import cachemesh.common.config2.annotations.Property;
-import cachemesh.common.jackson.JacksonSerderializer;
-import cachemesh.common.misc.Serderializer;
+import java.util.Collection;
+
+import cachemesh.common.misc.StringHelper;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.Builder;
 
 @Getter
-@Setter
-@Builder
-public class SerderConfig {
+public class IncompatibleTypeException extends IllegalArgumentException {
 
-    public static enum Kind {
-        jackson(JacksonSerderializer.DEFAULT);
+    private Class<?> actual;
 
-        public final Serderializer instance;
+    private Collection<Class<?>> expected;
 
-        private Kind(Serderializer instance) {
-            this.instance = instance;
-        }
+    public IncompatibleTypeException(Class<?> actual, Collection<Class<?>> expected) {
+        super("expects " + StringHelper.join("/", expected) + " but got " + actual);
+
+        this.actual = actual;
+        this.expected = expected;
     }
-
-    @Builder.Default
-    @Property(devault = "jackson")
-    private Kind kind = Kind.jackson;
 
 }

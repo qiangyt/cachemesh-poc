@@ -13,32 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config;
+package cachemesh.common.config.op;
 
-import cachemesh.common.config2.annotations.Property;
-import cachemesh.common.jackson.JacksonSerderializer;
-import cachemesh.common.misc.Serderializer;
+import java.lang.reflect.Constructor;
+import java.util.Map;
+
+import cachemesh.common.config.Bean;
+import cachemesh.common.misc.Reflect;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.Builder;
 
 @Getter
-@Setter
-@Builder
-public class SerderConfig {
+public class ReflectOp<T extends Bean> extends BeanOp<T> {
 
-    public static enum Kind {
-        jackson(JacksonSerderializer.DEFAULT);
+	private final Class<T> type;
 
-        public final Serderializer instance;
+    private final Constructor<T> ctor;
 
-        private Kind(Serderializer instance) {
-            this.instance = instance;
-        }
+    public ReflectOp(Class<T> type) {
+        this.type = type;
+        this.ctor = Reflect.defaultConstructor(type);
     }
 
-    @Builder.Default
-    @Property(devault = "jackson")
-    private Kind kind = Kind.jackson;
+    @Override
+    public Class<?> klass() {
+        return this.type;
+    }
+
+    @Override
+    public T newBean(String hint, Map<String, Object> parent, Map<String, Object> value) {
+        return Reflect.newInstance(getCtor());
+    }
 
 }

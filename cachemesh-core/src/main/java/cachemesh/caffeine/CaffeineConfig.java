@@ -44,8 +44,9 @@ public class CaffeineConfig extends LocalCacheConfig {
     public static final Prop<Integer> MAXIMUM_SIZE_PROP = ReflectProp.<Integer> builder().config(CaffeineConfig.class)
             .name("maximumSize").devault(DEFAULT_MAXIMUM_SIZE).op(IntegerOp.DEFAULT).build();
 
-    public static final Prop<Duration> EXPIRE_AFTER_WRITE_PROP = ReflectProp.<Duration> builder().config(CaffeineConfig.class)
-            .name("expireAfterWrite").devault(DEFAULT_EXPIRE_AFTER_WIRTER).op(DurationOp.DEFAULT).build();
+    public static final Prop<Duration> EXPIRE_AFTER_WRITE_PROP = ReflectProp.<Duration> builder()
+            .config(CaffeineConfig.class).name("expireAfterWrite").devault(DEFAULT_EXPIRE_AFTER_WIRTER)
+            .op(DurationOp.DEFAULT).build();
 
     public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(LocalCacheConfig.PROPS, MAXIMUM_SIZE_PROP,
             EXPIRE_AFTER_WRITE_PROP);

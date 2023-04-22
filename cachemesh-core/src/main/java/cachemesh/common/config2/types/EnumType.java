@@ -13,35 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config.op;
+package cachemesh.common.config2.types;
 
-import java.lang.reflect.Constructor;
-import java.util.Map;
-
-import cachemesh.common.config.Bean;
-import cachemesh.common.misc.Reflect;
+import cachemesh.common.config2.AbstractType;
+import cachemesh.common.config2.ConfigHelper;
+import cachemesh.common.config2.MapContext;
+import cachemesh.common.config2.Path;
 import lombok.Getter;
 
 @Getter
-public class ReflectOp<T extends Bean> extends BeanOp<T> {
+public class EnumType<T extends Enum<T>> extends AbstractType<T> {
 
-	private final Class<T> type;
+    private final Class<T> enumClass;
 
-    private final Constructor<T> ctor;
-
-    public ReflectOp(Class<T> type) {
-        this.type = type;
-        this.ctor = Reflect.noArgsConstructor(type);
+    public EnumType(Class<T> enumClass) {
+        this.enumClass = enumClass;
     }
 
     @Override
     public Class<?> klass() {
-        return this.type;
+        return this.enumClass;
     }
 
     @Override
-    public T newBean(String hint, Map<String, Object> parent, Map<String, Object> value) {
-        return Reflect.newInstance(getCtor());
+    public Iterable<Class<?>> convertableClasses() {
+        return ConfigHelper.STRING;
+    }
+
+    @Override
+    public T doConvert(MapContext ctx, Path path, Object parent, Object value) {
+        return Enum.valueOf(getEnumClass(), (String) value);
     }
 
 }

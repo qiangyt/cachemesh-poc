@@ -49,11 +49,11 @@ public abstract class NodeConfig implements Bean {
     // @Builder.Default
     private int stopTimeout = DEFAULT_STOP_TIMEOUT;
 
-    public static final Prop<SimpleURL> URL_PROP = ReflectProp.<SimpleURL> builder().config(NodeConfig.class).name("url")
-            .op(SimpleUrlOp.DEFAULT).build();
+    public static final Prop<SimpleURL> URL_PROP = ReflectProp.<SimpleURL> builder().config(NodeConfig.class)
+            .name("url").op(SimpleUrlOp.DEFAULT).build();
 
-    public static final Prop<Boolean> LOCAL_PROP = ReflectProp.<Boolean> builder().config(NodeConfig.class).name("local")
-            .devault(DEFAULT_LOCAL).op(BooleanOp.DEFAULT).build();
+    public static final Prop<Boolean> LOCAL_PROP = ReflectProp.<Boolean> builder().config(NodeConfig.class)
+            .name("local").devault(DEFAULT_LOCAL).op(BooleanOp.DEFAULT).build();
 
     public static final Prop<Integer> START_TIMEOUT_PROP = ReflectProp.<Integer> builder().config(NodeConfig.class)
             .name("startTimeout").op(IntegerOp.DEFAULT).build();

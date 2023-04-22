@@ -13,32 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config;
+package cachemesh.common.config2;
 
-import cachemesh.common.config2.annotations.Property;
-import cachemesh.common.jackson.JacksonSerderializer;
-import cachemesh.common.misc.Serderializer;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Builder;
+import java.util.Map;
 
-@Getter
-@Setter
-@Builder
-public class SerderConfig {
+public interface Mapper<T> {
 
-    public static enum Kind {
-        jackson(JacksonSerderializer.DEFAULT);
-
-        public final Serderializer instance;
-
-        private Kind(Serderializer instance) {
-            this.instance = instance;
-        }
-    }
-
-    @Builder.Default
-    @Property(devault = "jackson")
-    private Kind kind = Kind.jackson;
+    T toBean(MapContext ctx, Path path, Object parent, Map<String, Object> propValues);
 
 }

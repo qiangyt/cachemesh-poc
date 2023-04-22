@@ -15,37 +15,25 @@
  */
 package cachemesh.core.config;
 
-import cachemesh.common.config.ReflectProp;
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.Prop;
-import cachemesh.common.config.Bean;
-import cachemesh.common.config.op.StringOp;
-import cachemesh.core.TransportRegistry;
+import cachemesh.common.config2.AbstractProp;
+import cachemesh.common.config2.Prop;
+import cachemesh.common.config2.types.StringType;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class NodesConfig implements Bean {
+public abstract class NodesConfig {
 
-    public static final NodesConfigOp OP = new NodesConfigOp();
+    public static final Prop<String> KIND_PROP = new AbstractProp("kind", StringType.DEFAULT, "inline") {
 
-    public static final Prop<String> KIND_PROP = ReflectProp.<String> builder().config(NodesConfig.class).name("kind")
-            .devault("inline").op(StringOp.DEFAULT).build();
+        @Override
+        public void set(Object bean, Object value) {
 
-    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(KIND_PROP);
+        }
+
+    };
 
     private String kind;
-
-    private final TransportRegistry registry;
-
-    protected NodesConfig(TransportRegistry registry) {
-        this.registry = registry;
-    }
-
-    @Override
-    public Iterable<Prop<?>> props() {
-        return PROPS;
-    }
 
 }

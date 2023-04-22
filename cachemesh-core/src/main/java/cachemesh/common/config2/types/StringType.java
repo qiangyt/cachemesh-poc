@@ -13,32 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config;
+package cachemesh.common.config2.types;
 
-import cachemesh.common.config2.annotations.Property;
-import cachemesh.common.jackson.JacksonSerderializer;
-import cachemesh.common.misc.Serderializer;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Builder;
+import cachemesh.common.config2.AbstractType;
+import cachemesh.common.config2.MapContext;
+import cachemesh.common.config2.Path;
 
-@Getter
-@Setter
-@Builder
-public class SerderConfig {
+public class StringType extends AbstractType<String> {
 
-    public static enum Kind {
-        jackson(JacksonSerderializer.DEFAULT);
+    public static final StringType DEFAULT = new StringType();
 
-        public final Serderializer instance;
-
-        private Kind(Serderializer instance) {
-            this.instance = instance;
-        }
+    @Override
+    public Class<?> klass() {
+        return String.class;
     }
 
-    @Builder.Default
-    @Property(devault = "jackson")
-    private Kind kind = Kind.jackson;
+    @Override
+    public String doConvert(MapContext ctx, Path path, Object parent, Object value) {
+        return (String) value;
+    }
 
 }

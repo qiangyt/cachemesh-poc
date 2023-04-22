@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 
 public class Reflect {
 
-    public static <T> Constructor<T> noArgsConstructor(Class<T> propertyClass) {
+    public static <T> Constructor<T> defaultConstructor(Class<T> propertyClass) {
         Constructor<T> r;
         try {
             r = propertyClass.getConstructor();
@@ -31,55 +31,20 @@ public class Reflect {
         return r;
     }
 
+    public static <T> T newInstance(Constructor<T> ctor) {
+        try {
+            return ctor.newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
     public static <T> T newInstance(Constructor<T> ctor, Object... args) {
         try {
             return ctor.newInstance(args);
         } catch (ReflectiveOperationException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    public static String getterName(String name, Class<?> propertyClass) {
-        var verb = (Boolean.class.isAssignableFrom(propertyClass) || boolean.class.isAssignableFrom(propertyClass))
-                ? "is" : "get";
-        return verb + StringHelper.capitalize(name);
-    }
-
-    public static Method getter(Class<?> ownerClass, String propertyName, Class<?> propertyClass) {
-        var methodName = Reflect.getterName(propertyName, propertyClass);
-
-        Method r;
-        try {
-            r = ownerClass.getDeclaredMethod(methodName);
-            if (r.getReturnType() != propertyClass) {
-                var msg = String.format("expect getter %s returns %s, but got %s", methodName, propertyClass,
-                        r.getReturnType());
-                throw new IllegalArgumentException(msg);
-            }
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("no getter method for property " + propertyName);
-        }
-
-        r.setAccessible(true);
-        return r;
-    }
-
-    public static String setterName(String name) {
-        return "set" + StringHelper.capitalize(name);
-    }
-
-    public static Method setter(Class<?> ownerClass, String propertyName, Class<?> propertyClass) {
-        var methodName = Reflect.setterName(propertyName);
-
-        Method r;
-        try {
-            r = ownerClass.getDeclaredMethod(methodName, propertyClass);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("no setter method for property " + propertyName, e);
-        }
-
-        r.setAccessible(true);
-        return r;
     }
 
     @SuppressWarnings("unchecked")
@@ -96,6 +61,14 @@ public class Reflect {
             setter.invoke(object, value);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static Method method(Class<?> klass, String name, Class<?>... paramTypes) {
+        try {
+            return klass.getMethod(name, paramTypes);
+        } catch (NoSuchMethodException e) {
+            return null;
         }
     }
 

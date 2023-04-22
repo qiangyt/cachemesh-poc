@@ -46,8 +46,8 @@ public class LettuceConfig extends NodeConfig {
     public static final Prop<String> HOST_PROP = ReflectProp.<String> builder().config(LettuceConfig.class).name("host")
             .op(StringOp.DEFAULT).build();
 
-    public static final Prop<Integer> PORT_PROP = ReflectProp.<Integer> builder().config(LettuceConfig.class).name("port")
-            .devault(DEFAULT_PORT).op(IntegerOp.DEFAULT).build();
+    public static final Prop<Integer> PORT_PROP = ReflectProp.<Integer> builder().config(LettuceConfig.class)
+            .name("port").devault(DEFAULT_PORT).op(IntegerOp.DEFAULT).build();
 
     public static final Prop<Integer> DATABASE_PROP = ReflectProp.<Integer> builder().config(LettuceConfig.class)
             .name("database").devault(DEFAULT_DATABASE).op(IntegerOp.DEFAULT).build();

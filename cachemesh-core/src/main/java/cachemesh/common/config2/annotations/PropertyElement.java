@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.misc;
+package cachemesh.common.config2.annotations;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 
-public class LogHelper {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+@Inherited
+public @interface PropertyElement {
 
-    public static Logger getLogger(Class<?> klass, String name) {
-        return LoggerFactory.getLogger(name + "@" + klass.getCanonicalName());
-    }
+    Class<?> value();
 
 }

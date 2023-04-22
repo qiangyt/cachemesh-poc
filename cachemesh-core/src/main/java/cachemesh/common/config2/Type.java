@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.misc;
+package cachemesh.common.config2;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public interface Type<T> {
 
-public class LogHelper {
+    Class<?> klass();
 
-    public static Logger getLogger(Class<?> klass, String name) {
-        return LoggerFactory.getLogger(name + "@" + klass.getCanonicalName());
-    }
+    Type<?> elementType();
+
+    T convert(MapContext ctx, Path path, Object parent, Object value);
+
+    boolean isEnum();
+
+    boolean isArray();
+
+    boolean isList();
+
+    boolean isMap();
 
 }

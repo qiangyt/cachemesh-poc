@@ -13,32 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config;
+package cachemesh.common.config2;
 
-import cachemesh.common.config2.annotations.Property;
-import cachemesh.common.jackson.JacksonSerderializer;
-import cachemesh.common.misc.Serderializer;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Builder;
+public abstract class AbstractProp<T> implements Prop<T> {
 
-@Getter
-@Setter
-@Builder
-public class SerderConfig {
+    private final String name;
 
-    public static enum Kind {
-        jackson(JacksonSerderializer.DEFAULT);
+    private final T devault;
 
-        public final Serderializer instance;
+    private final Type<T> type;
 
-        private Kind(Serderializer instance) {
-            this.instance = instance;
-        }
+    public AbstractProp(String name, Type<T> type, T devault) {
+        this.name = name;
+        this.type = type;
+        this.devault = devault;
     }
 
-    @Builder.Default
-    @Property(devault = "jackson")
-    private Kind kind = Kind.jackson;
+    public String name() {
+        return this.name;
+    }
+
+    public T devault() {
+        return this.devault;
+    }
+
+    public Type<T> type() {
+        return this.type;
+    }
 
 }

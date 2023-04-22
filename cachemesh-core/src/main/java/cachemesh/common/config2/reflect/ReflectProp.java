@@ -138,7 +138,7 @@ public class ReflectProp<T> extends AbstractProp<T> {
         // create
         Type fType;
         if (fClass.isArray()) {
-            fType = ArrayType.of(typeRegistry, fClass);
+            fType = null;//TODO: ArrayType.of(typeRegistry, fClass);
         } else if (fClass.isEnum()) {
             fType = new EnumType<>(fClass);
         } else if (List.class.isAssignableFrom(fClass) || Map.class.isAssignableFrom(fClass)) {

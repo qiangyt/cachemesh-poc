@@ -16,8 +16,6 @@
 package cachemesh.common.config2;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class ArrayValue extends Value {
@@ -37,10 +35,10 @@ public class ArrayValue extends Value {
         int length = Array.getLength(raw);
         var eltType = type().elementType();
 
-        var r = Array.newInstance(type().elementType().klass(), length);
+        var r = Array.newInstance(eltType.klass(), length);
         for (int i = 0; i < length; i++) {
-            var eltValue = Value.of(eltType, element);
-            r.add(eltementValue);
+            //TODO: var eltValue = Value.of(eltType, element);
+            //TODO: r.add(eltementValue);
         }
 
         return r;

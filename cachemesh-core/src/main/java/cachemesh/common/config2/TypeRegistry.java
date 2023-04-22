@@ -51,11 +51,14 @@ public class TypeRegistry extends SimpleManager<Class<?>, Type<?>> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected Type<?> doCreate(Class<?> klass) {
         if (klass.isArray()) {
             return new ArrayType<Object>(this, (Class<Object[]>) klass);
+        } else if (klass.isEnum()) {
+            return null;//TODO: new EnumType<Enum<?>>(klass);
         }
-
+        return null;
     }
 
 }

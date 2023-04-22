@@ -29,7 +29,7 @@ public class ArrayType<T> extends ContainerType<T[], T> {
     public static final Iterable<Class<?>> CONVERTABLES = ConfigHelper.convertables(Collection.class);
 
     @SuppressWarnings("unchecked")
-    protected ArrayType(TypeRegistry registry, Class<T[]> klass) {
+    public ArrayType(TypeRegistry registry, Class<T[]> klass) {
         super(klass, (Type<T>) registry.load(klass.getComponentType()));
     }
 

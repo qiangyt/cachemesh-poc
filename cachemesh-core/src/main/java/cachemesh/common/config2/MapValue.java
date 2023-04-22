@@ -37,9 +37,9 @@ public class MapValue extends Value {
 
         var r = new HashMap<String, Value>();
         for (var entry : ((Map<String, Object>) raw).entrySet()) {
-            var element = entry.getValue();
-            var elementValue = Value.of(eltType, element);
-            r.put(entry.getKey(), elementValue);
+            //TOOD: var element = entry.getValue();
+            //TOOD: var elementValue = Value.of(eltType, element);
+            //TOOD: r.put(entry.getKey(), elementValue);
         }
 
         return r;

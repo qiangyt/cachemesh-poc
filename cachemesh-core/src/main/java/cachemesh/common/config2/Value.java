@@ -54,12 +54,12 @@ public class Value {
 
         if (klass.isArray()) {
             var eltType = typeRegistry.get(klass.getComponentType());
-            return new ArrayValue(type, raw);
+            return new ArrayValue(eltType, raw);
         }
         if (raw instanceof Map) {
-            return new MapValue(type, raw);
+            return null;//TODO: return new MapValue(type, raw);
         }
-        return new Value(type, raw);
+        return null;//TODO: return new Value(type, raw);
     }
 
 }

@@ -22,7 +22,6 @@ import cachemesh.common.config2.ConfigHelper;
 import cachemesh.common.config2.MapContext;
 import cachemesh.common.config2.Path;
 import cachemesh.common.config2.Type;
-import cachemesh.common.config2.TypeRegistry;
 import lombok.Getter;
 
 @Getter
@@ -57,7 +56,7 @@ public class ListType<T> extends ContainerType<List<T>, T> {
         return r;
     }
 
-    public static <E> ListType<E> of(TypeRegistry registry, Type<E> elementType) {
+    public static <E> ListType<E> of(Type<E> elementType) {
         return new ListType<>(elementType);
     }
 

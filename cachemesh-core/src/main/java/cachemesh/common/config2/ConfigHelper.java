@@ -35,16 +35,12 @@ public class ConfigHelper {
         return Collections.unmodifiableCollection(r);
     }
 
-/*
-    public static StructuredArgument logEntries(BeanDef bean) {
-        var map = bean.toMap();
-        return StructuredArguments.entries(map);
-    }
-
-    public static StructuredArgument logKv(String key, BeanDef bean) {
-        var map = bean.toMap();
-        return StructuredArguments.kv(key, map);
-    }
- */
+    /*
+     * public static StructuredArgument logEntries(BeanDef bean) { var map = bean.toMap(); return
+     * StructuredArguments.entries(map); }
+     *
+     * public static StructuredArgument logKv(String key, BeanDef bean) { var map = bean.toMap(); return
+     * StructuredArguments.kv(key, map); }
+     */
 
 }

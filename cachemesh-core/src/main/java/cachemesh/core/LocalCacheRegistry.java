@@ -25,8 +25,8 @@ import cachemesh.common.config.op.ListOp;
 import cachemesh.common.config.op.StringOp;
 import cachemesh.common.misc.SimpleRegistry;
 import cachemesh.core.config.LocalCacheConfig;
-import cachemesh.core.config.LocalCacheConfigOp;
 import cachemesh.core.config.LocalConfig;
+import cachemesh.core.config.support.LocalCacheConfigMapper;
 import cachemesh.core.spi.LocalCacheProvider;
 
 public class LocalCacheRegistry extends SimpleRegistry<String, LocalCacheProvider> {
@@ -48,7 +48,7 @@ public class LocalCacheRegistry extends SimpleRegistry<String, LocalCacheProvide
                 .op(StringOp.DEFAULT).build();
 
         var defaultProvider = get(kindProp.devault());
-        var cacheOp = new LocalCacheConfigOp(this, StringOp.DEFAULT);
+        var cacheOp = new LocalCacheConfigMapper(this, StringOp.DEFAULT);
 
         var defaultCacheProp = ReflectProp.<LocalCacheConfig> builder().config(LocalConfig.class).name("defaultCache")
                 .op(cacheOp).devault(defaultProvider.createDefaultConfig("default", byte[].class)).build();

@@ -21,7 +21,6 @@ import java.util.Map;
 import cachemesh.common.config2.MapContext;
 import cachemesh.common.config2.Path;
 import cachemesh.common.config2.Type;
-import cachemesh.common.config2.TypeRegistry;
 import lombok.Getter;
 
 @Getter
@@ -53,7 +52,7 @@ public class MapType<T> extends ContainerType<Map<String, T>, T> {
         return r;
     }
 
-    public static <E> MapType<E> of(TypeRegistry registry, Type<E> elementType) {
+    public static <E> MapType<E> of(Type<E> elementType) {
         return new MapType<>(elementType);
     }
 

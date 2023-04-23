@@ -17,13 +17,15 @@ package cachemesh.core.spi;
 
 import java.util.Map;
 
+import cachemesh.common.config2.MapContext;
+import cachemesh.common.config2.Path;
 import cachemesh.core.config.LocalCacheConfig;
 
 public interface LocalCacheProvider {
 
     LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass);
 
-    LocalCacheConfig createConfig(String hint, Map<String, Object> parent, Map<String, Object> value);
+    LocalCacheConfig createConfig(MapContext ctx, Path path, Object parent, Map<String, Object> propValues);
 
     LocalCache createCache(LocalCacheConfig config);
 

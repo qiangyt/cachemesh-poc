@@ -82,7 +82,7 @@ public abstract class AbstractType<T> implements Type<T> {
         return false;
     }
 
-    public abstract T doConvert(MapContext ctx, Path path, Object parent, Object value);
+    protected abstract T doConvert(MapContext ctx, Path path, Object parent, Object value);
 
     public IllegalArgumentException invalidValueClassError(Path path, Class<?> actual) {
         var classes = new ArrayList<Class<?>>();

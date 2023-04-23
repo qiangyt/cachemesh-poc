@@ -19,26 +19,18 @@ import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
 import cachemesh.core.TransportRegistry;
 import cachemesh.core.LocalCacheRegistry;
-import cachemesh.common.config.ReflectProp;
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.Prop;
-import cachemesh.common.config.Bean;
-import cachemesh.common.config.op.EnumOp;
-import cachemesh.common.config.op.StringOp;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
 
 @Getter
 @Setter
-public class MeshConfig implements Bean {
+public class MeshConfig {
 
     public static enum HashingKind {
         murmur(MurmurHash.DEFAULT);
 
         public final Hashing instance;
-
-        public static final EnumOp<HashingKind> OP = new EnumOp<>(HashingKind.class);
 
         private HashingKind(Hashing instance) {
             this.instance = instance;
@@ -48,20 +40,6 @@ public class MeshConfig implements Bean {
     public static final String DEFAULT_NAME = "test";
 
     public static final HashingKind DEFAULT_HASHING = HashingKind.murmur;
-
-    public static final Prop<String> NAME_PROP = ReflectProp.<String> builder().config(MeshConfig.class).name("name")
-            .devault(DEFAULT_NAME).op(StringOp.DEFAULT).build();
-
-    public static final Prop<HashingKind> HASHING_PROP = ReflectProp.<HashingKind> builder().config(MeshConfig.class)
-            .name("hashing").devault(DEFAULT_HASHING).op(HashingKind.OP).build();
-
-    public static final Prop<NodesConfig> NODES_PROP = ReflectProp.<NodesConfig> builder().config(MeshConfig.class)
-            .name("nodes").devault(null).op(NodesConfig.OP).build();
-
-    public static final Prop<LocalConfig> LOCAL_PROP = ReflectProp.<LocalConfig> builder().config(MeshConfig.class)
-            .name("local").op(LocalConfig.OP).build();
-
-    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NAME_PROP, HASHING_PROP, NODES_PROP, LOCAL_PROP);
 
     private String name = DEFAULT_NAME;
 
@@ -89,11 +67,6 @@ public class MeshConfig implements Bean {
         this.hashing = hashing;
         this.nodes = nodes;
         this.local = local;
-    }
-
-    @Override
-    public Iterable<Prop<?>> props() {
-        return PROPS;
     }
 
 }

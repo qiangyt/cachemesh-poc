@@ -37,8 +37,8 @@ public class ArrayValue extends Value {
 
         var r = Array.newInstance(eltType.klass(), length);
         for (int i = 0; i < length; i++) {
-            //TODO: var eltValue = Value.of(eltType, element);
-            //TODO: r.add(eltementValue);
+            // TODO: var eltValue = Value.of(eltType, element);
+            // TODO: r.add(eltementValue);
         }
 
         return r;

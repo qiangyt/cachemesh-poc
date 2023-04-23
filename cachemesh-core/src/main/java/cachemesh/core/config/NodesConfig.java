@@ -15,9 +15,9 @@
  */
 package cachemesh.core.config;
 
-import cachemesh.common.config2.AbstractProp;
-import cachemesh.common.config2.Prop;
-import cachemesh.common.config2.types.StringType;
+import java.util.List;
+
+import cachemesh.common.config2.annotations.Property;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,15 +25,9 @@ import lombok.Setter;
 @Setter
 public abstract class NodesConfig {
 
-    public static final Prop<String> KIND_PROP = new AbstractProp("kind", StringType.DEFAULT, "inline") {
-
-        @Override
-        public void set(Object bean, Object value) {
-
-        }
-
-    };
-
+    @Property(devault = "inline")
     private String kind;
+
+    public abstract List<NodeConfig> nodes();
 
 }

@@ -138,7 +138,7 @@ public class ReflectProp<T> extends AbstractProp<T> {
         // create
         Type fType;
         if (fClass.isArray()) {
-            fType = null;//TODO: ArrayType.of(typeRegistry, fClass);
+            fType = null;// TODO: ArrayType.of(typeRegistry, fClass);
         } else if (fClass.isEnum()) {
             fType = new EnumType<>(fClass);
         } else if (List.class.isAssignableFrom(fClass) || Map.class.isAssignableFrom(fClass)) {
@@ -146,9 +146,9 @@ public class ReflectProp<T> extends AbstractProp<T> {
 
             var eltClass = typeRegistry.load(a.value());
             if (List.class.isAssignableFrom(fClass)) {
-                fType = ListType.of(typeRegistry, eltClass);
+                fType = ListType.of(eltClass);
             } else {
-                fType = MapType.of(typeRegistry, eltClass);
+                fType = MapType.of(eltClass);
             }
         } else {
             fType = typeRegistry.loadByKey(propCapName);

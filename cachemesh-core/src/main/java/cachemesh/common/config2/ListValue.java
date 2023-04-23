@@ -47,8 +47,8 @@ public class ListValue extends Value {
 
         var r = new ArrayList<Object>(capacity);
         for (var element : (Iterable<?>) raw) {
-            //TODO: var elementValue = Value.of(eltType, element);
-            //TODO: r.add(elementValue);
+            // TODO: var elementValue = Value.of(eltType, element);
+            // TODO: r.add(elementValue);
         }
 
         return r;

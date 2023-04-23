@@ -13,20 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config.supprot;
+package cachemesh.core.config.support;
 
 import java.util.Map;
 
 import cachemesh.common.config2.MapContext;
 import cachemesh.common.config2.Mapper;
 import cachemesh.common.config2.Path;
-import cachemesh.common.misc.Serderializer;
+import cachemesh.core.LocalCacheRegistry;
+import cachemesh.core.config.LocalCacheConfig;
+import lombok.Getter;
 
-public class SerderializerMapper implements Mapper<Serderializer> {
+@Getter
+public class LocalCacheConfigMapper implements Mapper<LocalCacheConfig> {
+
+    private final LocalCacheRegistry registry;
+
+    public LocalCacheConfigMapper(LocalCacheRegistry registry) {
+        this.registry = registry;
+    }
 
     @Override
-    public Serderializer toBean(MapContext ctx, Path path, Object parent, Map<String, Object> propValues) {
+    @SuppressWarnings("unchecked")
+    public LocalCacheConfig toBean(MapContext ctx, Path path, Object parent, Map<String, Object> propValues) {
+        String kind = (String)((Map<String, Object>)parent).get("kind");
+        var provider = getRegistry().get(kind);
 
+        return provider.createConfig(ctx, path, parent, propValues);
     }
 
 }

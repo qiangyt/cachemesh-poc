@@ -21,24 +21,17 @@ import cachemesh.common.misc.ClassCache;
 
 public class MapContext {
 
-    private final ClassLoader classLoader;
-
     private final ClassCache classCache;
 
     private final Map<String, Object> root;
 
     public MapContext(Map<String, Object> root) {
-        this(Thread.currentThread().getContextClassLoader(), ClassCache.DEFAULT, root);
+        this(ClassCache.DEFAULT, root);
     }
 
-    public MapContext(ClassLoader classLoader, ClassCache classCache, Map<String, Object> root) {
-        this.classLoader = classLoader;
+    public MapContext(ClassCache classCache, Map<String, Object> root) {
         this.classCache = classCache;
         this.root = root;
-    }
-
-    public ClassLoader classLoader() {
-        return this.classLoader;
     }
 
     public ClassCache classCache() {
@@ -46,7 +39,7 @@ public class MapContext {
     }
 
     public Class<?> resolveClass(String className) {
-        return classCache().resolve(classLoader(), className);
+        return classCache().resolve(className);
     }
 
     public final Map<String, Object> root() {

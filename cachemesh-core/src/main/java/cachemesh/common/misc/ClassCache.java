@@ -22,52 +22,20 @@ public class ClassCache {
 
     public static final ClassCache DEFAULT = new ClassCache();
 
-    class Key {
-        final ClassLoader loader;
-        final String className;
-        final int hash;
-
-        Key(ClassLoader loader, String className) {
-            this.loader = loader;
-            this.className = className;
-            this.hash = (this.loader.getName() + className).hashCode();
-        }
-
-        @Override
-        public int hashCode() {
-            return this.hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (obj == this) {
-                return true;
-            }
-
-            Key that;
-            try {
-                that = (Key) obj;
-            } catch (ClassCastException e) {
-                return false;
-            }
-
-            return that.loader == this.loader && that.className.equals(this.className);
-        }
-    }
-
-    private final Map<Key, Class<?>> cache = new ConcurrentHashMap<>();
+    private final Map<String, Class<?>> cache = new ConcurrentHashMap<>();
 
     public int size() {
         return this.cache.size();
     }
 
-    public Class<?> resolve(ClassLoader classLoader, String className) {
-        return this.cache.computeIfAbsent(new Key(classLoader, className), key -> {
+    public ClassLoader getClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
+    }
+
+    public Class<?> resolve(String className) {
+        return this.cache.computeIfAbsent(className, key -> {
             try {
-                return classLoader.loadClass(className);
+                return getClassLoader().loadClass(className);
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e);
             }

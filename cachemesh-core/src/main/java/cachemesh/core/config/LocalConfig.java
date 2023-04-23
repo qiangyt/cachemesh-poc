@@ -27,7 +27,7 @@ import lombok.Singular;
 @Getter
 @Setter
 public class LocalConfig {
-    
+
     private String kind;
 
     private LocalCacheConfig defaultCache;

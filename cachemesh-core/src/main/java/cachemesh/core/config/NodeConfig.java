@@ -40,22 +40,22 @@ public abstract class NodeConfig {
 
     private SimpleURL url;
 
-    //@Builder.Default
+    // @Builder.Default
     @Property(devault = "false")
     private boolean local = DEFAULT_LOCAL;
 
-    //@Builder.Default
+    // @Builder.Default
     @Property(devault = "1")
     private int startTimeout = DEFAULT_START_TIMEOUT;
 
-    //@Builder.Default
+    // @Builder.Default
     @Property(devault = "2")
     private int stopTimeout = DEFAULT_STOP_TIMEOUT;
 
-    /*public Mapper<NodeConfig> buildMapper(TypeRegistry typeRegistry) {
-        var def = ReflectDef.of(typeRegistry, NodeConfig.class);
-        return new ReflectMapper<>(def);
-    }*/
+    /*
+     * public Mapper<NodeConfig> buildMapper(TypeRegistry typeRegistry) { var def = ReflectDef.of(typeRegistry,
+     * NodeConfig.class); return new ReflectMapper<>(def); }
+     */
 
     protected NodeConfig(SimpleURL url) {
         setUrl(url);
@@ -105,7 +105,7 @@ public abstract class NodeConfig {
         }
 
         if (query.containsKey("stopTimeout")) {
-            var stopTimeout = IntegerType.DEFAULT.convert(null, null, null,"stopTimeout");
+            var stopTimeout = IntegerType.DEFAULT.convert(null, null, null, "stopTimeout");
             setStopTimeout(stopTimeout);
         }
 

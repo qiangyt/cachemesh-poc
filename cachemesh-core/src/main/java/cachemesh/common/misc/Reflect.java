@@ -16,9 +16,17 @@
 package cachemesh.common.misc;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class Reflect {
+
+    public static String propertyName(Field field, String propertyName) {
+        if (StringHelper.isBlank(propertyName)) {
+            propertyName = field.getName().toLowerCase();
+        }
+        return propertyName.trim();
+    }
 
     public static <T> Constructor<T> defaultConstructor(Class<T> propertyClass) {
         Constructor<T> r;
@@ -70,6 +78,61 @@ public class Reflect {
         } catch (NoSuchMethodException e) {
             return null;
         }
+    }
+
+    public static Method setter(Class<?> beanClass, String propName, Class<?> propClass, String setterName) {
+        if (StringHelper.isBlank(setterName)) {
+            setterName = "set" + StringHelper.capitalize(propName);
+        }
+
+        Method r = method(beanClass, setterName, propClass);
+        if (r == null) {
+            var msg = String.format("failed to find setter method '%s' for property '%s.%s'", setterName, beanClass,
+                    propName);
+            throw new IllegalArgumentException(msg);
+        }
+        r.setAccessible(true);
+
+        return r;
+    }
+
+    public static Method getter(Class<?> beanClass, String propName, Class<?> propClass, String getterName) {
+        if (StringHelper.isBlank(getterName)) {
+            String propCapName = StringHelper.capitalize(propName);
+
+            Method r;
+            if (propClass == boolean.class || propClass == Boolean.class) {
+                getterName = "is" + propCapName;
+                r = _getter(beanClass, propName, propClass, getterName);
+                if (r != null) {
+                    return r;
+                }
+            }
+
+            getterName = "get" + propCapName;
+        }
+
+        Method r = _getter(beanClass, propName, propClass, getterName);
+        if (r == null) {
+            var msg = String.format("failed to find getter '%s' for property '%s.%s'", getterName, beanClass, propName);
+            throw new IllegalArgumentException(msg);
+        }
+        return r;
+    }
+
+    private static Method _getter(Class<?> beanClass, String propName, Class<?> propClass, String getterName) {
+        Method r = method(beanClass, getterName);
+        if (r == null) {
+            return null;
+        }
+        if (r.getReturnType() != propClass) {
+            var msg = String.format("expect getter '%s' returns %s for property '%s.%s', but got %s", getterName,
+                    beanClass, propName, r.getReturnType());
+            throw new IllegalArgumentException(msg);
+        }
+        r.setAccessible(true);
+
+        return r;
     }
 
 }

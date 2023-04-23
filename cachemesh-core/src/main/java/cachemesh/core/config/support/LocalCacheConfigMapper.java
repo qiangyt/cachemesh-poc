@@ -36,7 +36,7 @@ public class LocalCacheConfigMapper implements Mapper<LocalCacheConfig> {
     @Override
     @SuppressWarnings("unchecked")
     public LocalCacheConfig toBean(MapContext ctx, Path path, Object parent, Map<String, Object> propValues) {
-        String kind = (String)((Map<String, Object>)parent).get("kind");
+        String kind = (String) ((Map<String, Object>) parent).get("kind");
         var provider = getRegistry().get(kind);
 
         return provider.createConfig(ctx, path, parent, propValues);

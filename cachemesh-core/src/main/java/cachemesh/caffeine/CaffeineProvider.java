@@ -15,11 +15,15 @@
  */
 package cachemesh.caffeine;
 
+import java.util.Map;
+
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+import cachemesh.common.config3.Path;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.bean.Value;
+import cachemesh.core.config.LocalCacheConfig;
 import cachemesh.core.spi.support.AbstractLocalCacheProvider;
 import lombok.Getter;
 
@@ -37,6 +41,18 @@ public class CaffeineProvider extends AbstractLocalCacheProvider<CaffeineCache, 
 
         Cache<String, Value> i = bldr.build();
         return new CaffeineCache(config, i, getShutdownManager());
+    }
+
+    @Override
+    public LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createDefaultConfig'");
+    }
+
+    @Override
+    public LocalCacheConfig createConfig(Path path, Map<String, Object> propValues) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createConfig'");
     }
 
 }

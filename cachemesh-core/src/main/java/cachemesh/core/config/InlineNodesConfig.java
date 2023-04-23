@@ -17,16 +17,18 @@ package cachemesh.core.config;
 
 import java.util.List;
 
-import cachemesh.common.config2.annotations.Property;
+import cachemesh.common.config3.annotations.PropertyElement;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.Singular;
-import lombok.*;
 
 @Getter
 @Setter
 public class InlineNodesConfig extends NodesConfig {
 
     @Singular("inline")
-    @Property(ignore = true)
+    @PropertyElement(NodeConfig.class)
     private List<NodeConfig> inline;
 
     @Builder

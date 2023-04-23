@@ -15,7 +15,8 @@
  */
 package cachemesh.core.config;
 
-import cachemesh.common.config2.annotations.Property;
+import cachemesh.common.config3.annotations.Property;
+import cachemesh.common.config3.annotations.Default;
 import cachemesh.common.jackson.JacksonSerderializer;
 import cachemesh.common.misc.Serderializer;
 import lombok.Getter;
@@ -38,7 +39,7 @@ public class SerderConfig {
     }
 
     @Builder.Default
-    @Property(devault = "jackson")
+    @Property @Default("jackson")
     private Kind kind = Kind.jackson;
 
 }

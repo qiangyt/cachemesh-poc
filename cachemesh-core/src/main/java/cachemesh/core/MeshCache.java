@@ -67,7 +67,7 @@ public class MeshCache<T> {
     protected T getRemoteSingle(Transport nodeCache, String key) {
         var near = getNearCache();
         var cfg = near.getConfig();
-        var serder = cfg.getSerder().getInstance();
+        var serder = cfg.getSerder().getKind().instance;
 
         @SuppressWarnings("unchecked")
         var valueClass = (Class<T>) cfg.getValueClass();
@@ -119,7 +119,7 @@ public class MeshCache<T> {
     protected void putRemoteSingle(Transport nodeCache, String key, Object object) {
         var near = getNearCache();
         var cfg = near.getConfig();
-        var serder = cfg.getSerder().getInstance();
+        var serder = cfg.getSerder().getKind().instance;
 
         var valueBytes = serder.serialize(object);
         long version = nodeCache.putSingle(getName(), key, valueBytes);

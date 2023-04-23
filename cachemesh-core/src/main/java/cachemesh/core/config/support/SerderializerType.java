@@ -15,8 +15,8 @@
  */
 package cachemesh.core.config.support;
 
-import cachemesh.common.config2.Mapper;
-import cachemesh.common.config2.types.BeanType;
+import cachemesh.common.config3.Mapper;
+import cachemesh.common.config3.types.BeanType;
 import cachemesh.common.misc.Serderializer;
 
 public class SerderializerType extends BeanType<Serderializer> {

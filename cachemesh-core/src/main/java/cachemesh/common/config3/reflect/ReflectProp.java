@@ -70,7 +70,7 @@ public class ReflectProp<B, T> extends AbstractProp<B, T> {
         var r = new HashMap<String, Prop<B, ?>>();
 
         for (var f : klass.getDeclaredFields()) {
-            var p = (Prop<B,?>)ReflectProp.of(typeRegistry, f);
+            var p = (Prop<B, ?>) ReflectProp.of(typeRegistry, f);
             r.put(p.getName(), p);
         }
 
@@ -103,7 +103,7 @@ public class ReflectProp<B, T> extends AbstractProp<B, T> {
 
         Type fType;
         if (fClass.isArray()) {
-            fType = ArrayType.of(typeRegistry, (Class<Object[]>)fClass);
+            fType = ArrayType.of(typeRegistry, (Class<Object[]>) fClass);
         } else if (fClass.isEnum()) {
             fType = new EnumType<>(fClass);
         } else if (List.class.isAssignableFrom(fClass)) {

@@ -15,10 +15,6 @@
  */
 package cachemesh.core.spi.support;
 
-import java.util.Map;
-
-import cachemesh.common.config.op.BeanOp;
-import cachemesh.common.config.op.ReflectOp;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.LocalTransport;
 import cachemesh.core.config.NodeConfig;
@@ -29,13 +25,10 @@ import lombok.Getter;
 public abstract class AbstractTransportProvider<T extends Transport, C extends NodeConfig>
         implements TransportProvider {
 
-    private final BeanOp<C> configOp;
-
     @Getter
     private final ShutdownManager shutdownManager;
 
     protected AbstractTransportProvider(Class<C> configClass, ShutdownManager shutdownManager) {
-        this.configOp = new ReflectOp<>(configClass);
         this.shutdownManager = shutdownManager;
     }
 
@@ -58,14 +51,5 @@ public abstract class AbstractTransportProvider<T extends Transport, C extends N
     }
 
     protected abstract T doCreateRemoteTransport(C nodeConfig);
-
-    @Override
-    public NodeConfig createConfig(String hint, Map<String, Object> parent, Map<String, Object> value) {
-        return doCreateConfig(hint, parent, value);
-    }
-
-    protected C doCreateConfig(String hint, Map<String, Object> parent, Map<String, Object> value) {
-        return this.configOp.populate(hint, parent, value);
-    }
 
 }

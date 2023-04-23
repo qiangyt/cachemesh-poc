@@ -17,12 +17,12 @@ package cachemesh.core.config.support;
 
 import java.util.Map;
 
-import cachemesh.common.config2.MapContext;
-import cachemesh.common.config2.Mapper;
-import cachemesh.common.config2.Path;
-import cachemesh.common.config2.Type;
-import cachemesh.common.config2.types.BeanType;
-import cachemesh.common.config2.types.ListType;
+import cachemesh.common.config3.MapContext;
+import cachemesh.common.config3.Mapper;
+import cachemesh.common.config3.Path;
+import cachemesh.common.config3.Type;
+import cachemesh.common.config3.types.BeanType;
+import cachemesh.common.config3.types.ListType;
 import cachemesh.core.TransportRegistry;
 import cachemesh.core.config.InlineNodesConfig;
 import cachemesh.core.config.NodeConfig;

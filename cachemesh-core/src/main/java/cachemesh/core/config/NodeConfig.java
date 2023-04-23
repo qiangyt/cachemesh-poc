@@ -17,13 +17,11 @@ package cachemesh.core.config;
 
 import java.net.MalformedURLException;
 
-import cachemesh.common.config2.Mapper;
-import cachemesh.common.config2.TypeRegistry;
-import cachemesh.common.config2.annotations.Property;
-import cachemesh.common.config2.reflect.ReflectDef;
-import cachemesh.common.config2.reflect.ReflectMapper;
-import cachemesh.common.config2.types.BooleanType;
-import cachemesh.common.config2.types.IntegerType;
+import cachemesh.common.config3.annotations.Property;
+import cachemesh.common.config3.annotations.DefaultBoolean;
+import cachemesh.common.config3.annotations.DefaultInt;
+import cachemesh.common.config3.types.BooleanType;
+import cachemesh.common.config3.types.IntegerType;
 import cachemesh.common.misc.SimpleURL;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,21 +39,16 @@ public abstract class NodeConfig {
     private SimpleURL url;
 
     // @Builder.Default
-    @Property(devault = "false")
-    private boolean local = DEFAULT_LOCAL;
+    @Property @DefaultBoolean(DEFAULT_LOCAL)
+    private boolean local;
 
     // @Builder.Default
-    @Property(devault = "1")
+    @Property @DefaultInt(DEFAULT_START_TIMEOUT)
     private int startTimeout = DEFAULT_START_TIMEOUT;
 
     // @Builder.Default
-    @Property(devault = "2")
+    @Property @DefaultInt(DEFAULT_STOP_TIMEOUT)
     private int stopTimeout = DEFAULT_STOP_TIMEOUT;
-
-    /*
-     * public Mapper<NodeConfig> buildMapper(TypeRegistry typeRegistry) { var def = ReflectDef.of(typeRegistry,
-     * NodeConfig.class); return new ReflectMapper<>(def); }
-     */
 
     protected NodeConfig(SimpleURL url) {
         setUrl(url);
@@ -100,17 +93,17 @@ public abstract class NodeConfig {
         var query = url.getQuery();
 
         if (query.containsKey("startTimeout")) {
-            var startTimeout = IntegerType.DEFAULT.convert(null, null, null, "startTimeout");
+            var startTimeout = IntegerType.DEFAULT.convert(null, query.get("startTimeout"));
             setStartTimeout(startTimeout);
         }
 
         if (query.containsKey("stopTimeout")) {
-            var stopTimeout = IntegerType.DEFAULT.convert(null, null, null, "stopTimeout");
+            var stopTimeout = IntegerType.DEFAULT.convert(null, query.get("stopTimeout"));
             setStopTimeout(stopTimeout);
         }
 
         if (query.containsKey("local")) {
-            var local = BooleanType.DEFAULT.convert(null, null, null, "local");
+            var local = BooleanType.DEFAULT.convert(null, query.get("local"));
             setLocal(local);
         }
     }

@@ -15,11 +15,6 @@
  */
 package cachemesh.core.spi.support;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import cachemesh.common.config.op.BeanOp;
-import cachemesh.common.config.op.ReflectOp;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.config.LocalCacheConfig;
 import cachemesh.core.spi.LocalCache;
@@ -29,36 +24,14 @@ import lombok.Getter;
 public abstract class AbstractLocalCacheProvider<T extends LocalCache, C extends LocalCacheConfig>
         implements LocalCacheProvider {
 
-    private final BeanOp<C> configOp;
-
     @Getter
     private final ShutdownManager shutdownManager;
 
     protected AbstractLocalCacheProvider(Class<C> configClass, ShutdownManager shutdownManager) {
-        this.configOp = new ReflectOp<>(configClass);
         this.shutdownManager = shutdownManager;
     }
 
-    @Override
-    public LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass) {
-        return doCreateDefaultConfig(name, valueClass);
-    }
-
     protected abstract T doCreateCache(C config);
-
-    protected C doCreateConfig(String hint, Map<String, Object> parent, Map<String, Object> value) {
-        return this.configOp.populate(hint, parent, value);
-    }
-
-    protected C doCreateDefaultConfig(String name, Class<?> valueClass) {
-        var map = new HashMap<String, Object>();
-        return doCreateConfig("defaultCache", null, map);
-    }
-
-    @Override
-    public LocalCacheConfig createConfig(String hint, Map<String, Object> parent, Map<String, Object> value) {
-        return doCreateConfig(hint, parent, value);
-    }
 
     @Override
     @SuppressWarnings("unchecked")

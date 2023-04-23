@@ -17,9 +17,9 @@ package cachemesh.core.config.support;
 
 import java.util.Map;
 
-import cachemesh.common.config2.MapContext;
-import cachemesh.common.config2.Mapper;
-import cachemesh.common.config2.Path;
+import cachemesh.common.config3.MapContext;
+import cachemesh.common.config3.Mapper;
+import cachemesh.common.config3.Path;
 import cachemesh.core.LocalCacheRegistry;
 import cachemesh.core.config.LocalCacheConfig;
 import lombok.Getter;

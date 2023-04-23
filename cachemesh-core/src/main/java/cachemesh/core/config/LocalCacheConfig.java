@@ -17,7 +17,7 @@ package cachemesh.core.config;
 
 import lombok.Getter;
 import lombok.Setter;
-import cachemesh.common.config2.annotations.Property;
+import cachemesh.common.config3.annotations.Property;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 

@@ -30,6 +30,10 @@ public abstract class Registry<C, T, S> {
         return new HashMap<>();
     }
 
+    public Iterable<Map.Entry<String, S>> getItems() {
+        return getItemMap().entrySet();
+    }
+
     protected abstract S supplyItem(C config, T value);
 
     protected abstract String supplyKey(C config);

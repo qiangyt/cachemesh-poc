@@ -15,11 +15,17 @@
  */
 package cachemesh.common.misc;
 
+import java.util.function.Function;
+
 public abstract class SimpleManager<C, T> extends SimpleRegistry<C, T> {
 
     public T resolve(C config) {
+        return resolve(config, this::doCreate);
+    }
+
+    public T resolve(C config, Function<C, T> creator) {
         String key = supplyKey(config);
-        return getItemMap().computeIfAbsent(key, k -> doCreate(config));
+        return getItemMap().computeIfAbsent(key, k -> creator.apply(config));
     }
 
     public T create(C config) {

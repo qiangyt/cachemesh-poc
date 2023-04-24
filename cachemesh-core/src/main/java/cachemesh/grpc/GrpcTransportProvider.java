@@ -15,6 +15,8 @@
  */
 package cachemesh.grpc;
 
+import cachemesh.common.config3.TypeRegistry;
+import cachemesh.common.config3.reflect.ReflectBeanType;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.LocalTransport;
 import cachemesh.core.MeshNode;
@@ -26,12 +28,9 @@ public class GrpcTransportProvider extends AbstractTransportProvider<GrpcTranspo
 
     private final GrpcServerProvider serverProvider;
 
-    public GrpcTransportProvider() {
-        this(GrpcServerProvider.DEFAULT, ShutdownManager.DEFAULT);
-    }
-
-    public GrpcTransportProvider(GrpcServerProvider serverProvider, ShutdownManager shutdownManager) {
-        super(GrpcConfig.class, shutdownManager);
+    public GrpcTransportProvider(TypeRegistry typeRegistry, GrpcServerProvider serverProvider,
+            ShutdownManager shutdownManager) {
+        super(ReflectBeanType.of(typeRegistry, GrpcConfig.class), shutdownManager);
         this.serverProvider = serverProvider;
 
     }

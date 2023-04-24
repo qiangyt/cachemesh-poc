@@ -17,29 +17,28 @@ package cachemesh.core.config.support;
 
 import java.util.Map;
 
-import cachemesh.common.config3.MapContext;
-import cachemesh.common.config3.Mapper;
-import cachemesh.common.config3.Path;
-import cachemesh.core.LocalCacheRegistry;
+import cachemesh.common.config3.Prop;
+import cachemesh.common.config3.types.BeanType;
 import cachemesh.core.config.LocalCacheConfig;
-import lombok.Getter;
 
-@Getter
-public class LocalCacheConfigMapper implements Mapper<LocalCacheConfig> {
+public abstract class AbstractLocalCacheConfigType extends BeanType<LocalCacheConfig> {
 
-    private final LocalCacheRegistry registry;
-
-    public LocalCacheConfigMapper(LocalCacheRegistry registry) {
-        this.registry = registry;
+    public AbstractLocalCacheConfigType() {
+        super(LocalCacheConfig.class);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public LocalCacheConfig toBean(MapContext ctx, Path path, Object parent, Map<String, Object> propValues) {
-        String kind = (String) ((Map<String, Object>) parent).get("kind");
-        var provider = getRegistry().get(kind);
+    public LocalCacheConfig newInstance(Object indicator) {
+        var type = determineConcreteType(indicator);
+        return type.newInstance(indicator);
+    }
 
-        return provider.createConfig(ctx, path, parent, propValues);
+    public abstract BeanType<? extends LocalCacheConfig> determineConcreteType(Object indicator);
+
+    @Override
+    public Map<String, Prop<?, ?>> getProperties(Object indicator) {
+        var type = determineConcreteType(indicator);
+        return type.getProperties(indicator);
     }
 
 }

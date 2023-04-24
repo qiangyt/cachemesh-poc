@@ -15,32 +15,54 @@
  */
 package cachemesh.core.config.support;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.config3.MapContext;
-import cachemesh.common.config3.Mapper;
 import cachemesh.common.config3.Path;
+import cachemesh.common.config3.TypeRegistry;
+import cachemesh.common.config3.types.BeanType;
+import cachemesh.common.config3.types.MappedBeanType;
 import cachemesh.common.config3.types.SimpleUrlType;
+import cachemesh.common.config3.types.StringType;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.TransportRegistry;
 import cachemesh.core.config.NodeConfig;
 import lombok.Getter;
 
 @Getter
-public class NodeConfigMapper implements Mapper<NodeConfig> {
+public class NodeConfigType extends MappedBeanType<NodeConfig> {
 
-    private final TransportRegistry registry;
+    public static NodeConfigType of(TypeRegistry typeRegistry) {
+        return (NodeConfigType) typeRegistry.resolve(NodeConfig.class, klass -> {
+            return new NodeConfigType(typeRegistry);
+        });
+    }
 
-    public NodeConfigMapper(TransportRegistry registry) {
-        this.registry = registry;
+    private final TransportRegistry transportRegistry;
+
+    public NodeConfigType(TransportRegistry transportRegistry, TypeRegistry typeRegistry) {
+        super(typeRegistry, NodeConfig.class);
+        this.transportRegistry = transportRegistry;
+    }
+
+    public Map<String, BeanType<? extends NodeConfig>> createMapping(TypeRegistry typeRegistry) {
+        var r = new HashMap<String, BeanType<? extends NodeConfig>>();
+
+        for (var entry: getTransportRegistry().getItems()) {
+            var protocol = entry.getKey();
+            var provider = entry.getValue();
+            r.put(protocol, )
+        }
+
+        r.put("inline", InlineNodeConfig.of(typeRegistry));
+
+        return r;
     }
 
     @Override
-    public NodeConfig toBean(MapContext ctx, Path path, Object parent, Map<String, Object> propValues) {
+    public Object extractIndicator(Path path, Map<String, Object> propValues) {
         var url = extractURL(path, propValues);
-        var provider = getRegistry().get(url.getProtocol());
-
-        return provider.createConfig(ctx, path, parent, propValues);
+        return url.getProtocol();
     }
 
     public SimpleURL extractURL(Path path, Map<String, Object> propValues) {
@@ -55,7 +77,7 @@ public class NodeConfigMapper implements Mapper<NodeConfig> {
             // got cached url
             url = (SimpleURL) urlObj;
         } else {
-            url = SimpleUrlType.DEFAULT.convert(null, null, null, urlObj);
+            url = SimpleUrlType.DEFAULT.convert(path, urlObj);
             propValues.put("url", url); // cache it to prevent conversion again and again
         }
 

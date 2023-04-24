@@ -39,7 +39,8 @@ public class SerderConfig {
     }
 
     @Builder.Default
-    @Property @Default("jackson")
+    @Property
+    @Default("jackson")
     private Kind kind = Kind.jackson;
 
 }

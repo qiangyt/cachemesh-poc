@@ -15,12 +15,43 @@
  */
 package cachemesh.common.config3;
 
+import java.util.ArrayList;
+
+import lombok.Getter;
+
 public class Path {
 
     public static final Path ROOT = new Path(null, "/") {
+        
         @Override
-        public Path parent() {
-            throw new IllegalArgumentException("root path has no parent");
+        public Path getParent() {
+            return null;
+        }
+
+        @Override
+        public boolean isKeep() {
+            return false;
+        }
+
+        @Override
+        public boolean isUpward() {
+            return false;
+        }
+
+        @Override
+        public boolean isAbsolute() {
+            return true;
+        }
+
+        @Override
+        public boolean isRoot() {
+            return true;
+        }
+
+        public ArrayList<Path> toChain() {
+            ArrayList<Path> r = new ArrayList<>();            
+            r.add(this);
+            return r;
         }
 
         @Override
@@ -31,40 +62,106 @@ public class Path {
 
     public static final Path KEEP = new Path(null, ".") {
         @Override
+        public Path getParent() {
+            return null;
+        }
+
+        @Override
+        public boolean isKeep() {
+            return true;
+        }
+
+        @Override
+        public boolean isUpward() {
+            return false;
+        }
+
+        @Override
+        public boolean isAbsolute() {
+            return false;
+        }
+
+        @Override
+        public boolean isRoot() {
+            return false;
+        }
+
+        public ArrayList<Path> toChain() {
+            ArrayList<Path> r = new ArrayList<>();            
+            r.add(this);
+            return r;
+        }
+
+        @Override
         public String toString() {
             return ".";
         }
     };
 
+    @Getter
     private final Path parent;
 
+    @Getter
     private final String name;
 
     private String str;
 
+    @Getter
+    private final boolean absolute;
+
     private Path(Path parent, String name) {
         this.parent = parent;
         this.name = name;
+
+        if (parent == null) {
+            this.absolute = isRoot();
+        } else {
+            this.absolute = parent.isAbsolute();
+        }
     }
 
     public boolean isRoot() {
-        return this == ROOT;
+        return false;
+    }
+
+    public Path toAbsolute(Path base) {
+        if (isAbsolute()) {
+            return this;
+        }
+
+        if (base.isAbsolute() == false) {
+            var msg = String.format("base path %s should be absolute", base);
+            throw new IllegalArgumentException(msg);
+        }
+
+        if (isKeep()) {
+            return Path.of(base, getName());
+        }
+
+        // is upward
+        return Path.of(base.getParent(), getName());
+    }
+
+    public ArrayList<Path> toChain() {
+        ArrayList<Path> r;
+
+        var prt = getParent();
+        if (prt != null) {
+            r = prt.toChain();
+        } else {
+            r = new ArrayList<>();
+        }
+        
+        r.add(this);
+        return r;
     }
 
     public boolean isKeep() {
-        return this == KEEP;
+        return ".".equals(getName());
     }
 
-    public boolean isBackward() {
-        return "..".equals(name());
-    }
-
-    public Path parent() {
-        return this.parent;
-    }
-
-    public String name() {
-        return this.name;
+    public boolean isUpward() {
+        return "..".equals(getName());
     }
 
     @Override
@@ -94,8 +191,8 @@ public class Path {
             return this.str;
         }
 
-        var p = parent();
-        var n = name();
+        var p = getParent();
+        var n = getName();
 
         StringBuilder sb;
         if (p == ROOT) {

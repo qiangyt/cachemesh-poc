@@ -39,15 +39,18 @@ public abstract class NodeConfig {
     private SimpleURL url;
 
     // @Builder.Default
-    @Property @DefaultBoolean(DEFAULT_LOCAL)
+    @Property
+    @DefaultBoolean(DEFAULT_LOCAL)
     private boolean local;
 
     // @Builder.Default
-    @Property @DefaultInt(DEFAULT_START_TIMEOUT)
+    @Property
+    @DefaultInt(DEFAULT_START_TIMEOUT)
     private int startTimeout = DEFAULT_START_TIMEOUT;
 
     // @Builder.Default
-    @Property @DefaultInt(DEFAULT_STOP_TIMEOUT)
+    @Property
+    @DefaultInt(DEFAULT_STOP_TIMEOUT)
     private int stopTimeout = DEFAULT_STOP_TIMEOUT;
 
     protected NodeConfig(SimpleURL url) {

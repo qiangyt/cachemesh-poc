@@ -21,30 +21,42 @@ import java.util.Map;
 
 import cachemesh.common.config3.Prop;
 import cachemesh.common.config3.TypeRegistry;
+import cachemesh.common.config3.types.BeanType;
 import cachemesh.common.misc.Reflect;
 import lombok.Getter;
 
-@Getter
-public class ReflectDef<T> {
+public class ReflectBeanType<T> extends BeanType<T> {
 
-    private final Map<String, Prop<T, ?>> props;
+    private final Map<String, Prop<?, ?>> properties;
 
+    @Getter
     private final Constructor<T> ctor;
 
-    public ReflectDef(Class<T> klass, Constructor<T> ctor, Map<String, Prop<T, ?>> props) {
-        this.props = Collections.unmodifiableMap(props);
-        this.ctor = Reflect.defaultConstructor(klass);
+    public ReflectBeanType(Class<T> klass, Constructor<T> ctor, Map<String, Prop<T, ?>> properties) {
+        super(klass);
+
+        this.ctor = ctor;
+        this.properties = Collections.unmodifiableMap(properties);
     }
 
-    public T newInstance() {
+    @Override
+    public T newInstance(Object indicator) {
         return Reflect.newInstance(getCtor());
     }
 
-    public static <T> ReflectDef<T> of(TypeRegistry typeRegistry, Class<T> klass) {
-        var props = ReflectProp.of(typeRegistry, klass);
-        var ctor = Reflect.defaultConstructor(klass);
+    @SuppressWarnings("unchecked")
+    public static <T> BeanType<T> of(TypeRegistry typeRegistry, Class<T> klass) {
+        return (BeanType<T>) typeRegistry.resolve(klass, k -> {
+            var props = ReflectProp.of(typeRegistry, klass);
+            var ctor = Reflect.defaultConstructor(klass);
 
-        return new ReflectDef<T>(klass, ctor, props);
+            return new ReflectBeanType<T>(klass, ctor, props);
+        });
+    }
+
+    @Override
+    public Map<String, Prop<?, ?>> getProperties(Object indicator) {
+        return this.properties;
     }
 
 }

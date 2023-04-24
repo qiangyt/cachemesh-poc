@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config2.annotations;
+package cachemesh.common.config3.suppport;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
+import cachemesh.common.config3.ConvertContext;
+import cachemesh.common.config3.TypeRegistry;
+import cachemesh.common.misc.ClassCache;
+import lombok.Getter;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-@Inherited
-public @interface Property {
+@Getter
+public abstract class AbstractConvertContext implements ConvertContext {
 
-    String value() default "";
+    private final ClassCache classCache;
 
-    String devault() default "";
+    private final TypeRegistry typeRegistry;
 
-    String getter() default "";
-
-    String setter() default "";
+    public AbstractConvertContext(ClassCache classCache, TypeRegistry typeRegistry) {
+        this.classCache = classCache;
+        this.typeRegistry = typeRegistry;
+    }
 
 }

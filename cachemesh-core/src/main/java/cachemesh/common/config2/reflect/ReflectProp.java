@@ -25,9 +25,9 @@ import cachemesh.common.config2.AbstractProp;
 import cachemesh.common.config2.Prop;
 import cachemesh.common.config2.Type;
 import cachemesh.common.config2.TypeRegistry;
+import cachemesh.common.config2.annotations.IgnoredProperty;
 import cachemesh.common.config2.annotations.Property;
 import cachemesh.common.config2.annotations.PropertyElement;
-import cachemesh.common.config2.types.ArrayType;
 import cachemesh.common.config2.types.EnumType;
 import cachemesh.common.config2.types.ListType;
 import cachemesh.common.config2.types.MapType;
@@ -70,7 +70,7 @@ public class ReflectProp<T> extends AbstractProp<T> {
         return r;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static ReflectProp<Object> of(TypeRegistry typeRegistry, Field field) {
         Class fClass = field.getType();
         var beanClass = field.getDeclaringClass();
@@ -80,11 +80,12 @@ public class ReflectProp<T> extends AbstractProp<T> {
         String setterName = null;
         String getterName = null;
 
+        if (field.getAnnotation(IgnoredProperty.class) != null) {
+            return null;
+        }
+
         var pa = field.getAnnotation(Property.class);
         if (pa != null) {
-            if (pa.ignore()) {
-                return null;
-            }
             propName = pa.value();
             devaultText = pa.devault();
             setterName = pa.setter();

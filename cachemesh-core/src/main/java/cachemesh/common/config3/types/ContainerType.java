@@ -15,8 +15,8 @@
  */
 package cachemesh.common.config3.types;
 
-import cachemesh.common.config3.AbstractType;
 import cachemesh.common.config3.Type;
+import cachemesh.common.config3.suppport.AbstractType;
 import cachemesh.common.config3.Path;
 import lombok.Getter;
 

@@ -17,7 +17,10 @@ package cachemesh.core.config;
 
 import java.util.List;
 
+import cachemesh.common.config3.TypeRegistry;
 import cachemesh.common.config3.annotations.PropertyElement;
+import cachemesh.common.config3.reflect.ReflectBeanType;
+import cachemesh.common.config3.types.BeanType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,25 +28,31 @@ import lombok.Singular;
 
 @Getter
 @Setter
-public class InlineNodesConfig extends NodesConfig {
+public class InlineMembersConfig extends MembersConfig {
 
-    @Singular("inline")
+    public static final String KIND = "inline";
+
+    @Singular(KIND)
     @PropertyElement(NodeConfig.class)
     private List<NodeConfig> inline;
 
     @Builder
-    public InlineNodesConfig(List<NodeConfig> inline) {
-        setKind("inline");
+    public InlineMembersConfig(List<NodeConfig> inline) {
+        setKind(KIND);
         this.inline = inline;
     }
 
-    public InlineNodesConfig() {
-        setKind("inline");
+    public InlineMembersConfig() {
+        setKind(KIND);
     }
 
     @Override
     public List<NodeConfig> nodes() {
-        return this.inline;
+        return getInline();
+    }
+
+    public static BeanType<InlineMembersConfig> of(TypeRegistry typeRegistry) {
+        return ReflectBeanType.of(typeRegistry, InlineMembersConfig.class);
     }
 
 }

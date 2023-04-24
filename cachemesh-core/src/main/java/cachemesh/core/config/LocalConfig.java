@@ -19,8 +19,6 @@ import lombok.Getter;
 
 import java.util.List;
 
-import cachemesh.core.LocalCacheRegistry;
-import cachemesh.core.spi.LocalCacheProvider;
 import lombok.Setter;
 import lombok.Singular;
 
@@ -28,38 +26,19 @@ import lombok.Singular;
 @Setter
 public class LocalConfig {
 
-    private String kind;
+    public static final String DEFAULT_KIND = "caffeine";
+
+    private String kind = DEFAULT_KIND;
 
     private LocalCacheConfig defaultCache;
 
     @Singular("cache")
     private List<LocalCacheConfig> caches;
 
-    private final LocalCacheRegistry registry;
-
-    protected LocalConfig() {
-        this(LocalCacheRegistry.DEFAULT);
-    }
-
-    protected LocalConfig(LocalCacheRegistry registry) {
-        this.registry = registry;
-        this.kind = registry.defaultKind();
-        this.defaultCache = registry.get(this.kind).createDefaultConfig("default", byte[].class);
-    }
-
     protected LocalConfig(LocalCacheConfig defaultCache, List<LocalCacheConfig> caches) {
-        this(LocalCacheRegistry.DEFAULT, defaultCache, caches);
-    }
-
-    protected LocalConfig(LocalCacheRegistry registry, LocalCacheConfig defaultCache, List<LocalCacheConfig> caches) {
-        this.registry = registry;
         this.kind = defaultCache.getName();
         this.defaultCache = defaultCache;
         this.caches = caches;
-    }
-
-    public LocalCacheProvider getCacheProvider() {
-        return getRegistry().get(getKind());
     }
 
 }

@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config2.annotations;
+package cachemesh.common.config3;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
+import cachemesh.common.misc.ClassCache;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-@Inherited
-public @interface Property {
+public interface ConvertContext {
 
-    String value() default "";
+    ClassCache getClassCache();
 
-    String devault() default "";
+    TypeRegistry getTypeRegistry();
 
-    String getter() default "";
+    Object getValue(Path childPath);
 
-    String setter() default "";
+    Path getPath();
+
+    ConvertContext getParent();
+
+    ConvertContext getRoot();
 
 }

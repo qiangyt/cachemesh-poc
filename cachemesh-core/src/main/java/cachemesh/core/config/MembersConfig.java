@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3;
+package cachemesh.core.config;
 
+import java.util.List;
+
+import cachemesh.common.config3.annotations.Default;
+import cachemesh.common.config3.annotations.Property;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public abstract class AbstractProp<B, T> implements Prop<B, T> {
+@Setter
+public abstract class MembersConfig {
 
-    private final String name;
+    public static final String DEFAULT_KIND = InlineMembersConfig.KIND;
 
-    private final T devault;
+    @Property
+    @Default(DEFAULT_KIND)
+    private String kind;
 
-    private final Type<T> type;
-
-    public AbstractProp(String name, Type<T> type, T devault) {
-        this.name = name;
-        this.type = type;
-        this.devault = devault;
-    }
+    public abstract List<NodeConfig> nodes();
 
 }

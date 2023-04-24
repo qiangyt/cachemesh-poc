@@ -17,12 +17,10 @@ package cachemesh.lettuce;
 
 import java.net.MalformedURLException;
 
-import cachemesh.common.config.ReflectProp;
-import cachemesh.common.config.Prop;
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.op.IntegerOp;
-import cachemesh.common.config.op.ReflectOp;
-import cachemesh.common.config.op.StringOp;
+import cachemesh.common.config3.Prop;
+import cachemesh.common.config3.annotations.IgnoredProperty;
+import cachemesh.common.config3.annotations.Property;
+import cachemesh.common.config3.ConfigHelper;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.NodeConfig;
 import lombok.Builder;
@@ -33,8 +31,6 @@ import lombok.Setter;
 @Setter
 public class LettuceConfig extends NodeConfig {
 
-    public static final ReflectOp<LettuceConfig> OP = new ReflectOp<>(LettuceConfig.class);
-
     public static final String PROTOCOL = "lettuce";
 
     public static final int DEFAULT_PORT = 6379;
@@ -43,27 +39,16 @@ public class LettuceConfig extends NodeConfig {
 
     public static final String DEFAULT_SEPARATOR = "%";
 
-    public static final Prop<String> HOST_PROP = ReflectProp.<String> builder().config(LettuceConfig.class).name("host")
-            .op(StringOp.DEFAULT).build();
-
-    public static final Prop<Integer> PORT_PROP = ReflectProp.<Integer> builder().config(LettuceConfig.class)
-            .name("port").devault(DEFAULT_PORT).op(IntegerOp.DEFAULT).build();
-
-    public static final Prop<Integer> DATABASE_PROP = ReflectProp.<Integer> builder().config(LettuceConfig.class)
-            .name("database").devault(DEFAULT_DATABASE).op(IntegerOp.DEFAULT).build();
-
-    public static final Prop<String> KEY_SEPARATOR_PROP = ReflectProp.<String> builder().config(LettuceConfig.class)
-            .name("keySeparator").devault(DEFAULT_SEPARATOR).op(StringOp.DEFAULT).build();
-
-    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NodeConfig.PROPS, HOST_PROP, PORT_PROP,
-            DATABASE_PROP, KEY_SEPARATOR_PROP);
-
+    @IgnoredProperty
     private String target;
 
+    @IgnoredProperty
     private String host;
 
+    @IgnoredProperty
     private int port;
 
+    @IgnoredProperty
     private int database;
 
     private String keySeparator;
@@ -89,11 +74,6 @@ public class LettuceConfig extends NodeConfig {
 
         this.database = database;
         this.keySeparator = keySeparator;
-    }
-
-    @Override
-    public Iterable<Prop<?>> props() {
-        return PROPS;
     }
 
     public String getTarget() {

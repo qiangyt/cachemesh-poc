@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cachemesh.common.config3.AbstractProp;
 import cachemesh.common.config3.Prop;
 import cachemesh.common.config3.Type;
 import cachemesh.common.config3.TypeRegistry;
@@ -32,8 +31,10 @@ import cachemesh.common.config3.annotations.DefaultClass;
 import cachemesh.common.config3.annotations.DefaultDuration;
 import cachemesh.common.config3.annotations.DefaultEnum;
 import cachemesh.common.config3.annotations.DefaultInt;
+import cachemesh.common.config3.annotations.IgnoredProperty;
 import cachemesh.common.config3.annotations.Property;
 import cachemesh.common.config3.annotations.PropertyElement;
+import cachemesh.common.config3.suppport.AbstractProp;
 import cachemesh.common.config3.types.ArrayType;
 import cachemesh.common.config3.types.EnumType;
 import cachemesh.common.config3.types.ListType;
@@ -71,7 +72,9 @@ public class ReflectProp<B, T> extends AbstractProp<B, T> {
 
         for (var f : klass.getDeclaredFields()) {
             var p = (Prop<B, ?>) ReflectProp.of(typeRegistry, f);
-            r.put(p.getName(), p);
+            if (p != null) {
+                r.put(p.getName(), p);
+            }
         }
 
         return r;
@@ -83,11 +86,12 @@ public class ReflectProp<B, T> extends AbstractProp<B, T> {
         String setterName = null;
         String getterName = null;
 
+        if (field.getAnnotation(IgnoredProperty.class) != null) {
+            return null;
+        }
+
         var pa = field.getAnnotation(Property.class);
         if (pa != null) {
-            if (pa.ignore()) {
-                return null;
-            }
             propName = pa.value();
             setterName = pa.setter();
             getterName = pa.getter();

@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cachemesh.common.config3.Path;
-import cachemesh.common.config3.AbstractType;
+import cachemesh.common.config3.suppport.AbstractType;
 
 public class IntegerType extends AbstractType<Integer> {
 

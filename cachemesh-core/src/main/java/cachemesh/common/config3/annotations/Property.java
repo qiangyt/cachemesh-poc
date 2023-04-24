@@ -32,6 +32,4 @@ public @interface Property {
 
     String setter() default "";
 
-    boolean ignore() default false;
-
 }

@@ -15,12 +15,6 @@
  */
 package cachemesh.grpc;
 
-import cachemesh.common.config.ReflectProp;
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.Prop;
-import cachemesh.common.config.op.IntegerOp;
-import cachemesh.common.config.op.ReflectOp;
-import cachemesh.common.config.op.StringOp;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.NodeConfig;
 import io.grpc.Grpc;
@@ -34,19 +28,9 @@ import lombok.Setter;
 @Setter
 public class GrpcConfig extends NodeConfig {
 
-    public static final ReflectOp<GrpcConfig> OP = new ReflectOp<>(GrpcConfig.class);
-
     public static final String PROTOCOL = "grpc";
 
     public static final int DEFAULT_PORT = 12001;
-
-    public static final Prop<String> HOST_PROP = ReflectProp.<String> builder().config(GrpcConfig.class).name("host")
-            .op(StringOp.DEFAULT).build();
-
-    public static final Prop<Integer> PORT_PROP = ReflectProp.<Integer> builder().config(GrpcConfig.class).name("port")
-            .devault(DEFAULT_PORT).op(IntegerOp.DEFAULT).build();
-
-    public static final Iterable<Prop<?>> PROPS = ConfigHelper.props(NodeConfig.PROPS, HOST_PROP, PORT_PROP);
 
     // TODO: credential
 
@@ -72,11 +56,6 @@ public class GrpcConfig extends NodeConfig {
 
         this.host = host;
         this.port = port;
-    }
-
-    @Override
-    public Iterable<Prop<?>> props() {
-        return PROPS;
     }
 
     public String getTarget() {

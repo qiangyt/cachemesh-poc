@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3;
+package cachemesh.common.config3.suppport;
 
 import java.util.ArrayList;
+
+import cachemesh.common.config3.IncompatibleTypeException;
+import cachemesh.common.config3.Path;
+import cachemesh.common.config3.Type;
 
 public abstract class AbstractType<T> implements Type<T> {
 

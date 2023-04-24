@@ -17,6 +17,9 @@ package cachemesh.caffeine;
 
 import java.time.Duration;
 
+import cachemesh.common.config3.annotations.DefaultDuration;
+import cachemesh.common.config3.annotations.DefaultInt;
+import cachemesh.common.misc.DurationHelper;
 import cachemesh.core.config.LocalCacheConfig;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,13 +33,15 @@ public class CaffeineConfig extends LocalCacheConfig {
 
     public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
 
-    public static final Duration DEFAULT_EXPIRE_AFTER_WIRTER = Duration.ofMinutes(5);
+    public static final String DEFAULT_EXPIRE_AFTER_WIRTER = "5m";
 
     @Builder.Default
+    @DefaultInt(DEFAULT_MAXIMUM_SIZE)
     private int maximumSize = DEFAULT_MAXIMUM_SIZE;
 
     @Builder.Default
-    private Duration expireAfterWrite = DEFAULT_EXPIRE_AFTER_WIRTER;
+    @DefaultDuration(DEFAULT_EXPIRE_AFTER_WIRTER)
+    private Duration expireAfterWrite = DurationHelper.parse(DEFAULT_EXPIRE_AFTER_WIRTER);
 
     public CaffeineConfig() {
     }

@@ -15,20 +15,28 @@
  */
 package cachemesh.core.spi.support;
 
+import java.util.Collections;
+import java.util.Map;
+
+import cachemesh.common.config3.Path;
+import cachemesh.common.config3.Type;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.config.LocalCacheConfig;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.LocalCacheProvider;
 import lombok.Getter;
 
+@Getter
 public abstract class AbstractLocalCacheProvider<T extends LocalCache, C extends LocalCacheConfig>
         implements LocalCacheProvider {
 
-    @Getter
     private final ShutdownManager shutdownManager;
 
-    protected AbstractLocalCacheProvider(Class<C> configClass, ShutdownManager shutdownManager) {
+    private final Type<C> configType;
+
+    protected AbstractLocalCacheProvider(Type<C> configType, ShutdownManager shutdownManager) {
         this.shutdownManager = shutdownManager;
+        this.configType = configType;
     }
 
     protected abstract T doCreateCache(C config);
@@ -38,6 +46,19 @@ public abstract class AbstractLocalCacheProvider<T extends LocalCache, C extends
     public LocalCache createCache(LocalCacheConfig config) {
         var c = (C) config;
         return doCreateCache(c);
+    }
+
+    @Override
+    public LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass) {
+        var r = createConfig(null, Collections.emptyMap());
+        r.setName(name);
+        r.setValueClass(valueClass);
+        return r;
+    }
+
+    @Override
+    public LocalCacheConfig createConfig(Path path, Map<String, Object> propValues) {
+        return getConfigType().convert(path, propValues);
     }
 
 }

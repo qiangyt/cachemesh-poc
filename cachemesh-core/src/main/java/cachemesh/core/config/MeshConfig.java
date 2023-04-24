@@ -45,7 +45,7 @@ public class MeshConfig {
 
     private HashingKind hashing = DEFAULT_HASHING;
 
-    private NodesConfig nodes;
+    private MembersConfig nodes;
 
     private LocalConfig local;
 
@@ -60,7 +60,7 @@ public class MeshConfig {
 
     @Builder
     private MeshConfig(TransportRegistry transportRegistry, LocalCacheRegistry localCacheRegistry, String name,
-            HashingKind hashing, NodesConfig nodes, LocalConfig local) {
+            HashingKind hashing, MembersConfig nodes, LocalConfig local) {
         this(transportRegistry, localCacheRegistry);
 
         this.name = name;

@@ -13,23 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3.types;
+package cachemesh.common.config3.suppport;
 
+import cachemesh.common.config3.ConvertContext;
 import cachemesh.common.config3.Path;
-import cachemesh.common.config3.suppport.AbstractType;
+import lombok.Getter;
 
-public class StringType extends AbstractType<String> {
+@Getter
+public class ChildConvertContext extends AbstractConvertContext {
 
-    public static final StringType DEFAULT = new StringType();
+    private final Path path;
 
-    @Override
-    public Class<?> getKlass() {
-        return String.class;
+    private final ConvertContext parent;
+
+    private final ConvertContext root;
+
+    public ChildConvertContext(ConvertContext parent, Path path) {
+        super(parent.getClassCache(), parent.getTypeRegistry());
+
+        this.parent = parent;
+        this.path = path;
+        this.root = parent.getRoot();
     }
 
     @Override
-    protected String doConvert(Path path, Object value) {
-        return (String) value;
+    public Object getValue(Path childPath) {
+        var absPath = childPath.toAbsolute(getPath());
+        return getRoot().getValue(absPath);
     }
 
 }

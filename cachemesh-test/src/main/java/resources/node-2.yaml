@@ -18,7 +18,7 @@ name: hello
 
 hashing: murmur
 
-nodes:
+members:
   kind: inline # jgroup, k8s, auto
   inline:
     - url: grpc://localhost:50001

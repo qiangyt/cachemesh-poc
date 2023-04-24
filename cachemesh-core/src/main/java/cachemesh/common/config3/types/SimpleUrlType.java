@@ -18,8 +18,8 @@ package cachemesh.common.config3.types;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import cachemesh.common.config3.AbstractType;
 import cachemesh.common.config3.Path;
+import cachemesh.common.config3.suppport.AbstractType;
 import cachemesh.common.config3.ConfigHelper;
 import cachemesh.common.misc.SimpleURL;
 

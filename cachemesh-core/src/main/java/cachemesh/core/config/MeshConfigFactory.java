@@ -16,7 +16,11 @@
 package cachemesh.core.config;
 
 import cachemesh.core.TransportRegistry;
+import cachemesh.core.config.support.AbstractLocalCacheConfigType;
+import cachemesh.core.config.support.MembersConfigType;
 import lombok.Getter;
+import cachemesh.common.config3.TypeRegistry;
+import cachemesh.common.config3.types.BeanType;
 import cachemesh.core.LocalCacheRegistry;
 
 import java.io.InputStream;
@@ -32,13 +36,29 @@ public class MeshConfigFactory {
 
     private final LocalCacheRegistry localCacheRegistry;
 
+    private final TypeRegistry typeRegistry;
+
     public MeshConfigFactory() {
-        this(TransportRegistry.DEFAULT, LocalCacheRegistry.DEFAULT);
+        this(TransportRegistry.DEFAULT, LocalCacheRegistry.DEFAULT, TypeRegistry.DEFAULT);
     }
 
-    public MeshConfigFactory(TransportRegistry transportRegistry, LocalCacheRegistry localCacheRegistry) {
+    public MeshConfigFactory(TransportRegistry transportRegistry, LocalCacheRegistry localCacheRegistry,
+            TypeRegistry typeRegistry) {
         this.transportRegistry = transportRegistry;
         this.localCacheRegistry = localCacheRegistry;
+        this.typeRegistry = typeRegistry;
+
+        typeRegistry.register(MembersConfig.class, new MembersConfigType(typeRegistry));
+        typeRegistry.register(LocalCacheConfig.class, new AbstractLocalCacheConfigType() {
+
+            @Override
+            public BeanType<? extends LocalCacheConfig> determineConcreteType(Object indicator) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'determineConcreteType'");
+            }
+
+        });
+
     }
 
     @SuppressWarnings("unchecked")

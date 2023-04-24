@@ -15,6 +15,8 @@
  */
 package cachemesh.lettuce;
 
+import cachemesh.common.config3.TypeRegistry;
+import cachemesh.common.config3.reflect.ReflectBeanType;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
 import cachemesh.core.spi.support.AbstractTransportProvider;
@@ -25,12 +27,9 @@ public class LettuceTransportProvider extends AbstractTransportProvider<LettuceT
 
     private final RedisClientProvider clientProvider;
 
-    public LettuceTransportProvider() {
-        this(DedicatedRedisClientProvider.DEFAULT, ShutdownManager.DEFAULT);
-    }
-
-    public LettuceTransportProvider(RedisClientProvider clientProvider, ShutdownManager shutdownManager) {
-        super(LettuceConfig.class, shutdownManager);
+    public LettuceTransportProvider(TypeRegistry typeRegistry, RedisClientProvider clientProvider,
+            ShutdownManager shutdownManager) {
+        super(ReflectBeanType.of(typeRegistry, LettuceConfig.class), shutdownManager);
         this.clientProvider = clientProvider;
     }
 

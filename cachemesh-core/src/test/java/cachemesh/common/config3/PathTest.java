@@ -20,13 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PathTest {
 
-	//@Test
-	public void test_toChain() {
-		var chain = Path.ROOT.toChain();
-		assertEquals(1, chain.size());
-		assertSame(Path.ROOT, chain.get(0));
-	}
-
 	@Test
 	public void test_ROOT() {
 		assertTrue(Path.ROOT.isAbsolute());
@@ -44,7 +37,9 @@ public class PathTest {
 		assertSame(Path.ROOT, Path.of("/./"));
 		assertSame(Path.ROOT, Path.of("//."));
 
-		assertSame(Path.ROOT, Path.ROOT.toAbsolute(null));
+		var chain = Path.ROOT.toChain();
+		assertEquals(1, chain.size());
+		assertSame(Path.ROOT, chain.get(0));
 	}
 
 	@Test
@@ -61,6 +56,10 @@ public class PathTest {
 		assertSame(Path.KEEP, Path.of("."));
 		assertSame(Path.KEEP, Path.of("./"));
 		assertSame(Path.KEEP, Path.of("./."));
+		
+		var chain = Path.KEEP.toChain();
+		assertEquals(1, chain.size());
+		assertSame(Path.KEEP, chain.get(0));
 	}
 
 	void assert_keep_1(Path p1) {
@@ -83,6 +82,11 @@ public class PathTest {
 		assertEquals(Path.of("1").hashCode(), p1.hashCode());
 		assertEquals(Path.of("./1").hashCode(), p1.hashCode());
 		assertNotEquals(Path.of("2").hashCode(), p1.hashCode());
+
+		var chain = p1.toChain();
+		assertEquals(2, chain.size());
+		assertSame(Path.KEEP, chain.get(0));
+		assertSame(p1, chain.get(1));
 	}
 
 	@Test
@@ -131,7 +135,13 @@ public class PathTest {
 		assertEquals(Path.of("./1/2"), p2);
 
 		var p1 = p2.getParent();
-		assert_keep_1(p1);
+		assert_keep_1(p1);		
+
+		var chain = p2.toChain();
+		assertEquals(3, chain.size());
+		assertSame(Path.KEEP, chain.get(0));
+		assertSame(p1, chain.get(1));
+		assertSame(p2, chain.get(2));
 	}
 
 	@Test
@@ -214,7 +224,12 @@ public class PathTest {
 		assert_absolute_1(p1);
 
 		p1 = Path.of("/1//");
-		assert_absolute_1(p1);
+		assert_absolute_1(p1);	
+
+		var chain = p1.toChain();
+		assertEquals(2, chain.size());
+		assertSame(Path.ROOT, chain.get(0));
+		assertSame(p1, chain.get(1));
 	}
 
 	void assert_absolute_2(Path p2) {
@@ -227,7 +242,13 @@ public class PathTest {
 		assertEquals("/1/2", p2.toString());
 
 		var p1 = p2.getParent();
-		assert_absolute_1(p1);
+		assert_absolute_1(p1);			
+
+		var chain = p2.toChain();
+		assertEquals(3, chain.size());
+		assertSame(Path.ROOT, chain.get(0));
+		assertSame(p1, chain.get(1));
+		assertSame(p2, chain.get(2));
 	}
 
 	@Test
@@ -253,7 +274,12 @@ public class PathTest {
 
 		assertEquals("..", p1.getName());
 		assertSame(Path.KEEP, p1.getParent());
-		assertEquals("./..", p1.toString());
+		assertEquals("./..", p1.toString());		
+
+		var chain = p1.toChain();
+		assertEquals(2, chain.size());
+		assertSame(Path.KEEP, chain.get(0));
+		assertSame(p1, chain.get(1));
 	}
 
 	@Test
@@ -281,7 +307,13 @@ public class PathTest {
 		assertEquals("./../..", p2.toString());
 
 		var p1 = p2.getParent();
-		assert_upward_1(p1);
+		assert_upward_1(p1);	
+
+		var chain = p2.toChain();
+		assertEquals(3, chain.size());
+		assertSame(Path.KEEP, chain.get(0));
+		assertSame(p1, chain.get(1));
+		assertSame(p2, chain.get(2));
 	}
 
 	@Test

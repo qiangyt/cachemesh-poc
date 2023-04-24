@@ -21,17 +21,11 @@ import cachemesh.common.config3.ConvertContext;
 import cachemesh.common.config3.Path;
 import cachemesh.common.config3.TypeRegistry;
 import cachemesh.common.misc.ClassCache;
-import lombok.Getter;
 
-@Getter
 public class RootConvertContext extends AbstractConvertContext {
 
-    private final Map<String, Object> rootValue;
-
     public RootConvertContext(ClassCache classCache, TypeRegistry typeRegistry, Map<String, Object> rootValue) {
-        super(classCache, typeRegistry);
-
-        this.rootValue = rootValue;
+        super(classCache, typeRegistry, rootValue);
     }
 
     @Override
@@ -47,20 +41,6 @@ public class RootConvertContext extends AbstractConvertContext {
     @Override
     public ConvertContext getRoot() {
         return this;
-    }
-
-    @Override
-    public Object getValue(Path childPath) {
-        if (childPath.isUpward()) {
-            throw new IllegalStateException("cannot traverse upward on root path: " + childPath);
-        }
-
-        if (childPath.isAbsolute() == false) {
-            childPath = childPath.toAbsolute(getPath());
-        }
-
-        childPath.getName();
-        path = path.toAbsolute(getPath());
     }
 
 }

@@ -29,17 +29,11 @@ public class ChildConvertContext extends AbstractConvertContext {
     private final ConvertContext root;
 
     public ChildConvertContext(ConvertContext parent, Path path) {
-        super(parent.getClassCache(), parent.getTypeRegistry());
+        super(parent.getClassCache(), parent.getTypeRegistry(), parent.getRootValue());
 
         this.parent = parent;
         this.path = path;
         this.root = parent.getRoot();
-    }
-
-    @Override
-    public Object getValue(Path childPath) {
-        var absPath = childPath.toAbsolute(getPath());
-        return getRoot().getValue(absPath);
     }
 
 }

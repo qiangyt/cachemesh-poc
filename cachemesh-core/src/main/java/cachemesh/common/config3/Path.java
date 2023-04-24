@@ -124,24 +124,6 @@ public class Path {
         return false;
     }
 
-    public Path toAbsolute(Path base) {
-        if (isAbsolute()) {
-            return this;
-        }
-
-        if (base.isAbsolute() == false) {
-            var msg = String.format("base path %s should be absolute", base);
-            throw new IllegalArgumentException(msg);
-        }
-
-        if (isKeep()) {
-            return Path.of(base, getName());
-        }
-
-        // is upward
-        return Path.of(base.getParent(), getName());
-    }
-
     public ArrayList<Path> toChain() {
         ArrayList<Path> r;
 

@@ -15,10 +15,10 @@
  */
 package cachemesh.common.config3.types;
 
-import cachemesh.common.config3.Path;
 import cachemesh.common.config3.suppport.AbstractType;
 import cachemesh.common.misc.ClassCache;
 import cachemesh.common.config3.ConfigHelper;
+import cachemesh.common.config3.ConvertContext;
 import lombok.Getter;
 
 @Getter
@@ -43,7 +43,7 @@ public class ClassType extends AbstractType<Class<?>> {
     }
 
     @Override
-    protected Class<?> doConvert(Path path, Object value) {
+    protected Class<?> doConvert(ConvertContext ctx, Object value) {
         return getClassCache().resolve((String) value);
     }
 

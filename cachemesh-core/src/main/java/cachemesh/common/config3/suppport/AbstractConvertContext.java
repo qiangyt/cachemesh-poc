@@ -15,10 +15,7 @@
  */
 package cachemesh.common.config3.suppport;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import cachemesh.common.config3.ConvertContext;
 import cachemesh.common.config3.Path;
@@ -42,41 +39,13 @@ public abstract class AbstractConvertContext implements ConvertContext {
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
     public Object getValue(Path relative) {
-        var chain = getPath().toChain();
-        chain.addAll(relative.toChain());
+        return getRoot().getValue(relative);
+    }
 
-        Deque<Object> upper = new ArrayDeque<>();
-        Object current;
-        current = getRootValue();
-
-        for (var p : chain) {
-            if (p.isKeep()) {
-                continue;
-            }
-
-            if (p.isUpward()) {
-                try {
-                    current = upper.removeLast();
-                } catch (NoSuchElementException e) {
-                    var msg = String.format("%s specifies invalid path scope");
-                    throw new IllegalArgumentException(msg);
-                }
-                continue;
-            }
-
-            var name = p.getName();
-            if (current instanceof Map) {
-                upper.offerLast(current);
-                current = ((Map)current).get(name);
-            } else {
-                var msg = String.format("unable to get %s because corresponding value is not a map", p);
-                throw new IllegalArgumentException(msg);
-            }
-        }
-        
-        return current;
+    @Override
+    public Object setValue(Path relative, Object newValue) {
+        return getRoot().setValue(relative, newValue);
     }
 
 }

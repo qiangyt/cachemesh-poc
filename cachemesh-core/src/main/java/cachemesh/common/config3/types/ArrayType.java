@@ -19,7 +19,7 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 
 import cachemesh.common.config3.ConfigHelper;
-import cachemesh.common.config3.Path;
+import cachemesh.common.config3.ConvertContext;
 import cachemesh.common.config3.Type;
 import cachemesh.common.config3.TypeRegistry;
 
@@ -44,16 +44,15 @@ public class ArrayType<T> extends ContainerType<T[], T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected T[] doConvert(Path path, Object value) {
+    protected T[] doConvert(ConvertContext ctx, Object value) {
         var listValue = (Collection<?>) value;
         var r = (T[]) Array.newInstance(getElementType().getKlass(), listValue.size());
 
         int i = 0;
-        for (var childV : listValue) {
-            var childP = Path.of(path, String.format("%d", i));
-
-            var child = convertElement(childP, childV);
-            Array.set(r, i, child);
+        for (var elementV : listValue) {
+            var elementCtx = ctx.createChild(i);
+            var element = convertElement(elementCtx, elementV);
+            Array.set(r, i, element);
             i++;
         }
 

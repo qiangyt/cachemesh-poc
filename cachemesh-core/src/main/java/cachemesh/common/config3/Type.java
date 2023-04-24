@@ -21,7 +21,7 @@ public interface Type<T> {
 
     Type<?> getElementType();
 
-    T convert(Path path, Object value);
+    T convert(ConvertContext ctx, Object value);
 
     boolean isEnum();
 

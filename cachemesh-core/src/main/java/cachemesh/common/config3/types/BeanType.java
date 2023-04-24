@@ -18,7 +18,7 @@ package cachemesh.common.config3.types;
 import java.util.Map;
 
 import cachemesh.common.config3.ConfigHelper;
-import cachemesh.common.config3.Path;
+import cachemesh.common.config3.ConvertContext;
 import cachemesh.common.config3.Prop;
 import cachemesh.common.config3.suppport.AbstractType;
 import lombok.Getter;
@@ -44,39 +44,37 @@ public abstract class BeanType<T> extends AbstractType<T> {
         return CONVERTABLES;
     }
 
-    public Object extractIndicator(Path path, Map<String, Object> propValues) {
-        return null;
-    }
+    public abstract Object extractKind(ConvertContext ctx, Map<String, Object> propValues);
 
-    public abstract T newInstance(Object indicator);
+    public abstract T newInstance(ConvertContext ctx, Object kind);
 
-    public abstract Map<String, Prop<?, ?>> getProperties(Object indicator);
+    public abstract Map<String, Prop<?, ?>> getProperties(ConvertContext ctx, Object kind);
 
     @Override
     @SuppressWarnings("unchecked")
-    protected T doConvert(Path path, Object value) {
+    protected T doConvert(ConvertContext ctx, Object value) {
         var propValues = (Map<String, Object>) value;
 
         T bean = null;
-        var indicator = extractIndicator(path, propValues);
-        var props = getProperties(indicator);
+        var kind = extractKind(ctx, propValues);
+        var props = getProperties(ctx, kind);
 
         for (var entry : propValues.entrySet()) {
             var propName = entry.getKey();
-            var propPath = Path.of(path, propName);
+            var propCtx = ctx.createChild(propName);
 
             var p = (Prop<T, Object>) props.get(propName);
             if (p == null) {
-                var msg = String.format("unexpected prop: %s", propPath);
+                var msg = String.format("unexpected prop: %s", propCtx.getPath());
                 throw new IllegalArgumentException(msg);
             }
 
             if (bean == null) {
-                bean = newInstance(indicator);
+                bean = newInstance(ctx, kind);
             }
 
             var unconvertedValue = entry.getValue();
-            var convertedValue = p.getType().convert(propPath, unconvertedValue);
+            var convertedValue = p.getType().convert(propCtx, unconvertedValue);
             p.set(bean, convertedValue);
         }
 

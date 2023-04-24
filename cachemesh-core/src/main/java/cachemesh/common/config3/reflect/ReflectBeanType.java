@@ -19,6 +19,7 @@ import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Map;
 
+import cachemesh.common.config3.ConvertContext;
 import cachemesh.common.config3.Prop;
 import cachemesh.common.config3.TypeRegistry;
 import cachemesh.common.config3.types.BeanType;
@@ -40,7 +41,7 @@ public class ReflectBeanType<T> extends BeanType<T> {
     }
 
     @Override
-    public T newInstance(Object indicator) {
+    public T newInstance(ConvertContext ctx, Object kind) {
         return Reflect.newInstance(getCtor());
     }
 
@@ -55,8 +56,13 @@ public class ReflectBeanType<T> extends BeanType<T> {
     }
 
     @Override
-    public Map<String, Prop<?, ?>> getProperties(Object indicator) {
+    public Map<String, Prop<?, ?>> getProperties(ConvertContext ctx, Object kind) {
         return this.properties;
+    }
+
+    @Override
+    public Object extractKind(ConvertContext ctx, Map<String, Object> propValues) {
+        return null;
     }
 
 }

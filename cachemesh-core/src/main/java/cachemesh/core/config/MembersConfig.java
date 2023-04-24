@@ -17,8 +17,6 @@ package cachemesh.core.config;
 
 import java.util.List;
 
-import cachemesh.common.config3.annotations.Default;
-import cachemesh.common.config3.annotations.Property;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,10 +24,6 @@ import lombok.Setter;
 @Setter
 public abstract class MembersConfig {
 
-    public static final String DEFAULT_KIND = InlineMembersConfig.KIND;
-
-    @Property
-    @Default(DEFAULT_KIND)
     private String kind;
 
     public abstract List<NodeConfig> nodes();

@@ -18,10 +18,11 @@ package cachemesh.core.config.support;
 import java.util.HashMap;
 import java.util.Map;
 
+import cachemesh.common.config3.ConvertContext;
 import cachemesh.common.config3.Path;
 import cachemesh.common.config3.TypeRegistry;
 import cachemesh.common.config3.types.BeanType;
-import cachemesh.common.config3.types.MappedBeanType;
+import cachemesh.common.config3.types.DynamicBeanType;
 import cachemesh.common.config3.types.SimpleUrlType;
 import cachemesh.common.config3.types.StringType;
 import cachemesh.common.misc.SimpleURL;
@@ -30,18 +31,12 @@ import cachemesh.core.config.NodeConfig;
 import lombok.Getter;
 
 @Getter
-public class NodeConfigType extends MappedBeanType<NodeConfig> {
-
-    public static NodeConfigType of(TypeRegistry typeRegistry) {
-        return (NodeConfigType) typeRegistry.resolve(NodeConfig.class, klass -> {
-            return new NodeConfigType(typeRegistry);
-        });
-    }
+public class NodeConfigType extends DynamicBeanType<NodeConfig> {
 
     private final TransportRegistry transportRegistry;
 
-    public NodeConfigType(TransportRegistry transportRegistry, TypeRegistry typeRegistry) {
-        super(typeRegistry, NodeConfig.class);
+    public NodeConfigType(TransportRegistry transportRegistry, TypeRegistry typeRegistry, Path kindPath, String defaultKind) {
+        super(typeRegistry, NodeConfig.class, kindPath, defaultKind);
         this.transportRegistry = transportRegistry;
     }
 
@@ -60,7 +55,8 @@ public class NodeConfigType extends MappedBeanType<NodeConfig> {
     }
 
     @Override
-    public Object extractIndicator(Path path, Map<String, Object> propValues) {
+    public Object extractKind(ConvertContext ctx, Map<String, Object> propValues) {
+        var kind = super.extractKind(ctx, propValues);
         var url = extractURL(path, propValues);
         return url.getProtocol();
     }

@@ -17,7 +17,7 @@ package cachemesh.common.config3.types;
 
 import cachemesh.common.config3.Type;
 import cachemesh.common.config3.suppport.AbstractType;
-import cachemesh.common.config3.Path;
+import cachemesh.common.config3.ConvertContext;
 import lombok.Getter;
 
 @Getter
@@ -32,8 +32,8 @@ public abstract class ContainerType<T, E> extends AbstractType<T> {
         this.elementType = elementType;
     }
 
-    protected E convertElement(Path elementPath, Object elementValue) {
-        return getElementType().convert(elementPath, elementValue);
+    protected E convertElement(ConvertContext elementCtx, Object elementValue) {
+        return getElementType().convert(elementCtx, elementValue);
     }
 
 }

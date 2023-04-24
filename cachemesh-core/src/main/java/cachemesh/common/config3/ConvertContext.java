@@ -17,6 +17,7 @@ package cachemesh.common.config3;
 
 import java.util.Map;
 
+import cachemesh.common.config3.suppport.ChildConvertContext;
 import cachemesh.common.misc.ClassCache;
 
 public interface ConvertContext {
@@ -27,6 +28,8 @@ public interface ConvertContext {
 
     Object getValue(Path relative);
 
+    Object setValue(Path relative, Object newValue);
+
     Map<String, Object> getRootValue();
 
     Path getPath();
@@ -34,5 +37,13 @@ public interface ConvertContext {
     ConvertContext getParent();
 
     ConvertContext getRoot();
+
+    default ConvertContext createChild(String name) {
+        return new ChildConvertContext(this, name);
+    }   
+
+    default ConvertContext createChild(int index) {
+        return new ChildConvertContext(this, index);
+    }
 
 }

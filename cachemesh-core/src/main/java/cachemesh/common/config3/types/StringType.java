@@ -15,7 +15,7 @@
  */
 package cachemesh.common.config3.types;
 
-import cachemesh.common.config3.Path;
+import cachemesh.common.config3.ConvertContext;
 import cachemesh.common.config3.suppport.AbstractType;
 
 public class StringType extends AbstractType<String> {
@@ -28,7 +28,7 @@ public class StringType extends AbstractType<String> {
     }
 
     @Override
-    protected String doConvert(Path path, Object value) {
+    protected String doConvert(ConvertContext ctx, Object value) {
         return (String) value;
     }
 

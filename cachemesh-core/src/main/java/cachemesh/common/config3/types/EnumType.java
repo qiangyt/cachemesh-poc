@@ -15,9 +15,9 @@
  */
 package cachemesh.common.config3.types;
 
-import cachemesh.common.config3.Path;
 import cachemesh.common.config3.suppport.AbstractType;
 import cachemesh.common.config3.ConfigHelper;
+import cachemesh.common.config3.ConvertContext;
 import lombok.Getter;
 
 @Getter
@@ -40,7 +40,7 @@ public class EnumType<T extends Enum<T>> extends AbstractType<T> {
     }
 
     @Override
-    protected T doConvert(Path path, Object value) {
+    protected T doConvert(ConvertContext ctx, Object value) {
         return Enum.valueOf(getEnumClass(), (String) value);
     }
 

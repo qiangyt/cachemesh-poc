@@ -18,8 +18,8 @@ package cachemesh.common.config3.types;
 import java.util.ArrayList;
 import java.util.List;
 
-import cachemesh.common.config3.Path;
 import cachemesh.common.config3.ConfigHelper;
+import cachemesh.common.config3.ConvertContext;
 import cachemesh.common.config3.Type;
 import lombok.Getter;
 
@@ -38,15 +38,14 @@ public class ListType<T> extends ContainerType<List<T>, T> {
     }
 
     @Override
-    protected List<T> doConvert(Path path, Object value) {
+    protected List<T> doConvert(ConvertContext ctx, Object value) {
         var r = new ArrayList<T>();
         int i = 0;
 
-        for (var childV : (Iterable<?>) value) {
-            var childP = Path.of(path, String.format("%d", i));
-
-            var child = convertElement(childP, childV);
-            r.add(child);
+        for (var elementV : (Iterable<?>) value) {
+            var elementCtx = ctx.createChild(i);
+            var element = convertElement(elementCtx, elementV);
+            r.add(element);
             i++;
         }
 

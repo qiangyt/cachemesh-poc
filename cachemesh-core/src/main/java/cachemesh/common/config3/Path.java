@@ -23,6 +23,11 @@ public class Path {
 
     public static final Path ROOT = new Path(null, "/") {
         
+        {
+            this.chain = new ArrayList<>(1);
+            this.chain.add(this);
+        }
+
         @Override
         public Path getParent() {
             return null;
@@ -48,19 +53,29 @@ public class Path {
             return true;
         }
 
+        @Override
         public ArrayList<Path> toChain() {
-            ArrayList<Path> r = new ArrayList<>();            
-            r.add(this);
-            return r;
+            return this.chain;
         }
 
         @Override
         public String toString() {
             return "/";
         }
+
+        @Override
+        public boolean isIndex() {
+            return false;
+        }
     };
 
-    public static final Path KEEP = new Path(null, ".") {
+    public static final Path KEEP = new Path(null, ".") {        
+        
+        {
+            this.chain = new ArrayList<>(1);
+            this.chain.add(this);
+        }
+
         @Override
         public Path getParent() {
             return null;
@@ -86,15 +101,19 @@ public class Path {
             return false;
         }
 
+        @Override
         public ArrayList<Path> toChain() {
-            ArrayList<Path> r = new ArrayList<>();            
-            r.add(this);
-            return r;
+            return this.chain;
         }
 
         @Override
         public String toString() {
             return ".";
+        }
+
+        @Override
+        public boolean isIndex() {
+            return false;
         }
     };
 
@@ -104,10 +123,15 @@ public class Path {
     @Getter
     private final String name;
 
-    private String str;
+    private String str;    
+        
+    protected ArrayList<Path> chain;
 
     @Getter
     private final boolean absolute;
+
+    @Getter
+    private int index;
 
     private Path(Path parent, String name) {
         this.parent = parent;
@@ -118,6 +142,13 @@ public class Path {
         } else {
             this.absolute = parent.isAbsolute();
         }
+
+        this.index = -1;
+    }
+    
+    private Path(Path parent, int index) {
+        this(parent, String.format("[%d]", index));
+        this.index = index;
     }
 
     public boolean isRoot() {
@@ -125,13 +156,16 @@ public class Path {
     }
 
     public ArrayList<Path> toChain() {
-        ArrayList<Path> r;
+        ArrayList<Path> r = this.chain;
+        if (r != null ){
+            return r;
+        }
 
         var prt = getParent();
         if (prt != null) {
             r = prt.toChain();
         } else {
-            r = new ArrayList<>();
+            this.chain = r = new ArrayList<>();
         }
         
         r.add(this);
@@ -189,8 +223,20 @@ public class Path {
         return this.str = sb.toString();
     }
 
+    public boolean isIndex() {
+        return getIndex() >= 0;
+    }
+
+    public static Path of(int index) {
+        return of(KEEP, index);
+    }
+
     public static Path of(String path) {
         return of(KEEP, path);
+    }
+
+    public static Path of(Path current, int index) {
+        return new Path(current, index);
     }
 
     public static Path of(Path current, String path) {

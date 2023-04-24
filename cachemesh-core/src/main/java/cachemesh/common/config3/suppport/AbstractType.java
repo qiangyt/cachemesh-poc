@@ -17,8 +17,8 @@ package cachemesh.common.config3.suppport;
 
 import java.util.ArrayList;
 
+import cachemesh.common.config3.ConvertContext;
 import cachemesh.common.config3.IncompatibleTypeException;
-import cachemesh.common.config3.Path;
 import cachemesh.common.config3.Type;
 
 public abstract class AbstractType<T> implements Type<T> {
@@ -54,7 +54,7 @@ public abstract class AbstractType<T> implements Type<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public T convert(Path path, Object value) {
+    public T convert(ConvertContext ctx, Object value) {
         if (value == null) {
             return null;
         }
@@ -64,10 +64,10 @@ public abstract class AbstractType<T> implements Type<T> {
         }
 
         if (isConvertable(value) == false) {
-            throw invalidValueClassError(path, value.getClass());
+            throw invalidValueClassError(ctx, value.getClass());
         }
 
-        return doConvert(path, value);
+        return doConvert(ctx, value);
     }
 
     public boolean isConvertable(Object value) {
@@ -86,9 +86,9 @@ public abstract class AbstractType<T> implements Type<T> {
         return false;
     }
 
-    protected abstract T doConvert(Path path, Object value);
+    protected abstract T doConvert(ConvertContext ctx, Object value);
 
-    public IllegalArgumentException invalidValueClassError(Path path, Class<?> actual) {
+    public IllegalArgumentException invalidValueClassError(ConvertContext ctx, Class<?> actual) {
         var classes = new ArrayList<Class<?>>();
         classes.add(getKlass());
 

@@ -28,7 +28,15 @@ public class ChildConvertContext extends AbstractConvertContext {
 
     private final ConvertContext root;
 
-    public ChildConvertContext(ConvertContext parent, Path path) {
+    public ChildConvertContext(ConvertContext parent, String childName) {
+        this(parent, Path.of(parent.getPath(), childName));
+    }
+
+    public ChildConvertContext(ConvertContext parent, int childIndex) {
+        this(parent, Path.of(parent.getPath(), childIndex));
+    }
+
+    private ChildConvertContext(ConvertContext parent, Path path) {
         super(parent.getClassCache(), parent.getTypeRegistry(), parent.getRootValue());
 
         this.parent = parent;

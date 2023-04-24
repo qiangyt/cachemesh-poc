@@ -21,30 +21,20 @@ import java.util.Map;
 import cachemesh.common.config3.Path;
 import cachemesh.common.config3.TypeRegistry;
 import cachemesh.common.config3.types.BeanType;
-import cachemesh.common.config3.types.MappedBeanType;
-import cachemesh.common.config3.types.StringType;
+import cachemesh.common.config3.types.DynamicBeanType;
 import cachemesh.core.config.InlineMembersConfig;
 import cachemesh.core.config.MembersConfig;
 
-public class MembersConfigType extends MappedBeanType<MembersConfig> {
+public class MembersConfigType extends DynamicBeanType<MembersConfig> {
 
     public MembersConfigType(TypeRegistry typeRegistry) {
-        super(typeRegistry, MembersConfig.class);
+        super(typeRegistry, MembersConfig.class, Path.of("./kind"), null);
     }
 
     public Map<String, BeanType<? extends MembersConfig>> createMapping(TypeRegistry typeRegistry) {
         var r = new HashMap<String, BeanType<? extends MembersConfig>>();
         r.put(InlineMembersConfig.KIND, InlineMembersConfig.of(typeRegistry));
         return r;
-    }
-
-    @Override
-    public Object extractIndicator(Path path, Map<String, Object> propValues) {
-        var kind = StringType.DEFAULT.convert(path, "kind");
-        if (kind == null) {
-            kind = MembersConfig.DEFAULT_KIND;
-        }
-        return kind;
     }
 
 }

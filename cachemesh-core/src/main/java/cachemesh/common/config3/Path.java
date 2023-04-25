@@ -22,7 +22,7 @@ import lombok.Getter;
 public class Path {
 
     public static final Path ROOT = new Path(null, "/") {
-        
+
         {
             this.chain = new ArrayList<>(1);
             this.chain.add(this);
@@ -69,8 +69,8 @@ public class Path {
         }
     };
 
-    public static final Path KEEP = new Path(null, ".") {        
-        
+    public static final Path KEEP = new Path(null, ".") {
+
         {
             this.chain = new ArrayList<>(1);
             this.chain.add(this);
@@ -123,8 +123,8 @@ public class Path {
     @Getter
     private final String name;
 
-    private String str;    
-        
+    private String str;
+
     protected ArrayList<Path> chain;
 
     @Getter
@@ -145,7 +145,7 @@ public class Path {
 
         this.index = -1;
     }
-    
+
     private Path(Path parent, int index) {
         this(parent, String.format("[%d]", index));
         this.index = index;
@@ -157,7 +157,7 @@ public class Path {
 
     public ArrayList<Path> toChain() {
         ArrayList<Path> r = this.chain;
-        if (r != null ){
+        if (r != null) {
             return r;
         }
 
@@ -167,7 +167,7 @@ public class Path {
         } else {
             this.chain = r = new ArrayList<>();
         }
-        
+
         r.add(this);
         return r;
     }

@@ -40,7 +40,7 @@ public interface ConvertContext {
 
     default ConvertContext createChild(String name) {
         return new ChildConvertContext(this, name);
-    }   
+    }
 
     default ConvertContext createChild(int index) {
         return new ChildConvertContext(this, index);

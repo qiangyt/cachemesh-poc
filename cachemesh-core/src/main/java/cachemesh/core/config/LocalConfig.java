@@ -19,6 +19,7 @@ import lombok.Getter;
 
 import java.util.List;
 
+import cachemesh.common.config3.annotations.PropertyElement;
 import lombok.Setter;
 import lombok.Singular;
 
@@ -33,6 +34,7 @@ public class LocalConfig {
     private LocalCacheConfig defaultCache;
 
     @Singular("cache")
+    @PropertyElement(LocalCacheConfig.class)
     private List<LocalCacheConfig> caches;
 
     protected LocalConfig(LocalCacheConfig defaultCache, List<LocalCacheConfig> caches) {

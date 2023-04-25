@@ -15,10 +15,8 @@
  */
 package cachemesh.core.spi.support;
 
-import java.util.Map;
-
-import cachemesh.common.config3.Path;
-import cachemesh.common.config3.Type;
+import cachemesh.common.config3.TypeRegistry;
+import cachemesh.common.config3.types.BeanType;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.LocalTransport;
 import cachemesh.core.config.NodeConfig;
@@ -32,9 +30,9 @@ public abstract class AbstractTransportProvider<T extends Transport, C extends N
 
     private final ShutdownManager shutdownManager;
 
-    private final Type<C> configType;
+    private final BeanType<C> configType;
 
-    protected AbstractTransportProvider(Type<C> configType, ShutdownManager shutdownManager) {
+    protected AbstractTransportProvider(BeanType<C> configType, ShutdownManager shutdownManager) {
         this.shutdownManager = shutdownManager;
         this.configType = configType;
     }
@@ -60,8 +58,8 @@ public abstract class AbstractTransportProvider<T extends Transport, C extends N
     protected abstract T doCreateRemoteTransport(C nodeConfig);
 
     @Override
-    public NodeConfig createConfig(Path path, Map<String, Object> propValues) {
-        return getConfigType().convert(path, propValues);
+    public BeanType<? extends NodeConfig> resolveConfigType(TypeRegistry typeRegistry) {
+        return getConfigType();
     }
 
 }

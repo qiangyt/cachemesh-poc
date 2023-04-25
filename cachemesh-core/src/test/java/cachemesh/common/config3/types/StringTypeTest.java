@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config.support;
+package cachemesh.common.config3.types;
 
-import cachemesh.common.config3.Mapper;
-import cachemesh.common.config3.types.BeanType;
-import cachemesh.common.misc.Serderializer;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-public class SerderializerType extends BeanType<Serderializer> {
+import org.junit.jupiter.api.Test;
 
-    public SerderializerType(Class<Serderializer> klass, Mapper<Serderializer> mapper) {
-        super(klass, mapper);
-        // TODO Auto-generated constructor stub
-    }
+public class StringTypeTest {
+
+	@Test
+	public void test_happy() {
+		var t = StringType.DEFAULT;
+
+		assertSame("test", t.convert(null, "test"));
+		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
+	}
 
 }

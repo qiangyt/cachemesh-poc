@@ -20,8 +20,6 @@ import java.util.Map;
 
 import java.lang.reflect.Array;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -54,18 +52,65 @@ public class RootConvertContext extends AbstractConvertContext {
     @Override
     public ConvertContext getRoot() {
         return this;
-    }    
+    }
 
     @Override
+    @SuppressWarnings("all")
     public Object setValue(Path relative, Object newValue) {
-        var chain = normalizeChain(relative);
-        Object r = locateValue(chain);
+        return getCachedValues().compute(relative, (k, oldValue) -> {
+            var chain = normalizeChain(relative);
 
-        var owner = chain.removeLast();
+            Object r, owner = null;
+            r = getRootValue();
 
-        return r;
+            Path valuePath = null;
+
+            for (var p : chain) {
+                valuePath = p;
+                owner = r;
+
+                if (p.isIndex()) {
+                    if (owner instanceof List) {
+                        r = ((List) owner).get(p.getIndex());
+                        continue;
+                    }
+                    if (owner.getClass().isArray()) {
+                        r = Array.get(owner, p.getIndex());
+                        continue;
+                    }
+
+                    var msg = String
+                            .format("unable to get %s because corresponding value is neither a list nor an array", p);
+                    throw new IllegalArgumentException(msg);
+                }
+
+                if (owner instanceof Map) {
+                    r = ((Map) owner).get(p.getName());
+                    continue;
+                }
+
+                var msg = String.format("unable to get %s because corresponding value is not a map", p);
+                throw new IllegalArgumentException(msg);
+            }
+
+            if (valuePath.isIndex()) {
+                if (owner instanceof List) {
+                    ((List) owner).set(valuePath.getIndex(), newValue);
+                } else if (owner.getClass().isArray()) {
+                    Array.set(owner, valuePath.getIndex(), newValue);
+                } else {
+                    var msg = String.format(
+                            "unable to set %s because corresponding value is neither a list nor an array", valuePath);
+                    throw new IllegalArgumentException(msg);
+                }
+            } else if (owner instanceof Map) {
+                ((Map) owner).put(valuePath.getName(), newValue);
+            }
+
+            return newValue;
+        });
     }
-    
+
     Deque<Path> normalizeChain(Path relative) {
         var chain = getPath().toChain();
         chain.addAll(relative.toChain());
@@ -86,61 +131,10 @@ public class RootConvertContext extends AbstractConvertContext {
                     throw new IllegalArgumentException(msg);
                 }
             }
+
+            r.offerLast(p);
         }
-        
-        return r;
-    }
 
-    @SuppressWarnings("rawtypes")
-    private Object locateValue(Collection<Path> normalizedChain) {
-        Object r;
-        r = getRootValue();
-
-        Deque<Object> upper = new ArrayDeque<>();
-
-        for (var p : normalizedChain) {
-            if (p.isKeep()) {
-                continue;
-            }
-
-            if (p.isUpward()) {
-                try {
-                    r = upper.removeLast();
-                    continue;
-                } catch (NoSuchElementException e) {
-                    var msg = String.format("%s specifies invalid path scope");
-                    throw new IllegalArgumentException(msg);
-                }
-            }
-
-            if (p.isIndex()) {
-                if (r instanceof List) {
-                    upper.offerLast(r);
-                    r = ((List)r).get(p.getIndex());
-                    continue;
-                }
-                if (r.getClass().isArray()) {
-                    upper.offerLast(r);
-                    r = Array.get(r, p.getIndex());
-                    continue;
-                } 
-                
-                var msg = String.format("unable to get %s because corresponding value is not a list or an array", p);
-                throw new IllegalArgumentException(msg);
-            }
-
-            var name = p.getName();
-            if (r instanceof Map) {
-                upper.offerLast(r);
-                r = ((Map)r).get(name);
-                continue;
-            }
-
-
-            var msg = String.format("unable to get %s because corresponding value is not a map", p);
-            throw new IllegalArgumentException(msg);
-        }
-        
         return r;
     }
 
@@ -149,7 +143,36 @@ public class RootConvertContext extends AbstractConvertContext {
     public Object getValue(Path relative) {
         return getCachedValues().computeIfAbsent(relative, k -> {
             var chain = normalizeChain(relative);
-            return locateValue(chain);
+
+            Object r;
+            r = getRootValue();
+
+            for (var p : chain) {
+                if (p.isIndex()) {
+                    if (r instanceof List) {
+                        r = ((List) r).get(p.getIndex());
+                        continue;
+                    }
+                    if (r.getClass().isArray()) {
+                        r = Array.get(r, p.getIndex());
+                        continue;
+                    }
+
+                    var msg = String
+                            .format("unable to get %s because corresponding value is neither a list nor an array", p);
+                    throw new IllegalArgumentException(msg);
+                }
+
+                if (r instanceof Map) {
+                    r = ((Map) r).get(p.getName());
+                    continue;
+                }
+
+                var msg = String.format("unable to get %s because corresponding value is not a map", p);
+                throw new IllegalArgumentException(msg);
+            }
+
+            return r;
         });
     }
 

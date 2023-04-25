@@ -13,18 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.spi;
+package cachemesh.common.config3.types;
 
-import cachemesh.common.config3.TypeRegistry;
-import cachemesh.common.config3.types.BeanType;
-import cachemesh.core.config.LocalCacheConfig;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import org.junit.jupiter.api.Test;
 
-public interface LocalCacheProvider {
+public class EnumTypeTest {
 
-    LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass);
+	enum Sample {
+		a, b, c
+	}
 
-    BeanType<? extends LocalCacheConfig> resolveConfigType(TypeRegistry typeRegistry);
+	@Test
+	public void test_happy() {
+		var t = new EnumType<Sample>(Sample.class);
 
-    LocalCache createCache(LocalCacheConfig config);
+		assertSame(Sample.a, t.convert(null, "a"));
+		assertSame(Sample.b, t.convert(null, "b"));
+		assertSame(Sample.c, t.convert(null, Sample.c));
+
+		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
+	}
 
 }

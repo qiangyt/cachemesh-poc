@@ -13,18 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.spi;
+package cachemesh.common.config3.types;
 
-import cachemesh.common.config3.TypeRegistry;
-import cachemesh.common.config3.types.BeanType;
-import cachemesh.core.config.LocalCacheConfig;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public interface LocalCacheProvider {
+import java.util.List;
 
-    LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass);
+import org.junit.jupiter.api.Test;
 
-    BeanType<? extends LocalCacheConfig> resolveConfigType(TypeRegistry typeRegistry);
+public class ListTypeTest {
 
-    LocalCache createCache(LocalCacheConfig config);
+	@Test
+	public void test_happy() {
+		var t = ListType.of(IntegerType.DEFAULT);
+
+		var r = t.convert(null, List.of("1", "2"));
+		
+		assertEquals(2, r.size());
+
+		assertEquals(1, r.get(0));
+		assertEquals(2, r.get(1));
+	}
 
 }

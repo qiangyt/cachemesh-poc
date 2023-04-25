@@ -32,6 +32,19 @@ public abstract class ContainerType<T, E> extends AbstractType<T> {
         this.elementType = elementType;
     }
 
+    @Override
+    public T convert(ConvertContext ctx, Object value) {
+        if (value == null) {
+            return null;
+        }
+
+        if (isConvertable(value) == false) {
+            throw invalidValueClassError(ctx, value.getClass());
+        }
+
+        return doConvert(ctx, value);
+    }
+
     protected E convertElement(ConvertContext elementCtx, Object elementValue) {
         return getElementType().convert(elementCtx, elementValue);
     }

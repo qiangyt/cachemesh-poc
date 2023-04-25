@@ -29,7 +29,7 @@ public abstract class AbstractConvertContext implements ConvertContext {
     private final ClassCache classCache;
 
     private final TypeRegistry typeRegistry;
-    
+
     private final Map<String, Object> rootValue;
 
     public AbstractConvertContext(ClassCache classCache, TypeRegistry typeRegistry, Map<String, Object> rootValue) {

@@ -21,11 +21,11 @@ import java.util.Map;
 import cachemesh.common.config3.Path;
 import cachemesh.common.config3.TypeRegistry;
 import cachemesh.common.config3.types.BeanType;
-import cachemesh.common.config3.types.DynamicBeanType;
+import cachemesh.common.config3.types.KindPathingDynamicBeanType;
 import cachemesh.core.config.InlineMembersConfig;
 import cachemesh.core.config.MembersConfig;
 
-public class MembersConfigType extends DynamicBeanType<MembersConfig> {
+public class MembersConfigType extends KindPathingDynamicBeanType<MembersConfig> {
 
     public MembersConfigType(TypeRegistry typeRegistry) {
         super(typeRegistry, MembersConfig.class, Path.of("./kind"), null);

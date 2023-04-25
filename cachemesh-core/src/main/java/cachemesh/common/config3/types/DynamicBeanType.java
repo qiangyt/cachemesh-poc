@@ -23,41 +23,29 @@ import cachemesh.common.config3.TypeRegistry;
 import lombok.Getter;
 
 import cachemesh.common.config3.ConvertContext;
-import cachemesh.common.config3.Path;
 
 @Getter
 public abstract class DynamicBeanType<T> extends BeanType<T> {
 
     private final TypeRegistry typeRegistry;
 
-    private final Path kindPath;
+    private Map<Object, BeanType<? extends T>> mapping;
 
-    private final Map<Object, BeanType<? extends T>> mapping;
-
-    private final Object defaultKind;
-
-    public DynamicBeanType(TypeRegistry typeRegistry, Class<T> klass, Path kindPath, Object defaultKind) {
+    public DynamicBeanType(TypeRegistry typeRegistry, Class<T> klass) {
         super(klass);
         this.typeRegistry = typeRegistry;
-        this.kindPath = kindPath;
-        this.defaultKind = defaultKind;
+    }
 
-        var mapping = createMapping(typeRegistry);
-        this.mapping = Collections.unmodifiableMap(mapping);
-    }
-    
-    @Override
-    public Object extractKind(ConvertContext ctx, Map<String, Object> propValues) {
-        var r = ctx.getValue(getKindPath());
-        if (r == null) {
-            r = getDefaultKind();
-            if (r == null) {
-                var msg = String.format("%s is required", getKindPath());
-                throw new IllegalStateException(msg);
-            }
+    Map<Object, BeanType<? extends T>> getMapping() {
+        if (this.mapping == null) {
+            var m = createMapping(typeRegistry);
+            this.mapping = Collections.unmodifiableMap(m);
         }
-        return r;
+        return this.mapping;
     }
+
+    @Override
+    public abstract Object extractKind(ConvertContext ctx, Map<String, Object> propValues);
 
     public abstract Map<String, BeanType<? extends T>> createMapping(TypeRegistry typeRegistry);
 

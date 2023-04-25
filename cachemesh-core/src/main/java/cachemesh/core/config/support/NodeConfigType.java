@@ -19,12 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cachemesh.common.config3.ConvertContext;
-import cachemesh.common.config3.Path;
 import cachemesh.common.config3.TypeRegistry;
 import cachemesh.common.config3.types.BeanType;
 import cachemesh.common.config3.types.DynamicBeanType;
 import cachemesh.common.config3.types.SimpleUrlType;
-import cachemesh.common.config3.types.StringType;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.TransportRegistry;
 import cachemesh.core.config.NodeConfig;
@@ -35,35 +33,32 @@ public class NodeConfigType extends DynamicBeanType<NodeConfig> {
 
     private final TransportRegistry transportRegistry;
 
-    public NodeConfigType(TransportRegistry transportRegistry, TypeRegistry typeRegistry, Path kindPath, String defaultKind) {
-        super(typeRegistry, NodeConfig.class, kindPath, defaultKind);
+    public NodeConfigType(TransportRegistry transportRegistry, TypeRegistry typeRegistry) {
+        super(typeRegistry, NodeConfig.class);
         this.transportRegistry = transportRegistry;
     }
 
     public Map<String, BeanType<? extends NodeConfig>> createMapping(TypeRegistry typeRegistry) {
         var r = new HashMap<String, BeanType<? extends NodeConfig>>();
 
-        for (var entry: getTransportRegistry().getItems()) {
+        for (var entry : getTransportRegistry().getItems()) {
             var protocol = entry.getKey();
             var provider = entry.getValue();
-            r.put(protocol, )
+            r.put(protocol, provider.resolveConfigType(typeRegistry));
         }
-
-        r.put("inline", InlineNodeConfig.of(typeRegistry));
 
         return r;
     }
 
     @Override
     public Object extractKind(ConvertContext ctx, Map<String, Object> propValues) {
-        var kind = super.extractKind(ctx, propValues);
-        var url = extractURL(path, propValues);
+        var url = extractURL(ctx, propValues);
         return url.getProtocol();
     }
 
-    public SimpleURL extractURL(Path path, Map<String, Object> propValues) {
+    public SimpleURL extractURL(ConvertContext ctx, Map<String, Object> propValues) {
         if (propValues.containsKey("url") == false) {
-            throw new IllegalArgumentException(path + ": url is required");
+            throw new IllegalArgumentException(ctx.getPath() + ": url is required");
         }
 
         SimpleURL url;
@@ -73,7 +68,7 @@ public class NodeConfigType extends DynamicBeanType<NodeConfig> {
             // got cached url
             url = (SimpleURL) urlObj;
         } else {
-            url = SimpleUrlType.DEFAULT.convert(path, urlObj);
+            url = SimpleUrlType.DEFAULT.convert(ctx, urlObj);
             propValues.put("url", url); // cache it to prevent conversion again and again
         }
 

@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import cachemesh.common.config3.Prop;
 import cachemesh.common.config3.annotations.IgnoredProperty;
 import cachemesh.common.config3.annotations.Property;
+import cachemesh.common.config3.types.IntegerType;
 import cachemesh.common.config3.ConfigHelper;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.NodeConfig;
@@ -93,7 +94,7 @@ public class LettuceConfig extends NodeConfig {
         var q = url.getQuery();
 
         if (q.containsKey("database")) {
-            setDatabase(IntegerOp.DEFAULT.populate("", null, q.get("database")));
+            setDatabase(IntegerType.DEFAULT.convert(null, q.get("database")));
         }
         if (q.containsKey("keySeparator")) {
             setKeySeparator(q.get("keySeparator"));

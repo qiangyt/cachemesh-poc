@@ -13,18 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.spi;
+package cachemesh.common.config3.types;
 
-import cachemesh.common.config3.TypeRegistry;
-import cachemesh.common.config3.types.BeanType;
-import cachemesh.core.config.LocalCacheConfig;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public interface LocalCacheProvider {
+import java.time.Duration;
+import org.junit.jupiter.api.Test;
 
-    LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass);
+public class DurationTypeTest {
 
-    BeanType<? extends LocalCacheConfig> resolveConfigType(TypeRegistry typeRegistry);
+	@Test
+	public void test_happy() {
+		var t = DurationType.DEFAULT;
 
-    LocalCache createCache(LocalCacheConfig config);
+		var d1 =Duration.ofDays(123);
+		assertSame(d1, t.convert(null, d1));
+
+		var d2 =Duration.ofSeconds(123);
+		assertEquals(d2, t.convert(null, "123s"));
+
+		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
+	}
 
 }

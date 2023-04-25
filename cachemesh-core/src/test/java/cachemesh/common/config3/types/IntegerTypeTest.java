@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.misc;
+package cachemesh.common.config3.types;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
-public class StringHelperTest {
+public class IntegerTypeTest {
 
 	@Test
-	public void test_join() {
-		assertEquals("1&2", StringHelper.join("&", List.of(1, 2)));
-		assertEquals("3", StringHelper.join("&", List.of(3)));
-		assertEquals("", StringHelper.join("&", new ArrayList<String>()));
+	public void test_happy() {
+		var t = IntegerType.DEFAULT;
 
-		assertEquals("A,B", StringHelper.join(",", new String[]{"A","B"}));
-		assertEquals("C", StringHelper.join(",", new String[]{"C"}));
-		assertEquals("", StringHelper.join(",", new String[]{}));
+		assertEquals(1, t.convert(null, "1"));
+		assertEquals('2', t.convert(null, '2'));
+		assertEquals(3, t.convert(null, Byte.valueOf("3")));
+		assertEquals(4, t.convert(null, Short.valueOf("4")));
+		assertEquals(5, t.convert(null, Integer.valueOf(5)));
+		assertEquals(6, t.convert(null, Long.valueOf(6)));
+		assertEquals(7, t.convert(null, Float.valueOf(7)));
+		assertEquals(8, t.convert(null, Double.valueOf(8)));
+
+		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
 	}
 
 }

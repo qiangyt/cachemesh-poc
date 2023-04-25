@@ -13,32 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.misc;
+package cachemesh.common.config3.types;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.junit.jupiter.api.Test;
 
-public class ClassCacheTest {
+import cachemesh.common.misc.SimpleURL;
 
-	class Sample {
-	}
+public class SimpleUrlTypeTest {
 
 	@Test
-	public void test_happy() {
-		var t = new ClassCache();
+	public void test_happy() throws MalformedURLException {
+		var t = SimpleUrlType.DEFAULT;
 
-		assertSame(Sample.class, t.resolve(Sample.class.getName()));
-		assertEquals(1, t.size());
+		assertEquals(new SimpleURL("ftp://example1.com"),
+					t.convert(null, "ftp://example1.com"));
 
-		assertSame(Sample.class, t.resolve(Sample.class.getName()));
-		assertEquals(1, t.size());
+		SimpleURL u2 = new SimpleURL("ftp://example2.com");
+		assertSame(u2, t.convert(null, u2));
 
-		assertThrows(IllegalArgumentException.class, () -> t.resolve(Sample.class.getName() + "NotIndeedExists"));
-		assertEquals(1, t.size());
+		assertEquals(new SimpleURL("ftp://example3.com"),
+					t.convert(null, new URL("ftp://example3.com")));
 
+		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
 	}
 
 }

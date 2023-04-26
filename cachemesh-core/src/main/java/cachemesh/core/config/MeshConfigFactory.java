@@ -19,7 +19,7 @@ import cachemesh.core.TransportRegistry;
 import cachemesh.core.config.support.MembersConfigType;
 import lombok.Getter;
 import cachemesh.common.config3.TypeRegistry;
-import cachemesh.core.LocalCacheRegistry;
+import cachemesh.core.LocalCacheProviderRegistry;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -32,15 +32,15 @@ public class MeshConfigFactory {
 
     private final TransportRegistry transportRegistry;
 
-    private final LocalCacheRegistry localCacheRegistry;
+    private final LocalCacheProviderRegistry localCacheRegistry;
 
     private final TypeRegistry typeRegistry;
 
     public MeshConfigFactory() {
-        this(TransportRegistry.DEFAULT, LocalCacheRegistry.DEFAULT, TypeRegistry.DEFAULT);
+        this(TransportRegistry.DEFAULT, LocalCacheProviderRegistry.DEFAULT, TypeRegistry.DEFAULT);
     }
 
-    public MeshConfigFactory(TransportRegistry transportRegistry, LocalCacheRegistry localCacheRegistry,
+    public MeshConfigFactory(TransportRegistry transportRegistry, LocalCacheProviderRegistry localCacheRegistry,
             TypeRegistry typeRegistry) {
         this.transportRegistry = transportRegistry;
         this.localCacheRegistry = localCacheRegistry;

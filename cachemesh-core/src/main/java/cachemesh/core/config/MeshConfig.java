@@ -22,7 +22,7 @@ import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
 import cachemesh.common.misc.Dumpable;
 import cachemesh.core.TransportRegistry;
-import cachemesh.core.LocalCacheRegistry;
+import cachemesh.core.LocalCacheProviderRegistry;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
@@ -55,17 +55,17 @@ public class MeshConfig implements Dumpable {
 
     private final TransportRegistry transportRegistry;
 
-    private final LocalCacheRegistry localCacheRegistry;
+    private final LocalCacheProviderRegistry LocalCacheProviderRegistry;
 
-    public MeshConfig(TransportRegistry transportRegistry, LocalCacheRegistry localCacheRegistry) {
+    public MeshConfig(TransportRegistry transportRegistry, LocalCacheProviderRegistry LocalCacheProviderRegistry) {
         this.transportRegistry = transportRegistry;
-        this.localCacheRegistry = localCacheRegistry;
+        this.LocalCacheProviderRegistry = LocalCacheProviderRegistry;
     }
 
     @Builder
-    private MeshConfig(TransportRegistry transportRegistry, LocalCacheRegistry localCacheRegistry, String name,
+    private MeshConfig(TransportRegistry transportRegistry, LocalCacheProviderRegistry LocalCacheProviderRegistry, String name,
             HashingKind hashing, MembersConfig nodes, LocalConfig local) {
-        this(transportRegistry, localCacheRegistry);
+        this(transportRegistry, LocalCacheProviderRegistry);
 
         this.name = name;
         this.hashing = hashing;

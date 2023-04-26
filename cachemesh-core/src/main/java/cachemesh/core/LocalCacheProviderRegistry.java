@@ -18,9 +18,9 @@ package cachemesh.core;
 import cachemesh.common.misc.SimpleRegistry;
 import cachemesh.core.spi.LocalCacheProvider;
 
-public class LocalCacheRegistry extends SimpleRegistry<String, LocalCacheProvider> {
+public class LocalCacheProviderRegistry extends SimpleRegistry<String, LocalCacheProvider> {
 
-    public static final LocalCacheRegistry DEFAULT = new LocalCacheRegistry();
+    public static final LocalCacheProviderRegistry DEFAULT = new LocalCacheProviderRegistry();
 
     @Override
     protected String supplyKey(String kind) {

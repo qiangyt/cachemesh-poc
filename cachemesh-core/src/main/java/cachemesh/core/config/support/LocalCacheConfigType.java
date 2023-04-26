@@ -22,7 +22,7 @@ import cachemesh.common.config3.Path;
 import cachemesh.common.config3.TypeRegistry;
 import cachemesh.common.config3.types.KindPathingDynamicBeanType;
 import cachemesh.common.config3.types.BeanType;
-import cachemesh.core.LocalCacheRegistry;
+import cachemesh.core.LocalCacheProviderRegistry;
 import cachemesh.core.config.LocalCacheConfig;
 import cachemesh.core.config.LocalConfig;
 import lombok.Getter;
@@ -30,9 +30,9 @@ import lombok.Getter;
 @Getter
 public class LocalCacheConfigType extends KindPathingDynamicBeanType<LocalCacheConfig> {
 
-    private final LocalCacheRegistry localCacheRegistry;
+    private final LocalCacheProviderRegistry localCacheRegistry;
 
-    public LocalCacheConfigType(LocalCacheRegistry localCacheRegistry, TypeRegistry typeRegistry, Path path) {
+    public LocalCacheConfigType(LocalCacheProviderRegistry localCacheRegistry, TypeRegistry typeRegistry, Path path) {
         super(typeRegistry, LocalCacheConfig.class, path, LocalConfig.DEFAULT_KIND);
         this.localCacheRegistry = localCacheRegistry;
     }

@@ -27,4 +27,9 @@ public interface LocalCacheProvider {
 
     LocalCache createCache(LocalCacheConfig config);
 
+    default LocalCache createDefaultCache(String name, Class<?> valueClass) {
+        var cfg = createDefaultConfig(name, valueClass);
+        return createCache(cfg);
+    }
+
 }

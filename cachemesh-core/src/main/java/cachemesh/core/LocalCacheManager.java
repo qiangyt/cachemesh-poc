@@ -23,43 +23,41 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.slf4j.LoggerFactory;
 
-import cachemesh.common.err.InternalException;
 import cachemesh.common.misc.LogHelper;
 import cachemesh.common.shutdown.ManagedShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.config.LocalCacheConfig;
+import cachemesh.core.config.LocalConfig;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.LocalCacheProvider;
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.slf4j.Logger;
 
-@Getter
 @ThreadSafe
+@Getter
 public class LocalCacheManager implements ManagedShutdownable {
-
-    class Item {
-        LocalCache cache;
-        LocalCacheConfig config;
-    }
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Map<String, Item> items = new ConcurrentHashMap<>();
+    @Getter(AccessLevel.PROTECTED)
+    private final Map<String, LocalCache> caches;
 
-    private final LocalCacheConfig defaultConfig;
+    private final LocalConfig localConfig;
 
-    private final LocalCacheProvider provider;
+    private final LocalCacheProvider localCacheProvider;
 
     private final ShutdownManager shutdownManager;
 
     private final String name;
 
-    public LocalCacheManager(String name, LocalCacheConfig defaultConfig, LocalCacheProvider provider,
+    public LocalCacheManager(String name, LocalConfig localConfig, LocalCacheProviderRegistry localCacheProviderRegistry,
             ShutdownManager shutdownManager) {
         this.name = name;
-        this.defaultConfig = defaultConfig;
-        this.provider = provider;
+        this.localConfig = localConfig;
+        this.localCacheProvider = localCacheProviderRegistry.get(localConfig.getKind());
+
+        this.caches = initLocalCaches(this.localCacheProvider, localConfig);
 
         this.shutdownManager = shutdownManager;
         if (shutdownManager != null) {
@@ -67,45 +65,33 @@ public class LocalCacheManager implements ManagedShutdownable {
         }
     }
 
-    public void addConfig(LocalCacheConfig config) {
-        this.items.compute(config.getName(), (name, item) -> {
-            if (item != null) {
-                throw new InternalException("duplicated configuration %s", name);
-            }
+    protected Map<String, LocalCache> initLocalCaches(LocalCacheProvider localCacheProvider, LocalConfig localConfig) {
+        var r = new ConcurrentHashMap<String, LocalCache>();
 
-            item = new Item();
-            item.config = config;
-            return item;
+        localConfig.getCaches().forEach(cfg -> {
+            var cache = localCacheProvider.createCache(cfg);
+            r.put(cfg.getName(), cache);
         });
-    }
 
-    public LocalCacheConfig getConfig(String name) {
-        var i = this.items.get(name);
-        return (i == null) ? null : i.config;
+        return r;
     }
 
     public LocalCache get(String name) {
-        var i = this.items.get(name);
-        return (i == null) ? null : i.cache;
+        return getCaches().get(name);
     }
 
     public LocalCache resolve(String name, Class<?> valueClass) {
-        var i = this.items.compute(name, (n, item) -> {
-            if (item == null) {
-                item = new Item();
-                item.config = this.defaultConfig.buildAnother(name, valueClass);
-            }
-
-            if (item.cache == null) {
-                item.cache = getProvider().createCache(item.config);
+        return getCaches().compute(name, (n, cache) -> {
+            if (cache == null) {
+                cache = getLocalCacheProvider().createDefaultCache(name, valueClass);
+                
                 if (this.logger.isDebugEnabled()) {
-                    this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", item.config));
+                    this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", cache.getConfig()));
                 }
             }
 
-            return item;
+            return cache;
         });
-        return i.cache;
     }
 
     @Override
@@ -128,11 +114,10 @@ public class LocalCacheManager implements ManagedShutdownable {
 
     @Override
     public void onShutdown(ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
-        var copy = new ArrayList<Item>(this.items.values());
-        for (var item : copy) {
-            var c = item.cache;
-            if (c != null) {
-                c.shutdown(timeoutSeconds);
+        var copy = new ArrayList<LocalCache>(getCaches().values());
+        for (var cache : copy) {
+            if (cache != null) {
+                cache.shutdown(timeoutSeconds);
             }
         }
     }

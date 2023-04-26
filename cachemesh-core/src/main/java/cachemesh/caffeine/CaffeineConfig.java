@@ -48,11 +48,6 @@ public class CaffeineConfig extends LocalCacheConfig {
     }
 
     @Override
-    public LocalCacheConfig buildAnother(String name, Class<?> valueClass) {
-        return toBuilder().name(name).valueClass(valueClass).build();
-    }
-
-    @Override
     public Map<String, Object> toMap() {
         var r = super.toMap();
 

@@ -50,9 +50,10 @@ public class MeshNetwork implements Shutdownable {
         var name = config.getName();
 
         var localConfig = config.getLocal();
-        var localCacheProvider = localConfig.getCacheProvider();
-        var localCacheManager = new LocalCacheManager(name, localConfig.getDefaultCache(), localCacheProvider,
-                ShutdownManager.DEFAULT);
+        var localCacheManager = new LocalCacheManager(name, 
+                                        localConfig, 
+                                        config.getLocalCacheProviderRegistry(),
+                                        ShutdownManager.DEFAULT);
         var nearCacheManager = localCacheManager;
 
         return new MeshNetwork(config, nearCacheManager, localCacheManager);

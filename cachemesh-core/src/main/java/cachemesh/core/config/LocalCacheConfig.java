@@ -49,8 +49,6 @@ public abstract class LocalCacheConfig implements Dumpable {
         this.serder = serder;
     }
 
-    public abstract LocalCacheConfig buildAnother(String name, Class<?> valueClass);
-
     @Override
     public Map<String, Object> toMap() {
         var r = new HashMap<String, Object>();

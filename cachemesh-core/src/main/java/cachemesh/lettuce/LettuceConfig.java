@@ -18,8 +18,8 @@ package cachemesh.lettuce;
 import java.net.MalformedURLException;
 import java.util.Map;
 
-import cachemesh.common.config3.annotations.IgnoredProperty;
-import cachemesh.common.config3.types.IntegerType;
+import cachemesh.common.config.annotations.IgnoredProperty;
+import cachemesh.common.config.types.IntegerType;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.NodeConfig;
 import lombok.Builder;

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cachemesh.common.config3.annotations.PropertyElement;
+import cachemesh.common.config.annotations.PropertyElement;
 import cachemesh.common.misc.Dumpable;
 import lombok.Setter;
 import lombok.Singular;

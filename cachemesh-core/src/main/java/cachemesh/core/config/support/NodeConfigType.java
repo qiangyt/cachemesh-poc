@@ -18,11 +18,11 @@ package cachemesh.core.config.support;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.config3.ConvertContext;
-import cachemesh.common.config3.TypeRegistry;
-import cachemesh.common.config3.types.BeanType;
-import cachemesh.common.config3.types.DynamicBeanType;
-import cachemesh.common.config3.types.SimpleUrlType;
+import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.TypeRegistry;
+import cachemesh.common.config.types.BeanType;
+import cachemesh.common.config.types.DynamicBeanType;
+import cachemesh.common.config.types.SimpleUrlType;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.TransportRegistry;
 import cachemesh.core.config.NodeConfig;

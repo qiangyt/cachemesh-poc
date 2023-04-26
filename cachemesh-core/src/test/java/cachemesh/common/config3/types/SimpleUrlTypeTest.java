@@ -24,6 +24,7 @@ import java.net.URL;
 
 import org.junit.jupiter.api.Test;
 
+import cachemesh.common.config.types.SimpleUrlType;
 import cachemesh.common.misc.SimpleURL;
 
 public class SimpleUrlTypeTest {

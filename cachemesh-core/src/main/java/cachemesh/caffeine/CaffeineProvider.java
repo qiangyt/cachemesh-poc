@@ -18,8 +18,8 @@ package cachemesh.caffeine;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import cachemesh.common.config3.TypeRegistry;
-import cachemesh.common.config3.reflect.ReflectBeanType;
+import cachemesh.common.config.TypeRegistry;
+import cachemesh.common.config.reflect.ReflectBeanType;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.bean.Value;
 import cachemesh.core.spi.support.AbstractLocalCacheProvider;

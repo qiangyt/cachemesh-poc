@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 
+import cachemesh.common.config.types.StringType;
+
 public class StringTypeTest {
 
 	@Test

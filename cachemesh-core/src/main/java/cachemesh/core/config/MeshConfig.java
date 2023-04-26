@@ -63,8 +63,8 @@ public class MeshConfig implements Dumpable {
     }
 
     @Builder
-    private MeshConfig(TransportRegistry transportRegistry, LocalCacheProviderRegistry LocalCacheProviderRegistry, String name,
-            HashingKind hashing, MembersConfig nodes, LocalConfig local) {
+    private MeshConfig(TransportRegistry transportRegistry, LocalCacheProviderRegistry LocalCacheProviderRegistry,
+            String name, HashingKind hashing, MembersConfig nodes, LocalConfig local) {
         this(transportRegistry, LocalCacheProviderRegistry);
 
         this.name = name;

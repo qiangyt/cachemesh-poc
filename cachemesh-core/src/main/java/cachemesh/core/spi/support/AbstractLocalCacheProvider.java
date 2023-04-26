@@ -15,8 +15,8 @@
  */
 package cachemesh.core.spi.support;
 
-import cachemesh.common.config3.TypeRegistry;
-import cachemesh.common.config3.types.BeanType;
+import cachemesh.common.config.TypeRegistry;
+import cachemesh.common.config.types.BeanType;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.config.LocalCacheConfig;
 import cachemesh.core.spi.LocalCache;

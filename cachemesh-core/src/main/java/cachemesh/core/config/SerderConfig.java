@@ -15,12 +15,11 @@
  */
 package cachemesh.core.config;
 
-import cachemesh.common.config3.annotations.Property;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.config3.annotations.Default;
+import cachemesh.common.config.annotations.Default;
+import cachemesh.common.config.annotations.Property;
 import cachemesh.common.jackson.JacksonSerderializer;
 import cachemesh.common.misc.Dumpable;
 import cachemesh.common.misc.Serderializer;

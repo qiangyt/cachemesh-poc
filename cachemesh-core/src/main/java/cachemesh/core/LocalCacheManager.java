@@ -51,8 +51,8 @@ public class LocalCacheManager implements ManagedShutdownable {
 
     private final String name;
 
-    public LocalCacheManager(String name, LocalConfig localConfig, LocalCacheProviderRegistry localCacheProviderRegistry,
-            ShutdownManager shutdownManager) {
+    public LocalCacheManager(String name, LocalConfig localConfig,
+            LocalCacheProviderRegistry localCacheProviderRegistry, ShutdownManager shutdownManager) {
         this.name = name;
         this.localConfig = localConfig;
         this.localCacheProvider = localCacheProviderRegistry.get(localConfig.getKind());
@@ -84,7 +84,7 @@ public class LocalCacheManager implements ManagedShutdownable {
         return getCaches().compute(name, (n, cache) -> {
             if (cache == null) {
                 cache = getLocalCacheProvider().createDefaultCache(name, valueClass);
-                
+
                 if (this.logger.isDebugEnabled()) {
                     this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", cache.getConfig()));
                 }

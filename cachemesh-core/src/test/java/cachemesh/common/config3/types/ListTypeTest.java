@@ -21,6 +21,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import cachemesh.common.config.types.IntegerType;
+import cachemesh.common.config.types.ListType;
+
 public class ListTypeTest {
 
 	@Test

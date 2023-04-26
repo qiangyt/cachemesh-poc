@@ -18,7 +18,7 @@ package cachemesh.core.config;
 import cachemesh.core.TransportRegistry;
 import cachemesh.core.config.support.MembersConfigType;
 import lombok.Getter;
-import cachemesh.common.config3.TypeRegistry;
+import cachemesh.common.config.TypeRegistry;
 import cachemesh.core.LocalCacheProviderRegistry;
 
 import java.io.InputStream;

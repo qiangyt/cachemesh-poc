@@ -16,6 +16,9 @@
 package cachemesh.common.config3;
 
 import org.junit.jupiter.api.Test;
+
+import cachemesh.common.config.Path;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PathTest {

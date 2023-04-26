@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
+import cachemesh.common.config.types.IntegerType;
+
 public class IntegerTypeTest {
 
 	@Test

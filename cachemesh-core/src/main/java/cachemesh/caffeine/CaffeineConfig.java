@@ -18,8 +18,8 @@ package cachemesh.caffeine;
 import java.time.Duration;
 import java.util.Map;
 
-import cachemesh.common.config3.annotations.DefaultDuration;
-import cachemesh.common.config3.annotations.DefaultInt;
+import cachemesh.common.config.annotations.DefaultDuration;
+import cachemesh.common.config.annotations.DefaultInt;
 import cachemesh.common.misc.DurationHelper;
 import cachemesh.core.config.LocalCacheConfig;
 import lombok.Getter;

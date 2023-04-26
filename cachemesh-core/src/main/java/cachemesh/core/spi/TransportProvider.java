@@ -15,8 +15,8 @@
  */
 package cachemesh.core.spi;
 
-import cachemesh.common.config3.TypeRegistry;
-import cachemesh.common.config3.types.BeanType;
+import cachemesh.common.config.TypeRegistry;
+import cachemesh.common.config.types.BeanType;
 import cachemesh.core.LocalTransport;
 import cachemesh.core.config.NodeConfig;
 

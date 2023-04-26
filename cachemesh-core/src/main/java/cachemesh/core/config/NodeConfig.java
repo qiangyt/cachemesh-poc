@@ -19,11 +19,11 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.config3.annotations.Property;
-import cachemesh.common.config3.annotations.DefaultBoolean;
-import cachemesh.common.config3.annotations.DefaultInt;
-import cachemesh.common.config3.types.BooleanType;
-import cachemesh.common.config3.types.IntegerType;
+import cachemesh.common.config.annotations.DefaultBoolean;
+import cachemesh.common.config.annotations.DefaultInt;
+import cachemesh.common.config.annotations.Property;
+import cachemesh.common.config.types.BooleanType;
+import cachemesh.common.config.types.IntegerType;
 import cachemesh.common.misc.Dumpable;
 import cachemesh.common.misc.SimpleURL;
 import lombok.Getter;

@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
+import cachemesh.common.config.types.DurationType;
+
 public class DurationTypeTest {
 
 	@Test

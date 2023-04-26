@@ -16,19 +16,22 @@
 package cachemesh.core.config;
 
 import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import cachemesh.common.config3.annotations.Property;
 import cachemesh.common.config3.annotations.DefaultBoolean;
 import cachemesh.common.config3.annotations.DefaultInt;
 import cachemesh.common.config3.types.BooleanType;
 import cachemesh.common.config3.types.IntegerType;
+import cachemesh.common.misc.Dumpable;
 import cachemesh.common.misc.SimpleURL;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class NodeConfig {
+public abstract class NodeConfig implements Dumpable {
 
     public static final boolean DEFAULT_LOCAL = false;
 
@@ -109,6 +112,20 @@ public abstract class NodeConfig {
             var local = BooleanType.DEFAULT.convert(null, query.get("local"));
             setLocal(local);
         }
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = new HashMap<String, Object>();
+
+        r.put("url", getUrl());
+        r.put("local", isLocal());
+        r.put("startTimeout", getStartTimeout());
+        r.put("stopTimeout", getUrl());
+        r.put("protocol", getProtocol());
+        r.put("target", getTarget());
+
+        return r;
     }
 
 }

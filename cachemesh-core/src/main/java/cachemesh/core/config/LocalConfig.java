@@ -17,15 +17,18 @@ package cachemesh.core.config;
 
 import lombok.Getter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cachemesh.common.config3.annotations.PropertyElement;
+import cachemesh.common.misc.Dumpable;
 import lombok.Setter;
 import lombok.Singular;
 
 @Getter
 @Setter
-public class LocalConfig {
+public class LocalConfig implements Dumpable {
 
     public static final String DEFAULT_KIND = "caffeine";
 
@@ -41,6 +44,17 @@ public class LocalConfig {
         this.kind = defaultCache.getName();
         this.defaultCache = defaultCache;
         this.caches = caches;
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = new HashMap<String, Object>();
+
+        r.put("kind", getKind());
+        r.put("defaultCache", getDefaultCache().toMap());
+        r.put("caches", Dumpable.toMap(getCaches()));
+
+        return r;
     }
 
 }

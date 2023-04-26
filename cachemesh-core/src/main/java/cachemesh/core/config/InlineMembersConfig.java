@@ -16,11 +16,13 @@
 package cachemesh.core.config;
 
 import java.util.List;
+import java.util.Map;
 
 import cachemesh.common.config3.TypeRegistry;
 import cachemesh.common.config3.annotations.PropertyElement;
 import cachemesh.common.config3.reflect.ReflectBeanType;
 import cachemesh.common.config3.types.BeanType;
+import cachemesh.common.misc.Dumpable;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,6 +51,13 @@ public class InlineMembersConfig extends MembersConfig {
     @Override
     public List<NodeConfig> nodes() {
         return getInline();
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = super.toMap();
+        r.put("inilne", Dumpable.toMap(getInline()));
+        return r;
     }
 
     public static BeanType<InlineMembersConfig> of(TypeRegistry typeRegistry) {

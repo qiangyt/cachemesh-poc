@@ -16,8 +16,13 @@
 package cachemesh.core.config;
 
 import cachemesh.common.config3.annotations.Property;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import cachemesh.common.config3.annotations.Default;
 import cachemesh.common.jackson.JacksonSerderializer;
+import cachemesh.common.misc.Dumpable;
 import cachemesh.common.misc.Serderializer;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +31,7 @@ import lombok.Builder;
 @Getter
 @Setter
 @Builder
-public class SerderConfig {
+public class SerderConfig implements Dumpable {
 
     public static enum Kind {
         jackson(JacksonSerderializer.DEFAULT);
@@ -42,5 +47,12 @@ public class SerderConfig {
     @Property
     @Default("jackson")
     private Kind kind = Kind.jackson;
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = new HashMap<String, Object>();
+        r.put("kind", getKind());
+        return r;
+    }
 
 }

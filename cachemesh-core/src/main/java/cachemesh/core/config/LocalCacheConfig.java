@@ -17,14 +17,19 @@ package cachemesh.core.config;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import cachemesh.common.config3.annotations.Property;
+import cachemesh.common.misc.Dumpable;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @SuperBuilder(toBuilder = true)
-public abstract class LocalCacheConfig {
+public abstract class LocalCacheConfig implements Dumpable {
 
     @Property
     private String name;
@@ -45,5 +50,16 @@ public abstract class LocalCacheConfig {
     }
 
     public abstract LocalCacheConfig buildAnother(String name, Class<?> valueClass);
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = new HashMap<String, Object>();
+
+        r.put("name", getName());
+        r.put("valueClass", getValueClass().getCanonicalName());
+        r.put("serder", getSerder().toMap());
+
+        return r;
+    }
 
 }

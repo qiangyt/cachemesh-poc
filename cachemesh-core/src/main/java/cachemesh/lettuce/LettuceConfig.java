@@ -16,12 +16,10 @@
 package cachemesh.lettuce;
 
 import java.net.MalformedURLException;
+import java.util.Map;
 
-import cachemesh.common.config3.Prop;
 import cachemesh.common.config3.annotations.IgnoredProperty;
-import cachemesh.common.config3.annotations.Property;
 import cachemesh.common.config3.types.IntegerType;
-import cachemesh.common.config3.ConfigHelper;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.NodeConfig;
 import lombok.Builder;
@@ -104,6 +102,18 @@ public class LettuceConfig extends NodeConfig {
     @Override
     protected SimpleURL buildUrl() throws MalformedURLException {
         return new SimpleURL(String.format("%s://%s/%d", getProtocol(), getTarget(), getDatabase()));
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = super.toMap();
+
+        r.put("host", getHost());
+        r.put("port", getPort());
+        r.put("database", getDatabase());
+        r.put("keySeparator", getKeySeparator());
+
+        return r;
     }
 
 }

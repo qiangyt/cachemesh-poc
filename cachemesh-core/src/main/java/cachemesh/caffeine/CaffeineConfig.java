@@ -16,6 +16,7 @@
 package cachemesh.caffeine;
 
 import java.time.Duration;
+import java.util.Map;
 
 import cachemesh.common.config3.annotations.DefaultDuration;
 import cachemesh.common.config3.annotations.DefaultInt;
@@ -49,6 +50,16 @@ public class CaffeineConfig extends LocalCacheConfig {
     @Override
     public LocalCacheConfig buildAnother(String name, Class<?> valueClass) {
         return toBuilder().name(name).valueClass(valueClass).build();
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = super.toMap();
+
+        r.put("maximumSize", getMaximumSize());
+        r.put("expireAfterWrite", getExpireAfterWrite());
+
+        return r;
     }
 
 }

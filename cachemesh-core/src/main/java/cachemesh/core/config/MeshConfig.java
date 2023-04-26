@@ -15,8 +15,12 @@
  */
 package cachemesh.core.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
+import cachemesh.common.misc.Dumpable;
 import cachemesh.core.TransportRegistry;
 import cachemesh.core.LocalCacheRegistry;
 import lombok.Getter;
@@ -25,7 +29,7 @@ import lombok.Builder;
 
 @Getter
 @Setter
-public class MeshConfig {
+public class MeshConfig implements Dumpable {
 
     public static enum HashingKind {
         murmur(MurmurHash.DEFAULT);
@@ -67,6 +71,18 @@ public class MeshConfig {
         this.hashing = hashing;
         this.nodes = nodes;
         this.local = local;
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = new HashMap<String, Object>();
+
+        r.put("name", getName());
+        r.put("hashing", getHashing());
+        r.put("nodes", getNodes().toMap());
+        r.put("local", getLocal().toMap());
+
+        return r;
     }
 
 }

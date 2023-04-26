@@ -15,6 +15,8 @@
  */
 package cachemesh.grpc;
 
+import java.util.Map;
+
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.NodeConfig;
 import io.grpc.Grpc;
@@ -75,6 +77,16 @@ public class GrpcConfig extends NodeConfig {
 
         setHost(url.getHost());
         setPort(url.getPort());
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        var r = super.toMap();
+
+        r.put("host", getHost());
+        r.put("port", getPort());
+
+        return r;
     }
 
 }

@@ -13,29 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.config;
+package cachemesh.common.misc;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import cachemesh.common.misc.Dumpable;
-import lombok.Getter;
-import lombok.Setter;
+public interface Dumpable {
 
-@Getter
-@Setter
-public abstract class MembersConfig implements Dumpable {
+    Map<String, Object> toMap();
 
-    private String kind;
+    static List<Map<String, Object>> toMap(List<? extends Dumpable> list) {
+        var r = new ArrayList<Map<String, Object>>(list.size());
 
-    public abstract List<NodeConfig> nodes();
-
-    @Override
-    public Map<String, Object> toMap() {
-        var r = new HashMap<String, Object>();
-
-        r.put("kind", getKind());
+        for (var element : list) {
+            r.add(element.toMap());
+        }
 
         return r;
     }

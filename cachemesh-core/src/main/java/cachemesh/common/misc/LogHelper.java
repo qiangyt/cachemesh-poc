@@ -17,11 +17,23 @@ package cachemesh.common.misc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.logstash.logback.argument.StructuredArgument;
+import net.logstash.logback.argument.StructuredArguments;
 
 public class LogHelper {
 
     public static Logger getLogger(Class<?> klass, String name) {
         return LoggerFactory.getLogger(name + "@" + klass.getCanonicalName());
+    }
+
+    public static StructuredArgument entries(Dumpable dumpable) {
+        var map = dumpable.toMap();
+        return StructuredArguments.entries(map);
+    }
+
+    public static StructuredArgument kv(String key, Dumpable dumpable) {
+        var map = dumpable.toMap();
+        return StructuredArguments.kv(key, map);
     }
 
 }

@@ -23,7 +23,7 @@ import cachemesh.common.config.types.EnumType;
 import cachemesh.common.config.types.IntegerType;
 import cachemesh.common.config.types.SimpleUrlType;
 import cachemesh.common.config.types.StringType;
-import cachemesh.common.misc.SimpleManager;
+import cachemesh.common.registry.SimpleManager;
 
 public class TypeRegistry extends SimpleManager<Class<?>, Type<?>> {
 

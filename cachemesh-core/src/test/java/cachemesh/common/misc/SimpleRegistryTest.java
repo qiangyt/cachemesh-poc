@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import cachemesh.common.registry.SimpleRegistry;
+
 public class SimpleRegistryTest {
 
 	class Config {

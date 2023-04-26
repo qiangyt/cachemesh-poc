@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 
+import cachemesh.common.registry.SimpleManager;
+
 public class SimpleManagerTest {
 
 	class Config {

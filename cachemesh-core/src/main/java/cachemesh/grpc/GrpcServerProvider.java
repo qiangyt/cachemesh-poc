@@ -15,7 +15,7 @@
  */
 package cachemesh.grpc;
 
-import cachemesh.common.misc.Manager;
+import cachemesh.common.registry.Manager;
 import cachemesh.common.shutdown.ShutdownManager;
 import lombok.Getter;
 

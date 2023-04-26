@@ -15,7 +15,7 @@
  */
 package cachemesh.core;
 
-import cachemesh.common.misc.SimpleRegistry;
+import cachemesh.common.registry.SimpleRegistry;
 import cachemesh.core.spi.TransportProvider;
 
 public class TransportRegistry extends SimpleRegistry<String, TransportProvider> {

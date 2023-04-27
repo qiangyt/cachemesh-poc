@@ -24,7 +24,6 @@ import lombok.Getter;
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.misc.LogHelper;
 import cachemesh.common.misc.SimpleURL;
-import cachemesh.core.config.MeshConfig;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
@@ -35,21 +34,28 @@ public class MeshCacheService {
 
     private final Logger logger;
 
-    private final MeshConfig config;
+    private final MeshConfigService configService;
 
     @Getter(AccessLevel.PROTECTED)
     private final ConsistentHash<MeshNode> route;
 
     private final LocalCacheManager localCacheManager;
 
+    private final LocalCacheManager nearCacheManager;
+
     private final MeshCacheManager meshCacheManager;
 
-    public MeshCacheService(MeshConfig config, LocalCacheManager nearCacheManager,
-            LocalCacheManager localCacheManager) {
-        this.logger = LogHelper.getLogger(getClass(), config.getName());
-        this.config = config;
-        this.route = new ConsistentHash<>(config.getHashing().instance);
-        this.localCacheManager = localCacheManager;
+    public MeshCacheService(MeshConfigService configService) {
+
+        var cfg = configService.getConfig();
+        var name = cfg.getName();
+        
+        this.logger = LogHelper.getLogger(getClass(), name);
+        this.configService = configService;
+        this.route = new ConsistentHash<>(cfg.getHashing().instance);
+        
+        this.localCacheManager = configService.createLocalCacheManager();
+        this.nearCacheManager = this.localCacheManager;
         this.meshCacheManager = null;//new MeshCacheManager(nearCacheManager, this);
     }
 
@@ -74,7 +80,7 @@ public class MeshCacheService {
     }
 
     public TransportProvider loadTransportProvider(String protocol) {
-        var r = getConfig().getTransportRegistry().get(protocol);
+        var r = getConfigService().getTransportRegistry().get(protocol);
         if (r == null) {
             throw new IllegalArgumentException("unsupported protocol: " + protocol);
         }

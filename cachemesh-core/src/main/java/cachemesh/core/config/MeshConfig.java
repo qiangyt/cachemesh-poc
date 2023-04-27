@@ -18,13 +18,9 @@ package cachemesh.core.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.config.annotations.IgnoredProperty;
 import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
 import cachemesh.common.misc.Dumpable;
-import cachemesh.core.TransportRegistry;
-import cachemesh.core.LocalCacheManager;
-import cachemesh.core.LocalCacheProviderRegistry;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
@@ -58,30 +54,10 @@ public class MeshConfig implements Dumpable {
     @Setter
     private LocalConfig local;
 
-    @IgnoredProperty
-    private final TransportRegistry transportRegistry;
-
-    @IgnoredProperty
-    private final LocalCacheProviderRegistry LocalCacheProviderRegistry;
-
-    @IgnoredProperty
-    @Setter
-    private LocalCacheManager localCacheManager;
-
-    @IgnoredProperty
-    @Setter
-    private LocalCacheManager nearCacheManager;
-
-    public MeshConfig(TransportRegistry transportRegistry, LocalCacheProviderRegistry LocalCacheProviderRegistry) {
-        this.transportRegistry = transportRegistry;
-        this.LocalCacheProviderRegistry = LocalCacheProviderRegistry;
-    }
+    public MeshConfig() {}
 
     @Builder
-    private MeshConfig(TransportRegistry transportRegistry, LocalCacheProviderRegistry LocalCacheProviderRegistry,
-            String name, HashingKind hashing, MembersConfig nodes, LocalConfig local) {
-        this(transportRegistry, LocalCacheProviderRegistry);
-
+    private MeshConfig(String name, HashingKind hashing, MembersConfig nodes, LocalConfig local) {
         this.name = name;
         this.hashing = hashing;
         this.nodes = nodes;

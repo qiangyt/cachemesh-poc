@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core;
+package cachemesh.core.cache;
 
 import org.slf4j.Logger;
 import lombok.Getter;
-
 import cachemesh.common.err.InternalException;
 import cachemesh.common.err.ServiceException;
 import cachemesh.common.misc.LogHelper;
-import cachemesh.core.bean.ValueImpl;
+import cachemesh.core.MeshNetwork;
+import cachemesh.core.MeshNode;
+import cachemesh.core.cache.bean.ValueImpl;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.Transport;
 

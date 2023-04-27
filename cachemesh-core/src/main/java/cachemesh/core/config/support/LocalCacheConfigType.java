@@ -22,8 +22,8 @@ import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
 import cachemesh.common.config.types.KindPathingDynamicBeanType;
-import cachemesh.core.LocalCacheProviderRegistry;
 import cachemesh.core.config.LocalCacheConfig;
+import cachemesh.core.config.LocalCacheProviderRegistry;
 import cachemesh.core.config.LocalConfig;
 import lombok.Getter;
 

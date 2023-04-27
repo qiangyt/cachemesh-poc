@@ -24,7 +24,7 @@ import lombok.Getter;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.bean.Value;
+import cachemesh.core.cache.bean.Value;
 import cachemesh.core.spi.LocalCache;
 
 @Getter

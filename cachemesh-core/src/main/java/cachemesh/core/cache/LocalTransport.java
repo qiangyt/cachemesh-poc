@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core;
+package cachemesh.core.cache;
 
-import cachemesh.core.bean.GetResult;
-import cachemesh.core.bean.ValueImpl;
+import cachemesh.core.cache.bean.GetResult;
+import cachemesh.core.cache.bean.ValueImpl;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.Transport;
 import lombok.Getter;

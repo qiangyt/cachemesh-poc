@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core;
+package cachemesh.core.cache;
 
 import java.net.MalformedURLException;
 
 import org.slf4j.Logger;
 
 import lombok.Getter;
-
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.misc.LogHelper;
 import cachemesh.common.misc.SimpleURL;
+import cachemesh.core.MeshNode;
+import cachemesh.core.config.MeshConfig;
+import cachemesh.core.config.MeshConfigService;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;

@@ -24,8 +24,8 @@ import cachemesh.common.config.types.BeanType;
 import cachemesh.common.config.types.DynamicBeanType;
 import cachemesh.common.config.types.SimpleUrlType;
 import cachemesh.common.misc.SimpleURL;
-import cachemesh.core.TransportRegistry;
 import cachemesh.core.config.NodeConfig;
+import cachemesh.core.config.TransportRegistry;
 import lombok.Getter;
 
 @Getter

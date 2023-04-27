@@ -13,30 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.bean;
+package cachemesh.core.config;
 
-import cachemesh.common.misc.Serderializer;
+import cachemesh.common.registry.Registry;
+import cachemesh.core.spi.LocalCacheProvider;
 
-public interface Value {
+public class LocalCacheProviderRegistry extends Registry<String, LocalCacheProvider> {
 
-    public static enum Status {
+    public static final LocalCacheProviderRegistry DEFAULT = new LocalCacheProviderRegistry();
 
-        NOT_FOUND, OK, NO_CHANGE, REDIRECT,
-
+    @Override
+    public String getValueName() {
+        return "local cache provider";
     }
-
-    boolean hasValue();
-
-    boolean isNullValue();
-
-    <T> T getObject(Serderializer serder, Class<?> valueClass);
-
-    <T> T getObject();
-
-    byte[] getBytes(Serderializer serder);
-
-    byte[] getBytes();
-
-    long getVersion();
 
 }

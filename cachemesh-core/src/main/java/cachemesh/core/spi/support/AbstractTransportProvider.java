@@ -18,7 +18,7 @@ package cachemesh.core.spi.support;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.LocalTransport;
+import cachemesh.core.cache.LocalTransport;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;

@@ -13,8 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core;
+package cachemesh.core.cache.bean;
 
-public class MeshMetricService {
+import cachemesh.common.misc.Serderializer;
+
+public interface Value {
+
+    public static enum Status {
+
+        NOT_FOUND, OK, NO_CHANGE, REDIRECT,
+
+    }
+
+    boolean hasValue();
+
+    boolean isNullValue();
+
+    <T> T getObject(Serderializer serder, Class<?> valueClass);
+
+    <T> T getObject();
+
+    byte[] getBytes(Serderializer serder);
+
+    byte[] getBytes();
+
+    long getVersion();
 
 }

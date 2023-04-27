@@ -15,12 +15,12 @@
  */
 package cachemesh.lettuce;
 
-import cachemesh.core.bean.GetResult;
-import cachemesh.core.spi.Transport;
 import io.lettuce.core.api.sync.RedisCommands;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
+import cachemesh.core.cache.bean.GetResult;
+import cachemesh.core.spi.Transport;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import lombok.Getter;

@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 import lombok.Getter;
-import cachemesh.core.LocalTransport;
+import cachemesh.core.cache.LocalTransport;
 import cachemesh.grpc.cache.CacheServiceGrpc;
 import cachemesh.grpc.cache.GetSingleRequest;
 import cachemesh.grpc.cache.GetSingleResponse;

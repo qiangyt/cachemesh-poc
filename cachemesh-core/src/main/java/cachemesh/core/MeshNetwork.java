@@ -20,11 +20,12 @@ import java.net.MalformedURLException;
 import org.slf4j.Logger;
 
 import cachemesh.common.shutdown.Shutdownable;
+import cachemesh.core.cache.MeshCache;
+import cachemesh.core.cache.MeshCacheService;
+import cachemesh.core.config.MeshConfig;
 import lombok.Getter;
-
 import cachemesh.common.misc.LifeStage;
 import cachemesh.common.misc.LogHelper;
-import cachemesh.core.config.MeshConfig;
 
 @Getter
 public class MeshNetwork implements Shutdownable {

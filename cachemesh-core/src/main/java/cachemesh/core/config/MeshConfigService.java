@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core;
+package cachemesh.core.config;
 
 import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
@@ -21,9 +21,7 @@ import cachemesh.common.config.reflect.ReflectBeanType;
 import cachemesh.common.config.types.BeanType;
 import cachemesh.common.misc.ClassCache;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.config.LocalCacheConfig;
-import cachemesh.core.config.MembersConfig;
-import cachemesh.core.config.MeshConfig;
+import cachemesh.core.cache.LocalCacheManager;
 import cachemesh.core.config.support.LocalCacheConfigType;
 import cachemesh.core.config.support.MembersConfigType;
 import cachemesh.core.config.support.NodeConfigType;

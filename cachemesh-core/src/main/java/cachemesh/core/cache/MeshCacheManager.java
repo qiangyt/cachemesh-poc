@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core;
+package cachemesh.core.cache;
 
 import java.util.concurrent.ConcurrentHashMap;
+
+import cachemesh.core.MeshNetwork;
+
 import java.util.Map;
 
 import lombok.Getter;

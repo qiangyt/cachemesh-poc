@@ -17,7 +17,7 @@ package cachemesh.core.spi;
 
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
-import cachemesh.core.LocalTransport;
+import cachemesh.core.cache.LocalTransport;
 import cachemesh.core.config.NodeConfig;
 
 public interface TransportProvider extends NodeHook {

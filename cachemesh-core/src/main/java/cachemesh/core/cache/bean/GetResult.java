@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.bean;
+package cachemesh.core.cache.bean;
 
+import cachemesh.core.cache.bean.Value.Status;
 import lombok.Getter;
-import cachemesh.core.bean.Value.Status;
 
 @Getter
 public class GetResult<T> {

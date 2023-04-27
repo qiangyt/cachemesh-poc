@@ -18,8 +18,8 @@ package cachemesh.grpc;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.reflect.ReflectBeanType;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.LocalTransport;
 import cachemesh.core.MeshNode;
+import cachemesh.core.cache.LocalTransport;
 import cachemesh.core.spi.support.AbstractTransportProvider;
 import lombok.Getter;
 

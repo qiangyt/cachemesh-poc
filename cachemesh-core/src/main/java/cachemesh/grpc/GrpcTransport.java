@@ -19,12 +19,11 @@ import java.util.concurrent.TimeUnit;
 
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
+import cachemesh.core.cache.bean.GetResult;
+import cachemesh.core.spi.Transport;
 import io.grpc.ManagedChannel;
 import lombok.Getter;
-
 import cachemesh.common.shutdown.AbstractShutdownable;
-import cachemesh.core.bean.GetResult;
-import cachemesh.core.spi.Transport;
 import cachemesh.grpc.cache.CacheServiceGrpc;
 import cachemesh.grpc.cache.GetSingleRequest;
 import cachemesh.grpc.cache.PutSingleRequest;

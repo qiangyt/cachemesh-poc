@@ -23,9 +23,9 @@ import org.slf4j.Logger;
 import cachemesh.common.hash.HasKey;
 import cachemesh.common.misc.LifeStage;
 import cachemesh.common.misc.LogHelper;
-import cachemesh.core.spi.Transport;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.NodeHook;
+import cachemesh.core.spi.Transport;
 import lombok.AccessLevel;
 import lombok.Getter;
 

@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.jgroup;
+package cachemesh.transport.grpc;
 
-public interface JGroupsListener {
+import io.grpc.BindableService;
 
-    default void onNodeJoin(String nodeUrl) throws Exception {
-    }
+public interface GrpcServer {
 
-    default void onNodeLeave(String nodeUrl) throws Exception {
-    }
+    void start(int timeoutSeconds);
+
+    void stop(int timeoutSeconds) throws InterruptedException;
+
+    void addService(BindableService service);
+
+    boolean isStarted();
+
+    GrpcConfig getConfig();
 
 }

@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.jgroup;
+package cachemesh.discovery.jgroup;
 
-public enum NodeMessageType {
+public interface JGroupsListener {
 
-    NodeJoin, NodeLeave
+    default void onNodeJoin(String nodeUrl) throws Exception {
+    }
+
+    default void onNodeLeave(String nodeUrl) throws Exception {
+    }
 
 }

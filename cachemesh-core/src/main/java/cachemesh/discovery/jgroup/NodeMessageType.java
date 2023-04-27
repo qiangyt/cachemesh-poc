@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.grpc;
+package cachemesh.discovery.jgroup;
 
-import io.grpc.BindableService;
+public enum NodeMessageType {
 
-public interface GrpcServer {
-
-    void start(int timeoutSeconds);
-
-    void stop(int timeoutSeconds) throws InterruptedException;
-
-    void addService(BindableService service);
-
-    boolean isStarted();
-
-    GrpcConfig getConfig();
+    NodeJoin, NodeLeave
 
 }

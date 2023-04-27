@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.grpc;
+package cachemesh.transport.grpc;
 
 import cachemesh.common.err.ServiceException;
 import cachemesh.core.cache.bean.Value.Status;

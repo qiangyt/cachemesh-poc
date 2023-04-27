@@ -23,6 +23,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.slf4j.LoggerFactory;
 
+import cachemesh.common.err.BadStateException;
 import cachemesh.common.misc.LogHelper;
 import cachemesh.common.shutdown.ManagedShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
@@ -98,7 +99,7 @@ public class LocalCacheManager implements ManagedShutdownable {
     @Override
     public void shutdown(int timeoutSeconds) throws InterruptedException {
         if (isShutdownNeeded() == false) {
-            throw new IllegalStateException(getName() + " doesn't need shutdown");
+            throw new BadStateException("%s doesn't need shutdown", getName());
         }
 
         var sd = getShutdownManager();

@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
+import cachemesh.common.err.BadValueException;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
 
@@ -79,9 +80,8 @@ public class RootContext extends AbstractContext {
                         continue;
                     }
 
-                    var msg = String
-                            .format("unable to get %s because corresponding value is neither a list nor an array", p);
-                    throw new IllegalArgumentException(msg);
+                    throw new BadValueException(
+                            "unable to get %s because corresponding value is neither a list nor an array", p);
                 }
 
                 if (owner instanceof Map) {
@@ -89,8 +89,7 @@ public class RootContext extends AbstractContext {
                     continue;
                 }
 
-                var msg = String.format("unable to get %s because corresponding value is not a map", p);
-                throw new IllegalArgumentException(msg);
+                throw new BadValueException("unable to get %s because corresponding value is not a map", p);
             }
 
             if (valuePath.isIndex()) {
@@ -99,9 +98,8 @@ public class RootContext extends AbstractContext {
                 } else if (owner.getClass().isArray()) {
                     Array.set(owner, valuePath.getIndex(), newValue);
                 } else {
-                    var msg = String.format(
+                    throw new BadValueException(
                             "unable to set %s because corresponding value is neither a list nor an array", valuePath);
-                    throw new IllegalArgumentException(msg);
                 }
             } else if (owner instanceof Map) {
                 ((Map) owner).put(valuePath.getName(), newValue);
@@ -127,8 +125,7 @@ public class RootContext extends AbstractContext {
                     r.removeLast();
                     continue;
                 } catch (NoSuchElementException e) {
-                    var msg = String.format("%s specifies invalid path scope");
-                    throw new IllegalArgumentException(msg);
+                    throw new BadValueException("%s specifies invalid path scope", relative);
                 }
             }
 
@@ -158,9 +155,8 @@ public class RootContext extends AbstractContext {
                         continue;
                     }
 
-                    var msg = String
-                            .format("unable to get %s because corresponding value is neither a list nor an array", p);
-                    throw new IllegalArgumentException(msg);
+                    throw new BadValueException(
+                            "unable to get %s because corresponding value is neither a list nor an array", p);
                 }
 
                 if (r instanceof Map) {
@@ -168,8 +164,7 @@ public class RootContext extends AbstractContext {
                     continue;
                 }
 
-                var msg = String.format("unable to get %s because corresponding value is not a map", p);
-                throw new IllegalArgumentException(msg);
+                throw new BadValueException("unable to get %s because corresponding value is not a map", p);
             }
 
             return r;

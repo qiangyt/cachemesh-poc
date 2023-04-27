@@ -7,7 +7,7 @@ import java.util.SortedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cachemesh.common.err.InternalException;
+import cachemesh.common.err.BadValueException;
 
 // originally, it is based on github.com/redis/jedis: redis.clients.jedis.providers.ShardedConnectionProvider
 // TODO: another choice is akka.routing.ConsistentHash
@@ -68,7 +68,7 @@ public class ConsistentHash<T extends HasKey> {
 
         String nodeKey = node.getKey();
         if (this.nodes.putIfAbsent(node.getKey(), node) != null) {
-            throw new InternalException("duplicated node with key=%s", nodeKey);
+            throw new BadValueException("duplicated node with key=%s", nodeKey);
         }
 
         var rg = this.ring;

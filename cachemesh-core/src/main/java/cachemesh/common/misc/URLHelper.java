@@ -22,6 +22,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cachemesh.common.err.BadValueException;
+
 public class URLHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(URLHelper.class);
@@ -48,7 +50,7 @@ public class URLHelper {
 
     public static void registerHandler(Class<? extends URLStreamHandler> handlerClass) {
         if (handlerClass.getName().equals("Handler")) {
-            throw new IllegalArgumentException("handler class must be named 'Handler'");
+            throw new BadValueException("handler class must be named 'Handler'");
         }
 
         final String KEY = "java.protocol.handler.pkgs";

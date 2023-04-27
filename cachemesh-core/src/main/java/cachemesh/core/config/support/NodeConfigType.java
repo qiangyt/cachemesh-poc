@@ -23,6 +23,7 @@ import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
 import cachemesh.common.config.types.DynamicBeanType;
 import cachemesh.common.config.types.SimpleUrlType;
+import cachemesh.common.err.BadValueException;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.config.TransportRegistry;
@@ -58,7 +59,7 @@ public class NodeConfigType extends DynamicBeanType<NodeConfig> {
 
     public SimpleURL extractURL(ConfigContext ctx, Map<String, Object> propValues) {
         if (propValues.containsKey("url") == false) {
-            throw new IllegalArgumentException(ctx.getPath() + ": url is required");
+            throw new BadValueException("%s: url is required", ctx.getPath());
         }
 
         SimpleURL url;

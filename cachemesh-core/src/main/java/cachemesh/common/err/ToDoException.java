@@ -15,18 +15,18 @@
  */
 package cachemesh.common.err;
 
-public class RequestException extends MeshException {
+public class ToDoException extends GeneralException {
 
-    public RequestException(String messageFormat, Object... messageArgs) {
-        super(String.format(messageFormat, messageArgs));
+    public ToDoException(String messageFormat, Object... messageArgs) {
+        super(messageFormat, messageArgs);
     }
 
-    public RequestException(Throwable cause) {
+    public ToDoException(Throwable cause) {
         super(cause);
     }
 
-    public RequestException(Throwable cause, String messageFormat, Object... messageArgs) {
-        super(String.format(messageFormat, messageArgs), cause);
+    public ToDoException(Throwable cause, String messageFormat, Object... messageArgs) {
+        super(cause, messageFormat, messageArgs);
     }
 
 }

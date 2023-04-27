@@ -19,7 +19,7 @@ import org.jgroups.JChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cachemesh.common.err.InternalException;
+import cachemesh.common.err.BadStateException;
 import lombok.Getter;
 
 @Getter
@@ -64,7 +64,7 @@ public class JGroupsMembers {
             ch.send(null, NodeMessageType.NodeJoin.name() + " " + this.url);
             this.log.info("sent node join message. url={}", this.url);
         } catch (Exception e) {
-            throw new InternalException(e, "failed to join the mesh: %s", toString());
+            throw new BadStateException(e, "failed to join the mesh: %s", toString());
         }
     }
 

@@ -15,18 +15,18 @@
  */
 package cachemesh.common.err;
 
-public class MeshException extends RuntimeException {
+public class BadValueException extends GeneralException {
 
-    public MeshException(String messageFormat, Object... messageArgs) {
-        super(String.format(messageFormat, messageArgs));
+    public BadValueException(String messageFormat, Object... messageArgs) {
+        super(messageFormat, messageArgs);
     }
 
-    public MeshException(Throwable cause) {
+    public BadValueException(Throwable cause) {
         super(cause);
     }
 
-    public MeshException(Throwable cause, String messageFormat, Object... messageArgs) {
-        super(String.format(messageFormat, messageArgs), cause);
+    public BadValueException(Throwable cause, String messageFormat, Object... messageArgs) {
+        super(cause, messageFormat, messageArgs);
     }
 
 }

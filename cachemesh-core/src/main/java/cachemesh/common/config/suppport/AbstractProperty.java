@@ -20,7 +20,7 @@ import cachemesh.common.config.Type;
 import lombok.Getter;
 
 @Getter
-public abstract class AbstractProp<B, T> implements Property<B, T> {
+public abstract class AbstractProperty<B, T> implements Property<B, T> {
 
     private final String name;
 
@@ -28,7 +28,7 @@ public abstract class AbstractProp<B, T> implements Property<B, T> {
 
     private final Type<T> type;
 
-    public AbstractProp(String name, Type<T> type, T devault) {
+    public AbstractProperty(String name, Type<T> type, T devault) {
         this.name = name;
         this.type = type;
         this.devault = devault;

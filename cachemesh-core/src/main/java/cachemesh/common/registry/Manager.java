@@ -15,6 +15,8 @@
  */
 package cachemesh.common.registry;
 
+import cachemesh.common.err.BadValueException;
+
 public abstract class Manager<KIND, VALUE> extends Registry<KIND, VALUE> {
 
     public VALUE resolve(KIND kind) {
@@ -24,8 +26,7 @@ public abstract class Manager<KIND, VALUE> extends Registry<KIND, VALUE> {
     public VALUE create(KIND kind) {
         return getLocalMap().compute(kind, (k, existing) -> {
             if (existing != null) {
-                var msg = String.format("duplicated %s: %s", getValueName(), kind);
-                throw new IllegalArgumentException(msg);
+                throw new BadValueException("duplicated %s: %s", getValueName(), kind);
             }
             return doCreate(kind);
         });

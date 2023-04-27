@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3.types;
+package cachemesh.common.config.types;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-
-import cachemesh.common.config.types.IntegerType;
-import cachemesh.common.config.types.ListType;
 
 public class ListTypeTest {
 

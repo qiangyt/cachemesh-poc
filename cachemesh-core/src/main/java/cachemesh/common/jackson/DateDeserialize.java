@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Date;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
-import cachemesh.common.err.RequestException;
+import cachemesh.common.err.BadValueException;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -35,7 +35,7 @@ public class DateDeserialize extends JsonDeserializer<Date> {
         try {
             return new Date(Long.valueOf(valueText));
         } catch (NumberFormatException ex) {
-            throw new RequestException(ex, "%s is NOT a long value", valueText);
+            throw new BadValueException(ex, "%s is NOT a long value", valueText);
         }
     }
 }

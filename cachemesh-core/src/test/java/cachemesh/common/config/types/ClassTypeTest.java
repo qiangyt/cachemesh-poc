@@ -13,36 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3.types;
+package cachemesh.common.config.types;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.junit.jupiter.api.Test;
 
-import cachemesh.common.config.types.SimpleUrlType;
-import cachemesh.common.misc.SimpleURL;
+import cachemesh.common.err.BadValueException;
+import cachemesh.common.misc.ClassCache;
 
-public class SimpleUrlTypeTest {
+public class ClassTypeTest {
+
+	class Sample {
+	}
 
 	@Test
-	public void test_happy() throws MalformedURLException {
-		var t = SimpleUrlType.DEFAULT;
+	public void test_happy() {
+		var classCache = new ClassCache();
+		var t = new ClassType(classCache);
 
-		assertEquals(new SimpleURL("ftp://example1.com"),
-					t.convert(null, "ftp://example1.com"));
+		assertSame(Sample.class, t.convert(null, Sample.class));
+		assertSame(Sample.class, t.convert(null, Sample.class.getName()));
 
-		SimpleURL u2 = new SimpleURL("ftp://example2.com");
-		assertSame(u2, t.convert(null, u2));
-
-		assertEquals(new SimpleURL("ftp://example3.com"),
-					t.convert(null, new URL("ftp://example3.com")));
-
-		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
+		assertThrows(BadValueException.class, () -> t.convert(null, new Object()));
 	}
 
 }

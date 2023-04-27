@@ -17,7 +17,6 @@ package cachemesh.core.config;
 
 import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.reflect.ReflectBeanType;
 import cachemesh.common.misc.ClassCache;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.cache.LocalCacheManager;
@@ -27,6 +26,7 @@ import cachemesh.core.config.support.NodeConfigType;
 import lombok.Getter;
 import cachemesh.common.config.suppport.RootContext;
 import cachemesh.common.config.types.BeanType;
+import cachemesh.common.config.types.ReflectBeanType;
 
 import java.io.InputStream;
 import java.io.Reader;

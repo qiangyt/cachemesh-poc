@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.err;
 
-import java.util.Collection;
+public class GeneralException extends RuntimeException {
 
-import cachemesh.common.misc.StringHelper;
-import lombok.Getter;
+    public GeneralException(String messageFormat, Object... messageArgs) {
+        super(String.format(messageFormat, messageArgs));
+    }
 
-@Getter
-public class IncompatibleTypeException extends IllegalArgumentException {
+    public GeneralException(Throwable cause) {
+        super(cause);
+    }
 
-    private Class<?> actual;
-
-    private Collection<Class<?>> expected;
-
-    public IncompatibleTypeException(Class<?> actual, Collection<Class<?>> expected) {
-        super("expects " + StringHelper.join("/", expected) + " but got " + actual);
-
-        this.actual = actual;
-        this.expected = expected;
+    public GeneralException(Throwable cause, String messageFormat, Object... messageArgs) {
+        super(String.format(messageFormat, messageArgs), cause);
     }
 
 }

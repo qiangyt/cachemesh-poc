@@ -18,6 +18,8 @@ package cachemesh.common.misc;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import cachemesh.common.err.BadValueException;
+
 public class ClassCache {
 
     public static final ClassCache DEFAULT = new ClassCache();
@@ -37,7 +39,7 @@ public class ClassCache {
             try {
                 return getClassLoader().loadClass(className);
             } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(e);
+                throw new BadValueException(e);
             }
         });
     }

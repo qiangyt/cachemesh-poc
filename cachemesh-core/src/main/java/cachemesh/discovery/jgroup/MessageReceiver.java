@@ -24,7 +24,7 @@ import org.jgroups.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cachemesh.common.err.MeshException;
+import cachemesh.common.err.GeneralException;
 
 public class MessageReceiver implements Receiver {
 
@@ -72,7 +72,7 @@ public class MessageReceiver implements Receiver {
                         } catch (RuntimeException e) {
                             throw e;
                         } catch (Exception e) {
-                            throw new MeshException(e);
+                            throw new GeneralException(e);
                         }
                     });
                 }
@@ -86,7 +86,7 @@ public class MessageReceiver implements Receiver {
                         } catch (RuntimeException e) {
                             throw e;
                         } catch (Exception e) {
-                            throw new MeshException(e);
+                            throw new GeneralException(e);
                         }
                     });
                 }

@@ -18,8 +18,9 @@ package cachemesh.common.config.suppport;
 import java.util.ArrayList;
 
 import cachemesh.common.config.ConfigContext;
-import cachemesh.common.config.IncompatibleTypeException;
+import cachemesh.common.config.BadTypeException;
 import cachemesh.common.config.Type;
+import cachemesh.common.err.BadValueException;
 
 public abstract class AbstractType<T> implements Type<T> {
 
@@ -64,7 +65,7 @@ public abstract class AbstractType<T> implements Type<T> {
         }
 
         if (isConvertable(value) == false) {
-            throw invalidValueClassError(ctx, value.getClass());
+            throw badValueClassError(ctx, value.getClass());
         }
 
         return doConvert(ctx, value);
@@ -88,18 +89,18 @@ public abstract class AbstractType<T> implements Type<T> {
 
     protected abstract T doConvert(ConfigContext ctx, Object value);
 
-    public IllegalArgumentException invalidValueClassError(ConfigContext ctx, Class<?> actual) {
-        var classes = new ArrayList<Class<?>>();
-        classes.add(getKlass());
+    public BadValueException badValueClassError(ConfigContext ctx, Class<?> actual) {
+        var expected = new ArrayList<Class<?>>();
+        expected.add(getKlass());
 
         var others = convertableClasses();
         if (others != null) {
             for (var other : others) {
-                classes.add(other);
+                expected.add(other);
             }
         }
 
-        return new IncompatibleTypeException(actual, classes);
+        return new BadValueException("expects %s but got ", expected, actual);
     }
 
 }

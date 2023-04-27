@@ -18,6 +18,9 @@ package cachemesh.common.registry;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.function.Function;
+
+import cachemesh.common.err.BadValueException;
+
 import java.util.Map;
 
 import lombok.AccessLevel;
@@ -56,8 +59,7 @@ public abstract class Registry<KIND, VALUE> {
     public void register(KIND kind, VALUE value) {
         getLocalMap().compute(kind, (k, existing) -> {
             if (existing != null) {
-                var msg = String.format("duplicated %s: %s", getValueName(), kind);
-                throw new IllegalArgumentException(msg);
+                throw new BadValueException("duplicated %s: %s", getValueName(), kind);
             }
             return value;
         });
@@ -82,8 +84,7 @@ public abstract class Registry<KIND, VALUE> {
     public VALUE load(KIND kind) {
         VALUE r = get(kind);
         if (r == null) {
-            var msg = String.format("unknown %s: %s", getValueName(), kind);
-            throw new IllegalArgumentException(msg);
+            throw new BadValueException("unknown %s: %s", getValueName(), kind);
         }
         return r;
     }

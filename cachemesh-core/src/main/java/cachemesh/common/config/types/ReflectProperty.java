@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config.reflect;
+package cachemesh.common.config.types;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -34,23 +34,19 @@ import cachemesh.common.annotation.AProperty;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.Type;
 import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.suppport.AbstractProp;
-import cachemesh.common.config.types.ArrayType;
-import cachemesh.common.config.types.EnumType;
-import cachemesh.common.config.types.ListType;
-import cachemesh.common.config.types.MapType;
+import cachemesh.common.config.suppport.AbstractProperty;
 import cachemesh.common.misc.DurationHelper;
 import cachemesh.common.misc.Reflect;
 import lombok.Getter;
 
 @Getter
-public class ReflectProp<B, T> extends AbstractProp<B, T> {
+public class ReflectProperty<B, T> extends AbstractProperty<B, T> {
 
     private final Method setter;
 
     private final Method getter;
 
-    protected ReflectProp(String name, Type<T> fieldType, T devault, Method getter, Method setter) {
+    protected ReflectProperty(String name, Type<T> fieldType, T devault, Method getter, Method setter) {
         super(name, fieldType, devault);
         this.getter = getter;
         this.setter = setter;
@@ -71,7 +67,7 @@ public class ReflectProp<B, T> extends AbstractProp<B, T> {
         var r = new HashMap<String, Property<B, ?>>();
 
         for (var f : klass.getDeclaredFields()) {
-            var p = (Property<B, ?>) ReflectProp.of(typeRegistry, f);
+            var p = (Property<B, ?>) ReflectProperty.of(typeRegistry, f);
             if (p != null) {
                 r.put(p.getName(), p);
             }
@@ -81,7 +77,7 @@ public class ReflectProp<B, T> extends AbstractProp<B, T> {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static ReflectProp<?, ?> of(TypeRegistry typeRegistry, Field field) {
+    public static ReflectProperty<?, ?> of(TypeRegistry typeRegistry, Field field) {
         String propName = null;
         String setterName = null;
         String getterName = null;
@@ -123,7 +119,7 @@ public class ReflectProp<B, T> extends AbstractProp<B, T> {
         }
 
         Object devault = defaultValue(field, fType);
-        return new ReflectProp<Object, Object>(propName, fType, devault, getter, setter);
+        return new ReflectProperty<Object, Object>(propName, fType, devault, getter, setter);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

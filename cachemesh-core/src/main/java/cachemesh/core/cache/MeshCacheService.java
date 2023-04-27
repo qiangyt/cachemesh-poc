@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import org.slf4j.Logger;
 
 import lombok.Getter;
+import cachemesh.common.err.BadValueException;
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.misc.LogHelper;
 import cachemesh.common.misc.SimpleURL;
@@ -82,11 +83,7 @@ public class MeshCacheService {
     }
 
     public TransportProvider loadTransportProvider(String protocol) {
-        var r = getConfigService().getTransportRegistry().get(protocol);
-        if (r == null) {
-            throw new IllegalArgumentException("unsupported protocol: " + protocol);
-        }
-        return r;
+        return getConfigService().getTransportRegistry().load(protocol);
     }
 
     public MeshNode addLocalNode(String url) throws MalformedURLException {
@@ -101,7 +98,7 @@ public class MeshCacheService {
         var tp = new LocalTransport(getLocalCacheManager());
 
         if (pdr.bindLocalTransport(nodeConfig, tp) == false) {
-            throw new IllegalArgumentException("transport " + nodeConfig.getProtocol() + " doesn't support local node");
+            throw new BadValueException("transport %a doesn't support local node", nodeConfig.getProtocol());
         }
 
         return addNode(pdr, nodeConfig, tp);
@@ -122,8 +119,7 @@ public class MeshCacheService {
     protected MeshNode addRemoteNode(TransportProvider provider, NodeConfig nodeConfig) {
         var tp = provider.createRemoteTransport(nodeConfig);
         if (tp == null) {
-            throw new IllegalArgumentException(
-                    "transport " + nodeConfig.getProtocol() + " doesn't support remote node");
+            throw new BadValueException("transport %a doesn't support remote node", nodeConfig.getProtocol());
         }
 
         return addNode(provider, nodeConfig, tp);

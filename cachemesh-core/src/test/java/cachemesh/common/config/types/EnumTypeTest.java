@@ -13,20 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.err;
+package cachemesh.common.config.types;
 
-public class ConfigException extends InternalException {
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import org.junit.jupiter.api.Test;
 
-    public ConfigException(String messageFormat, Object... messageArgs) {
-        super(String.format(messageFormat, messageArgs));
-    }
+import cachemesh.common.err.BadValueException;
 
-    public ConfigException(Throwable cause) {
-        super(cause);
-    }
+public class EnumTypeTest {
 
-    public ConfigException(Throwable cause, String messageFormat, Object... messageArgs) {
-        super(String.format(messageFormat, messageArgs), cause);
-    }
+	enum Sample {
+		a, b, c
+	}
+
+	@Test
+	public void test_happy() {
+		var t = new EnumType<Sample>(Sample.class);
+
+		assertSame(Sample.a, t.convert(null, "a"));
+		assertSame(Sample.b, t.convert(null, "b"));
+		assertSame(Sample.c, t.convert(null, Sample.c));
+
+		assertThrows(BadValueException.class, () -> t.convert(null, new Object()));
+	}
 
 }

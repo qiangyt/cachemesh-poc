@@ -13,29 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3.types;
+package cachemesh.common.config.types;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.Duration;
 import org.junit.jupiter.api.Test;
 
-import cachemesh.common.config.types.EnumType;
+import cachemesh.common.err.BadValueException;
 
-public class EnumTypeTest {
-
-	enum Sample {
-		a, b, c
-	}
+public class DurationTypeTest {
 
 	@Test
 	public void test_happy() {
-		var t = new EnumType<Sample>(Sample.class);
+		var t = DurationType.DEFAULT;
 
-		assertSame(Sample.a, t.convert(null, "a"));
-		assertSame(Sample.b, t.convert(null, "b"));
-		assertSame(Sample.c, t.convert(null, Sample.c));
+		var d1 =Duration.ofDays(123);
+		assertSame(d1, t.convert(null, d1));
 
-		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
+		var d2 =Duration.ofSeconds(123);
+		assertEquals(d2, t.convert(null, "123s"));
+
+		assertThrows(BadValueException.class, () -> t.convert(null, new Object()));
 	}
 
 }

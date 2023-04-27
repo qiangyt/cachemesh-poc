@@ -16,7 +16,8 @@
 package cachemesh.transport.grpc;
 
 import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.reflect.ReflectBeanType;
+import cachemesh.common.config.types.ReflectBeanType;
+import cachemesh.common.err.BadStateException;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
 import cachemesh.core.cache.LocalTransport;
@@ -51,7 +52,7 @@ public class GrpcTransportProvider extends AbstractTransportProvider<GrpcTranspo
         var server = new DedicatedGrpcServer(config, getShutdownManager());
 
         if (server.isStarted()) {
-            throw new IllegalStateException("should NOT add service after grpc server is started");
+            throw new BadStateException("should NOT add service after grpc server is started");
         }
         var service = new GrpcService(config, localTranport);
         server.addService(service);

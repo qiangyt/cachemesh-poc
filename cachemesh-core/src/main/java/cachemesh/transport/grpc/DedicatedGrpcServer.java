@@ -18,7 +18,7 @@ package cachemesh.transport.grpc;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import cachemesh.common.err.InternalException;
+import cachemesh.common.err.BadStateException;
 import cachemesh.common.misc.LifeStage;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
@@ -67,7 +67,7 @@ public class DedicatedGrpcServer extends AbstractShutdownable implements GrpcSer
     @Override
     public void addService(BindableService service) {
         if (isStarted()) {
-            throw new InternalException("%s: cannot add service any more once server started", getName());
+            throw new BadStateException("%s: cannot add service any more once server started", getName());
         }
         getBuilder().addService(service);
     }
@@ -88,7 +88,7 @@ public class DedicatedGrpcServer extends AbstractShutdownable implements GrpcSer
 
             getLifeStage().started();
         } catch (IOException e) {
-            throw new InternalException(e, "%s: failed to start server", getName());
+            throw new BadStateException(e, "%s: failed to start server", getName());
         }
     }
 

@@ -19,6 +19,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import cachemesh.common.err.BadStateException;
+
 public class Reflect {
 
     public static String propertyName(Field field, String propertyName) {
@@ -33,7 +35,7 @@ public class Reflect {
         try {
             r = propertyClass.getConstructor();
         } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
+            throw new BadStateException(e);
         }
         r.setAccessible(true);
         return r;
@@ -43,7 +45,7 @@ public class Reflect {
         try {
             return ctor.newInstance();
         } catch (ReflectiveOperationException e) {
-            throw new IllegalArgumentException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -51,7 +53,7 @@ public class Reflect {
         try {
             return ctor.newInstance(args);
         } catch (ReflectiveOperationException e) {
-            throw new IllegalArgumentException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -60,7 +62,7 @@ public class Reflect {
         try {
             return (T) getter.invoke(object);
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -68,7 +70,7 @@ public class Reflect {
         try {
             setter.invoke(object, value);
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -89,7 +91,7 @@ public class Reflect {
         if (r == null) {
             var msg = String.format("failed to find setter method '%s' for property '%s.%s'", setterName, beanClass,
                     propName);
-            throw new IllegalArgumentException(msg);
+            throw new BadStateException(msg);
         }
         r.setAccessible(true);
 
@@ -115,7 +117,7 @@ public class Reflect {
         Method r = _getter(beanClass, propName, propClass, getterName);
         if (r == null) {
             var msg = String.format("failed to find getter '%s' for property '%s.%s'", getterName, beanClass, propName);
-            throw new IllegalArgumentException(msg);
+            throw new BadStateException(msg);
         }
         return r;
     }
@@ -128,7 +130,7 @@ public class Reflect {
         if (r.getReturnType() != propClass) {
             var msg = String.format("expect getter '%s' returns %s for property '%s.%s', but got %s", getterName,
                     beanClass, propName, r.getReturnType());
-            throw new IllegalArgumentException(msg);
+            throw new BadStateException(msg);
         }
         r.setAccessible(true);
 

@@ -16,7 +16,7 @@
 package cachemesh.transport.lettuce;
 
 import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.reflect.ReflectBeanType;
+import cachemesh.common.config.types.ReflectBeanType;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
 import cachemesh.core.spi.support.AbstractTransportProvider;

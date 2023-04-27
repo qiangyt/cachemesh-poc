@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3.types;
+package cachemesh.common.config.types;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import cachemesh.common.config.types.BooleanType;
+import cachemesh.common.err.BadValueException;
 
 public class BooleanTypeTest {
 
@@ -79,7 +79,7 @@ public class BooleanTypeTest {
 	public void test_failure() {
 		var t = BooleanType.DEFAULT;
 
-		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
+		assertThrows(BadValueException.class, () -> t.convert(null, new Object()));
 	}
 
 }

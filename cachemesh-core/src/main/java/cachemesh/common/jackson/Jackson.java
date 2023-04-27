@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.protobuf.ByteString;
 
-import cachemesh.common.err.RequestException;
+import cachemesh.common.err.BadStateException;
 import cachemesh.common.misc.StringHelper;
 import lombok.Getter;
 
@@ -73,7 +73,7 @@ public class Jackson {
         try {
             return getMapper().readValue(text, clazz);
         } catch (IOException e) {
-            throw new RequestException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -85,7 +85,7 @@ public class Jackson {
         try {
             return getMapper().readValue(buf.toByteArray(), clazz);
         } catch (IOException e) {
-            throw new RequestException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -104,7 +104,7 @@ public class Jackson {
             final int offset = buf.arrayOffset();
             return getMapper().readValue(buf.array(), offset + buf.position(), buf.remaining(), clazz);
         } catch (IOException e) {
-            throw new RequestException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -116,7 +116,7 @@ public class Jackson {
         try {
             return getMapper().readValue(bytes, clazz);
         } catch (IOException e) {
-            throw new RequestException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -128,7 +128,7 @@ public class Jackson {
         try {
             return getMapper().readValue(text, typeReference);
         } catch (IOException e) {
-            throw new RequestException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -140,7 +140,7 @@ public class Jackson {
         try {
             return getMapper().readValue(buf.toByteArray(), typeReference);
         } catch (IOException e) {
-            throw new RequestException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -159,7 +159,7 @@ public class Jackson {
             final int offset = buf.arrayOffset();
             return getMapper().readValue(buf.array(), offset + buf.position(), buf.remaining(), typeReference);
         } catch (IOException e) {
-            throw new RequestException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -171,7 +171,7 @@ public class Jackson {
         try {
             return getMapper().readValue(bytes, typeReference);
         } catch (IOException e) {
-            throw new RequestException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -206,7 +206,7 @@ public class Jackson {
             }
             return getMapper().writeValueAsString(object);
         } catch (IOException e) {
-            throw new RequestException(e);
+            throw new BadStateException(e);
         }
     }
 
@@ -240,7 +240,7 @@ public class Jackson {
 
             return ByteBuffer.wrap(buf.getCurrentSegment(), 0, buf.getCurrentSegmentLength());
         } catch (IOException e) {
-            throw new RequestException(e);
+            throw new BadStateException(e);
         }
     }
 }

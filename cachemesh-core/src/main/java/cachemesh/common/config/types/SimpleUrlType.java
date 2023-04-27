@@ -21,6 +21,7 @@ import java.net.URL;
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.suppport.AbstractType;
 import cachemesh.common.config.suppport.ConfigHelper;
+import cachemesh.common.err.BadValueException;
 import cachemesh.common.misc.SimpleURL;
 
 public class SimpleUrlType extends AbstractType<SimpleURL> {
@@ -47,7 +48,7 @@ public class SimpleUrlType extends AbstractType<SimpleURL> {
             try {
                 return new SimpleURL((String) value);
             } catch (MalformedURLException e) {
-                throw new IllegalArgumentException(e);
+                throw new BadValueException(e);
             }
         }
 

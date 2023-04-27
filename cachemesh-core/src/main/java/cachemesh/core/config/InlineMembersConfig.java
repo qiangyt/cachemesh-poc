@@ -18,10 +18,10 @@ package cachemesh.core.config;
 import java.util.List;
 import java.util.Map;
 
-import cachemesh.common.annotations.AElement;
+import cachemesh.common.annotation.AElement;
 import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.reflect.ReflectBeanType;
 import cachemesh.common.config.types.BeanType;
+import cachemesh.common.config.types.ReflectBeanType;
 import cachemesh.common.misc.Dumpable;
 import lombok.Builder;
 import lombok.Getter;

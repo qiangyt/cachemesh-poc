@@ -20,6 +20,7 @@ import java.util.Map;
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
+import cachemesh.common.err.BadStateException;
 import lombok.Getter;
 
 @Getter
@@ -41,8 +42,7 @@ public abstract class KindPathingDynamicBeanType<T> extends DynamicBeanType<T> {
         if (r == null) {
             r = getDefaultKind();
             if (r == null) {
-                var msg = String.format("%s is required", getKindPath());
-                throw new IllegalStateException(msg);
+                throw new BadStateException("%s is required", getKindPath());
             }
         }
         return r;

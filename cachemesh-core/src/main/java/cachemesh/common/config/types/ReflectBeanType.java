@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config.reflect;
+package cachemesh.common.config.types;
 
 import java.lang.reflect.Constructor;
 import java.util.Collections;
@@ -22,7 +22,6 @@ import java.util.Map;
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.types.BeanType;
 import cachemesh.common.misc.Reflect;
 import lombok.Getter;
 
@@ -48,7 +47,7 @@ public class ReflectBeanType<T> extends BeanType<T> {
     @SuppressWarnings("unchecked")
     public static <T> BeanType<T> of(TypeRegistry typeRegistry, Class<T> klass) {
         return (BeanType<T>) typeRegistry.resolve(klass, k -> {
-            var props = ReflectProp.of(typeRegistry, klass);
+            var props = ReflectProperty.of(typeRegistry, klass);
             var ctor = Reflect.defaultConstructor(klass);
 
             return new ReflectBeanType<T>(klass, ctor, props);

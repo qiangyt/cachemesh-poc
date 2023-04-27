@@ -39,7 +39,7 @@ public abstract class ContainerType<T, E> extends AbstractType<T> {
         }
 
         if (isConvertable(value) == false) {
-            throw invalidValueClassError(ctx, value.getClass());
+            throw badValueClassError(ctx, value.getClass());
         }
 
         return doConvert(ctx, value);

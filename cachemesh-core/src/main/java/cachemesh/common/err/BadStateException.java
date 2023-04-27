@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3.types;
+package cachemesh.common.err;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertSame;
+public class BadStateException extends GeneralException {
 
-import org.junit.jupiter.api.Test;
+    public BadStateException(String messageFormat, Object... messageArgs) {
+        super(messageFormat, messageArgs);
+    }
 
-import cachemesh.common.config.types.StringType;
+    public BadStateException(Throwable cause) {
+        super(cause);
+    }
 
-public class StringTypeTest {
-
-	@Test
-	public void test_happy() {
-		var t = StringType.DEFAULT;
-
-		assertSame("test", t.convert(null, "test"));
-		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
-	}
+    public BadStateException(Throwable cause, String messageFormat, Object... messageArgs) {
+        super(cause, messageFormat, messageArgs);
+    }
 
 }

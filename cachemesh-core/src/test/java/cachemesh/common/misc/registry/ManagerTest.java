@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 
+import cachemesh.common.err.BadValueException;
 import cachemesh.common.registry.Manager;
 
 public class ManagerTest {
@@ -88,7 +89,7 @@ public class ManagerTest {
 		assertEquals(1, r.counterForCreate);
 		assertSame(c, r.kindToCreate);
 
-		assertThrows(IllegalArgumentException.class, () -> r.create(c));
+		assertThrows(BadValueException.class, () -> r.create(c));
 
 		var v2 = r.create("c2");
 		assertEquals("value-for-c2", v2);

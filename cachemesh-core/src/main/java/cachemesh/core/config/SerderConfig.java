@@ -18,8 +18,8 @@ package cachemesh.core.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.annotations.ADefault;
-import cachemesh.common.annotations.AProperty;
+import cachemesh.common.annotation.ADefault;
+import cachemesh.common.annotation.AProperty;
 import cachemesh.common.jackson.JacksonSerderializer;
 import cachemesh.common.misc.Dumpable;
 import cachemesh.common.misc.Serderializer;

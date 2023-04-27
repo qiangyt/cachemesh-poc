@@ -17,6 +17,7 @@ package cachemesh.common.shutdown;
 
 import org.slf4j.Logger;
 
+import cachemesh.common.err.BadStateException;
 import cachemesh.common.misc.LogHelper;
 import lombok.Getter;
 
@@ -46,7 +47,7 @@ public abstract class AbstractShutdownable implements ManagedShutdownable {
     @Override
     public void shutdown(int timeoutSeconds) throws InterruptedException {
         if (isShutdownNeeded() == false) {
-            throw new IllegalStateException(getName() + " doesn't need shutdown");
+            throw new BadStateException("%s doesn't need shutdown", getName());
         }
 
         var sd = getShutdownManager();

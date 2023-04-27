@@ -19,11 +19,12 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.annotations.ADefaultBoolean;
-import cachemesh.common.annotations.ADefaultInt;
-import cachemesh.common.annotations.AProperty;
+import cachemesh.common.annotation.ADefaultBoolean;
+import cachemesh.common.annotation.ADefaultInt;
+import cachemesh.common.annotation.AProperty;
 import cachemesh.common.config.types.BooleanType;
 import cachemesh.common.config.types.IntegerType;
+import cachemesh.common.err.BadValueException;
 import cachemesh.common.misc.Dumpable;
 import cachemesh.common.misc.SimpleURL;
 import lombok.Getter;
@@ -85,7 +86,7 @@ public abstract class NodeConfig implements Dumpable {
             try {
                 this.url = buildUrl();
             } catch (MalformedURLException e) {
-                throw new IllegalArgumentException(e);
+                throw new BadValueException(e);
             }
         }
         return this.url;

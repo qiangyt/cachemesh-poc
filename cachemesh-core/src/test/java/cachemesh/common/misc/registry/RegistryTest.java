@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import cachemesh.common.err.BadValueException;
 import cachemesh.common.registry.Registry;
 
 public class RegistryTest {
@@ -44,7 +45,7 @@ public class RegistryTest {
 		assertEquals("value1", r.get(c1));
 
 		var c2 = "c1";
-		assertThrows(IllegalArgumentException.class, () -> r.register(c2, "value2"));
+		assertThrows(BadValueException.class, () -> r.register(c2, "value2"));
 
 		assertEquals("value1", r.unregister(c2));
 		r.register(c2, "value2");

@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 
+import cachemesh.common.err.BadValueException;
+
 public class ClassCacheTest {
 
 	class Sample {
@@ -36,7 +38,7 @@ public class ClassCacheTest {
 		assertSame(Sample.class, t.resolve(Sample.class.getName()));
 		assertEquals(1, t.size());
 
-		assertThrows(IllegalArgumentException.class, () -> t.resolve(Sample.class.getName() + "NotIndeedExists"));
+		assertThrows(BadValueException.class, () -> t.resolve(Sample.class.getName() + "NotIndeedExists"));
 		assertEquals(1, t.size());
 
 	}

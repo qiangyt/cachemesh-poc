@@ -18,7 +18,7 @@ package cachemesh.transport.lettuce;
 import java.net.MalformedURLException;
 import java.util.Map;
 
-import cachemesh.common.annotations.AIgnored;
+import cachemesh.common.annotation.AIgnored;
 import cachemesh.common.config.types.IntegerType;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.NodeConfig;

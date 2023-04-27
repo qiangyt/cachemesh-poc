@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3;
+package cachemesh.common.config;
 
 import org.junit.jupiter.api.Test;
-
-import cachemesh.common.config.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -20,6 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import cachemesh.common.err.BadStateException;
+
 public class ShutdownManager {
 
     public static final int DEFAULT_TIMEOUT_SECONDS = 2;
@@ -52,7 +54,7 @@ public class ShutdownManager {
 
         this.items.compute(name, (k, existing) -> {
             if (existing != null) {
-                throw new IllegalStateException(name + "already registered");
+                throw new BadStateException("%s already registered", name);
             }
             return new ShutdownItem(this, target, timeoutSeconds);
         });
@@ -67,7 +69,7 @@ public class ShutdownManager {
 
         this.items.compute(name, (k, existing) -> {
             if (existing == null) {
-                throw new IllegalStateException(name + "not yet registered");
+                throw new BadStateException("%s not yet registered", name);
             }
             return null;
         });
@@ -88,10 +90,10 @@ public class ShutdownManager {
 
     public void unhook() {
         if (this.thread == null) {
-            throw new IllegalStateException("not ever enabled");
+            throw new BadStateException("not ever enabled");
         }
         if (!Runtime.getRuntime().removeShutdownHook(this.thread)) {
-            throw new IllegalStateException("failed to remove shutdown hook");
+            throw new BadStateException("failed to remove shutdown hook");
         }
 
         this.logger.info("shutdown hook is removed");
@@ -99,7 +101,7 @@ public class ShutdownManager {
 
     public void hook() {
         if (this.thread != null) {
-            throw new IllegalStateException("already enabled");
+            throw new BadStateException("already enabled");
         }
 
         this.thread = new Thread(() -> {
@@ -120,16 +122,16 @@ public class ShutdownManager {
     public void shutdown(ManagedShutdownable target, int timeoutSeconds) {
         String name = target.getName();
         if (target.isShutdownNeeded() == false) {
-            throw new IllegalStateException(name + " no need shutdown");
+            throw new BadStateException("%s no need shutdown", name);
         }
 
         var item = this.items.get(name);
         if (item == null) {
-            throw new IllegalStateException(name + " is not ever registered");
+            throw new BadStateException("%s is not ever registered", name);
         }
         if (item.isShutdowned()) {
             this.items.remove(name);
-            throw new IllegalStateException(name + " is already shutdowned");
+            throw new BadStateException("%s is already shutdowned", name);
         }
 
         var th = new Thread(() -> item.shutdown(timeoutSeconds));

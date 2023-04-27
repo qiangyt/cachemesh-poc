@@ -13,30 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3.types;
+package cachemesh.common.config.types;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.Duration;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.junit.jupiter.api.Test;
 
-import cachemesh.common.config.types.DurationType;
+import cachemesh.common.err.BadValueException;
+import cachemesh.common.misc.SimpleURL;
 
-public class DurationTypeTest {
+public class SimpleUrlTypeTest {
 
 	@Test
-	public void test_happy() {
-		var t = DurationType.DEFAULT;
+	public void test_happy() throws MalformedURLException {
+		var t = SimpleUrlType.DEFAULT;
 
-		var d1 =Duration.ofDays(123);
-		assertSame(d1, t.convert(null, d1));
+		assertEquals(new SimpleURL("ftp://example1.com"),
+					t.convert(null, "ftp://example1.com"));
 
-		var d2 =Duration.ofSeconds(123);
-		assertEquals(d2, t.convert(null, "123s"));
+		SimpleURL u2 = new SimpleURL("ftp://example2.com");
+		assertSame(u2, t.convert(null, u2));
 
-		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
+		assertEquals(new SimpleURL("ftp://example3.com"),
+					t.convert(null, new URL("ftp://example3.com")));
+
+		assertThrows(BadValueException.class, () -> t.convert(null, new Object()));
 	}
 
 }

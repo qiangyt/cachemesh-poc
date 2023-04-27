@@ -16,9 +16,12 @@
 package cachemesh.core.cache;
 
 import org.slf4j.Logger;
+
+import com.google.protobuf.ServiceException;
+
 import lombok.Getter;
-import cachemesh.common.err.InternalException;
-import cachemesh.common.err.ServiceException;
+import cachemesh.common.err.BadStateException;
+import cachemesh.common.err.ToDoException;
 import cachemesh.common.misc.LogHelper;
 import cachemesh.core.MeshNetwork;
 import cachemesh.core.MeshNode;
@@ -93,10 +96,10 @@ public class MeshCache<T> {
         }
         case REDIRECT: {
             near.invalidateSingle(key);
-            throw new InternalException("TODO");
+            throw new ToDoException("TODO");
         }
         default:
-            throw new ServiceException("unexpected status");
+            throw new BadStateException("unexpected status: %s", r.getStatus());
         }
     }
 

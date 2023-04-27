@@ -13,20 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.err;
+package cachemesh.common.config;
 
-public class ServiceException extends InternalException {
+import java.util.Collection;
 
-    public ServiceException(String messageFormat, Object... messageArgs) {
-        super(String.format(messageFormat, messageArgs));
-    }
+import cachemesh.common.err.GeneralException;
+import cachemesh.common.misc.StringHelper;
+import lombok.Getter;
 
-    public ServiceException(Throwable cause) {
-        super(cause);
-    }
+@Getter
+public class BadTypeException extends GeneralException {
 
-    public ServiceException(Throwable cause, String messageFormat, Object... messageArgs) {
-        super(String.format(messageFormat, messageArgs), cause);
+    private Class<?> actual;
+
+    private Collection<Class<?>> expected;
+
+    public BadTypeException(Class<?> actual, Collection<Class<?>> expected) {
+        super("expects " + StringHelper.join("/", expected) + " but got " + actual);
+
+        this.actual = actual;
+        this.expected = expected;
     }
 
 }

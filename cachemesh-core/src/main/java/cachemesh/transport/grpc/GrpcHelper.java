@@ -15,7 +15,7 @@
  */
 package cachemesh.transport.grpc;
 
-import cachemesh.common.err.ServiceException;
+import cachemesh.common.err.BadValueException;
 import cachemesh.core.cache.bean.Value.Status;
 import cachemesh.grpc.cache.ValueStatus;
 import io.grpc.stub.StreamObserver;
@@ -39,7 +39,7 @@ public class GrpcHelper {
         case Redirect:
             return Status.REDIRECT;
         default:
-            throw new ServiceException("unrecognized remote value status: %d", status);
+            throw new BadValueException("unrecognized remote value status: %d", status);
         }
     }
 
@@ -54,7 +54,7 @@ public class GrpcHelper {
         case REDIRECT:
             return ValueStatus.Redirect;
         default:
-            throw new ServiceException("unrecognized remote value status: %d", status);
+            throw new BadValueException("unrecognized remote value status: %d", status);
         }
     }
 

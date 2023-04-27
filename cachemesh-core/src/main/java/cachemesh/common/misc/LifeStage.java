@@ -18,6 +18,7 @@ package cachemesh.common.misc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cachemesh.common.err.BadStateException;
 import lombok.Getter;
 
 @Getter
@@ -48,8 +49,8 @@ public class LifeStage {
     public void expect(Stage expectedType) {
         var t = getStage();
         if (t != expectedType) {
-            var msg = String.format("%s %s: expected be %s, but be %s", getHintKey(), getHintValue(), expectedType, t);
-            throw new IllegalStateException(msg);
+            throw new BadStateException("%s %s: expected be %s, but be %s", getHintKey(), getHintValue(), expectedType,
+                    t);
         }
     }
 
@@ -57,8 +58,7 @@ public class LifeStage {
         var t = getStage();
         for (var expectedType : expectedTypes) {
             if (t == expectedType) {
-                var msg = String.format("%s %s: expected not %s", getHintKey(), getHintValue(), expectedType);
-                throw new IllegalStateException(msg);
+                throw new BadStateException("%s %s: expected not %s", getHintKey(), getHintValue(), expectedType);
             }
         }
     }

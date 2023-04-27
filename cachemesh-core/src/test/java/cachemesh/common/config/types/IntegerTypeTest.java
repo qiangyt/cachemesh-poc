@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3.types;
+package cachemesh.common.config.types;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertSame;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
-import cachemesh.common.config.types.ClassType;
-import cachemesh.common.misc.ClassCache;
+import cachemesh.common.err.BadValueException;
 
-public class ClassTypeTest {
-
-	class Sample {
-	}
+public class IntegerTypeTest {
 
 	@Test
 	public void test_happy() {
-		var classCache = new ClassCache();
-		var t = new ClassType(classCache);
+		var t = IntegerType.DEFAULT;
 
-		assertSame(Sample.class, t.convert(null, Sample.class));
-		assertSame(Sample.class, t.convert(null, Sample.class.getName()));
+		assertEquals(1, t.convert(null, "1"));
+		assertEquals('2', t.convert(null, '2'));
+		assertEquals(3, t.convert(null, Byte.valueOf("3")));
+		assertEquals(4, t.convert(null, Short.valueOf("4")));
+		assertEquals(5, t.convert(null, Integer.valueOf(5)));
+		assertEquals(6, t.convert(null, Long.valueOf(6)));
+		assertEquals(7, t.convert(null, Float.valueOf(7)));
+		assertEquals(8, t.convert(null, Double.valueOf(8)));
 
-		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
+		assertThrows(BadValueException.class, () -> t.convert(null, new Object()));
 	}
 
 }

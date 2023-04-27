@@ -13,30 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config3.types;
+package cachemesh.common.config.types;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.junit.jupiter.api.Test;
 
-import cachemesh.common.config.types.IntegerType;
+import cachemesh.common.err.BadValueException;
 
-public class IntegerTypeTest {
+public class StringTypeTest {
 
 	@Test
 	public void test_happy() {
-		var t = IntegerType.DEFAULT;
+		var t = StringType.DEFAULT;
 
-		assertEquals(1, t.convert(null, "1"));
-		assertEquals('2', t.convert(null, '2'));
-		assertEquals(3, t.convert(null, Byte.valueOf("3")));
-		assertEquals(4, t.convert(null, Short.valueOf("4")));
-		assertEquals(5, t.convert(null, Integer.valueOf(5)));
-		assertEquals(6, t.convert(null, Long.valueOf(6)));
-		assertEquals(7, t.convert(null, Float.valueOf(7)));
-		assertEquals(8, t.convert(null, Double.valueOf(8)));
-
-		assertThrows(IllegalArgumentException.class, () -> t.convert(null, new Object()));
+		assertSame("test", t.convert(null, "test"));
+		assertThrows(BadValueException.class, () -> t.convert(null, new Object()));
 	}
 
 }

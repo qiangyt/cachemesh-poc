@@ -15,6 +15,6 @@
  */
 package cachemesh.core;
 
-public class MeshComponents {
+public class MeshMetricService {
 
 }

@@ -15,59 +15,43 @@
  */
 package cachemesh.core;
 
+import java.net.MalformedURLException;
+
 import org.slf4j.Logger;
 
-import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.common.shutdown.Shutdownable;
 import lombok.Getter;
 
-import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.misc.LifeStage;
 import cachemesh.common.misc.LogHelper;
-import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.MeshConfig;
-import cachemesh.core.config.NodeConfig;
-import cachemesh.core.spi.Transport;
-import cachemesh.core.spi.TransportProvider;
-import lombok.AccessLevel;
 
 @Getter
 public class MeshNetwork implements Shutdownable {
 
-    private final MeshConfig config;
-
-    @Getter(AccessLevel.PROTECTED)
-    private final ConsistentHash<MeshNode> route;
-
-    private final LocalCacheManager localCacheManager;
-
     private final Logger logger;
+
+    private final MeshConfig config;
 
     private final LifeStage lifeStage;
 
-    private final MeshCacheManager meshCacheManager;
+    private final MeshCacheService cacheService;
 
-    public MeshNetwork(MeshConfig config, LocalCacheManager nearCacheManager, LocalCacheManager localCacheManager) {
-
-        this.config = config;
-        this.route = new ConsistentHash<>(config.getHashing().instance);
-        this.localCacheManager = localCacheManager;
+    public MeshNetwork(MeshConfig config, MeshCacheService cacheService) {
         this.logger = LogHelper.getLogger(getClass(), config.getName());
+        this.config = config;
         this.lifeStage = new LifeStage("meshnetwork", config.getName(), getLogger());
-        this.meshCacheManager = new MeshCacheManager(nearCacheManager, this);
-
+        this.cacheService = cacheService;
     }
 
     public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
-        return getMeshCacheManager().resolveCache(cacheName, valueClass);
+        return getCacheService().resolveCache(cacheName, valueClass);
     }
 
     public void start() throws InterruptedException {
         getLifeStage().starting();
 
-        for (var node : getRoute().nodes()) {
-            node.start();
-        }
+        getCacheService().start();
 
         getLifeStage().started();
     }
@@ -76,69 +60,21 @@ public class MeshNetwork implements Shutdownable {
     public void shutdown(int timeoutSeconds) throws InterruptedException {
         getLifeStage().stopping();
 
-        for (var node : getRoute().nodes()) {
-            node.stop();
-        }
+        getCacheService().stop();
 
         getLifeStage().stopped();
     }
 
     public MeshNode findNode(String key) {
-        return getRoute().findNode(key);
+        return getCacheService().findNode(key);
     }
 
-    public TransportProvider loadTransportProvider(String protocol) {
-        var r = getConfig().getTransportRegistry().get(protocol);
-        if (r == null) {
-            throw new IllegalArgumentException("unsupported protocol: " + protocol);
-        }
-        return r;
+    public MeshNode addLocalNode(String url) throws MalformedURLException {
+        return getCacheService().addLocalNode(url);
     }
 
-    // public MeshNode addLocalNode(String url) {
-    // var nodeConfig = NodeConfig.fromUrl(url);
-    // var pdr = loadTransportProvider(nodeConfig.getProtocol());
-    // return addLocalNode(pdr, cm);
-    // }
-
-    protected MeshNode addLocalNode(NodeConfig nodeConfig, LocalTransport localTransport) {
-        var pdr = loadTransportProvider(nodeConfig.getProtocol());
-        var tp = new LocalTransport(getLocalCacheManager());
-
-        if (pdr.bindLocalTransport(nodeConfig, tp) == false) {
-            throw new IllegalArgumentException("transport " + nodeConfig.getProtocol() + " doesn't support local node");
-        }
-
-        return addNode(pdr, nodeConfig, tp);
-    }
-
-    /*
-     * public MeshNode addRemoteNode(String url) { var kind = new SimpleURL(url).getProtocol(); var nodeConfig =
-     * NodeConfig.fromUrl(url); var pdr = loadTransportProvider(nodeConfig.getProtocol()); return addRemoteNode(pdr,
-     * nodeConfig); }
-     */
-
-    public MeshNode addRemoteNode(NodeConfig nodeConfig) {
-        var pdr = loadTransportProvider(nodeConfig.getProtocol());
-        return addRemoteNode(pdr, nodeConfig);
-    }
-
-    protected MeshNode addRemoteNode(TransportProvider provider, NodeConfig nodeConfig) {
-        var tp = provider.createRemoteTransport(nodeConfig);
-        if (tp == null) {
-            throw new IllegalArgumentException(
-                    "transport " + nodeConfig.getProtocol() + " doesn't support remote node");
-        }
-
-        return addNode(provider, nodeConfig, tp);
-    }
-
-    protected MeshNode addNode(TransportProvider provider, NodeConfig nodeConfig, Transport transport) {
-        var r = new MeshNode(nodeConfig, transport);
-        r.addHook(provider);
-
-        getRoute().join(r);
-        return r;
+    public MeshNode addRemoteNode(String url)  throws MalformedURLException {
+        return getCacheService().addRemoteNode(url);
     }
 
 }

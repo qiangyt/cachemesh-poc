@@ -24,6 +24,7 @@ import lombok.Getter;
 import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.misc.LifeStage;
 import cachemesh.common.misc.LogHelper;
+import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.MeshConfig;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
@@ -111,11 +112,11 @@ public class MeshNetwork implements Shutdownable {
         return addNode(pdr, nodeConfig, tp);
     }
 
-    public MeshNode addRemoteNode(String url) {
-        var nodeConfig = NodeConfig.fromUrl(url);
-        var pdr = loadTransportProvider(nodeConfig.getProtocol());
-        return addRemoteNode(pdr, nodeConfig);
-    }
+    /*
+     * public MeshNode addRemoteNode(String url) { var kind = new SimpleURL(url).getProtocol(); var nodeConfig =
+     * NodeConfig.fromUrl(url); var pdr = loadTransportProvider(nodeConfig.getProtocol()); return addRemoteNode(pdr,
+     * nodeConfig); }
+     */
 
     public MeshNode addRemoteNode(NodeConfig nodeConfig) {
         var pdr = loadTransportProvider(nodeConfig.getProtocol());

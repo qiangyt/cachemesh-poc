@@ -18,9 +18,9 @@ package cachemesh.common.config.types;
 import java.util.ArrayList;
 import java.util.List;
 
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
+import cachemesh.common.config.suppport.ConfigHelper;
 import lombok.Getter;
 
 @Getter
@@ -38,7 +38,7 @@ public class ListType<T> extends ContainerType<List<T>, T> {
     }
 
     @Override
-    protected List<T> doConvert(ConvertContext ctx, Object value) {
+    protected List<T> doConvert(ConfigContext ctx, Object value) {
         var r = new ArrayList<T>();
         int i = 0;
 

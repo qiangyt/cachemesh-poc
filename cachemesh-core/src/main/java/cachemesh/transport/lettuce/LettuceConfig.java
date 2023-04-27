@@ -18,7 +18,7 @@ package cachemesh.transport.lettuce;
 import java.net.MalformedURLException;
 import java.util.Map;
 
-import cachemesh.common.config.annotations.IgnoredProperty;
+import cachemesh.common.annotations.AIgnored;
 import cachemesh.common.config.types.IntegerType;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.config.NodeConfig;
@@ -38,16 +38,16 @@ public class LettuceConfig extends NodeConfig {
 
     public static final String DEFAULT_SEPARATOR = "%";
 
-    @IgnoredProperty
+    @AIgnored
     private String target;
 
-    @IgnoredProperty
+    @AIgnored
     private String host;
 
-    @IgnoredProperty
+    @AIgnored
     private int port;
 
-    @IgnoredProperty
+    @AIgnored
     private int database;
 
     private String keySeparator;

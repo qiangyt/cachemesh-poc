@@ -17,14 +17,14 @@ package cachemesh.common.config.suppport;
 
 import java.util.Map;
 
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
 
 @Getter
-public abstract class AbstractConvertContext implements ConvertContext {
+public abstract class AbstractContext implements ConfigContext {
 
     private final ClassCache classCache;
 
@@ -32,7 +32,7 @@ public abstract class AbstractConvertContext implements ConvertContext {
 
     private final Map<String, Object> rootValue;
 
-    public AbstractConvertContext(ClassCache classCache, TypeRegistry typeRegistry, Map<String, Object> rootValue) {
+    public AbstractContext(ClassCache classCache, TypeRegistry typeRegistry, Map<String, Object> rootValue) {
         this.classCache = classCache;
         this.typeRegistry = typeRegistry;
         this.rootValue = rootValue;

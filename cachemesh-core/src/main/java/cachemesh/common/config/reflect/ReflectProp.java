@@ -22,18 +22,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cachemesh.common.annotations.ADefault;
+import cachemesh.common.annotations.ADefaultBoolean;
+import cachemesh.common.annotations.ADefaultClass;
+import cachemesh.common.annotations.ADefaultDuration;
+import cachemesh.common.annotations.ADefaultEnum;
+import cachemesh.common.annotations.ADefaultInt;
+import cachemesh.common.annotations.AElement;
+import cachemesh.common.annotations.AIgnored;
+import cachemesh.common.annotations.AProperty;
 import cachemesh.common.config.Prop;
 import cachemesh.common.config.Type;
 import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.annotations.Default;
-import cachemesh.common.config.annotations.DefaultBoolean;
-import cachemesh.common.config.annotations.DefaultClass;
-import cachemesh.common.config.annotations.DefaultDuration;
-import cachemesh.common.config.annotations.DefaultEnum;
-import cachemesh.common.config.annotations.DefaultInt;
-import cachemesh.common.config.annotations.IgnoredProperty;
-import cachemesh.common.config.annotations.Property;
-import cachemesh.common.config.annotations.PropertyElement;
 import cachemesh.common.config.suppport.AbstractProp;
 import cachemesh.common.config.types.ArrayType;
 import cachemesh.common.config.types.EnumType;
@@ -86,11 +86,11 @@ public class ReflectProp<B, T> extends AbstractProp<B, T> {
         String setterName = null;
         String getterName = null;
 
-        if (field.getAnnotation(IgnoredProperty.class) != null) {
+        if (field.getAnnotation(AIgnored.class) != null) {
             return null;
         }
 
-        var pa = field.getAnnotation(Property.class);
+        var pa = field.getAnnotation(AProperty.class);
         if (pa != null) {
             propName = pa.value();
             setterName = pa.setter();
@@ -111,11 +111,11 @@ public class ReflectProp<B, T> extends AbstractProp<B, T> {
         } else if (fClass.isEnum()) {
             fType = new EnumType<>(fClass);
         } else if (List.class.isAssignableFrom(fClass)) {
-            var a = field.getAnnotation(PropertyElement.class);
+            var a = field.getAnnotation(AElement.class);
             var eltClass = typeRegistry.load(a.value());
             fType = ListType.of(eltClass);
         } else if (Map.class.isAssignableFrom(fClass)) {
-            var a = field.getAnnotation(PropertyElement.class);
+            var a = field.getAnnotation(AElement.class);
             var eltClass = typeRegistry.load(a.value());
             fType = MapType.of(eltClass);
         } else {
@@ -131,37 +131,37 @@ public class ReflectProp<B, T> extends AbstractProp<B, T> {
         Class<T> fClass = (Class<T>) field.getType();
 
         if (fClass == Boolean.class || fClass == boolean.class) {
-            var da = field.getAnnotation(DefaultBoolean.class);
+            var da = field.getAnnotation(ADefaultBoolean.class);
             return da.value();
         }
 
         if (fClass == Class.class) {
-            var da = field.getAnnotation(DefaultClass.class);
+            var da = field.getAnnotation(ADefaultClass.class);
             return da.value();
         }
 
         if (fClass == Duration.class) {
-            var da = field.getAnnotation(DefaultDuration.class);
+            var da = field.getAnnotation(ADefaultDuration.class);
             return DurationHelper.parse(da.value());
         }
 
         if (Enum.class.isAssignableFrom(fClass)) {
-            var da = field.getAnnotation(DefaultEnum.class);
+            var da = field.getAnnotation(ADefaultEnum.class);
             var enumClass = (Class<Enum>) fClass;
             return Enum.valueOf(enumClass, da.value());
         }
 
         if (fClass == Integer.class || fClass == int.class) {
-            var da = field.getAnnotation(DefaultInt.class);
+            var da = field.getAnnotation(ADefaultInt.class);
             return da.value();
         }
 
         if (fClass == String.class) {
-            var da = field.getAnnotation(Default.class);
+            var da = field.getAnnotation(ADefault.class);
             return da.value();
         }
 
-        var da = field.getAnnotation(Default.class);
+        var da = field.getAnnotation(ADefault.class);
         var daValue = da.value();
         return fType.convert(null, daValue);
     }

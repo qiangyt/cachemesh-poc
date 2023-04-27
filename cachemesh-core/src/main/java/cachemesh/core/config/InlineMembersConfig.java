@@ -18,8 +18,8 @@ package cachemesh.core.config;
 import java.util.List;
 import java.util.Map;
 
+import cachemesh.common.annotations.AElement;
 import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.annotations.PropertyElement;
 import cachemesh.common.config.reflect.ReflectBeanType;
 import cachemesh.common.config.types.BeanType;
 import cachemesh.common.misc.Dumpable;
@@ -35,7 +35,7 @@ public class InlineMembersConfig extends MembersConfig {
     public static final String KIND = "inline";
 
     @Singular(KIND)
-    @PropertyElement(NodeConfig.class)
+    @AElement(NodeConfig.class)
     private List<NodeConfig> inline;
 
     @Builder

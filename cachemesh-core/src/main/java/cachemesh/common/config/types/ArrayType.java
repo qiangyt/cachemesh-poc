@@ -18,10 +18,10 @@ package cachemesh.common.config.types;
 import java.lang.reflect.Array;
 import java.util.Collection;
 
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
 import cachemesh.common.config.TypeRegistry;
+import cachemesh.common.config.suppport.ConfigHelper;
 
 public class ArrayType<T> extends ContainerType<T[], T> {
 
@@ -44,7 +44,7 @@ public class ArrayType<T> extends ContainerType<T[], T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected T[] doConvert(ConvertContext ctx, Object value) {
+    protected T[] doConvert(ConfigContext ctx, Object value) {
         var listValue = (Collection<?>) value;
         var r = (T[]) Array.newInstance(getElementType().getKlass(), listValue.size());
 

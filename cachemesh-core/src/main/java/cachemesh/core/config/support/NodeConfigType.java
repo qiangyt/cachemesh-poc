@@ -18,7 +18,7 @@ package cachemesh.core.config.support;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
 import cachemesh.common.config.types.DynamicBeanType;
@@ -51,12 +51,12 @@ public class NodeConfigType extends DynamicBeanType<NodeConfig> {
     }
 
     @Override
-    public Object extractKind(ConvertContext ctx, Map<String, Object> propValues) {
+    public Object extractKind(ConfigContext ctx, Map<String, Object> propValues) {
         var url = extractURL(ctx, propValues);
         return url.getProtocol();
     }
 
-    public SimpleURL extractURL(ConvertContext ctx, Map<String, Object> propValues) {
+    public SimpleURL extractURL(ConfigContext ctx, Map<String, Object> propValues) {
         if (propValues.containsKey("url") == false) {
             throw new IllegalArgumentException(ctx.getPath() + ": url is required");
         }

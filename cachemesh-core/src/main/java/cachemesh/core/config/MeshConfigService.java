@@ -18,7 +18,6 @@ package cachemesh.core.config;
 import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.reflect.ReflectBeanType;
-import cachemesh.common.config.types.BeanType;
 import cachemesh.common.misc.ClassCache;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.cache.LocalCacheManager;
@@ -26,7 +25,8 @@ import cachemesh.core.config.support.LocalCacheConfigType;
 import cachemesh.core.config.support.MembersConfigType;
 import cachemesh.core.config.support.NodeConfigType;
 import lombok.Getter;
-import cachemesh.common.config.suppport.RootConvertContext;
+import cachemesh.common.config.suppport.RootContext;
+import cachemesh.common.config.types.BeanType;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -101,7 +101,7 @@ public class MeshConfigService {
     public MeshConfig createConfigFromMap(Map<String, Object> map) {
         var r = new MeshConfig();
 
-        var ctx = new RootConvertContext(getClassCache(), getTypeRegistry(), map);
+        var ctx = new RootContext(getClassCache(), getTypeRegistry(), map);
         getMeshConfigType().populate(ctx, r, null, map);
 
         return r;

@@ -18,9 +18,9 @@ package cachemesh.common.config.types;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.suppport.AbstractType;
+import cachemesh.common.config.suppport.ConfigHelper;
 import cachemesh.common.misc.SimpleURL;
 
 public class SimpleUrlType extends AbstractType<SimpleURL> {
@@ -40,7 +40,7 @@ public class SimpleUrlType extends AbstractType<SimpleURL> {
     }
 
     @Override
-    protected SimpleURL doConvert(ConvertContext ctx, Object value) {
+    protected SimpleURL doConvert(ConfigContext ctx, Object value) {
         var clazz = value.getClass();
 
         if (clazz == String.class) {

@@ -15,28 +15,28 @@
  */
 package cachemesh.common.config.suppport;
 
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Path;
 import lombok.Getter;
 
 @Getter
-public class ChildConvertContext extends AbstractConvertContext {
+public class ChildContext extends AbstractContext {
 
     private final Path path;
 
-    private final ConvertContext parent;
+    private final ConfigContext parent;
 
-    private final ConvertContext root;
+    private final ConfigContext root;
 
-    public ChildConvertContext(ConvertContext parent, String childName) {
+    public ChildContext(ConfigContext parent, String childName) {
         this(parent, Path.of(parent.getPath(), childName));
     }
 
-    public ChildConvertContext(ConvertContext parent, int childIndex) {
+    public ChildContext(ConfigContext parent, int childIndex) {
         this(parent, Path.of(parent.getPath(), childIndex));
     }
 
-    private ChildConvertContext(ConvertContext parent, Path path) {
+    private ChildContext(ConfigContext parent, Path path) {
         super(parent.getClassCache(), parent.getTypeRegistry(), parent.getRootValue());
 
         this.parent = parent;

@@ -15,9 +15,9 @@
  */
 package cachemesh.common.config.types;
 
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.suppport.AbstractType;
+import cachemesh.common.config.suppport.ConfigHelper;
 
 public class BooleanType extends AbstractType<Boolean> {
 
@@ -37,7 +37,7 @@ public class BooleanType extends AbstractType<Boolean> {
     }
 
     @Override
-    protected Boolean doConvert(ConvertContext ctx, Object value) {
+    protected Boolean doConvert(ConfigContext ctx, Object value) {
         var clazz = value.getClass();
 
         if (clazz == String.class) {

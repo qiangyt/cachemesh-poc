@@ -17,9 +17,9 @@ package cachemesh.common.config.types;
 
 import java.time.Duration;
 
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.suppport.AbstractType;
+import cachemesh.common.config.suppport.ConfigHelper;
 import cachemesh.common.misc.DurationHelper;
 import lombok.Getter;
 
@@ -39,7 +39,7 @@ public class DurationType extends AbstractType<Duration> {
     }
 
     @Override
-    protected Duration doConvert(ConvertContext ctx, Object value) {
+    protected Duration doConvert(ConfigContext ctx, Object value) {
         return DurationHelper.parse((String) value);
     }
 

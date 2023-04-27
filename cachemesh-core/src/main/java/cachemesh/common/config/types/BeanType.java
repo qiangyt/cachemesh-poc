@@ -17,10 +17,10 @@ package cachemesh.common.config.types;
 
 import java.util.Map;
 
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Prop;
 import cachemesh.common.config.suppport.AbstractType;
+import cachemesh.common.config.suppport.ConfigHelper;
 import lombok.Getter;
 
 @Getter
@@ -44,12 +44,12 @@ public abstract class BeanType<T> extends AbstractType<T> {
         return CONVERTABLES;
     }
 
-    public abstract Object extractKind(ConvertContext ctx, Map<String, Object> propValues);
+    public abstract Object extractKind(ConfigContext ctx, Map<String, Object> propValues);
 
-    public abstract T newInstance(ConvertContext ctx, Object kind);
+    public abstract T newInstance(ConfigContext ctx, Object kind);
 
     @SuppressWarnings("unchecked")
-    public void populate(ConvertContext ctx, T bean, Object kind, Map<String, Object> propValues) {
+    public void populate(ConfigContext ctx, T bean, Object kind, Map<String, Object> propValues) {
         var props = getProperties(ctx, kind);
 
         for (var entry : propValues.entrySet()) {
@@ -68,11 +68,11 @@ public abstract class BeanType<T> extends AbstractType<T> {
         }
     }
 
-    public abstract Map<String, Prop<?, ?>> getProperties(ConvertContext ctx, Object kind);
+    public abstract Map<String, Prop<?, ?>> getProperties(ConfigContext ctx, Object kind);
 
     @Override
     @SuppressWarnings("unchecked")
-    protected T doConvert(ConvertContext ctx, Object value) {
+    protected T doConvert(ConfigContext ctx, Object value) {
         var propValues = (Map<String, Object>) value;
 
         var kind = extractKind(ctx, propValues);

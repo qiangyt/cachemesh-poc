@@ -15,7 +15,7 @@
  */
 package cachemesh.common.config.types;
 
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
 import cachemesh.common.config.suppport.AbstractType;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public abstract class ContainerType<T, E> extends AbstractType<T> {
     }
 
     @Override
-    public T convert(ConvertContext ctx, Object value) {
+    public T convert(ConfigContext ctx, Object value) {
         if (value == null) {
             return null;
         }
@@ -45,7 +45,7 @@ public abstract class ContainerType<T, E> extends AbstractType<T> {
         return doConvert(ctx, value);
     }
 
-    protected E convertElement(ConvertContext elementCtx, Object elementValue) {
+    protected E convertElement(ConfigContext elementCtx, Object elementValue) {
         return getElementType().convert(elementCtx, elementValue);
     }
 

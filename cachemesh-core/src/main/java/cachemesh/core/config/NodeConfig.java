@@ -19,9 +19,9 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.config.annotations.DefaultBoolean;
-import cachemesh.common.config.annotations.DefaultInt;
-import cachemesh.common.config.annotations.Property;
+import cachemesh.common.annotations.ADefaultBoolean;
+import cachemesh.common.annotations.ADefaultInt;
+import cachemesh.common.annotations.AProperty;
 import cachemesh.common.config.types.BooleanType;
 import cachemesh.common.config.types.IntegerType;
 import cachemesh.common.misc.Dumpable;
@@ -42,18 +42,18 @@ public abstract class NodeConfig implements Dumpable {
     private SimpleURL url;
 
     // @Builder.Default
-    @Property
-    @DefaultBoolean(DEFAULT_LOCAL)
+    @AProperty
+    @ADefaultBoolean(DEFAULT_LOCAL)
     private boolean local;
 
     // @Builder.Default
-    @Property
-    @DefaultInt(DEFAULT_START_TIMEOUT)
+    @AProperty
+    @ADefaultInt(DEFAULT_START_TIMEOUT)
     private int startTimeout = DEFAULT_START_TIMEOUT;
 
     // @Builder.Default
-    @Property
-    @DefaultInt(DEFAULT_STOP_TIMEOUT)
+    @AProperty
+    @ADefaultInt(DEFAULT_STOP_TIMEOUT)
     private int stopTimeout = DEFAULT_STOP_TIMEOUT;
 
     protected NodeConfig(SimpleURL url) {

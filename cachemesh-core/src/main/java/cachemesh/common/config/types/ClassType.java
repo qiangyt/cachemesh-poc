@@ -15,9 +15,9 @@
  */
 package cachemesh.common.config.types;
 
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.suppport.AbstractType;
+import cachemesh.common.config.suppport.ConfigHelper;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
 
@@ -43,7 +43,7 @@ public class ClassType extends AbstractType<Class<?>> {
     }
 
     @Override
-    protected Class<?> doConvert(ConvertContext ctx, Object value) {
+    protected Class<?> doConvert(ConfigContext ctx, Object value) {
         return getClassCache().resolve((String) value);
     }
 

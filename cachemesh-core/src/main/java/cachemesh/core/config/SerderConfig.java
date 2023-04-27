@@ -18,8 +18,8 @@ package cachemesh.core.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.config.annotations.Default;
-import cachemesh.common.config.annotations.Property;
+import cachemesh.common.annotations.ADefault;
+import cachemesh.common.annotations.AProperty;
 import cachemesh.common.jackson.JacksonSerderializer;
 import cachemesh.common.misc.Dumpable;
 import cachemesh.common.misc.Serderializer;
@@ -43,8 +43,8 @@ public class SerderConfig implements Dumpable {
     }
 
     @Builder.Default
-    @Property
-    @Default("jackson")
+    @AProperty
+    @ADefault("jackson")
     private Kind kind = Kind.jackson;
 
     @Override

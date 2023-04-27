@@ -17,7 +17,7 @@ package cachemesh.common.config.suppport;
 
 import java.util.ArrayList;
 
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.IncompatibleTypeException;
 import cachemesh.common.config.Type;
 
@@ -54,7 +54,7 @@ public abstract class AbstractType<T> implements Type<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public T convert(ConvertContext ctx, Object value) {
+    public T convert(ConfigContext ctx, Object value) {
         if (value == null) {
             return null;
         }
@@ -86,9 +86,9 @@ public abstract class AbstractType<T> implements Type<T> {
         return false;
     }
 
-    protected abstract T doConvert(ConvertContext ctx, Object value);
+    protected abstract T doConvert(ConfigContext ctx, Object value);
 
-    public IllegalArgumentException invalidValueClassError(ConvertContext ctx, Class<?> actual) {
+    public IllegalArgumentException invalidValueClassError(ConfigContext ctx, Class<?> actual) {
         var classes = new ArrayList<Class<?>>();
         classes.add(getKlass());
 

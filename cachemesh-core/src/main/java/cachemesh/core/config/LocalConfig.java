@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cachemesh.common.config.annotations.PropertyElement;
+import cachemesh.common.annotations.AElement;
 import cachemesh.common.misc.Dumpable;
 import lombok.Setter;
 import lombok.Singular;
@@ -37,7 +37,7 @@ public class LocalConfig implements Dumpable {
     private LocalCacheConfig defaultCache;
 
     @Singular("cache")
-    @PropertyElement(LocalCacheConfig.class)
+    @AElement(LocalCacheConfig.class)
     private List<LocalCacheConfig> caches;
 
     protected LocalConfig(LocalCacheConfig defaultCache, List<LocalCacheConfig> caches) {

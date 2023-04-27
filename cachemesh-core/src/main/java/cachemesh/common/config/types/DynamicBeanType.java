@@ -18,7 +18,7 @@ package cachemesh.common.config.types;
 import java.util.Collections;
 import java.util.Map;
 
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Prop;
 import cachemesh.common.config.TypeRegistry;
 import lombok.Getter;
@@ -44,22 +44,22 @@ public abstract class DynamicBeanType<T> extends BeanType<T> {
     }
 
     @Override
-    public abstract Object extractKind(ConvertContext ctx, Map<String, Object> propValues);
+    public abstract Object extractKind(ConfigContext ctx, Map<String, Object> propValues);
 
     public abstract Map<String, BeanType<? extends T>> createMapping(TypeRegistry typeRegistry);
 
     @Override
-    public T newInstance(ConvertContext ctx, Object kind) {
+    public T newInstance(ConfigContext ctx, Object kind) {
         var type = determineConcreteType(ctx, kind);
         return type.newInstance(ctx, kind);
     }
 
-    public BeanType<? extends T> determineConcreteType(ConvertContext ctx, Object kind) {
+    public BeanType<? extends T> determineConcreteType(ConfigContext ctx, Object kind) {
         return getMapping().get(kind);
     }
 
     @Override
-    public Map<String, Prop<?, ?>> getProperties(ConvertContext ctx, Object kind) {
+    public Map<String, Prop<?, ?>> getProperties(ConfigContext ctx, Object kind) {
         var type = determineConcreteType(ctx, kind);
         return type.getProperties(ctx, kind);
     }

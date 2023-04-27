@@ -24,18 +24,18 @@ import java.util.Deque;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
 
 @Getter
-public class RootConvertContext extends AbstractConvertContext {
+public class RootContext extends AbstractContext {
 
     private final Map<Path, Object> cachedValues = new HashMap<>();
 
-    public RootConvertContext(ClassCache classCache, TypeRegistry typeRegistry, Map<String, Object> rootValue) {
+    public RootContext(ClassCache classCache, TypeRegistry typeRegistry, Map<String, Object> rootValue) {
         super(classCache, typeRegistry, rootValue);
     }
 
@@ -45,12 +45,12 @@ public class RootConvertContext extends AbstractConvertContext {
     }
 
     @Override
-    public ConvertContext getParent() {
+    public ConfigContext getParent() {
         return null;
     }
 
     @Override
-    public ConvertContext getRoot() {
+    public ConfigContext getRoot() {
         return this;
     }
 

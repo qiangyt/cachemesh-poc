@@ -15,9 +15,9 @@
  */
 package cachemesh.common.config.types;
 
-import cachemesh.common.config.ConfigHelper;
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.suppport.AbstractType;
+import cachemesh.common.config.suppport.ConfigHelper;
 import lombok.Getter;
 
 @Getter
@@ -40,7 +40,7 @@ public class EnumType<T extends Enum<T>> extends AbstractType<T> {
     }
 
     @Override
-    protected T doConvert(ConvertContext ctx, Object value) {
+    protected T doConvert(ConfigContext ctx, Object value) {
         return Enum.valueOf(getEnumClass(), (String) value);
     }
 

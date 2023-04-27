@@ -21,7 +21,7 @@ import lombok.Setter;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.config.annotations.Property;
+import cachemesh.common.annotations.AProperty;
 import cachemesh.common.misc.Dumpable;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
@@ -31,10 +31,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public abstract class LocalCacheConfig implements Dumpable {
 
-    @Property
+    @AProperty
     private String name;
 
-    @Property
+    @AProperty
     private Class<?> valueClass;
 
     @Builder.Default

@@ -18,7 +18,7 @@ package cachemesh.common.config.types;
 import java.util.HashMap;
 import java.util.Map;
 
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
 import lombok.Getter;
 
@@ -35,7 +35,7 @@ public class MapType<T> extends ContainerType<Map<String, T>, T> {
     }
 
     @Override
-    protected Map<String, T> doConvert(ConvertContext ctx, Object value) {
+    protected Map<String, T> doConvert(ConfigContext ctx, Object value) {
         var r = new HashMap<String, T>();
 
         for (var elementEntry : ((Map<?, ?>) value).entrySet()) {

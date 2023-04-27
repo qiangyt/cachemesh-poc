@@ -18,7 +18,7 @@ package cachemesh.common.config.types;
 import java.util.Collections;
 import java.util.List;
 
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.suppport.AbstractType;
 
 public class IntegerType extends AbstractType<Integer> {
@@ -39,7 +39,7 @@ public class IntegerType extends AbstractType<Integer> {
     }
 
     @Override
-    protected Integer doConvert(ConvertContext ctx, Object value) {
+    protected Integer doConvert(ConfigContext ctx, Object value) {
         var clazz = value.getClass();
 
         if (clazz == Character.class) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.config.suppport;
 
 import java.util.ArrayList;
 import java.util.Collections;

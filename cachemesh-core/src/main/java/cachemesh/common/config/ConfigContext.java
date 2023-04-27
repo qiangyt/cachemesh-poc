@@ -17,10 +17,10 @@ package cachemesh.common.config;
 
 import java.util.Map;
 
-import cachemesh.common.config.suppport.ChildConvertContext;
+import cachemesh.common.config.suppport.ChildContext;
 import cachemesh.common.misc.ClassCache;
 
-public interface ConvertContext {
+public interface ConfigContext {
 
     ClassCache getClassCache();
 
@@ -34,16 +34,16 @@ public interface ConvertContext {
 
     Path getPath();
 
-    ConvertContext getParent();
+    ConfigContext getParent();
 
-    ConvertContext getRoot();
+    ConfigContext getRoot();
 
-    default ConvertContext createChild(String name) {
-        return new ChildConvertContext(this, name);
+    default ConfigContext createChild(String name) {
+        return new ChildContext(this, name);
     }
 
-    default ConvertContext createChild(int index) {
-        return new ChildConvertContext(this, index);
+    default ConfigContext createChild(int index) {
+        return new ChildContext(this, index);
     }
 
 }

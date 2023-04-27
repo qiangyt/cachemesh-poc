@@ -17,7 +17,7 @@ package cachemesh.common.config.types;
 
 import java.util.Map;
 
-import cachemesh.common.config.ConvertContext;
+import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
 import lombok.Getter;
@@ -36,7 +36,7 @@ public abstract class KindPathingDynamicBeanType<T> extends DynamicBeanType<T> {
     }
 
     @Override
-    public Object extractKind(ConvertContext ctx, Map<String, Object> propValues) {
+    public Object extractKind(ConfigContext ctx, Map<String, Object> propValues) {
         var r = ctx.getValue(getKindPath());
         if (r == null) {
             r = getDefaultKind();

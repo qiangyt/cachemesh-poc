@@ -15,12 +15,12 @@
  */
 package cachemesh.common.config.suppport;
 
-import cachemesh.common.config.Prop;
+import cachemesh.common.config.Property;
 import cachemesh.common.config.Type;
 import lombok.Getter;
 
 @Getter
-public abstract class AbstractProp<B, T> implements Prop<B, T> {
+public abstract class AbstractProp<B, T> implements Property<B, T> {
 
     private final String name;
 

@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import cachemesh.common.config.ConfigContext;
-import cachemesh.common.config.Prop;
+import cachemesh.common.config.Property;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
 import cachemesh.common.misc.Reflect;
@@ -28,12 +28,12 @@ import lombok.Getter;
 
 public class ReflectBeanType<T> extends BeanType<T> {
 
-    private final Map<String, Prop<?, ?>> properties;
+    private final Map<String, Property<?, ?>> properties;
 
     @Getter
     private final Constructor<T> ctor;
 
-    public ReflectBeanType(Class<T> klass, Constructor<T> ctor, Map<String, Prop<T, ?>> properties) {
+    public ReflectBeanType(Class<T> klass, Constructor<T> ctor, Map<String, Property<T, ?>> properties) {
         super(klass);
 
         this.ctor = ctor;
@@ -56,7 +56,7 @@ public class ReflectBeanType<T> extends BeanType<T> {
     }
 
     @Override
-    public Map<String, Prop<?, ?>> getProperties(ConfigContext ctx, Object kind) {
+    public Map<String, Property<?, ?>> getProperties(ConfigContext ctx, Object kind) {
         return this.properties;
     }
 

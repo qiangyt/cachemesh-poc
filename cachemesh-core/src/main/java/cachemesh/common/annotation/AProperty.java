@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.annotations;
+package cachemesh.common.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,8 +24,12 @@ import java.lang.annotation.Inherited;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @Inherited
-public @interface ADefaultEnum {
+public @interface AProperty {
 
-    String value();
+    String value() default "";
+
+    String getter() default "";
+
+    String setter() default "";
 
 }

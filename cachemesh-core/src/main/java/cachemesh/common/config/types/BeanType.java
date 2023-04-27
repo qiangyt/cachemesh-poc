@@ -18,7 +18,7 @@ package cachemesh.common.config.types;
 import java.util.Map;
 
 import cachemesh.common.config.ConfigContext;
-import cachemesh.common.config.Prop;
+import cachemesh.common.config.Property;
 import cachemesh.common.config.suppport.AbstractType;
 import cachemesh.common.config.suppport.ConfigHelper;
 import lombok.Getter;
@@ -56,7 +56,7 @@ public abstract class BeanType<T> extends AbstractType<T> {
             var propName = entry.getKey();
             var propCtx = ctx.createChild(propName);
 
-            var p = (Prop<T, Object>) props.get(propName);
+            var p = (Property<T, Object>) props.get(propName);
             if (p == null) {
                 var msg = String.format("unexpected prop: %s", propCtx.getPath());
                 throw new IllegalArgumentException(msg);
@@ -68,7 +68,7 @@ public abstract class BeanType<T> extends AbstractType<T> {
         }
     }
 
-    public abstract Map<String, Prop<?, ?>> getProperties(ConfigContext ctx, Object kind);
+    public abstract Map<String, Property<?, ?>> getProperties(ConfigContext ctx, Object kind);
 
     @Override
     @SuppressWarnings("unchecked")

@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import cachemesh.common.config.ConfigContext;
-import cachemesh.common.config.Prop;
+import cachemesh.common.config.Property;
 import cachemesh.common.config.TypeRegistry;
 import lombok.Getter;
 
@@ -59,7 +59,7 @@ public abstract class DynamicBeanType<T> extends BeanType<T> {
     }
 
     @Override
-    public Map<String, Prop<?, ?>> getProperties(ConfigContext ctx, Object kind) {
+    public Map<String, Property<?, ?>> getProperties(ConfigContext ctx, Object kind) {
         var type = determineConcreteType(ctx, kind);
         return type.getProperties(ctx, kind);
     }

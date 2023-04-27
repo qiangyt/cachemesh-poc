@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config;
+package cachemesh.common.annotation;
 
-public interface Prop<B, T> {
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 
-    T getDevault();
-
-    String getName();
-
-    Type<T> getType();
-
-    T get(B bean);
-
-    void set(B bean, T value);
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+@Inherited
+public @interface AIgnored {
 
 }

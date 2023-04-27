@@ -22,16 +22,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cachemesh.common.annotations.ADefault;
-import cachemesh.common.annotations.ADefaultBoolean;
-import cachemesh.common.annotations.ADefaultClass;
-import cachemesh.common.annotations.ADefaultDuration;
-import cachemesh.common.annotations.ADefaultEnum;
-import cachemesh.common.annotations.ADefaultInt;
-import cachemesh.common.annotations.AElement;
-import cachemesh.common.annotations.AIgnored;
-import cachemesh.common.annotations.AProperty;
-import cachemesh.common.config.Prop;
+import cachemesh.common.annotation.ADefault;
+import cachemesh.common.annotation.ADefaultBoolean;
+import cachemesh.common.annotation.ADefaultClass;
+import cachemesh.common.annotation.ADefaultDuration;
+import cachemesh.common.annotation.ADefaultEnum;
+import cachemesh.common.annotation.ADefaultInt;
+import cachemesh.common.annotation.AElement;
+import cachemesh.common.annotation.AIgnored;
+import cachemesh.common.annotation.AProperty;
+import cachemesh.common.config.Property;
 import cachemesh.common.config.Type;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.suppport.AbstractProp;
@@ -67,11 +67,11 @@ public class ReflectProp<B, T> extends AbstractProp<B, T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <B> Map<String, Prop<B, ?>> of(TypeRegistry typeRegistry, Class<B> klass) {
-        var r = new HashMap<String, Prop<B, ?>>();
+    public static <B> Map<String, Property<B, ?>> of(TypeRegistry typeRegistry, Class<B> klass) {
+        var r = new HashMap<String, Property<B, ?>>();
 
         for (var f : klass.getDeclaredFields()) {
-            var p = (Prop<B, ?>) ReflectProp.of(typeRegistry, f);
+            var p = (Property<B, ?>) ReflectProp.of(typeRegistry, f);
             if (p != null) {
                 r.put(p.getName(), p);
             }

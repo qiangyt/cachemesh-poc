@@ -54,7 +54,8 @@ public class MeshConfig implements Dumpable {
     @Setter
     private LocalConfig local;
 
-    public MeshConfig() {}
+    public MeshConfig() {
+    }
 
     @Builder
     private MeshConfig(String name, HashingKind hashing, MembersConfig nodes, LocalConfig local) {

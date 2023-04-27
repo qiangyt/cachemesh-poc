@@ -74,7 +74,7 @@ public class MeshNetwork implements Shutdownable {
         return getCacheService().addLocalNode(url);
     }
 
-    public MeshNode addRemoteNode(String url)  throws MalformedURLException {
+    public MeshNode addRemoteNode(String url) throws MalformedURLException {
         return getCacheService().addRemoteNode(url);
     }
 

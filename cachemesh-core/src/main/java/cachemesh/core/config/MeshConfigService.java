@@ -51,14 +51,10 @@ public class MeshConfigService {
 
     private final BeanType<MeshConfig> meshConfigType;
 
-
     @SuppressWarnings("unchecked")
-    public MeshConfigService(TypeRegistry parentTypeRegistry, 
-                             TransportRegistry transportRegistry, 
-                             LocalCacheProviderRegistry localCacheProviderRegistry,
-                             MeshConfig config,
-                             ClassCache classCache,
-                             ShutdownManager shutdownManager) {
+    public MeshConfigService(TypeRegistry parentTypeRegistry, TransportRegistry transportRegistry,
+            LocalCacheProviderRegistry localCacheProviderRegistry, MeshConfig config, ClassCache classCache,
+            ShutdownManager shutdownManager) {
         this.typeRegistry = createTypeRegistry(parentTypeRegistry, localCacheProviderRegistry);
         this.transportRegistry = transportRegistry;
         this.LocalCacheProviderRegistry = localCacheProviderRegistry;
@@ -68,7 +64,8 @@ public class MeshConfigService {
         this.meshConfigType = (BeanType<MeshConfig>) this.typeRegistry.load(MeshConfig.class);
     }
 
-    public TypeRegistry createTypeRegistry(TypeRegistry parentTypeRegistry, LocalCacheProviderRegistry localCacheProviderRegistry) {
+    public TypeRegistry createTypeRegistry(TypeRegistry parentTypeRegistry,
+            LocalCacheProviderRegistry localCacheProviderRegistry) {
         var r = new TypeRegistry(parentTypeRegistry);
 
         r.register(MembersConfig.class, new MembersConfigType(typeRegistry));
@@ -79,7 +76,6 @@ public class MeshConfigService {
 
         return r;
     }
-
 
     @SuppressWarnings("unchecked")
     public MeshConfig createConfigFromYaml(String yamlText) {
@@ -115,8 +111,7 @@ public class MeshConfigService {
         var cfg = getConfig();
         var name = cfg.getName();
 
-        return new LocalCacheManager(name, cfg.getLocal(), getLocalCacheProviderRegistry(),
-            getShutdownManager());
+        return new LocalCacheManager(name, cfg.getLocal(), getLocalCacheProviderRegistry(), getShutdownManager());
     }
 
 }

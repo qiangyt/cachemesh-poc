@@ -51,14 +51,14 @@ public class MeshCacheService {
 
         var cfg = configService.getConfig();
         var name = cfg.getName();
-        
+
         this.logger = LogHelper.getLogger(getClass(), name);
         this.configService = configService;
         this.route = new ConsistentHash<>(cfg.getHashing().instance);
-        
+
         this.localCacheManager = configService.createLocalCacheManager();
         this.nearCacheManager = this.localCacheManager;
-        this.meshCacheManager = null;//new MeshCacheManager(nearCacheManager, this);
+        this.meshCacheManager = null;// new MeshCacheManager(nearCacheManager, this);
     }
 
     public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
@@ -91,9 +91,9 @@ public class MeshCacheService {
 
     public MeshNode addLocalNode(String url) throws MalformedURLException {
         var kind = new SimpleURL(url).getProtocol();
-        NodeConfig nodeConfig = null;//NodeConfig.fromUrl(url);
+        NodeConfig nodeConfig = null;// NodeConfig.fromUrl(url);
         var pdr = loadTransportProvider(kind);
-        return null;//addLocalNode(nodeConfig, pdr);
+        return null;// addLocalNode(nodeConfig, pdr);
     }
 
     protected MeshNode addLocalNode(NodeConfig nodeConfig, LocalTransport localTransport) {
@@ -109,7 +109,7 @@ public class MeshCacheService {
 
     public MeshNode addRemoteNode(String url) throws MalformedURLException {
         var kind = new SimpleURL(url).getProtocol();
-        NodeConfig nodeConfig = null;//NodeConfig.fromUrl(url);
+        NodeConfig nodeConfig = null;// NodeConfig.fromUrl(url);
         var pdr = loadTransportProvider(kind);
         return addRemoteNode(pdr, nodeConfig);
     }

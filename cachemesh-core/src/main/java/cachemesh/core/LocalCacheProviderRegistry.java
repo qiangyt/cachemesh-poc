@@ -15,16 +15,16 @@
  */
 package cachemesh.core;
 
-import cachemesh.common.registry.SimpleRegistry;
+import cachemesh.common.registry.Registry;
 import cachemesh.core.spi.LocalCacheProvider;
 
-public class LocalCacheProviderRegistry extends SimpleRegistry<String, LocalCacheProvider> {
+public class LocalCacheProviderRegistry extends Registry<String, LocalCacheProvider> {
 
     public static final LocalCacheProviderRegistry DEFAULT = new LocalCacheProviderRegistry();
 
     @Override
-    protected String supplyKey(String kind) {
-        return kind;
+    public String getValueName() {
+        return "local cache provider";
     }
 
 }

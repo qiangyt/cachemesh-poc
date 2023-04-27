@@ -15,16 +15,16 @@
  */
 package cachemesh.core;
 
-import cachemesh.common.registry.SimpleRegistry;
+import cachemesh.common.registry.Registry;
 import cachemesh.core.spi.TransportProvider;
 
-public class TransportRegistry extends SimpleRegistry<String, TransportProvider> {
+public class TransportRegistry extends Registry<String, TransportProvider> {
 
     public static final TransportRegistry DEFAULT = new TransportRegistry();
 
     @Override
-    protected String supplyKey(String protocol) {
-        return protocol;
+    public String getValueName() {
+        return "transport";
     }
 
 }

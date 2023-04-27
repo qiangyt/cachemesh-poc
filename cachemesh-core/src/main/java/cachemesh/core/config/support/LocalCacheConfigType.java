@@ -40,7 +40,7 @@ public class LocalCacheConfigType extends KindPathingDynamicBeanType<LocalCacheC
     public Map<String, BeanType<? extends LocalCacheConfig>> createMapping(TypeRegistry typeRegistry) {
         var r = new HashMap<String, BeanType<? extends LocalCacheConfig>>();
 
-        for (var entry : getLocalCacheRegistry().getItems()) {
+        for (var entry : getLocalCacheRegistry().getAll().entrySet()) {
             var protocol = entry.getKey();
             var provider = entry.getValue();
             r.put(protocol, provider.resolveConfigType(typeRegistry));

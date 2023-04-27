@@ -22,12 +22,12 @@ import io.lettuce.core.RedisClient;
 
 public class DedicatedRedisClientProvider extends Manager<LettuceConfig, RedisClient> implements RedisClientProvider {
 
-    public static final DedicatedRedisClientProvider DEFAULT = new DedicatedRedisClientProvider();
-
     @Override
-    protected String supplyKey(LettuceConfig config) {
-        return config.getTarget();
+    public String getValueName() {
+        return "redis client";
     }
+
+    public static final DedicatedRedisClientProvider DEFAULT = new DedicatedRedisClientProvider();
 
     @Override
     protected RedisClient doCreate(LettuceConfig config) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.misc;
+package cachemesh.common.misc.registry;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -22,37 +22,28 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import cachemesh.common.registry.SimpleRegistry;
+import cachemesh.common.registry.Registry;
 
-public class SimpleRegistryTest {
+public class RegistryTest {
 
-	class Config {
-		final String name;
-
-		Config(String name) {
-			this.name = name;
-		}
-	}
-
-	class TargetRegistry extends SimpleRegistry<Config, String> {
+	class TargetRegistry extends Registry<String, String> {
 		@Override
-		protected String supplyKey(Config config) {
-			return config.name;
+		public String getValueName() {
+			return "target";
 		}
 	}
 
 	@Test
 	public void test_happy() {
 		var r = new TargetRegistry();
-		var c1 = new Config("c1");
+		var c1 = "c1";
 
 		assertNull(r.unregister(c1));
 		assertNull(r.get(c1));
 		r.register(c1, "value1");
 		assertEquals("value1", r.get(c1));
-		assertEquals("value1", r.getByKey("c1"));
 
-		var c2 = new Config("c1");
+		var c2 = "c1";
 		assertThrows(IllegalArgumentException.class, () -> r.register(c2, "value2"));
 
 		assertEquals("value1", r.unregister(c2));

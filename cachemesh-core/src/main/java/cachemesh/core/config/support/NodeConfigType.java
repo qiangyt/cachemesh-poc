@@ -41,7 +41,7 @@ public class NodeConfigType extends DynamicBeanType<NodeConfig> {
     public Map<String, BeanType<? extends NodeConfig>> createMapping(TypeRegistry typeRegistry) {
         var r = new HashMap<String, BeanType<? extends NodeConfig>>();
 
-        for (var entry : getTransportRegistry().getItems()) {
+        for (var entry : getTransportRegistry().getAll().entrySet()) {
             var protocol = entry.getKey();
             var provider = entry.getValue();
             r.put(protocol, provider.resolveConfigType(typeRegistry));

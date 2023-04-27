@@ -15,68 +15,89 @@
  */
 package cachemesh.common.registry;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.function.Function;
 import java.util.Map;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 
-public abstract class Registry<C, T, S> {
+public abstract class Registry<KIND, VALUE> {
 
     @Getter(AccessLevel.PROTECTED)
-    private Map<String, S> itemMap = createItemMap();
+    private final Map<KIND, VALUE> localMap = new HashMap<>();
 
-    protected Map<String, S> createItemMap() {
-        return new HashMap<>();
+    @Getter
+    private final Registry<KIND, VALUE> parent;
+
+    protected Registry() {
+        this(null);
     }
 
-    public Iterable<Map.Entry<String, S>> getItems() {
-        return getItemMap().entrySet();
+    protected Registry(Registry<KIND, VALUE> parent) {
+        this.parent = parent;
     }
 
-    protected abstract S supplyItem(C config, T value);
+    public abstract String getValueName();
 
-    protected abstract String supplyKey(C config);
+    public Map<KIND, VALUE> getAll() {
+        var p = getParent();
+        if (p == null) {
+            return Collections.unmodifiableMap(getLocalMap());
+        }
 
-    protected abstract T supplyValue(S item);
+        var r = new HashMap<KIND, VALUE>();
+        r.putAll(p.getAll());
+        r.putAll(getLocalMap());
+        return Collections.unmodifiableMap(r);
+    }
 
-    public void register(C config, T value) {
-        var key = supplyKey(config);
-        getItemMap().compute(key, (k, existing) -> {
+    public void register(KIND kind, VALUE value) {
+        getLocalMap().compute(kind, (k, existing) -> {
             if (existing != null) {
-                throw new IllegalArgumentException("duplicated: " + key);
+                var msg = String.format("duplicated %s: %s", getValueName(), kind);
+                throw new IllegalArgumentException(msg);
             }
-            return supplyItem(config, value);
+            return value;
         });
     }
 
-    public T unregister(C config) {
-        String key = supplyKey(config);
-        var item = getItemMap().remove(key);
-        return (item == null) ? null : supplyValue(item);
+    public VALUE resolve(KIND kind, Function<KIND, VALUE> creator) {
+        var p = getParent();
+        if (p != null) {
+            var r = p.get(kind);
+            if (r != null) {
+                return r;
+            }
+        }
+
+        return getLocalMap().computeIfAbsent(kind, k -> creator.apply(kind));
     }
 
-    public T load(C config) {
-        String key = supplyKey(config);
-        return loadByKey(key);
+    public VALUE unregister(KIND kind) {
+        return getLocalMap().remove(kind);
     }
 
-    public T loadByKey(String key) {
-        T r = getByKey(key);
+    public VALUE load(KIND kind) {
+        VALUE r = get(kind);
         if (r == null) {
-            throw new IllegalArgumentException(key + " not found");
+            var msg = String.format("unknown %s: %s", getValueName(), kind);
+            throw new IllegalArgumentException(msg);
         }
         return r;
     }
 
-    public T get(C config) {
-        String key = supplyKey(config);
-        return getByKey(key);
-    }
+    public VALUE get(KIND kind) {
+        var p = getParent();
+        if (p != null) {
+            var r = p.get(kind);
+            if (r != null) {
+                return r;
+            }
+        }
 
-    public T getByKey(String key) {
-        var item = getItemMap().get(key);
-        return (item == null) ? null : supplyValue(item);
-    }
+        return getLocalMap().get(kind);
+    };
 
 }

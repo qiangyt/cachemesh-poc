@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.misc;
+package cachemesh.common.misc.registry;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -22,43 +22,35 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.jupiter.api.Test;
 
-import cachemesh.common.registry.SimpleManager;
+import cachemesh.common.registry.Manager;
 
-public class SimpleManagerTest {
+public class ManagerTest {
 
-	class Config {
-		final String name;
 
-		Config(String name) {
-			this.name = name;
+	class TargetManager extends Manager<String, String> {
+		@Override
+		public String getValueName() {
+			return "target";
 		}
-	}
 
-	class TargetManager extends SimpleManager<Config, String> {
-
-		Config configToDestroy;
+		String kindToDestroy;
 		String itemToDestroy;
 		int timeoutToDestroy;
 		int counterForDestroy;
 
-		Config configToCreate;
+		String kindToCreate;
 		int counterForCreate;
 
 		@Override
-		protected String supplyKey(Config config) {
-			return config.name;
-		}
-
-		@Override
-		protected String doCreate(Config config) {
-			this.configToCreate = config;
+		protected String doCreate(String kind) {
+			this.kindToCreate = kind;
 			this.counterForCreate++;
-			return "value-for-" + config.name;
+			return "value-for-" + kind;
 		}
 
 		@Override
-		protected void doDestroy(Config config, String item, int timeoutSeconds) throws InterruptedException {
-			this.configToDestroy = config;
+		protected void doDestroy(String kind, String item, int timeoutSeconds) throws InterruptedException {
+			this.kindToDestroy = kind;
 			this.counterForDestroy++;
 			this.itemToDestroy = item;
 			this.timeoutToDestroy = timeoutSeconds;
@@ -68,56 +60,56 @@ public class SimpleManagerTest {
 	@Test
 	public void test_resolve() {
 		var r = new TargetManager();
-		var c = new Config("c");
+		var c = "c";
 
 		var v1 = r.resolve(c);
 		assertEquals("value-for-c", v1);
 		assertEquals(1, r.counterForCreate);
-		assertSame(c, r.configToCreate);
+		assertSame(c, r.kindToCreate);
 
 		var v2 = r.resolve(c);
 		assertSame(v1, v2);
 		assertEquals(1, r.counterForCreate);
-		assertSame(c, r.configToCreate);
+		assertSame(c, r.kindToCreate);
 
-		v2 = r.resolve(new Config("c2"));
+		v2 = r.resolve("c2");
 		assertEquals("value-for-c2", v2);
 		assertEquals(2, r.counterForCreate);
-		assertEquals("c2", r.configToCreate.name);
+		assertEquals("c2", r.kindToCreate);
 	}
 
 	@Test
 	public void test_create() {
 		var r = new TargetManager();
-		var c = new Config("c");
+		var c = "c";
 
 		var v1 = r.create(c);
 		assertEquals("value-for-c", v1);
 		assertEquals(1, r.counterForCreate);
-		assertSame(c, r.configToCreate);
+		assertSame(c, r.kindToCreate);
 
 		assertThrows(IllegalArgumentException.class, () -> r.create(c));
 
-		var v2 = r.create(new Config("c2"));
+		var v2 = r.create("c2");
 		assertEquals("value-for-c2", v2);
 		assertEquals(2, r.counterForCreate);
-		assertEquals("c2", r.configToCreate.name);
+		assertEquals("c2", r.kindToCreate);
 	}
 
 	@Test
 	public void test_destroy() throws Exception {
 		var r = new TargetManager();
-		var c = new Config("c");
+		var c = "c";
 
 		assertNull(r.destroy(c, 12345));
 		assertEquals(0, r.counterForDestroy);
-		assertNull(r.configToDestroy);
+		assertNull(r.kindToDestroy);
 
 		r.create(c);
 
 		assertEquals("value-for-c", r.destroy(c, 12345));
 		assertEquals(1, r.counterForDestroy);
-		assertSame(c, r.configToDestroy);
+		assertSame(c, r.kindToDestroy);
 
 	}
 

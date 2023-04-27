@@ -15,33 +15,32 @@
  */
 package cachemesh.common.registry;
 
-public abstract class Manager<C, T> extends SimpleRegistry<C, T> {
+public abstract class Manager<KIND, VALUE> extends Registry<KIND, VALUE> {
 
-    public T resolve(C config) {
-        String key = supplyKey(config);
-        return getItemMap().computeIfAbsent(key, k -> doCreate(config));
+    public VALUE resolve(KIND kind) {
+        return getLocalMap().computeIfAbsent(kind, k -> doCreate(kind));
     }
 
-    public T create(C config) {
-        String key = supplyKey(config);
-        return getItemMap().compute(key, (k, existing) -> {
+    public VALUE create(KIND kind) {
+        return getLocalMap().compute(kind, (k, existing) -> {
             if (existing != null) {
-                throw new IllegalArgumentException("duplicated: " + key);
+                var msg = String.format("duplicated %s: %s", getValueName(), kind);
+                throw new IllegalArgumentException(msg);
             }
-            return doCreate(config);
+            return doCreate(kind);
         });
     }
 
-    public T destroy(C config, int timeoutSeconds) throws InterruptedException {
-        T r = unregister(config);
+    public VALUE destroy(KIND kind, int timeoutSeconds) throws InterruptedException {
+        VALUE r = unregister(kind);
         if (r != null) {
-            doDestroy(config, r, timeoutSeconds);
+            doDestroy(kind, r, timeoutSeconds);
         }
         return r;
     }
 
-    protected abstract T doCreate(C config);
+    protected abstract VALUE doCreate(KIND kind);
 
-    protected abstract void doDestroy(C config, T item, int timeoutSeconds) throws InterruptedException;
+    protected abstract void doDestroy(KIND kind, VALUE value, int timeoutSeconds) throws InterruptedException;
 
 }

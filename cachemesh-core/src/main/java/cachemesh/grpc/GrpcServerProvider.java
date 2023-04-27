@@ -31,11 +31,6 @@ public class GrpcServerProvider extends Manager<GrpcConfig, GrpcServer> {
     }
 
     @Override
-    protected String supplyKey(GrpcConfig config) {
-        return config.getTarget();
-    }
-
-    @Override
     protected GrpcServer doCreate(GrpcConfig config) {
         return new DedicatedGrpcServer(config, getShutdownManager());
     }
@@ -43,6 +38,11 @@ public class GrpcServerProvider extends Manager<GrpcConfig, GrpcServer> {
     @Override
     protected void doDestroy(GrpcConfig config, GrpcServer server, int timeoutSeconds) throws InterruptedException {
         server.stop(timeoutSeconds);
+    }
+
+    @Override
+    public String getValueName() {
+        return "grpc server";
     }
 
 }

@@ -13,18 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.registry;
+package cachemesh.core;
 
-public abstract class SimpleRegistry<C, T> extends Registry<C, T, T> {
-
-    @Override
-    protected T supplyItem(C config, T value) {
-        return value;
-    }
-
-    @Override
-    protected T supplyValue(T item) {
-        return item;
-    }
+public class MeshComponents {
 
 }

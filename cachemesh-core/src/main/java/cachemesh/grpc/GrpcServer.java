@@ -27,4 +27,6 @@ public interface GrpcServer {
 
     boolean isStarted();
 
+    GrpcConfig getConfig();
+
 }

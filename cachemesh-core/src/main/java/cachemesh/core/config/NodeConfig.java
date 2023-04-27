@@ -128,4 +128,28 @@ public abstract class NodeConfig implements Dumpable {
         return r;
     }
 
+    @Override
+    public int hashCode() {
+        return getUrl().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+
+        NodeConfig that;
+        try {
+            that = (NodeConfig) obj;
+        } catch (ClassCastException e) {
+            return false;
+        }
+
+        return getUrl().equals(that.getUrl());
+    }
+
 }

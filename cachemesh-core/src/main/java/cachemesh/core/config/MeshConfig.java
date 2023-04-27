@@ -18,17 +18,18 @@ package cachemesh.core.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import cachemesh.common.config.annotations.IgnoredProperty;
 import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
 import cachemesh.common.misc.Dumpable;
 import cachemesh.core.TransportRegistry;
+import cachemesh.core.LocalCacheManager;
 import cachemesh.core.LocalCacheProviderRegistry;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
 
 @Getter
-@Setter
 public class MeshConfig implements Dumpable {
 
     public static enum HashingKind {
@@ -45,17 +46,31 @@ public class MeshConfig implements Dumpable {
 
     public static final HashingKind DEFAULT_HASHING = HashingKind.murmur;
 
+    @Setter
     private String name = DEFAULT_NAME;
 
+    @Setter
     private HashingKind hashing = DEFAULT_HASHING;
 
+    @Setter
     private MembersConfig nodes;
 
+    @Setter
     private LocalConfig local;
 
+    @IgnoredProperty
     private final TransportRegistry transportRegistry;
 
+    @IgnoredProperty
     private final LocalCacheProviderRegistry LocalCacheProviderRegistry;
+
+    @IgnoredProperty
+    @Setter
+    private LocalCacheManager localCacheManager;
+
+    @IgnoredProperty
+    @Setter
+    private LocalCacheManager nearCacheManager;
 
     public MeshConfig(TransportRegistry transportRegistry, LocalCacheProviderRegistry LocalCacheProviderRegistry) {
         this.transportRegistry = transportRegistry;

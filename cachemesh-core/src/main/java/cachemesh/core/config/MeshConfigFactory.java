@@ -16,9 +16,18 @@
 package cachemesh.core.config;
 
 import cachemesh.core.TransportRegistry;
+import cachemesh.core.config.support.LocalCacheConfigType;
 import cachemesh.core.config.support.MembersConfigType;
+import cachemesh.core.config.support.NodeConfigType;
 import lombok.Getter;
+import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
+import cachemesh.common.config.reflect.ReflectBeanType;
+import cachemesh.common.config.suppport.RootConvertContext;
+import cachemesh.common.config.types.BeanType;
+import cachemesh.common.misc.ClassCache;
+import cachemesh.common.shutdown.ShutdownManager;
+import cachemesh.core.LocalCacheManager;
 import cachemesh.core.LocalCacheProviderRegistry;
 
 import java.io.InputStream;
@@ -32,31 +41,40 @@ public class MeshConfigFactory {
 
     private final TransportRegistry transportRegistry;
 
-    private final LocalCacheProviderRegistry localCacheRegistry;
+    private final LocalCacheProviderRegistry localCacheProviderRegistry;
 
     private final TypeRegistry typeRegistry;
 
+    private final ClassCache classCache;
+
+    private final BeanType<MeshConfig> meshConfigType;
+
+    private final ShutdownManager shutdownManager;
+
     public MeshConfigFactory() {
-        this(TransportRegistry.DEFAULT, LocalCacheProviderRegistry.DEFAULT, TypeRegistry.DEFAULT);
+        this(TransportRegistry.DEFAULT, LocalCacheProviderRegistry.DEFAULT, ClassCache.DEFAULT, TypeRegistry.DEFAULT,
+                ShutdownManager.DEFAULT);
     }
 
-    public MeshConfigFactory(TransportRegistry transportRegistry, LocalCacheProviderRegistry localCacheRegistry,
-            TypeRegistry typeRegistry) {
+    @SuppressWarnings("unchecked")
+    public MeshConfigFactory(TransportRegistry transportRegistry, LocalCacheProviderRegistry localCacheProviderRegistry,
+            ClassCache classCache, TypeRegistry parentTypeRegistry, ShutdownManager shutdownManager) {
         this.transportRegistry = transportRegistry;
-        this.localCacheRegistry = localCacheRegistry;
-        this.typeRegistry = typeRegistry;
+        this.localCacheProviderRegistry = localCacheProviderRegistry;
+        this.classCache = classCache;
+        this.shutdownManager = shutdownManager;
+
+        var typeRegistry = new TypeRegistry(parentTypeRegistry);
 
         typeRegistry.register(MembersConfig.class, new MembersConfigType(typeRegistry));
-        typeRegistry.register(LocalCacheConfig.class, new AbstractLocalCacheConfigType() {
+        typeRegistry.register(LocalCacheConfig.class,
+                new LocalCacheConfigType(localCacheProviderRegistry, typeRegistry, Path.of("../kind")));
+        typeRegistry.register(LocalCacheConfig.class, new NodeConfigType(transportRegistry, typeRegistry));
+        typeRegistry.register(MeshConfig.class, ReflectBeanType.of(typeRegistry, MeshConfig.class));
 
-            @Override
-            public BeanType<? extends LocalCacheConfig> determineConcreteType(Object indicator) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'determineConcreteType'");
-            }
+        this.typeRegistry = typeRegistry;
 
-        });
-
+        this.meshConfigType = (BeanType<MeshConfig>) typeRegistry.load(MeshConfig.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -81,8 +99,18 @@ public class MeshConfigFactory {
     }
 
     public MeshConfig fromMap(Map<String, Object> map) {
-        var r = new MeshConfig(getTransportRegistry(), getLocalCacheRegistry());
-        r.withMap("", null, map);
+        var r = new MeshConfig(getTransportRegistry(), getLocalCacheProviderRegistry());
+
+        var ctx = new RootConvertContext(getClassCache(), getTypeRegistry(), map);
+        getMeshConfigType().populate(ctx, r, null, map);
+
+        var localConfig = r.getLocal();
+        var localCacheManager = new LocalCacheManager(r.getName(), localConfig, r.getLocalCacheProviderRegistry(),
+                getShutdownManager());
+        r.setLocalCacheManager(localCacheManager);
+
+        r.setNearCacheManager(localCacheManager);
+
         return r;
     }
 

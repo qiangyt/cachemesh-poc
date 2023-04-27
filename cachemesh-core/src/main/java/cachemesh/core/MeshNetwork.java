@@ -46,17 +46,6 @@ public class MeshNetwork implements Shutdownable {
 
     private final MeshCacheManager meshCacheManager;
 
-    public static MeshNetwork build(MeshConfig config) {
-        var name = config.getName();
-
-        var localConfig = config.getLocal();
-        var localCacheManager = new LocalCacheManager(name, localConfig, config.getLocalCacheProviderRegistry(),
-                ShutdownManager.DEFAULT);
-        var nearCacheManager = localCacheManager;
-
-        return new MeshNetwork(config, nearCacheManager, localCacheManager);
-    }
-
     public MeshNetwork(MeshConfig config, LocalCacheManager nearCacheManager, LocalCacheManager localCacheManager) {
 
         this.config = config;
@@ -98,7 +87,7 @@ public class MeshNetwork implements Shutdownable {
     }
 
     public TransportProvider loadTransportProvider(String protocol) {
-        var r = getConfig().getTransportRegistry().getByKey(protocol);
+        var r = getConfig().getTransportRegistry().get(protocol);
         if (r == null) {
             throw new IllegalArgumentException("unsupported protocol: " + protocol);
         }

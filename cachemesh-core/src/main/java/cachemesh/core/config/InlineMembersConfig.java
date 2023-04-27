@@ -60,8 +60,12 @@ public class InlineMembersConfig extends MembersConfig {
         return r;
     }
 
+    @SuppressWarnings("unchecked")
     public static BeanType<InlineMembersConfig> of(TypeRegistry typeRegistry) {
-        return ReflectBeanType.of(typeRegistry, InlineMembersConfig.class);
+        var r = typeRegistry.resolve(InlineMembersConfig.class, k -> {
+            return ReflectBeanType.of(typeRegistry, InlineMembersConfig.class);
+        });
+        return (BeanType<InlineMembersConfig>) r;
     }
 
 }

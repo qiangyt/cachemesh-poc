@@ -48,15 +48,8 @@ public abstract class BeanType<T> extends AbstractType<T> {
 
     public abstract T newInstance(ConvertContext ctx, Object kind);
 
-    public abstract Map<String, Prop<?, ?>> getProperties(ConvertContext ctx, Object kind);
-
-    @Override
     @SuppressWarnings("unchecked")
-    protected T doConvert(ConvertContext ctx, Object value) {
-        var propValues = (Map<String, Object>) value;
-
-        T bean = null;
-        var kind = extractKind(ctx, propValues);
+    public void populate(ConvertContext ctx, T bean, Object kind, Map<String, Object> propValues) {
         var props = getProperties(ctx, kind);
 
         for (var entry : propValues.entrySet()) {
@@ -69,14 +62,22 @@ public abstract class BeanType<T> extends AbstractType<T> {
                 throw new IllegalArgumentException(msg);
             }
 
-            if (bean == null) {
-                bean = newInstance(ctx, kind);
-            }
-
             var unconvertedValue = entry.getValue();
             var convertedValue = p.getType().convert(propCtx, unconvertedValue);
             p.set(bean, convertedValue);
         }
+    }
+
+    public abstract Map<String, Prop<?, ?>> getProperties(ConvertContext ctx, Object kind);
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected T doConvert(ConvertContext ctx, Object value) {
+        var propValues = (Map<String, Object>) value;
+
+        var kind = extractKind(ctx, propValues);
+        T bean = newInstance(ctx, kind);
+        populate(ctx, bean, kind, propValues);
 
         return bean;
     }

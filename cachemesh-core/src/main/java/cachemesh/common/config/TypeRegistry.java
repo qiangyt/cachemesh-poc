@@ -15,22 +15,19 @@
  */
 package cachemesh.common.config;
 
-import cachemesh.common.config.types.ArrayType;
 import cachemesh.common.config.types.BooleanType;
 import cachemesh.common.config.types.ClassType;
 import cachemesh.common.config.types.DurationType;
-import cachemesh.common.config.types.EnumType;
 import cachemesh.common.config.types.IntegerType;
 import cachemesh.common.config.types.SimpleUrlType;
 import cachemesh.common.config.types.StringType;
-import cachemesh.common.registry.SimpleManager;
+import cachemesh.common.registry.Registry;
 
-public class TypeRegistry extends SimpleManager<Class<?>, Type<?>> {
+public class TypeRegistry extends Registry<Class<?>, Type<?>> {
 
-    public static final TypeRegistry DEFAULT = buildDefault();
-
-    public static TypeRegistry buildDefault() {
-        var r = new TypeRegistry();
+    public static final TypeRegistry DEFAULT = new TypeRegistry(null);
+    static {
+        var r = DEFAULT;
 
         r.register(Boolean.class, BooleanType.DEFAULT);
         r.register(Boolean.class, ClassType.DEFAULT);
@@ -38,25 +35,15 @@ public class TypeRegistry extends SimpleManager<Class<?>, Type<?>> {
         r.register(Boolean.class, IntegerType.DEFAULT);
         r.register(Boolean.class, SimpleUrlType.DEFAULT);
         r.register(Boolean.class, StringType.DEFAULT);
+    }
 
-        return r;
+    public TypeRegistry(TypeRegistry parent) {
+        super(parent);
     }
 
     @Override
-    protected String supplyKey(Class<?> klass) {
-        return klass.toString();
-    }
-
-    @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected Type<?> doCreate(Class<?> klass) {
-        if (klass.isArray()) {
-            return new ArrayType<Object>(this, (Class<Object[]>) klass);
-        } else if (klass.isEnum()) {
-            Class<? extends Enum> enumClass = (Class<? extends Enum>) klass;
-            return new EnumType<>(enumClass);
-        }
-        return null;
+    public String getValueName() {
+        return "type";
     }
 
 }

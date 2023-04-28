@@ -23,7 +23,7 @@ import lombok.Getter;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.cache.bean.Value;
+import cachemesh.core.cache.bean.LocalValue;
 import cachemesh.core.cache.local.LocalCache;
 
 import javax.annotation.Nonnull;
@@ -40,9 +40,9 @@ public class GuavaCache extends AbstractShutdownable implements LocalCache {
     private final GuavaConfig config;
 
     @Nonnull
-    private final Cache<String, Value> instance;
+    private final Cache<String, LocalValue> instance;
 
-    public GuavaCache(@Nonnull GuavaConfig config, @Nonnull Cache<String, Value> instance,
+    public GuavaCache(@Nonnull GuavaConfig config, @Nonnull Cache<String, LocalValue> instance,
             @Nullable ShutdownManager shutdownManager) {
         super(config.getName(), shutdownManager);
 
@@ -76,14 +76,14 @@ public class GuavaCache extends AbstractShutdownable implements LocalCache {
     }
 
     @Override
-    public Value getSingle(@Nonnull String key) {
+    public LocalValue getSingle(@Nonnull String key) {
         checkNotNull(key);
         return this.instance.getIfPresent(key);
     }
 
     @Override
     @Nonnull
-    public Value putSingle(@Nonnull String key, @Nonnull BiFunction<String, Value, Value> mapper) {
+    public LocalValue putSingle(@Nonnull String key, @Nonnull BiFunction<String, LocalValue, LocalValue> mapper) {
         checkNotNull(key);
         checkNotNull(mapper);
         return this.instance.asMap().compute(key, mapper);
@@ -91,7 +91,7 @@ public class GuavaCache extends AbstractShutdownable implements LocalCache {
 
     @Override
     @Nonnull
-    public Map<String, Value> getMultiple(@Nonnull Collection<String> keys) {
+    public Map<String, LocalValue> getMultiple(@Nonnull Collection<String> keys) {
         checkNotNull(keys);
         return this.instance.getAllPresent(keys);
     }

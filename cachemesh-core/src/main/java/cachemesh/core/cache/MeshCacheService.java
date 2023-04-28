@@ -28,7 +28,7 @@ import cachemesh.core.MeshNode;
 import cachemesh.core.cache.local.LocalCacheManager;
 import cachemesh.core.cache.local.LocalTransport;
 import cachemesh.core.cache.spi.TransportProvider;
-import cachemesh.core.cache.transport.Transport;
+import cachemesh.core.cache.transport.GenericCache;
 import cachemesh.core.config.MeshConfigService;
 import cachemesh.core.config.NodeConfig;
 import lombok.AccessLevel;
@@ -165,7 +165,7 @@ public class MeshCacheService {
 
     @Nonnull
     protected MeshNode addNode(@Nonnull TransportProvider provider, @Nonnull NodeConfig nodeConfig,
-            @Nonnull Transport transport) {
+            @Nonnull GenericCache transport) {
         checkNotNull(provider);
         checkNotNull(nodeConfig);
         checkNotNull(transport);

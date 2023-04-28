@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.*;
 
 @Getter
-public abstract class AbstractTransportProvider<TRANSPORT extends Transport, CONFIG extends NodeConfig>
+public abstract class AbstractTransportProvider<TRANSPORT extends GenericCache, CONFIG extends NodeConfig>
         implements TransportProvider<TRANSPORT, CONFIG> {
 
     @Nullable

@@ -19,12 +19,12 @@ import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
 import cachemesh.core.cache.local.LocalTransport;
 import cachemesh.core.cache.node.NodeHook;
-import cachemesh.core.cache.transport.Transport;
+import cachemesh.core.cache.transport.GenericCache;
 import cachemesh.core.config.NodeConfig;
 
 import javax.annotation.Nonnull;
 
-public interface TransportProvider<TRANSPORT extends Transport, CONFIG extends NodeConfig> extends NodeHook {
+public interface TransportProvider<TRANSPORT extends GenericCache, CONFIG extends NodeConfig> extends NodeHook {
 
     boolean bindLocalTransport(@Nonnull CONFIG nodeConfig, @Nonnull LocalTransport localTranport);
 

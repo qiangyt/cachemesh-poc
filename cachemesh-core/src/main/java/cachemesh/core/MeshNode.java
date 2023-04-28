@@ -24,7 +24,7 @@ import cachemesh.common.hash.HasKey;
 import cachemesh.common.misc.LifeStage;
 import cachemesh.common.misc.LogHelper;
 import cachemesh.core.cache.node.NodeHook;
-import cachemesh.core.cache.transport.Transport;
+import cachemesh.core.cache.transport.GenericCache;
 import cachemesh.core.config.NodeConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -44,7 +44,7 @@ public class MeshNode implements HasKey {
     private final int hashCode;
 
     @Nonnull
-    private final Transport transport;
+    private final GenericCache transport;
 
     @Getter(AccessLevel.PROTECTED)
     @Nonnull
@@ -53,7 +53,7 @@ public class MeshNode implements HasKey {
     @Nonnull
     private final LifeStage lifeStage;
 
-    public MeshNode(@Nonnull NodeConfig config, @Nonnull Transport transport) {
+    public MeshNode(@Nonnull NodeConfig config, @Nonnull GenericCache transport) {
         checkNotNull(config);
         checkNotNull(transport);
 

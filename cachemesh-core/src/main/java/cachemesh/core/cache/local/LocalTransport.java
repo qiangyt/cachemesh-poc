@@ -15,9 +15,9 @@
  */
 package cachemesh.core.cache.local;
 
-import cachemesh.core.cache.bean.GetResult;
+import cachemesh.core.cache.bean.RemoteValue;
 import cachemesh.core.cache.bean.ValueImpl;
-import cachemesh.core.cache.transport.Transport;
+import cachemesh.core.cache.transport.GenericCache;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.*;
 
 @Getter
-public class LocalTransport implements Transport {
+public class LocalTransport implements GenericCache {
 
     @Nonnull
     private final LocalCacheManager localCacheManager;
@@ -53,29 +53,29 @@ public class LocalTransport implements Transport {
 
     @Override
     @Nonnull
-    public GetResult<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
+    public RemoteValue<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
         checkNotNull(cacheName);
         checkNotNull(key);
 
         var cache = getLocalCacheManager().get(cacheName);
         if (cache == null) {
-            return GetResult.notFound();
+            return RemoteValue.notFound();
         }
 
         var v = cache.getSingle(key);
         if (v == null || v.hasValue() == false) {
-            return GetResult.notFound();
+            return RemoteValue.notFound();
         }
 
         long dataVer = v.getVersion();
         if (dataVer == version) {
-            return GetResult.noChange();
+            return RemoteValue.noChange();
         }
 
         var cfg = cache.getConfig();
         var serder = cfg.getSerder().getKind().instance;
         var data = v.isNullValue() ? null : v.getBytes(serder);
-        return GetResult.ok(data, dataVer);
+        return RemoteValue.ok(data, dataVer);
     }
 
     @Override

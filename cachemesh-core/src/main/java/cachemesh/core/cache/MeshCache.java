@@ -25,7 +25,7 @@ import cachemesh.core.MeshNetwork;
 import cachemesh.core.cache.bean.ValueImpl;
 import cachemesh.core.cache.local.LocalCache;
 import cachemesh.core.cache.local.LocalCacheManager;
-import cachemesh.core.cache.transport.Transport;
+import cachemesh.core.cache.transport.GenericCache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,7 +62,7 @@ public class MeshCache<T> {
     }
 
     @Nonnull
-    public Transport resolveTransport(@Nonnull String key) {
+    public GenericCache resolveTransport(@Nonnull String key) {
         checkNotNull(key);
 
         var n = getNetwork().findNode(key);
@@ -85,7 +85,7 @@ public class MeshCache<T> {
     }
 
     @Nullable
-    protected T getRemoteSingle(@Nonnull Transport transport, @Nonnull String key) {
+    protected T getRemoteSingle(@Nonnull GenericCache transport, @Nonnull String key) {
         checkNotNull(transport);
         checkNotNull(key);
 
@@ -135,7 +135,7 @@ public class MeshCache<T> {
     }
 
     @SuppressWarnings("unchecked")
-    protected void putLocalSingle(@Nonnull Transport transport, @Nonnull String key, @Nullable T object) {
+    protected void putLocalSingle(@Nonnull GenericCache transport, @Nonnull String key, @Nullable T object) {
         checkNotNull(transport);
         checkNotNull(key);
 
@@ -145,7 +145,7 @@ public class MeshCache<T> {
         transport.putSingleObject(getName(), key, object, valueClass);
     }
 
-    protected void putRemoteSingle(@Nonnull Transport transport, @Nonnull String key, @Nullable Object object) {
+    protected void putRemoteSingle(@Nonnull GenericCache transport, @Nonnull String key, @Nullable Object object) {
         checkNotNull(transport);
         checkNotNull(key);
 

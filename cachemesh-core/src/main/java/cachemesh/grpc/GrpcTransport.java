@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.cache.bean.GetResult;
-import cachemesh.core.cache.transport.Transport;
+import cachemesh.core.cache.bean.RemoteValue;
+import cachemesh.core.cache.transport.GenericCache;
 import io.grpc.ManagedChannel;
 import lombok.Getter;
 import cachemesh.common.shutdown.AbstractShutdownable;
@@ -35,7 +35,7 @@ import static com.google.common.base.Preconditions.*;
 import com.google.protobuf.ByteString;
 
 @Getter
-public class GrpcTransport extends AbstractShutdownable implements Transport {
+public class GrpcTransport extends AbstractShutdownable implements GenericCache {
 
     @Nonnull
     private CacheServiceGrpc.CacheServiceBlockingStub stub;
@@ -82,7 +82,7 @@ public class GrpcTransport extends AbstractShutdownable implements Transport {
 
     @Override
     @Nonnull
-    public GetResult<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
+    public RemoteValue<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
         checkNotNull(cacheName);
         checkNotNull(key);
 
@@ -97,7 +97,7 @@ public class GrpcTransport extends AbstractShutdownable implements Transport {
         // TODO: how to indicate we do have the value but the value is null
         var respV = resp.getValue();
         var v = (respV == null) ? null : respV.toByteArray();
-        return new GetResult<>(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersion());
+        return new RemoteValue<>(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersion());
     }
 
     @Override

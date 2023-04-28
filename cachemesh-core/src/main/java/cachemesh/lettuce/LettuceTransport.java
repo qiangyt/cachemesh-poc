@@ -20,7 +20,7 @@ import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.cache.bean.GetResult;
-import cachemesh.core.spi.Transport;
+import cachemesh.core.cache.transport.Transport;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import lombok.Getter;

@@ -22,7 +22,7 @@ import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.ReflectBeanType;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.cache.bean.Value;
-import cachemesh.core.spi.support.AbstractLocalCacheProvider;
+import cachemesh.core.cache.local.AbstractLocalCacheProvider;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;

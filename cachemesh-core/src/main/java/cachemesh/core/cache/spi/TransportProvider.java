@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.spi;
+package cachemesh.core.cache.spi;
 
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
-import cachemesh.core.cache.LocalTransport;
+import cachemesh.core.cache.local.LocalTransport;
+import cachemesh.core.cache.node.NodeHook;
+import cachemesh.core.cache.transport.Transport;
 import cachemesh.core.config.NodeConfig;
 
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
 
-public interface TransportProvider extends NodeHook {
+public interface TransportProvider<TRANSPORT extends Transport, CONFIG extends NodeConfig> extends NodeHook {
 
-    default boolean bindLocalTransport(@Nonnull NodeConfig nodeConfig, @Nonnull LocalTransport localTranport) {
-        checkNotNull(nodeConfig);
-        checkNotNull(localTranport);
-
-        return false;
-    }
+    boolean bindLocalTransport(@Nonnull CONFIG nodeConfig, @Nonnull LocalTransport localTranport);
 
     @Nonnull
-    Transport createRemoteTransport(@Nonnull NodeConfig nodeConfig);
+    TRANSPORT createRemoteTransport(@Nonnull CONFIG nodeConfig);
 
     @Nonnull
-    BeanType<? extends NodeConfig> resolveConfigType(@Nonnull TypeRegistry typeRegistry);
+    BeanType<CONFIG> resolveConfigType(@Nonnull TypeRegistry typeRegistry);
 
 }

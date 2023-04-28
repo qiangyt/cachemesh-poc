@@ -25,10 +25,12 @@ import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.misc.LogHelper;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.MeshNode;
+import cachemesh.core.cache.local.LocalCacheManager;
+import cachemesh.core.cache.local.LocalTransport;
+import cachemesh.core.cache.spi.TransportProvider;
+import cachemesh.core.cache.transport.Transport;
 import cachemesh.core.config.MeshConfigService;
 import cachemesh.core.config.NodeConfig;
-import cachemesh.core.spi.Transport;
-import cachemesh.core.spi.TransportProvider;
 import lombok.AccessLevel;
 
 import javax.annotation.Nonnull;

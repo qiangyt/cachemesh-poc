@@ -23,8 +23,10 @@ import cachemesh.common.err.ToDoException;
 import cachemesh.common.misc.LogHelper;
 import cachemesh.core.MeshNetwork;
 import cachemesh.core.cache.bean.ValueImpl;
-import cachemesh.core.spi.LocalCache;
-import cachemesh.core.spi.Transport;
+import cachemesh.core.cache.local.LocalCache;
+import cachemesh.core.cache.local.LocalCacheManager;
+import cachemesh.core.cache.transport.Transport;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.*;
@@ -83,8 +85,8 @@ public class MeshCache<T> {
     }
 
     @Nullable
-    protected T getRemoteSingle(@Nonnull Transport nodeCache, @Nonnull String key) {
-        checkNotNull(nodeCache);
+    protected T getRemoteSingle(@Nonnull Transport transport, @Nonnull String key) {
+        checkNotNull(transport);
         checkNotNull(key);
 
         var near = getNearCache();
@@ -97,7 +99,7 @@ public class MeshCache<T> {
         var nearValue = near.getSingle(key);
         long version = (nearValue == null) ? 0 : nearValue.getVersion();
 
-        var r = nodeCache.getSingle(getName(), key, version);
+        var r = transport.getSingle(getName(), key, version);
 
         switch (r.getStatus()) {
         case OK: {
@@ -133,19 +135,18 @@ public class MeshCache<T> {
     }
 
     @SuppressWarnings("unchecked")
-    protected void putLocalSingle(@Nonnull Transport nodeCache, @Nonnull String key, @Nullable T object) {
-        checkNotNull(nodeCache);
-        checkNotNull(nodeCache);
+    protected void putLocalSingle(@Nonnull Transport transport, @Nonnull String key, @Nullable T object) {
+        checkNotNull(transport);
         checkNotNull(key);
 
         var near = getNearCache();
 
         var valueClass = (Class<T>) near.getConfig().getValueClass();
-        nodeCache.putSingleObject(getName(), key, object, valueClass);
+        transport.putSingleObject(getName(), key, object, valueClass);
     }
 
-    protected void putRemoteSingle(@Nonnull Transport nodeCache, @Nonnull String key, @Nullable Object object) {
-        checkNotNull(nodeCache);
+    protected void putRemoteSingle(@Nonnull Transport transport, @Nonnull String key, @Nullable Object object) {
+        checkNotNull(transport);
         checkNotNull(key);
 
         var near = getNearCache();
@@ -153,7 +154,7 @@ public class MeshCache<T> {
         var serder = cfg.getSerder().getKind().instance;
 
         var valueBytes = serder.serialize(object);
-        long version = nodeCache.putSingle(getName(), key, valueBytes);
+        long version = transport.putSingle(getName(), key, valueBytes);
 
         near.putSingle(key, (k, v) -> new ValueImpl(object, valueBytes, version));
     }

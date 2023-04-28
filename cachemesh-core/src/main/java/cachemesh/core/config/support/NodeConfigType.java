@@ -25,8 +25,8 @@ import cachemesh.common.config.types.DynamicBeanType;
 import cachemesh.common.config.types.SimpleUrlType;
 import cachemesh.common.err.BadValueException;
 import cachemesh.common.misc.SimpleURL;
+import cachemesh.core.cache.transport.TransportRegistry;
 import cachemesh.core.config.NodeConfig;
-import cachemesh.core.config.TransportRegistry;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;

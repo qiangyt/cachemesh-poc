@@ -24,7 +24,7 @@ import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.cache.bean.Value;
-import cachemesh.core.spi.LocalCache;
+import cachemesh.core.cache.local.LocalCache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

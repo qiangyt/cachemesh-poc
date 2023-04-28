@@ -19,7 +19,8 @@ import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.ReflectBeanType;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
-import cachemesh.core.spi.support.AbstractTransportProvider;
+import cachemesh.core.cache.local.LocalTransport;
+import cachemesh.core.cache.transport.AbstractTransportProvider;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;
@@ -51,10 +52,20 @@ public class LettuceTransportProvider extends AbstractTransportProvider<LettuceT
 
     @Override
     @Nonnull
-    protected LettuceTransport doCreateRemoteTransport(@Nonnull LettuceConfig config) {
+    public LettuceTransport createRemoteTransport(@Nonnull LettuceConfig config) {
         checkNotNull(config);
 
         var client = getClientProvider().resolve(config);
         return new LettuceTransport(config, client, getShutdownManager());
     }
+
+    @Override
+    @Nonnull
+    public boolean bindLocalTransport(@Nonnull LettuceConfig nodeConfig, @Nonnull LocalTransport localTranport) {
+        checkNotNull(nodeConfig);
+        checkNotNull(localTranport);
+
+        return false;
+    }
+
 }

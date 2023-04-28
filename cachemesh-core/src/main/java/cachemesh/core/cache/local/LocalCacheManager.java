@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.cache;
+package cachemesh.core.cache.local;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -28,10 +28,7 @@ import cachemesh.common.misc.LogHelper;
 import cachemesh.common.shutdown.ManagedShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.config.LocalCacheProviderRegistry;
 import cachemesh.core.config.LocalConfig;
-import cachemesh.core.spi.LocalCache;
-import cachemesh.core.spi.LocalCacheProvider;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.slf4j.Logger;

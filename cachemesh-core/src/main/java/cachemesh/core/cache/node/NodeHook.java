@@ -13,33 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.spi;
+package cachemesh.core.cache.node;
 
-import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.types.BeanType;
-import cachemesh.core.config.LocalCacheConfig;
+import cachemesh.core.MeshNode;
 
 import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.*;
 
-public interface LocalCacheProvider {
+public interface NodeHook {
 
     @Nonnull
-    LocalCacheConfig createDefaultConfig(@Nonnull String name, @Nonnull Class<?> valueClass);
+    default void beforeNodeStart(@Nonnull MeshNode node, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(node);
+    }
 
     @Nonnull
-    BeanType<? extends LocalCacheConfig> resolveConfigType(@Nonnull TypeRegistry typeRegistry);
+    default void afterNodeStart(@Nonnull MeshNode node, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(node);
+    }
 
     @Nonnull
-    LocalCache createCache(@Nonnull LocalCacheConfig config);
+    default void beforeNodeStop(@Nonnull MeshNode node, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(node);
+    }
 
     @Nonnull
-    default LocalCache createDefaultCache(@Nonnull String name, @Nonnull Class<?> valueClass) {
-        checkNotNull(name);
-        checkNotNull(valueClass);
-
-        var cfg = createDefaultConfig(name, valueClass);
-        return createCache(cfg);
+    default void afterNodeStop(@Nonnull MeshNode node, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(node);
     }
 
 }

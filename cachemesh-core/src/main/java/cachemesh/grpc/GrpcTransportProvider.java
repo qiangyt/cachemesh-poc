@@ -20,8 +20,8 @@ import cachemesh.common.config.types.ReflectBeanType;
 import cachemesh.common.err.BadStateException;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
-import cachemesh.core.cache.LocalTransport;
-import cachemesh.core.spi.support.AbstractTransportProvider;
+import cachemesh.core.cache.local.LocalTransport;
+import cachemesh.core.cache.transport.AbstractTransportProvider;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;
@@ -58,7 +58,7 @@ public class GrpcTransportProvider extends AbstractTransportProvider<GrpcTranspo
     }
 
     @Override
-    protected boolean doBindLocalTransport(@Nonnull GrpcConfig config, @Nonnull LocalTransport localTranport) {
+    public boolean bindLocalTransport(@Nonnull GrpcConfig config, @Nonnull LocalTransport localTranport) {
         checkNotNull(config);
         checkNotNull(localTranport);
 
@@ -75,7 +75,7 @@ public class GrpcTransportProvider extends AbstractTransportProvider<GrpcTranspo
 
     @Override
     @Nonnull
-    protected GrpcTransport doCreateRemoteTransport(@Nonnull GrpcConfig config) {
+    public GrpcTransport createRemoteTransport(@Nonnull GrpcConfig config) {
         checkNotNull(config);
 
         return new GrpcTransport(config, getShutdownManager());

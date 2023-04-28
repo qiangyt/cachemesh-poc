@@ -18,6 +18,8 @@ package cachemesh.core.cache;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cachemesh.core.MeshNetwork;
+import cachemesh.core.cache.local.LocalCacheManager;
+
 import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.*;
 

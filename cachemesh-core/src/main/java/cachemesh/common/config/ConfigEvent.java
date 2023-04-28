@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.err;
+package cachemesh.common.config;
 
-import javax.annotation.Nonnull;
+import lombok.Getter;
 
-public class ToDoException extends GeneralException {
+@Getter
+public class ConfigEvent<T> {
 
-    public ToDoException(@Nonnull String messageFormat, @Nonnull Object... messageArgs) {
-        super(messageFormat, messageArgs);
-    }
+    private final T subject;
 
-    public ToDoException(@Nonnull Throwable cause) {
-        super(cause);
-    }
+    private final Path path;
 
-    public ToDoException(@Nonnull Throwable cause, @Nonnull String messageFormat, @Nonnull Object... messageArgs) {
-        super(cause, messageFormat, messageArgs);
+    private final long timestamp = System.currentTimeMillis();
+
+    public ConfigEvent(T subject, Path path) {
+        this.subject = subject;
+        this.path = path;
     }
 
 }

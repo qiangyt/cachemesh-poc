@@ -32,7 +32,7 @@ public class ConfigHelper {
         for (var type : types) {
             r.add(type);
         }
-        return Collections.unmodifiableCollection(r);
+        return ImmutableCollection.copyOf(r):
     }
 
     /*

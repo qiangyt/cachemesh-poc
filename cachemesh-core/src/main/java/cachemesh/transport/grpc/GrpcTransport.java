@@ -28,18 +28,25 @@ import cachemesh.grpc.cache.CacheServiceGrpc;
 import cachemesh.grpc.cache.GetSingleRequest;
 import cachemesh.grpc.cache.PutSingleRequest;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 import com.google.protobuf.ByteString;
 
 @Getter
 public class GrpcTransport extends AbstractShutdownable implements Transport {
 
+    @Nonnull
     private CacheServiceGrpc.CacheServiceBlockingStub stub;
 
+    @Nonnull
     private ManagedChannel channel;
 
+    @Nonnull
     private final GrpcConfig config;
 
-    public GrpcTransport(GrpcConfig config, ShutdownManager shutdownManager) {
+    public GrpcTransport(@Nonnull GrpcConfig config, @Nullable ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);
 
         this.config = config;
@@ -63,7 +70,9 @@ public class GrpcTransport extends AbstractShutdownable implements Transport {
     }
 
     @Override
-    public void onShutdown(ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
+    public void onShutdown(@Nonnull ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(shutdownLogger);
+
         var ch = getChannel();
         ch.shutdown();
 
@@ -72,7 +81,11 @@ public class GrpcTransport extends AbstractShutdownable implements Transport {
     }
 
     @Override
-    public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
+    @Nonnull
+    public GetResult<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
+        checkNotNull(cacheName);
+        checkNotNull(key);
+
         var req = GetSingleRequest.newBuilder().setCacheName(cacheName).setKey(key).setVersion(version).build();
 
         var resp = this.stub.getSingle(req);
@@ -88,7 +101,10 @@ public class GrpcTransport extends AbstractShutdownable implements Transport {
     }
 
     @Override
-    public long putSingle(String cacheName, String key, byte[] value) {
+    public long putSingle(@Nonnull String cacheName, @Nonnull String key, @Nullable byte[] value) {
+        checkNotNull(cacheName);
+        checkNotNull(key);
+
         var req = PutSingleRequest.newBuilder().setCacheName(cacheName).setKey(key);
         if (value != null) {
             req.setValue(ByteString.copyFrom(value));

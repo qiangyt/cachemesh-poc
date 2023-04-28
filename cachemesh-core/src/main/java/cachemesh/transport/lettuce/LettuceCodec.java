@@ -21,19 +21,28 @@ import java.nio.charset.StandardCharsets;
 import io.lettuce.core.codec.RedisCodec;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class LettuceCodec implements RedisCodec<String, byte[]> {
 
     public static final LettuceCodec DEFAULT = new LettuceCodec(StandardCharsets.UTF_8);
 
+    @Nonnull
     private final Charset charset;
 
-    public LettuceCodec(Charset charset) {
+    public LettuceCodec(@Nonnull Charset charset) {
+        checkNotNull(charset);
         this.charset = charset;
     }
 
     @Override
-    public String decodeKey(ByteBuffer bytes) {
+    @Nonnull
+    public String decodeKey(@Nonnull ByteBuffer bytes) {
+        checkNotNull(bytes);
+
         if (!bytes.hasArray()) {
             bytes = bytes.get(new byte[bytes.remaining()]);
         }
@@ -43,19 +52,26 @@ public class LettuceCodec implements RedisCodec<String, byte[]> {
     }
 
     @Override
-    public byte[] decodeValue(ByteBuffer bytes) {
+    @Nonnull
+    public byte[] decodeValue(@Nonnull ByteBuffer bytes) {
+        checkNotNull(bytes);
+
         byte[] r = new byte[bytes.remaining()];
         bytes.get(r);
         return r;
     }
 
     @Override
-    public ByteBuffer encodeKey(String key) {
+    @Nonnull
+    public ByteBuffer encodeKey(@Nonnull String key) {
+        checkNotNull(key);
+
         return ByteBuffer.wrap(key.getBytes(getCharset()));
     }
 
     @Override
-    public ByteBuffer encodeValue(byte[] value) {
+    @Nonnull
+    public ByteBuffer encodeValue(@Nullable byte[] value) {
         return ByteBuffer.wrap(value);
     }
 

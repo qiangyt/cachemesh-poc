@@ -17,16 +17,20 @@ package cachemesh.common.shutdown;
 
 import org.slf4j.Logger;
 
+import javax.annotation.Nonnull;
+
 public interface ManagedShutdownable extends Shutdownable {
 
-    void onShutdown(ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException;
+    void onShutdown(@Nonnull ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException;
 
     default boolean isShutdownNeeded() {
         return true;
     }
 
+    @Nonnull
     Logger getLogger();
 
+    @Nonnull
     String getName();
 
 }

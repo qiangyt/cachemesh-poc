@@ -15,12 +15,17 @@
  */
 package cachemesh.discovery.jgroup;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 public interface JGroupsListener {
 
-    default void onNodeJoin(String nodeUrl) throws Exception {
+    default void onNodeJoin(@Nonnull String nodeUrl) throws Exception {
+        checkNotNull(nodeUrl);
     }
 
-    default void onNodeLeave(String nodeUrl) throws Exception {
+    default void onNodeLeave(@Nonnull String nodeUrl) throws Exception {
+        checkNotNull(nodeUrl);
     }
 
 }

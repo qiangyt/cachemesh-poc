@@ -35,6 +35,9 @@ import cachemesh.core.spi.LocalCacheProvider;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.slf4j.Logger;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
 
 @ThreadSafe
 @Getter
@@ -43,18 +46,28 @@ public class LocalCacheManager implements ManagedShutdownable {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Getter(AccessLevel.PROTECTED)
+    @Nonnull
     private final Map<String, LocalCache> caches;
 
+    @Nonnull
     private final LocalConfig localConfig;
 
+    @Nonnull
     private final LocalCacheProvider localCacheProvider;
 
+    @Nullable
     private final ShutdownManager shutdownManager;
 
+    @Nonnull
     private final String name;
 
-    public LocalCacheManager(String name, LocalConfig localConfig,
-            LocalCacheProviderRegistry localCacheProviderRegistry, ShutdownManager shutdownManager) {
+    public LocalCacheManager(@Nonnull String name, @Nonnull LocalConfig localConfig,
+            @Nonnull LocalCacheProviderRegistry localCacheProviderRegistry, @Nullable ShutdownManager shutdownManager) {
+
+        checkNotNull(name);
+        checkNotNull(localConfig);
+        checkNotNull(localCacheProviderRegistry);
+
         this.name = name;
         this.localConfig = localConfig;
         this.localCacheProvider = localCacheProviderRegistry.get(localConfig.getKind());
@@ -67,7 +80,8 @@ public class LocalCacheManager implements ManagedShutdownable {
         }
     }
 
-    protected Map<String, LocalCache> initLocalCaches(LocalCacheProvider localCacheProvider, LocalConfig localConfig) {
+    protected Map<String, LocalCache> initLocalCaches(@Nonnull LocalCacheProvider localCacheProvider,
+            @Nonnull LocalConfig localConfig) {
         var r = new ConcurrentHashMap<String, LocalCache>();
 
         localConfig.getCaches().forEach(cfg -> {
@@ -78,11 +92,17 @@ public class LocalCacheManager implements ManagedShutdownable {
         return r;
     }
 
-    public LocalCache get(String name) {
+    @Nullable
+    public LocalCache get(@Nonnull String name) {
+        checkNotNull(name);
         return getCaches().get(name);
     }
 
-    public LocalCache resolve(String name, Class<?> valueClass) {
+    @Nonnull
+    public LocalCache resolve(@Nonnull String name, @Nonnull Class<?> valueClass) {
+        checkNotNull(name);
+        checkNotNull(valueClass);
+
         return getCaches().compute(name, (n, cache) -> {
             if (cache == null) {
                 cache = getLocalCacheProvider().createDefaultCache(name, valueClass);
@@ -110,12 +130,13 @@ public class LocalCacheManager implements ManagedShutdownable {
         }
     }
 
+    @Nullable
     public ShutdownLogger createShutdownLogger() {
         return new ShutdownLogger(getLogger());
     }
 
     @Override
-    public void onShutdown(ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
+    public void onShutdown(@Nonnull ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
         var copy = new ArrayList<LocalCache>(getCaches().values());
         for (var cache : copy) {
             if (cache != null) {

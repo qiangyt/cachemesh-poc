@@ -26,27 +26,37 @@ import cachemesh.common.misc.Dumpable;
 import lombok.Setter;
 import lombok.Singular;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 @Setter
 public class LocalConfig implements Dumpable {
 
     public static final String DEFAULT_KIND = "caffeine";
 
+    @Nonnull
     private String kind = DEFAULT_KIND;
 
+    @Nonnull
     private LocalCacheConfig defaultCache;
 
     @Singular("cache")
     @AElement(LocalCacheConfig.class)
+    @Nonnull
     private List<LocalCacheConfig> caches;
 
-    protected LocalConfig(LocalCacheConfig defaultCache, List<LocalCacheConfig> caches) {
+    protected LocalConfig(@Nonnull LocalCacheConfig defaultCache, @Nonnull List<LocalCacheConfig> caches) {
+        checkNotNull(defaultCache);
+        checkNotNull(caches);
+
         this.kind = defaultCache.getName();
         this.defaultCache = defaultCache;
         this.caches = caches;
     }
 
     @Override
+    @Nonnull
     public Map<String, Object> toMap() {
         var r = new HashMap<String, Object>();
 

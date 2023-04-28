@@ -33,20 +33,30 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.AccessLevel;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class DedicatedGrpcServer extends AbstractShutdownable implements GrpcServer {
 
+    @Nonnull
     private final ServerBuilder<?> builder;
 
     @Setter(AccessLevel.PROTECTED)
+    @Nonnull
     private Server instance;
 
+    @Nonnull
     private final GrpcConfig config;
 
+    @Nonnull
     private final LifeStage lifeStage;
 
-    public DedicatedGrpcServer(GrpcConfig config, ShutdownManager shutdownManager) {
+    public DedicatedGrpcServer(@Nonnull GrpcConfig config, @Nullable ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);
+
+        checkNotNull(config);
 
         this.config = config;
 
@@ -65,7 +75,9 @@ public class DedicatedGrpcServer extends AbstractShutdownable implements GrpcSer
     }
 
     @Override
-    public void addService(BindableService service) {
+    public void addService(@Nonnull BindableService service) {
+        checkNotNull(service);
+
         if (isStarted()) {
             throw new BadStateException("%s: cannot add service any more once server started", getName());
         }
@@ -93,7 +105,9 @@ public class DedicatedGrpcServer extends AbstractShutdownable implements GrpcSer
     }
 
     @Override
-    public void onShutdown(ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
+    public void onShutdown(@Nonnull ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(shutdownLogger);
+
         getLifeStage().stopping();
 
         var inst = getInstance();

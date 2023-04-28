@@ -19,21 +19,30 @@ import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
 import cachemesh.common.config.suppport.AbstractType;
 import lombok.Getter;
+import static com.google.common.base.Preconditions.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @Getter
 public abstract class ContainerType<T, E> extends AbstractType<T> {
 
+    @Nonnull
     private final Type<E> elementType;
 
+    @Nonnull
     private final Class<?> klass;
 
-    protected ContainerType(Class<?> klass, Type<E> elementType) {
-        this.klass = klass;
-        this.elementType = elementType;
+    protected ContainerType(@Nonnull Class<?> klass, @Nonnull Type<E> elementType) {
+        this.klass = checkNotNull(klass);
+        this.elementType = checkNotNull(elementType);
     }
 
     @Override
-    public T convert(ConfigContext ctx, Object value) {
+    @Nullable
+    public T convert(@Nonnull ConfigContext ctx, @Nullable Object value) {
+        checkNotNull(ctx);
+
         if (value == null) {
             return null;
         }
@@ -45,7 +54,8 @@ public abstract class ContainerType<T, E> extends AbstractType<T> {
         return doConvert(ctx, value);
     }
 
-    protected E convertElement(ConfigContext elementCtx, Object elementValue) {
+    @Nullable
+    protected E convertElement(@Nonnull ConfigContext elementCtx, @Nullable Object elementValue) {
         return getElementType().convert(elementCtx, elementValue);
     }
 

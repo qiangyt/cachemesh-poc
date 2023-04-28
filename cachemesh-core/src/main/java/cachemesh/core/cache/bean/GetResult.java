@@ -15,6 +15,8 @@
  */
 package cachemesh.core.cache.bean;
 
+import javax.annotation.Nonnull;
+
 import cachemesh.core.cache.bean.Value.Status;
 import lombok.Getter;
 
@@ -25,13 +27,14 @@ public class GetResult<T> {
 
     private static final GetResult<?> NO_CHANGE = new GetResult<>(Status.NO_CHANGE, null, 0);
 
+    @Nonnull
     private final Status status;
 
     private final T value;
 
     private final long version;
 
-    public GetResult(Status status, T value, long version) {
+    public GetResult(@Nonnull Status status, T value, long version) {
         this.status = status;
         this.value = value;
         this.version = version;
@@ -42,11 +45,13 @@ public class GetResult<T> {
     }
 
     @SuppressWarnings("unchecked")
+    @Nonnull
     public static <T> GetResult<T> notFound() {
         return (GetResult<T>) NOT_FOUND;
     }
 
     @SuppressWarnings("unchecked")
+    @Nonnull
     public static <T> GetResult<T> noChange() {
         return (GetResult<T>) NO_CHANGE;
     }

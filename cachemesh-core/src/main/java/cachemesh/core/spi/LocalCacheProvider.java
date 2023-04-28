@@ -19,15 +19,25 @@ import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
 import cachemesh.core.config.LocalCacheConfig;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 public interface LocalCacheProvider {
 
-    LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass);
+    @Nonnull
+    LocalCacheConfig createDefaultConfig(@Nonnull String name, @Nonnull Class<?> valueClass);
 
-    BeanType<? extends LocalCacheConfig> resolveConfigType(TypeRegistry typeRegistry);
+    @Nonnull
+    BeanType<? extends LocalCacheConfig> resolveConfigType(@Nonnull TypeRegistry typeRegistry);
 
-    LocalCache createCache(LocalCacheConfig config);
+    @Nonnull
+    LocalCache createCache(@Nonnull LocalCacheConfig config);
 
-    default LocalCache createDefaultCache(String name, Class<?> valueClass) {
+    @Nonnull
+    default LocalCache createDefaultCache(@Nonnull String name, @Nonnull Class<?> valueClass) {
+        checkNotNull(name);
+        checkNotNull(valueClass);
+
         var cfg = createDefaultConfig(name, valueClass);
         return createCache(cfg);
     }

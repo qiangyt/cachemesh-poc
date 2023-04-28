@@ -26,30 +26,41 @@ import cachemesh.common.misc.Dumpable;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 @Setter
 @SuperBuilder(toBuilder = true)
 public abstract class LocalCacheConfig implements Dumpable {
 
     @AProperty
+    @Nonnull
     private String name;
 
     @AProperty
+    @Nonnull
     private Class<?> valueClass;
 
     @Builder.Default
+    @Nonnull
     private SerderConfig serder = SerderConfig.builder().build();
 
     protected LocalCacheConfig() {
     }
 
-    protected LocalCacheConfig(String name, Class<?> valueClass, SerderConfig serder) {
+    protected LocalCacheConfig(@Nonnull String name, @Nonnull Class<?> valueClass, @Nonnull SerderConfig serder) {
+        checkNotNull(name);
+        checkNotNull(valueClass);
+        checkNotNull(serder);
+
         this.name = name;
         this.valueClass = valueClass;
         this.serder = serder;
     }
 
     @Override
+    @Nonnull
     public Map<String, Object> toMap() {
         var r = new HashMap<String, Object>();
 

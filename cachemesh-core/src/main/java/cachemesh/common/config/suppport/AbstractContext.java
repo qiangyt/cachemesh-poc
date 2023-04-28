@@ -23,28 +23,38 @@ import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public abstract class AbstractContext implements ConfigContext {
 
+    @Nonnull
     private final ClassCache classCache;
 
+    @Nonnull
     private final TypeRegistry typeRegistry;
 
+    @Nonnull
     private final Map<String, Object> rootValue;
 
-    public AbstractContext(ClassCache classCache, TypeRegistry typeRegistry, Map<String, Object> rootValue) {
-        this.classCache = classCache;
-        this.typeRegistry = typeRegistry;
-        this.rootValue = rootValue;
+    public AbstractContext(@Nonnull ClassCache classCache, @Nonnull TypeRegistry typeRegistry,
+            @Nonnull Map<String, Object> rootValue) {
+        this.classCache = checkNotNull(classCache);
+        this.typeRegistry = checkNotNull(typeRegistry);
+        this.rootValue = checkNotNull(rootValue);
     }
 
     @Override
-    public Object getValue(Path relative) {
+    @Nullable
+    public Object getValue(@Nonnull Path relative) {
         return getRoot().getValue(relative);
     }
 
     @Override
-    public Object setValue(Path relative, Object newValue) {
+    @Nullable
+    public Object setValue(@Nonnull Path relative, @Nullable Object newValue) {
         return getRoot().setValue(relative, newValue);
     }
 

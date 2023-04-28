@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.local.caffeine;
-
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
+package cachemesh.local.guava;
 
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.ReflectBeanType;
@@ -27,25 +24,29 @@ import lombok.Getter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import static com.google.common.base.Preconditions.*;
 
 @Getter
-public class CaffeineProvider extends AbstractLocalCacheProvider<CaffeineCache, CaffeineConfig> {
+public class GuavaProvider extends AbstractLocalCacheProvider<GuavaCache, GuavaConfig> {
 
-    public CaffeineProvider(@Nonnull TypeRegistry typeRegistry, @Nullable ShutdownManager shutdownManager) {
-        super(ReflectBeanType.of(typeRegistry, CaffeineConfig.class), shutdownManager);
+    public GuavaProvider(@Nonnull TypeRegistry typeRegistry, @Nullable ShutdownManager shutdownManager) {
+        super(ReflectBeanType.of(typeRegistry, GuavaConfig.class), shutdownManager);
     }
 
     @Override
     @Nonnull
-    protected CaffeineCache doCreateCache(@Nonnull CaffeineConfig config) {
+    protected GuavaCache doCreateCache(@Nonnull GuavaConfig config) {
         checkNotNull(config);
 
-        var bldr = Caffeine.newBuilder();
+        var bldr = CacheBuilder.newBuilder();
         bldr.maximumSize(config.getMaximumSize()).expireAfterWrite(config.getExpireAfterWrite());
 
         Cache<String, Value> i = bldr.build();
-        return new CaffeineCache(config, i, getShutdownManager());
+        return new GuavaCache(config, i, getShutdownManager());
     }
 
 }

@@ -27,6 +27,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 @Setter
 @Builder
@@ -35,9 +38,11 @@ public class SerderConfig implements Dumpable {
     public static enum Kind {
         jackson(JacksonSerderializer.DEFAULT);
 
+        @Nonnull
         public final Serderializer instance;
 
-        private Kind(Serderializer instance) {
+        private Kind(@Nonnull Serderializer instance) {
+            checkNotNull(instance);
             this.instance = instance;
         }
     }
@@ -45,9 +50,11 @@ public class SerderConfig implements Dumpable {
     @Builder.Default
     @AProperty
     @ADefault("jackson")
+    @Nonnull
     private Kind kind = Kind.jackson;
 
     @Override
+    @Nonnull
     public Map<String, Object> toMap() {
         var r = new HashMap<String, Object>();
         r.put("kind", getKind());

@@ -29,17 +29,27 @@ import cachemesh.core.config.NodeConfig;
 import cachemesh.core.config.TransportRegistry;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class NodeConfigType extends DynamicBeanType<NodeConfig> {
 
+    @Nonnull
     private final TransportRegistry transportRegistry;
 
-    public NodeConfigType(TransportRegistry transportRegistry, TypeRegistry typeRegistry) {
+    public NodeConfigType(@Nonnull TransportRegistry transportRegistry, @Nonnull TypeRegistry typeRegistry) {
         super(typeRegistry, NodeConfig.class);
+
+        checkNotNull(transportRegistry);
         this.transportRegistry = transportRegistry;
     }
 
-    public Map<String, BeanType<? extends NodeConfig>> createMapping(TypeRegistry typeRegistry) {
+    @Nonnull
+    public Map<String, BeanType<? extends NodeConfig>> createMapping(@Nonnull TypeRegistry typeRegistry) {
+        checkNotNull(typeRegistry);
+
         var r = new HashMap<String, BeanType<? extends NodeConfig>>();
 
         for (var entry : getTransportRegistry().getAll().entrySet()) {
@@ -52,12 +62,20 @@ public class NodeConfigType extends DynamicBeanType<NodeConfig> {
     }
 
     @Override
-    public Object extractKind(ConfigContext ctx, Map<String, Object> propValues) {
+    @Nullable
+    public Object extractKind(@Nonnull ConfigContext ctx, @Nonnull Map<String, Object> propValues) {
+        checkNotNull(ctx);
+        checkNotNull(propValues);
+
         var url = extractURL(ctx, propValues);
         return url.getProtocol();
     }
 
-    public SimpleURL extractURL(ConfigContext ctx, Map<String, Object> propValues) {
+    @Nullable
+    public SimpleURL extractURL(@Nonnull ConfigContext ctx, @Nonnull Map<String, Object> propValues) {
+        checkNotNull(ctx);
+        checkNotNull(propValues);
+
         if (propValues.containsKey("url") == false) {
             throw new BadValueException("%s: url is required", ctx.getPath());
         }

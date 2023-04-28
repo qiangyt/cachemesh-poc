@@ -17,11 +17,15 @@ package cachemesh.common.config.types;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.suppport.AbstractType;
 import cachemesh.common.config.suppport.ConfigHelper;
 import cachemesh.common.err.BadValueException;
+import static com.google.common.base.Preconditions.*;
 import lombok.Getter;
 
 @Getter
@@ -31,8 +35,8 @@ public abstract class BeanType<T> extends AbstractType<T> {
 
     private final Class<T> klass;
 
-    public BeanType(Class<T> klass) {
-        this.klass = klass;
+    public BeanType(@Nonnull Class<T> klass) {
+        this.klass = checkNotNull(klass);
     }
 
     @Override
@@ -45,12 +49,19 @@ public abstract class BeanType<T> extends AbstractType<T> {
         return CONVERTABLES;
     }
 
-    public abstract Object extractKind(ConfigContext ctx, Map<String, Object> propValues);
+    @Nullable
+    public abstract Object extractKind(@Nonnull ConfigContext ctx, @Nonnull Map<String, Object> propValues);
 
-    public abstract T newInstance(ConfigContext ctx, Object kind);
+    @Nonnull
+    public abstract T newInstance(@Nonnull ConfigContext ctx, @Nullable Object kind);
 
     @SuppressWarnings("unchecked")
-    public void populate(ConfigContext ctx, T bean, Object kind, Map<String, Object> propValues) {
+    public void populate(@Nonnull ConfigContext ctx, @Nonnull T bean, @Nullable Object kind,
+            @Nonnull Map<String, Object> propValues) {
+        checkNotNull(ctx);
+        checkNotNull(bean);
+        checkNotNull(propValues);
+
         var props = getProperties(ctx, kind);
 
         for (var entry : propValues.entrySet()) {
@@ -68,7 +79,8 @@ public abstract class BeanType<T> extends AbstractType<T> {
         }
     }
 
-    public abstract Map<String, Property<?, ?>> getProperties(ConfigContext ctx, Object kind);
+    @Nonnull
+    public abstract Map<String, Property<?, ?>> getProperties(@Nonnull ConfigContext ctx, @Nullable Object kind);
 
     @Override
     @SuppressWarnings("unchecked")

@@ -20,6 +20,9 @@ import java.nio.charset.StandardCharsets;
 
 import cachemesh.common.misc.Serderializer;
 import lombok.Getter;
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 @Getter
 public class JacksonSerderializer implements Serderializer {
@@ -28,25 +31,30 @@ public class JacksonSerderializer implements Serderializer {
 
     public static final JacksonSerderializer DEFAULT = new JacksonSerderializer();
 
+    @Nonnull
     private final Jackson jackson;
 
+    @Nonnull
     private final Charset charset;
 
     public JacksonSerderializer() {
         this(Jackson.DEFAULT, DEFAULT_CHARSET);
     }
 
-    public JacksonSerderializer(Jackson jackson, Charset charset) {
-        this.jackson = jackson;
-        this.charset = charset;
+    public JacksonSerderializer(@Nonnull Jackson jackson, @Nonnull Charset charset) {
+        this.jackson = checkNotNull(jackson);
+        this.charset = checkNotNull(charset);
     }
 
     @Override
-    public byte[] serialize(Object obj) {
+    @Nullable
+    public byte[] serialize(@Nullable Object obj) {
         return this.jackson.toBytes(obj);
     }
 
-    public <T> T deserialize(byte[] bytes, Class<T> clazz) {
+    @Override
+    @Nullable
+    public <T> T deserialize(@Nullable byte[] bytes, @Nonnull Class<T> clazz) {
         return this.jackson.from(bytes, clazz);
     }
 

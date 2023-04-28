@@ -24,41 +24,63 @@ import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public abstract class AbstractTransportProvider<T extends Transport, C extends NodeConfig>
         implements TransportProvider {
 
+    @Nullable
     private final ShutdownManager shutdownManager;
 
+    @Nonnull
     private final BeanType<C> configType;
 
-    protected AbstractTransportProvider(BeanType<C> configType, ShutdownManager shutdownManager) {
+    protected AbstractTransportProvider(@Nonnull BeanType<C> configType, @Nullable ShutdownManager shutdownManager) {
+        checkNotNull(configType);
+
         this.shutdownManager = shutdownManager;
         this.configType = configType;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Transport createRemoteTransport(NodeConfig nodeConfig) {
+    @Nonnull
+    public Transport createRemoteTransport(@Nonnull NodeConfig nodeConfig) {
+        checkNotNull(nodeConfig);
+
         var c = (C) nodeConfig;
         return doCreateRemoteTransport(c);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean bindLocalTransport(NodeConfig nodeConfig, LocalTransport localTranport) {
+    @Nonnull
+    public boolean bindLocalTransport(@Nonnull NodeConfig nodeConfig, @Nonnull LocalTransport localTranport) {
+        checkNotNull(nodeConfig);
+        checkNotNull(localTranport);
+
         var c = (C) nodeConfig;
         return doBindLocalTransport(c, localTranport);
     }
 
     protected boolean doBindLocalTransport(C nodeConfig, LocalTransport localTranport) {
+        checkNotNull(nodeConfig);
+        checkNotNull(localTranport);
+
         return false;
     }
 
-    protected abstract T doCreateRemoteTransport(C nodeConfig);
+    @Nonnull
+    protected abstract T doCreateRemoteTransport(@Nonnull C nodeConfig);
 
     @Override
-    public BeanType<? extends NodeConfig> resolveConfigType(TypeRegistry typeRegistry) {
+    @Nonnull
+    public BeanType<? extends NodeConfig> resolveConfigType(@Nonnull TypeRegistry typeRegistry) {
+        checkNotNull(typeRegistry);
+
         return getConfigType();
     }
 

@@ -18,19 +18,26 @@ package cachemesh.common.config.suppport;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.Type;
 import lombok.Getter;
+import static com.google.common.base.Preconditions.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @Getter
 public abstract class AbstractProperty<B, T> implements Property<B, T> {
 
+    @Nonnull
     private final String name;
 
-    private final T devault;
-
+    @Nonnull
     private final Type<T> type;
 
-    public AbstractProperty(String name, Type<T> type, T devault) {
-        this.name = name;
-        this.type = type;
+    @Nullable
+    private final T devault;
+
+    public AbstractProperty(@Nonnull String name, @Nonnull Type<T> type, @Nullable T devault) {
+        this.name = checkNotNull(name);
+        this.type = checkNotNull(type);
         this.devault = devault;
     }
 

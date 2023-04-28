@@ -17,12 +17,18 @@ package cachemesh.transport.lettuce;
 
 import io.lettuce.core.RedisClient;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public interface RedisClientProvider {
 
-    RedisClient get(LettuceConfig config);
+    @Nullable
+    RedisClient get(@Nonnull LettuceConfig config);
 
-    RedisClient resolve(LettuceConfig config);
+    @Nonnull
+    RedisClient resolve(@Nonnull LettuceConfig config);
 
-    RedisClient destroy(LettuceConfig config, int timeoutSeconds) throws InterruptedException;
+    @Nullable
+    RedisClient destroy(@Nonnull LettuceConfig config, int timeoutSeconds) throws InterruptedException;
 
 }

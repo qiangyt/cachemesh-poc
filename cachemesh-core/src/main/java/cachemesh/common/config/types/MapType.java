@@ -22,10 +22,13 @@ import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class MapType<T> extends ContainerType<Map<String, T>, T> {
 
-    public MapType(Type<T> elementType) {
+    public MapType(@Nonnull Type<T> elementType) {
         super(Map.class, elementType);
     }
 
@@ -49,7 +52,10 @@ public class MapType<T> extends ContainerType<Map<String, T>, T> {
         return r;
     }
 
-    public static <E> MapType<E> of(Type<E> elementType) {
+    @Nonnull
+    public static <E> MapType<E> of(@Nonnull Type<E> elementType) {
+        checkNotNull(elementType);
+
         return new MapType<>(elementType);
     }
 

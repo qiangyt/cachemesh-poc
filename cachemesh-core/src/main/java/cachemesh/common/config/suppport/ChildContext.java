@@ -15,32 +15,38 @@
  */
 package cachemesh.common.config.suppport;
 
+import javax.annotation.Nonnull;
+
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Path;
 import lombok.Getter;
+import static com.google.common.base.Preconditions.*;
 
 @Getter
 public class ChildContext extends AbstractContext {
 
+    @Nonnull
     private final Path path;
 
+    @Nonnull
     private final ConfigContext parent;
 
+    @Nonnull
     private final ConfigContext root;
 
-    public ChildContext(ConfigContext parent, String childName) {
+    public ChildContext(@Nonnull ConfigContext parent, @Nonnull String childName) {
         this(parent, Path.of(parent.getPath(), childName));
     }
 
-    public ChildContext(ConfigContext parent, int childIndex) {
+    public ChildContext(@Nonnull ConfigContext parent, int childIndex) {
         this(parent, Path.of(parent.getPath(), childIndex));
     }
 
-    private ChildContext(ConfigContext parent, Path path) {
+    private ChildContext(@Nonnull ConfigContext parent, @Nonnull Path path) {
         super(parent.getClassCache(), parent.getTypeRegistry(), parent.getRootValue());
 
         this.parent = parent;
-        this.path = path;
+        this.path = checkNotNull(path);
         this.root = parent.getRoot();
     }
 

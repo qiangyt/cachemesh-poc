@@ -22,22 +22,37 @@ import org.slf4j.LoggerFactory;
 import cachemesh.common.err.BadStateException;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class JGroupsMembers {
 
+    @Nonnull
     private final JGroupsListener listener;
 
+    @Nonnull
     private final String url;
 
+    @Nonnull
     private final String meshNetworkName;
 
+    @Nonnull
     private final String configXmlClasspath;
 
+    @Nonnull
     private final Logger log;
 
+    @Nonnull
     private JChannel channel;
 
-    public JGroupsMembers(String url, String meshNetworkName, String configXmlClasspath, JGroupsListener listener) {
+    public JGroupsMembers(@Nonnull String url, @Nonnull String meshNetworkName, @Nonnull String configXmlClasspath,
+            @Nonnull JGroupsListener listener) {
+        checkNotNull(url);
+        checkNotNull(meshNetworkName);
+        checkNotNull(configXmlClasspath);
+        checkNotNull(listener);
+
         this.listener = listener;
         this.url = url;
         this.meshNetworkName = meshNetworkName;
@@ -47,6 +62,7 @@ public class JGroupsMembers {
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return this.meshNetworkName + "=" + this.url;
     }

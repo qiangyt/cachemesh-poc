@@ -17,33 +17,42 @@ package cachemesh.common.misc;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Map;
+import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableMap;
+
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 import lombok.Getter;
 
 @Getter
 public class SimpleURL {
 
+    @Nonnull
     private final URL url;
 
+    @Nonnull
     private final Map<String, String> query;
 
-    public SimpleURL(URL url) {
-        this.url = url;
+    public SimpleURL(@Nonnull URL url) {
+        this.url = checkNotNull(url);
 
         var query = URLHelper.parseQuery(url.getQuery());
-        this.query = Collections.unmodifiableMap(query);
+        this.query = ImmutableMap.copyOf(query);
     }
 
-    public SimpleURL(String urlText) throws MalformedURLException {
+    public SimpleURL(@Nonnull String urlText) throws MalformedURLException {
         this(new URL(urlText));
     }
 
+    @Nonnull
     public String getPath() {
         return this.url.getPath();
     }
 
+    @Nonnull
     public String getAuthority() {
         return this.url.getAuthority();
     }
@@ -52,14 +61,17 @@ public class SimpleURL {
         return this.url.getPort();
     }
 
+    @Nonnull
     public String getProtocol() {
         return this.url.getProtocol();
     }
 
+    @Nonnull
     public String getHost() {
         return this.url.getHost();
     }
 
+    @Nullable
     public String getRef() {
         return this.url.getRef();
     }
@@ -82,10 +94,12 @@ public class SimpleURL {
         return false;
     }
 
+    @Override
     public int hashCode() {
         return this.url.hashCode();
     }
 
+    @Override
     public String toString() {
         return this.url.toString();
     }

@@ -17,41 +17,52 @@ package cachemesh.core.cache;
 
 import org.slf4j.Logger;
 
-import com.google.protobuf.ServiceException;
-
 import lombok.Getter;
 import cachemesh.common.err.BadStateException;
 import cachemesh.common.err.ToDoException;
 import cachemesh.common.misc.LogHelper;
 import cachemesh.core.MeshNetwork;
-import cachemesh.core.MeshNode;
 import cachemesh.core.cache.bean.ValueImpl;
 import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.Transport;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Getter
 public class MeshCache<T> {
 
+    @Nonnull
     private final Logger logger;
 
+    @Nonnull
     private final LocalCache nearCache;
 
+    @Nonnull
     private final MeshNetwork network;
 
-    public MeshCache(String name, LocalCacheManager nearCacheManager, MeshNetwork network) {
+    public MeshCache(@Nonnull String name, @Nonnull LocalCacheManager nearCacheManager, @Nonnull MeshNetwork network) {
+        checkNotNull(name);
+        checkNotNull(nearCacheManager);
+        checkNotNull(network);
+
         this.nearCache = nearCacheManager.get(name);
         this.network = network;
 
         this.logger = LogHelper.getLogger(getClass(), name);
     }
 
+    @Nonnull
     public String getName() {
         return this.nearCache.getConfig().getName();
     }
 
-    public Transport resolveTransport(String key) {
+    @Nonnull
+    public Transport resolveTransport(@Nonnull String key) {
+        checkNotNull(key);
+
         var n = getNetwork().findNode(key);
         if (this.logger.isDebugEnabled()) {
             this.logger.debug("find node for {}: {}", kv("key", key), LogHelper.kv("node", n.getConfig()));
@@ -60,7 +71,10 @@ public class MeshCache<T> {
         return n.getTransport();
     }
 
-    public T getSingle(String key) {
+    @Nullable
+    public T getSingle(@Nonnull String key) {
+        checkNotNull(key);
+
         var transport = resolveTransport(key);
         if (transport.isRemote() == false) {
             return transport.getSingleObject(getName(), key);
@@ -68,7 +82,11 @@ public class MeshCache<T> {
         return getRemoteSingle(transport, key);
     }
 
-    protected T getRemoteSingle(Transport nodeCache, String key) {
+    @Nullable
+    protected T getRemoteSingle(@Nonnull Transport nodeCache, @Nonnull String key) {
+        checkNotNull(nodeCache);
+        checkNotNull(key);
+
         var near = getNearCache();
         var cfg = near.getConfig();
         var serder = cfg.getSerder().getKind().instance;
@@ -103,7 +121,9 @@ public class MeshCache<T> {
         }
     }
 
-    public void putSingle(String key, T object) {
+    public void putSingle(@Nonnull String key, @Nullable T object) {
+        checkNotNull(key);
+
         var transport = resolveTransport(key);
         if (transport.isRemote() == false) {
             putLocalSingle(transport, key, object);
@@ -113,14 +133,21 @@ public class MeshCache<T> {
     }
 
     @SuppressWarnings("unchecked")
-    protected void putLocalSingle(Transport nodeCache, String key, T object) {
+    protected void putLocalSingle(@Nonnull Transport nodeCache, @Nonnull String key, @Nullable T object) {
+        checkNotNull(nodeCache);
+        checkNotNull(nodeCache);
+        checkNotNull(key);
+
         var near = getNearCache();
 
         var valueClass = (Class<T>) near.getConfig().getValueClass();
         nodeCache.putSingleObject(getName(), key, object, valueClass);
     }
 
-    protected void putRemoteSingle(Transport nodeCache, String key, Object object) {
+    protected void putRemoteSingle(@Nonnull Transport nodeCache, @Nonnull String key, @Nullable Object object) {
+        checkNotNull(nodeCache);
+        checkNotNull(key);
+
         var near = getNearCache();
         var cfg = near.getConfig();
         var serder = cfg.getSerder().getKind().instance;

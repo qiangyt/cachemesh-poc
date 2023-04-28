@@ -25,30 +25,39 @@ import cachemesh.common.hash.ConsistentHash;
 import cachemesh.common.misc.LogHelper;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.MeshNode;
-import cachemesh.core.config.MeshConfig;
 import cachemesh.core.config.MeshConfigService;
 import cachemesh.core.config.NodeConfig;
 import cachemesh.core.spi.Transport;
 import cachemesh.core.spi.TransportProvider;
 import lombok.AccessLevel;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class MeshCacheService {
 
+    @Nonnull
     private final Logger logger;
 
+    @Nonnull
     private final MeshConfigService configService;
 
+    @Nonnull
     @Getter(AccessLevel.PROTECTED)
     private final ConsistentHash<MeshNode> route;
 
+    @Nonnull
     private final LocalCacheManager localCacheManager;
 
+    @Nonnull
     private final LocalCacheManager nearCacheManager;
 
+    @Nonnull
     private final MeshCacheManager meshCacheManager;
 
-    public MeshCacheService(MeshConfigService configService) {
+    public MeshCacheService(@Nonnull MeshConfigService configService) {
+        checkNotNull(configService);
 
         var cfg = configService.getConfig();
         var name = cfg.getName();
@@ -62,7 +71,11 @@ public class MeshCacheService {
         this.meshCacheManager = null;// new MeshCacheManager(nearCacheManager, this);
     }
 
-    public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
+    @Nonnull
+    public <T> MeshCache<T> resolveCache(@Nonnull String cacheName, @Nonnull Class<T> valueClass) {
+        checkNotNull(cacheName);
+        checkNotNull(valueClass);
+
         return getMeshCacheManager().resolveCache(cacheName, valueClass);
     }
 
@@ -78,22 +91,35 @@ public class MeshCacheService {
         }
     }
 
-    public MeshNode findNode(String key) {
+    @Nonnull
+    public MeshNode findNode(@Nonnull String key) {
+        checkNotNull(key);
+
         return getRoute().findNode(key);
     }
 
-    public TransportProvider loadTransportProvider(String protocol) {
+    @Nonnull
+    public TransportProvider loadTransportProvider(@Nonnull String protocol) {
+        checkNotNull(protocol);
+
         return getConfigService().getTransportRegistry().load(protocol);
     }
 
-    public MeshNode addLocalNode(String url) throws MalformedURLException {
+    @Nonnull
+    public MeshNode addLocalNode(@Nonnull String url) throws MalformedURLException {
+        checkNotNull(url);
+
         var kind = new SimpleURL(url).getProtocol();
         NodeConfig nodeConfig = null;// NodeConfig.fromUrl(url);
         var pdr = loadTransportProvider(kind);
         return null;// addLocalNode(nodeConfig, pdr);
     }
 
-    protected MeshNode addLocalNode(NodeConfig nodeConfig, LocalTransport localTransport) {
+    @Nonnull
+    protected MeshNode addLocalNode(@Nonnull NodeConfig nodeConfig, @Nonnull LocalTransport localTransport) {
+        checkNotNull(nodeConfig);
+        checkNotNull(localTransport);
+
         var pdr = loadTransportProvider(nodeConfig.getProtocol());
         var tp = new LocalTransport(getLocalCacheManager());
 
@@ -104,19 +130,29 @@ public class MeshCacheService {
         return addNode(pdr, nodeConfig, tp);
     }
 
-    public MeshNode addRemoteNode(String url) throws MalformedURLException {
+    @Nonnull
+    public MeshNode addRemoteNode(@Nonnull String url) throws MalformedURLException {
+        checkNotNull(url);
+
         var kind = new SimpleURL(url).getProtocol();
         NodeConfig nodeConfig = null;// NodeConfig.fromUrl(url);
         var pdr = loadTransportProvider(kind);
         return addRemoteNode(pdr, nodeConfig);
     }
 
-    public MeshNode addRemoteNode(NodeConfig nodeConfig) {
+    @Nonnull
+    public MeshNode addRemoteNode(@Nonnull NodeConfig nodeConfig) {
+        checkNotNull(nodeConfig);
+
         var pdr = loadTransportProvider(nodeConfig.getProtocol());
         return addRemoteNode(pdr, nodeConfig);
     }
 
-    protected MeshNode addRemoteNode(TransportProvider provider, NodeConfig nodeConfig) {
+    @Nonnull
+    protected MeshNode addRemoteNode(@Nonnull TransportProvider provider, @Nonnull NodeConfig nodeConfig) {
+        checkNotNull(provider);
+        checkNotNull(nodeConfig);
+
         var tp = provider.createRemoteTransport(nodeConfig);
         if (tp == null) {
             throw new BadValueException("transport %a doesn't support remote node", nodeConfig.getProtocol());
@@ -125,7 +161,13 @@ public class MeshCacheService {
         return addNode(provider, nodeConfig, tp);
     }
 
-    protected MeshNode addNode(TransportProvider provider, NodeConfig nodeConfig, Transport transport) {
+    @Nonnull
+    protected MeshNode addNode(@Nonnull TransportProvider provider, @Nonnull NodeConfig nodeConfig,
+            @Nonnull Transport transport) {
+        checkNotNull(provider);
+        checkNotNull(nodeConfig);
+        checkNotNull(transport);
+
         var r = new MeshNode(nodeConfig, transport);
         r.addHook(provider);
 

@@ -26,6 +26,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 @Setter
 public class GrpcConfig extends NodeConfig {
@@ -36,30 +39,36 @@ public class GrpcConfig extends NodeConfig {
 
     // TODO: credential
 
+    @Nonnull
     private String target;
 
+    @Nonnull
     private String host;
 
     private int port;
 
     @Builder
-    public GrpcConfig(SimpleURL url) {
+    public GrpcConfig(@Nonnull SimpleURL url) {
         super(url);
     }
 
     @Builder
-    public GrpcConfig(SimpleURL url, boolean local, int startTimeout, int stopTimeout) {
+    public GrpcConfig(@Nonnull SimpleURL url, boolean local, int startTimeout, int stopTimeout) {
         super(url, local, startTimeout, stopTimeout);
     }
 
     @Builder
-    public GrpcConfig(String host, int port, boolean local, int startTimeout, int stopTimeout) {
+    public GrpcConfig(@Nonnull String host, int port, boolean local, int startTimeout, int stopTimeout) {
         super(local, startTimeout, stopTimeout);
+
+        checkNotNull(host);
 
         this.host = host;
         this.port = port;
     }
 
+    @Nonnull
+    @Override
     public String getTarget() {
         if (this.target == null) {
             this.target = String.format("%s:%d", getHost(), getPort());
@@ -67,12 +76,13 @@ public class GrpcConfig extends NodeConfig {
         return this.target;
     }
 
+    @Nonnull
     public ManagedChannel createClientChannel() {
         return Grpc.newChannelBuilder(getTarget(), InsecureChannelCredentials.create()).build();
     }
 
     @Override
-    public void setUrl(SimpleURL url) {
+    public void setUrl(@Nonnull SimpleURL url) {
         super.setUrl(url);
 
         setHost(url.getHost());
@@ -80,6 +90,7 @@ public class GrpcConfig extends NodeConfig {
     }
 
     @Override
+    @Nonnull
     public Map<String, Object> toMap() {
         var r = super.toMap();
 

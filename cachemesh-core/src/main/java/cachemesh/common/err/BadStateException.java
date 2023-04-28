@@ -15,17 +15,19 @@
  */
 package cachemesh.common.err;
 
+import javax.annotation.Nonnull;
+
 public class BadStateException extends GeneralException {
 
-    public BadStateException(String messageFormat, Object... messageArgs) {
+    public BadStateException(@Nonnull String messageFormat, @Nonnull Object... messageArgs) {
         super(messageFormat, messageArgs);
     }
 
-    public BadStateException(Throwable cause) {
+    public BadStateException(@Nonnull Throwable cause) {
         super(cause);
     }
 
-    public BadStateException(Throwable cause, String messageFormat, Object... messageArgs) {
+    public BadStateException(@Nonnull Throwable cause, @Nonnull String messageFormat, @Nonnull Object... messageArgs) {
         super(cause, messageFormat, messageArgs);
     }
 

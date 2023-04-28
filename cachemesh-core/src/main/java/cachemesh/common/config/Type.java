@@ -15,13 +15,18 @@
  */
 package cachemesh.common.config;
 
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+
 public interface Type<T> {
 
     Class<?> getKlass();
 
+    @Nullable
     Type<?> getElementType();
 
-    T convert(ConfigContext ctx, Object value);
+    @Nullable
+    T convert(@Nonnull ConfigContext ctx, @Nullable Object value);
 
     boolean isEnum();
 

@@ -22,22 +22,33 @@ import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.err.BadStateException;
 import lombok.Getter;
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 @Getter
 public abstract class KindPathingDynamicBeanType<T> extends DynamicBeanType<T> {
 
+    @Nonnull
     private final Path kindPath;
 
+    @Nullable
     private final Object defaultKind;
 
-    public KindPathingDynamicBeanType(TypeRegistry typeRegistry, Class<T> klass, Path kindPath, Object defaultKind) {
+    public KindPathingDynamicBeanType(@Nonnull TypeRegistry typeRegistry, @Nonnull Class<T> klass,
+            @Nonnull Path kindPath, @Nullable Object defaultKind) {
         super(typeRegistry, klass);
-        this.kindPath = kindPath;
+
+        this.kindPath = checkNotNull(kindPath);
         this.defaultKind = defaultKind;
     }
 
     @Override
-    public Object extractKind(ConfigContext ctx, Map<String, Object> propValues) {
+    @Nonnull
+    public Object extractKind(@Nonnull ConfigContext ctx, @Nonnull Map<String, Object> propValues) {
+        checkNotNull(ctx);
+        checkNotNull(propValues);
+
         var r = ctx.getValue(getKindPath());
         if (r == null) {
             r = getDefaultKind();

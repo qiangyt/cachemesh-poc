@@ -29,22 +29,33 @@ import cachemesh.grpc.cache.GetSingleResponse;
 import cachemesh.grpc.cache.PutSingleRequest;
 import cachemesh.grpc.cache.PutSingleResponse;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class GrpcService extends CacheServiceGrpc.CacheServiceImplBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(GrpcService.class);
 
+    @Nonnull
     private final LocalTransport localTransport;
 
+    @Nonnull
     private final GrpcConfig config;
 
-    public GrpcService(GrpcConfig config, LocalTransport localTransport) {
+    public GrpcService(@Nonnull GrpcConfig config, @Nonnull LocalTransport localTransport) {
+        checkNotNull(config);
+        checkNotNull(localTransport);
+
         this.config = config;
         this.localTransport = localTransport;
     }
 
     @Override
-    public void getSingle(GetSingleRequest req, StreamObserver<GetSingleResponse> respObserver) {
+    public void getSingle(@Nonnull GetSingleRequest req, @Nonnull StreamObserver<GetSingleResponse> respObserver) {
+        checkNotNull(req);
+        checkNotNull(respObserver);
+
         var cacheName = req.getCacheName();
         var key = req.getKey();
         var ver = req.getVersion();
@@ -72,7 +83,10 @@ public class GrpcService extends CacheServiceGrpc.CacheServiceImplBase {
     }
 
     @Override
-    public void putSingle(PutSingleRequest req, StreamObserver<PutSingleResponse> respObserver) {
+    public void putSingle(@Nonnull PutSingleRequest req, @Nonnull StreamObserver<PutSingleResponse> respObserver) {
+        checkNotNull(req);
+        checkNotNull(respObserver);
+
         var cacheName = req.getCacheName();
         var key = req.getKey();
         var debug = LOG.isDebugEnabled();

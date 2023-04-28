@@ -20,22 +20,29 @@ import org.slf4j.Logger;
 import cachemesh.common.err.BadStateException;
 import cachemesh.common.misc.LogHelper;
 import lombok.Getter;
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 @Getter
 public abstract class AbstractShutdownable implements ManagedShutdownable {
 
+    @Nonnull
     private final Logger logger;
 
+    @Nonnull
     private final String name;
 
+    @Nonnull
     private final ShutdownManager shutdownManager;
 
-    protected AbstractShutdownable(String name, ShutdownManager shutdownManager) {
+    protected AbstractShutdownable(@Nonnull String name, @Nullable ShutdownManager shutdownManager) {
         this(name, shutdownManager, 0);
     }
 
-    protected AbstractShutdownable(String name, ShutdownManager shutdownManager, int shutdownTimeoutSeconds) {
-        this.name = name;
+    protected AbstractShutdownable(@Nonnull String name, @Nullable ShutdownManager shutdownManager,
+            int shutdownTimeoutSeconds) {
+        this.name = checkNotNull(name);
         this.logger = LogHelper.getLogger(getClass(), name);
 
         this.shutdownManager = shutdownManager;
@@ -58,6 +65,7 @@ public abstract class AbstractShutdownable implements ManagedShutdownable {
         }
     }
 
+    @Nonnull
     public ShutdownLogger createShutdownLogger() {
         return new ShutdownLogger(getLogger());
     }

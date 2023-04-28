@@ -17,12 +17,14 @@ package cachemesh.core.config;
 
 import cachemesh.common.registry.Registry;
 import cachemesh.core.spi.LocalCacheProvider;
+import javax.annotation.Nonnull;
 
 public class LocalCacheProviderRegistry extends Registry<String, LocalCacheProvider> {
 
     public static final LocalCacheProviderRegistry DEFAULT = new LocalCacheProviderRegistry();
 
     @Override
+    @Nonnull
     public String getValueName() {
         return "local cache provider";
     }

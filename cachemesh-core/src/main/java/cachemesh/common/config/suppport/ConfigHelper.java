@@ -15,11 +15,15 @@
  */
 package cachemesh.common.config.suppport;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 //import net.logstash.logback.argument.StructuredArgument;
 //import net.logstash.logback.argument.StructuredArguments;
+
+import static com.google.common.base.Preconditions.*;
+
+import javax.annotation.Nonnull;
+
+import com.google.common.collect.ImmutableList;
 
 public class ConfigHelper {
 
@@ -27,12 +31,11 @@ public class ConfigHelper {
 
     public static final Iterable<Class<?>> MAP = convertables(Map.class);
 
-    public static Iterable<Class<?>> convertables(Class<?>... types) {
-        var r = new ArrayList<Class<?>>(types.length);
-        for (var type : types) {
-            r.add(type);
-        }
-        return Collections.unmodifiableCollection(r);
+    @Nonnull
+    public static Iterable<Class<?>> convertables(@Nonnull Class<?>... types) {
+        checkNotNull(types);
+
+        return ImmutableList.copyOf(types);
     }
 
     /*

@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.local.caffeine;
+package cachemesh.local.guava;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import com.github.benmanes.caffeine.cache.Cache;
 import lombok.Getter;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
@@ -29,18 +28,21 @@ import cachemesh.core.spi.LocalCache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.google.common.cache.Cache;
+
 import static com.google.common.base.Preconditions.*;
 
 @Getter
-public class CaffeineCache extends AbstractShutdownable implements LocalCache {
+public class GuavaCache extends AbstractShutdownable implements LocalCache {
 
     @Nonnull
-    private final CaffeineConfig config;
+    private final GuavaConfig config;
 
     @Nonnull
     private final Cache<String, Value> instance;
 
-    public CaffeineCache(@Nonnull CaffeineConfig config, @Nonnull Cache<String, Value> instance,
+    public GuavaCache(@Nonnull GuavaConfig config, @Nonnull Cache<String, Value> instance,
             @Nullable ShutdownManager shutdownManager) {
         super(config.getName(), shutdownManager);
 

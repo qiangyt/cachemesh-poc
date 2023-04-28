@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 
 import cachemesh.common.err.BadStateException;
 import lombok.Getter;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 @Getter
 public class LifeStage {
@@ -28,25 +30,31 @@ public class LifeStage {
         created, starting, started, stopping, stopped
     }
 
+    @Nonnull
     private volatile Stage stage = Stage.created;
 
+    @Nonnull
     private final String hintKey;
 
+    @Nonnull
     private final String hintValue;
 
+    @Nonnull
     private final Logger logger;
 
-    public LifeStage(String hintKey, String hintValue) {
+    public LifeStage(@Nonnull String hintKey, @Nonnull String hintValue) {
         this(hintKey, hintValue, LoggerFactory.getLogger(hintValue + "@" + hintKey));
     }
 
-    public LifeStage(String hintKey, String hintValue, Logger logger) {
-        this.hintKey = hintKey;
-        this.hintValue = hintValue;
-        this.logger = logger;
+    public LifeStage(@Nonnull String hintKey, @Nonnull String hintValue, @Nonnull Logger logger) {
+        this.hintKey = checkNotNull(hintKey);
+        this.hintValue = checkNotNull(hintValue);
+        this.logger = checkNotNull(logger);
     }
 
-    public void expect(Stage expectedType) {
+    public void expect(@Nonnull Stage expectedType) {
+        checkNotNull(expectedType);
+
         var t = getStage();
         if (t != expectedType) {
             throw new BadStateException("%s %s: expected be %s, but be %s", getHintKey(), getHintValue(), expectedType,
@@ -54,7 +62,9 @@ public class LifeStage {
         }
     }
 
-    public void expectNot(Stage... expectedTypes) {
+    public void expectNot(@Nonnull Stage... expectedTypes) {
+        checkNotNull(expectedTypes);
+
         var t = getStage();
         for (var expectedType : expectedTypes) {
             if (t == expectedType) {
@@ -79,7 +89,10 @@ public class LifeStage {
         step(Stage.stopping, Stage.stopped);
     }
 
-    public void step(Stage current, Stage next) {
+    public void step(@Nonnull Stage current, @Nonnull Stage next) {
+        checkNotNull(current);
+        checkNotNull(next);
+
         expect(current);
         getLogger().info(next.name());
         this.stage = next;

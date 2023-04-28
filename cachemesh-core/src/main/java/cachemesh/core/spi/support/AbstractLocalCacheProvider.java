@@ -23,30 +23,46 @@ import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.LocalCacheProvider;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public abstract class AbstractLocalCacheProvider<T extends LocalCache, C extends LocalCacheConfig>
         implements LocalCacheProvider {
 
+    @Nullable
     private final ShutdownManager shutdownManager;
 
+    @Nonnull
     private final BeanType<C> configType;
 
-    protected AbstractLocalCacheProvider(BeanType<C> configType, ShutdownManager shutdownManager) {
+    protected AbstractLocalCacheProvider(@Nonnull BeanType<C> configType, @Nullable ShutdownManager shutdownManager) {
+        checkNotNull(configType);
+
         this.shutdownManager = shutdownManager;
         this.configType = configType;
     }
 
-    protected abstract T doCreateCache(C config);
+    @Nonnull
+    protected abstract T doCreateCache(@Nonnull C config);
 
     @Override
     @SuppressWarnings("unchecked")
-    public LocalCache createCache(LocalCacheConfig config) {
+    @Nonnull
+    public LocalCache createCache(@Nonnull LocalCacheConfig config) {
+        checkNotNull(config);
+
         var c = (C) config;
         return doCreateCache(c);
     }
 
     @Override
-    public LocalCacheConfig createDefaultConfig(String name, Class<?> valueClass) {
+    @Nonnull
+    public LocalCacheConfig createDefaultConfig(@Nonnull String name, @Nonnull Class<?> valueClass) {
+        checkNotNull(name);
+        checkNotNull(valueClass);
+
         var r = getConfigType().convert(null, valueClass);
         r.setName(name);
         r.setValueClass(valueClass);
@@ -54,7 +70,10 @@ public abstract class AbstractLocalCacheProvider<T extends LocalCache, C extends
     }
 
     @Override
-    public BeanType<? extends LocalCacheConfig> resolveConfigType(TypeRegistry typeRegistry) {
+    @Nonnull
+    public BeanType<? extends LocalCacheConfig> resolveConfigType(@Nonnull TypeRegistry typeRegistry) {
+        checkNotNull(typeRegistry);
+
         return getConfigType();
     }
 

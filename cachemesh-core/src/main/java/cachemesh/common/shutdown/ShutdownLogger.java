@@ -25,30 +25,36 @@ import cachemesh.common.misc.DateHelper;
 import cachemesh.common.misc.LogHelper;
 import lombok.Getter;
 import lombok.Setter;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 public class ShutdownLogger {
 
     public static final ShutdownLogger DEFAULT = new ShutdownLogger(ShutdownLogger.class, "default");
 
+    @Nonnull
     private final Logger logger;
 
     @Getter
     @Setter
     private volatile boolean inShutdownHook;
 
-    public ShutdownLogger(Class<?> klass, String name) {
+    public ShutdownLogger(@Nonnull Class<?> klass, @Nonnull String name) {
         this(LogHelper.getLogger(klass, name));
     }
 
-    public ShutdownLogger(Logger logger) {
-        this.logger = logger;
+    public ShutdownLogger(@Nonnull Logger logger) {
+        this.logger = checkNotNull(logger);
     }
 
     public String getName() {
         return this.logger.getName();
     }
 
-    public void info(String msgFormat, Object... args) {
+    public void info(@Nonnull String msgFormat, @Nonnull Object... args) {
+        checkNotNull(msgFormat);
+        checkNotNull(args);
+
         String msg = String.format(msgFormat, args);
 
         if (isInShutdownHook()) {
@@ -59,7 +65,11 @@ public class ShutdownLogger {
         }
     }
 
-    public void error(Throwable cause, String msgFormat, Object... args) {
+    public void error(@Nonnull Throwable cause, @Nonnull String msgFormat, @Nonnull Object... args) {
+        checkNotNull(cause);
+        checkNotNull(msgFormat);
+        checkNotNull(args);
+
         String msg = String.format(msgFormat, args);
 
         if (isInShutdownHook()) {

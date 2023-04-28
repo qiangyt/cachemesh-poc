@@ -18,6 +18,9 @@ package cachemesh.core.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 import cachemesh.common.hash.Hashing;
 import cachemesh.common.hash.MurmurHash;
 import cachemesh.common.misc.Dumpable;
@@ -31,9 +34,10 @@ public class MeshConfig implements Dumpable {
     public static enum HashingKind {
         murmur(MurmurHash.DEFAULT);
 
+        @Nonnull
         public final Hashing instance;
 
-        private HashingKind(Hashing instance) {
+        private HashingKind(@Nonnull Hashing instance) {
             this.instance = instance;
         }
     }
@@ -43,22 +47,33 @@ public class MeshConfig implements Dumpable {
     public static final HashingKind DEFAULT_HASHING = HashingKind.murmur;
 
     @Setter
+    @Nonnull
     private String name = DEFAULT_NAME;
 
     @Setter
+    @Nonnull
     private HashingKind hashing = DEFAULT_HASHING;
 
     @Setter
+    @Nonnull
     private MembersConfig nodes;
 
     @Setter
+    @Nonnull
     private LocalConfig local;
 
     public MeshConfig() {
     }
 
     @Builder
-    private MeshConfig(String name, HashingKind hashing, MembersConfig nodes, LocalConfig local) {
+    private MeshConfig(@Nonnull String name, @Nonnull HashingKind hashing, @Nonnull MembersConfig nodes,
+            @Nonnull LocalConfig local) {
+
+        checkNotNull(name);
+        checkNotNull(hashing);
+        checkNotNull(nodes);
+        checkNotNull(local);
+
         this.name = name;
         this.hashing = hashing;
         this.nodes = nodes;
@@ -66,6 +81,7 @@ public class MeshConfig implements Dumpable {
     }
 
     @Override
+    @Nonnull
     public Map<String, Object> toMap() {
         var r = new HashMap<String, Object>();
 

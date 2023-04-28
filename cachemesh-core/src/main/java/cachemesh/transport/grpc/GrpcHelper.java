@@ -20,15 +20,24 @@ import cachemesh.core.cache.bean.Value.Status;
 import cachemesh.grpc.cache.ValueStatus;
 import io.grpc.stub.StreamObserver;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 public class GrpcHelper {
 
-    public static <V> void complete(StreamObserver<V> observer, V response) {
+    public static <V> void complete(@Nonnull StreamObserver<V> observer, @Nonnull V response) {
+        checkNotNull(observer);
+        checkNotNull(response);
+
         observer.onNext(response);
         observer.onCompleted();
         return;
     }
 
-    public static Status convertStatus(ValueStatus status) {
+    @Nonnull
+    public static Status convertStatus(@Nonnull ValueStatus status) {
+        checkNotNull(status);
+
         switch (status) {
         case NotFound:
             return Status.NOT_FOUND;
@@ -43,7 +52,10 @@ public class GrpcHelper {
         }
     }
 
-    public static ValueStatus convertStatus(Status status) {
+    @Nonnull
+    public static ValueStatus convertStatus(@Nonnull Status status) {
+        checkNotNull(status);
+
         switch (status) {
         case NOT_FOUND:
             return ValueStatus.NotFound;

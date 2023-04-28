@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 import cachemesh.common.err.BadStateException;
 
@@ -28,6 +30,7 @@ public class ShutdownManager {
 
     public static final ShutdownManager DEFAULT = new ShutdownManager();
 
+    @Nonnull
     private LinkedHashMap<String, ShutdownItem> items = new LinkedHashMap<>();
 
     @lombok.Getter
@@ -37,19 +40,26 @@ public class ShutdownManager {
 
     private final ShutdownLogger logger = new ShutdownLogger(ShutdownManager.class, "default");
 
-    public void register(ManagedShutdownable target) {
+    public void register(@Nonnull ManagedShutdownable target) {
+        checkNotNull(target);
+
         register(target, DEFAULT_TIMEOUT_SECONDS);
     }
 
-    public void register(Iterable<? extends ManagedShutdownable> targets) {
+    public void register(@Nonnull Iterable<? extends ManagedShutdownable> targets) {
+        checkNotNull(targets);
+
         targets.forEach(this::register);
     }
 
-    public void register(Iterable<? extends ManagedShutdownable> targets, int timeoutSeconds) {
+    public void register(@Nonnull Iterable<? extends ManagedShutdownable> targets, int timeoutSeconds) {
+        checkNotNull(targets);
+
         targets.forEach(target -> register(target, timeoutSeconds));
     }
 
-    public void register(ManagedShutdownable target, int timeoutSeconds) {
+    public void register(@Nonnull ManagedShutdownable target, int timeoutSeconds) {
+        checkNotNull(target);
         var name = target.getName();
 
         this.items.compute(name, (k, existing) -> {
@@ -64,7 +74,8 @@ public class ShutdownManager {
         refreshTimeout();
     }
 
-    public void unregister(ManagedShutdownable target) {
+    public void unregister(@Nonnull ManagedShutdownable target) {
+        checkNotNull(target);
         var name = target.getName();
 
         this.items.compute(name, (k, existing) -> {
@@ -119,7 +130,9 @@ public class ShutdownManager {
         this.logger.info("shutdown hook is added");
     }
 
-    public void shutdown(ManagedShutdownable target, int timeoutSeconds) {
+    public void shutdown(@Nonnull ManagedShutdownable target, int timeoutSeconds) {
+        checkNotNull(target);
+
         String name = target.getName();
         if (target.isShutdownNeeded() == false) {
             throw new BadStateException("%s no need shutdown", name);

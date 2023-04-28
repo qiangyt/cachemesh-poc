@@ -15,8 +15,11 @@
  */
 package cachemesh.common.hash;
 
+import javax.annotation.Nonnull;
+
 public interface HasKey {
 
+    @Nonnull
     String getKey();
 
 }

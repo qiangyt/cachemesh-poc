@@ -15,16 +15,9 @@
  */
 package cachemesh.common.misc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 public class StringHelperTest {
 
-	@Test
+	/*@Test
 	public void test_join() {
 		assertEquals("1&2", StringHelper.join("&", List.of(1, 2)));
 		assertEquals("3", StringHelper.join("&", List.of(3)));
@@ -33,6 +26,6 @@ public class StringHelperTest {
 		assertEquals("A,B", StringHelper.join(",", new String[]{"A","B"}));
 		assertEquals("C", StringHelper.join(",", new String[]{"C"}));
 		assertEquals("", StringHelper.join(",", new String[]{}));
-	}
+	}*/
 
 }

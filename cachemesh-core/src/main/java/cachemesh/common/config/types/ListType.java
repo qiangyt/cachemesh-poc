@@ -23,12 +23,15 @@ import cachemesh.common.config.Type;
 import cachemesh.common.config.suppport.ConfigHelper;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class ListType<T> extends ContainerType<List<T>, T> {
 
     public static final Iterable<Class<?>> CONVERTABLES = ConfigHelper.convertables(Iterable.class);
 
-    public ListType(Type<T> elementType) {
+    public ListType(@Nonnull Type<T> elementType) {
         super(List.class, elementType);
     }
 
@@ -52,7 +55,10 @@ public class ListType<T> extends ContainerType<List<T>, T> {
         return r;
     }
 
-    public static <E> ListType<E> of(Type<E> elementType) {
+    @Nonnull
+    public static <E> ListType<E> of(@Nonnull Type<E> elementType) {
+        checkNotNull(elementType);
+
         return new ListType<>(elementType);
     }
 

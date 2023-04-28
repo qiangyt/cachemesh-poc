@@ -18,17 +18,20 @@ package cachemesh.common.config.types;
 import java.lang.reflect.Array;
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
+
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.suppport.ConfigHelper;
+import static com.google.common.base.Preconditions.*;
 
 public class ArrayType<T> extends ContainerType<T[], T> {
 
     public static final Iterable<Class<?>> CONVERTABLES = ConfigHelper.convertables(Collection.class);
 
     @SuppressWarnings("unchecked")
-    public ArrayType(TypeRegistry registry, Class<T[]> klass) {
+    public ArrayType(@Nonnull TypeRegistry registry, @Nonnull Class<T[]> klass) {
         super(klass, (Type<T>) registry.load(klass.getComponentType()));
     }
 
@@ -59,7 +62,10 @@ public class ArrayType<T> extends ContainerType<T[], T> {
         return r;
     }
 
-    public static <E> ArrayType<E> of(TypeRegistry registry, Class<E[]> klass) {
+    @Nonnull
+    public static <E> ArrayType<E> of(@Nonnull TypeRegistry registry, @Nonnull Class<E[]> klass) {
+        checkNotNull(registry);
+        checkNotNull(klass);
         return new ArrayType<>(registry, klass);
     }
 

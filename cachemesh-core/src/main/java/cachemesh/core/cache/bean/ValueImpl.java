@@ -20,6 +20,11 @@ import java.lang.ref.WeakReference;
 
 import cachemesh.common.misc.Serderializer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.*;
+
 public class ValueImpl implements Value {
 
     static final Object NULL_OBJECT = new Object();
@@ -30,17 +35,19 @@ public class ValueImpl implements Value {
 
     static final Reference<Object> NULL_OBJECT_R = new WeakReference<>(NULL_OBJECT);
 
+    @Nullable
     private Reference<byte[]> bytesR; // TODO: or use SoftReference; have this configurable
 
+    @Nullable
     private Object object;
 
     private long version;
 
-    public ValueImpl(byte[] bytes, long version) {
+    public ValueImpl(@Nullable byte[] bytes, long version) {
         withBytes(bytes, version);
     }
 
-    void withBytes(byte[] bytes, long version) {
+    void withBytes(@Nullable byte[] bytes, long version) {
         if (bytes == null || bytes == NULL_BYTES) {
             this.bytesR = NULL_BYTES_R;
             this.object = NULL_OBJECT;
@@ -52,11 +59,11 @@ public class ValueImpl implements Value {
         this.version = version;
     }
 
-    public ValueImpl(Object obj, long version) {
+    public ValueImpl(@Nullable Object obj, long version) {
         withObject(obj, version);
     }
 
-    void withObject(Object obj, long version) {
+    void withObject(@Nullable Object obj, long version) {
         if (obj == null || obj == NULL_OBJECT) {
             this.bytesR = NULL_BYTES_R;
             this.object = NULL_OBJECT;
@@ -68,7 +75,7 @@ public class ValueImpl implements Value {
         this.version = version;
     }
 
-    public ValueImpl(Object obj, byte[] bytes, long version) {
+    public ValueImpl(@Nullable Object obj, @Nullable byte[] bytes, long version) {
         withBytes(bytes, version);
         withObject(obj, version);
     }
@@ -93,6 +100,7 @@ public class ValueImpl implements Value {
 
     @Override
     @SuppressWarnings("unchecked")
+    @Nullable
     public <T> T getObject() {
         var obj = this.object;
         if (obj == NULL_OBJECT) {
@@ -102,6 +110,7 @@ public class ValueImpl implements Value {
     }
 
     @Override
+    @Nullable
     public byte[] getBytes() {
         var biR = this.bytesR;
         if (biR == NULL_BYTES_R) {
@@ -112,7 +121,11 @@ public class ValueImpl implements Value {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getObject(Serderializer serder, Class<?> valueClass) {
+    @Nullable
+    public <T> T getObject(@Nonnull Serderializer serder, @Nonnull Class<?> valueClass) {
+        checkNotNull(serder);
+        checkNotNull(valueClass);
+
         var obj = this.object;
         var biR = this.bytesR;
 
@@ -137,7 +150,10 @@ public class ValueImpl implements Value {
     }
 
     @Override
-    public byte[] getBytes(Serderializer serder) {
+    @Nullable
+    public byte[] getBytes(@Nonnull Serderializer serder) {
+        checkNotNull(serder);
+
         var biR = this.bytesR;
         var obj = this.object;
 

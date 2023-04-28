@@ -18,11 +18,14 @@ package cachemesh.core.config;
 import cachemesh.common.registry.Registry;
 import cachemesh.core.spi.TransportProvider;
 
+import javax.annotation.Nonnull;
+
 public class TransportRegistry extends Registry<String, TransportProvider> {
 
     public static final TransportRegistry DEFAULT = new TransportRegistry();
 
     @Override
+    @Nonnull
     public String getValueName() {
         return "transport";
     }

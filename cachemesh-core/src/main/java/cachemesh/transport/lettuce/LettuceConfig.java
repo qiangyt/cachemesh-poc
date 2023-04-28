@@ -26,6 +26,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 @Setter
 public class LettuceConfig extends NodeConfig {
@@ -39,9 +42,11 @@ public class LettuceConfig extends NodeConfig {
     public static final String DEFAULT_SEPARATOR = "%";
 
     @AIgnored
+    @Nonnull
     private String target;
 
     @AIgnored
+    @Nonnull
     private String host;
 
     @AIgnored
@@ -50,31 +55,40 @@ public class LettuceConfig extends NodeConfig {
     @AIgnored
     private int database;
 
+    @Nonnull
     private String keySeparator;
 
     @Builder
-    public LettuceConfig(SimpleURL url) {
+    public LettuceConfig(@Nonnull SimpleURL url) {
         super(url);
     }
 
     @Builder
-    public LettuceConfig(SimpleURL url, int database, String keySeparator, boolean local, int startTimeout,
-            int stopTimeout) {
+    public LettuceConfig(@Nonnull SimpleURL url, int database, @Nonnull String keySeparator, boolean local,
+            int startTimeout, int stopTimeout) {
         super(url, local, startTimeout, stopTimeout);
+
+        checkNotNull(database);
+        checkNotNull(keySeparator);
 
         this.database = database;
         this.keySeparator = keySeparator;
     }
 
     @Builder
-    public LettuceConfig(String host, int port, int database, String keySeparator, boolean local, int startTimeout,
-            int stopTimeout) {
+    public LettuceConfig(@Nonnull String host, int port, int database, @Nonnull String keySeparator, boolean local,
+            int startTimeout, int stopTimeout) {
         super(local, startTimeout, stopTimeout);
+
+        checkNotNull(database);
+        checkNotNull(keySeparator);
 
         this.database = database;
         this.keySeparator = keySeparator;
     }
 
+    @Nonnull
+    @Override
     public String getTarget() {
         if (this.target == null) {
             this.target = String.format("%s:%d", getHost(), getPort());
@@ -83,7 +97,7 @@ public class LettuceConfig extends NodeConfig {
     }
 
     @Override
-    public void setUrl(SimpleURL url) {
+    public void setUrl(@Nonnull SimpleURL url) {
         super.setUrl(url);
 
         setHost(url.getHost());
@@ -100,11 +114,13 @@ public class LettuceConfig extends NodeConfig {
     }
 
     @Override
+    @Nonnull
     protected SimpleURL buildUrl() throws MalformedURLException {
         return new SimpleURL(String.format("%s://%s/%d", getProtocol(), getTarget(), getDatabase()));
     }
 
     @Override
+    @Nonnull
     public Map<String, Object> toMap() {
         var r = super.toMap();
 

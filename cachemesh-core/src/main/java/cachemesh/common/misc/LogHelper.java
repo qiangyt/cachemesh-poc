@@ -20,19 +20,33 @@ import org.slf4j.LoggerFactory;
 import net.logstash.logback.argument.StructuredArgument;
 import net.logstash.logback.argument.StructuredArguments;
 
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 public class LogHelper {
 
-    public static Logger getLogger(Class<?> klass, String name) {
+    @Nonnull
+    public static Logger getLogger(@Nonnull Class<?> klass, @Nonnull String name) {
+        checkNotNull(klass);
+        checkNotNull(name);
+
         return LoggerFactory.getLogger(name + "@" + klass.getCanonicalName());
     }
 
-    public static StructuredArgument entries(Dumpable dumpable) {
+    @Nonnull
+    public static StructuredArgument entries(@Nonnull Dumpable dumpable) {
+        checkNotNull(dumpable);
+
         var map = dumpable.toMap();
         return StructuredArguments.entries(map);
     }
 
-    public static StructuredArgument kv(String key, Dumpable dumpable) {
-        var map = dumpable.toMap();
+    @Nonnull
+    public static StructuredArgument kv(@Nonnull String key, @Nullable Dumpable dumpable) {
+        checkNotNull(key);
+
+        var map = (dumpable == null) ? null : dumpable.toMap();
         return StructuredArguments.kv(key, map);
     }
 

@@ -23,11 +23,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 public class DurationHelper {
 
     private static final Pattern PERIOD_PATTERN = Pattern.compile("([0-9]+)([smhdw])");
 
-    public static Duration parse(String text) {
+    @Nullable
+    public static Duration parse(@Nullable String text) {
         if (StringHelper.isBlank(text)) {
             return null;
         }

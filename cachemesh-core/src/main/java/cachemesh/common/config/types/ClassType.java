@@ -20,16 +20,20 @@ import cachemesh.common.config.suppport.AbstractType;
 import cachemesh.common.config.suppport.ConfigHelper;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
+import static com.google.common.base.Preconditions.*;
+
+import javax.annotation.Nonnull;
 
 @Getter
 public class ClassType extends AbstractType<Class<?>> {
 
     public static final ClassType DEFAULT = new ClassType(ClassCache.DEFAULT);
 
+    @Nonnull
     private final ClassCache classCache;
 
-    public ClassType(ClassCache classCache) {
-        this.classCache = classCache;
+    public ClassType(@Nonnull ClassCache classCache) {
+        this.classCache = checkNotNull(classCache);
     }
 
     @Override

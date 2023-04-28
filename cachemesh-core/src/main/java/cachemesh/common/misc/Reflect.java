@@ -18,22 +18,31 @@ package cachemesh.common.misc;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 import cachemesh.common.err.BadStateException;
 
 public class Reflect {
 
-    public static String propertyName(Field field, String propertyName) {
+    @Nonnull
+    public static String propertyName(@Nonnull Field field, @Nullable String propertyName) {
+        checkNotNull(field);
+
         if (StringHelper.isBlank(propertyName)) {
             propertyName = field.getName().toLowerCase();
         }
         return propertyName.trim();
     }
 
-    public static <T> Constructor<T> defaultConstructor(Class<T> propertyClass) {
+    @Nonnull
+    public static <T> Constructor<T> defaultConstructor(@Nonnull Class<T> klass) {
+        checkNotNull(klass);
+
         Constructor<T> r;
         try {
-            r = propertyClass.getConstructor();
+            r = klass.getConstructor();
         } catch (NoSuchMethodException e) {
             throw new BadStateException(e);
         }
@@ -41,7 +50,10 @@ public class Reflect {
         return r;
     }
 
-    public static <T> T newInstance(Constructor<T> ctor) {
+    @Nonnull
+    public static <T> T newInstance(@Nonnull Constructor<T> ctor) {
+        checkNotNull(ctor);
+
         try {
             return ctor.newInstance();
         } catch (ReflectiveOperationException e) {
@@ -49,7 +61,11 @@ public class Reflect {
         }
     }
 
-    public static <T> T newInstance(Constructor<T> ctor, Object... args) {
+    @Nonnull
+    public static <T> T newInstance(@Nonnull Constructor<T> ctor, @Nonnull Object... args) {
+        checkNotNull(ctor);
+        checkNotNull(args);
+
         try {
             return ctor.newInstance(args);
         } catch (ReflectiveOperationException e) {
@@ -58,7 +74,11 @@ public class Reflect {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T get(Method getter, Object object) {
+    @Nullable
+    public static <T> T get(@Nonnull Method getter, @Nonnull Object object) {
+        checkNotNull(getter);
+        checkNotNull(object);
+
         try {
             return (T) getter.invoke(object);
         } catch (ReflectiveOperationException e) {
@@ -66,7 +86,11 @@ public class Reflect {
         }
     }
 
-    public static void set(Method setter, Object object, Object value) {
+    @Nonnull
+    public static void set(@Nonnull Method setter, @Nonnull Object object, @Nullable Object value) {
+        checkNotNull(setter);
+        checkNotNull(object);
+
         try {
             setter.invoke(object, value);
         } catch (ReflectiveOperationException e) {
@@ -74,7 +98,12 @@ public class Reflect {
         }
     }
 
-    public static Method method(Class<?> klass, String name, Class<?>... paramTypes) {
+    @Nullable
+    public static Method method(@Nonnull Class<?> klass, @Nonnull String name, @Nonnull Class<?>... paramTypes) {
+        checkNotNull(klass);
+        checkNotNull(name);
+        checkNotNull(paramTypes);
+
         try {
             return klass.getMethod(name, paramTypes);
         } catch (NoSuchMethodException e) {
@@ -82,7 +111,13 @@ public class Reflect {
         }
     }
 
-    public static Method setter(Class<?> beanClass, String propName, Class<?> propClass, String setterName) {
+    @Nonnull
+    public static Method setter(@Nonnull Class<?> beanClass, @Nonnull String propName, @Nonnull Class<?> propClass,
+            @Nullable String setterName) {
+        checkNotNull(beanClass);
+        checkNotNull(propName);
+        checkNotNull(propClass);
+
         if (StringHelper.isBlank(setterName)) {
             setterName = "set" + StringHelper.capitalize(propName);
         }
@@ -98,7 +133,13 @@ public class Reflect {
         return r;
     }
 
-    public static Method getter(Class<?> beanClass, String propName, Class<?> propClass, String getterName) {
+    @Nonnull
+    public static Method getter(@Nonnull Class<?> beanClass, @Nonnull String propName, @Nonnull Class<?> propClass,
+            @Nullable String getterName) {
+        checkNotNull(beanClass);
+        checkNotNull(propName);
+        checkNotNull(propClass);
+
         if (StringHelper.isBlank(getterName)) {
             String propCapName = StringHelper.capitalize(propName);
 

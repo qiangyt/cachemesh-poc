@@ -19,6 +19,10 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import cachemesh.core.cache.bean.GetResult;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 @ThreadSafe
 public interface Transport {
 
@@ -26,21 +30,31 @@ public interface Transport {
 
     void stop(int timeoutSeconds) throws InterruptedException;
 
-    GetResult<byte[]> getSingle(String cacheName, String key, long version);
+    @Nonnull
+    GetResult<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version);
 
     // return version
-    long putSingle(String cacheName, String key, byte[] value);
+    long putSingle(@Nonnull String cacheName, @Nonnull String key, @Nullable byte[] value);
 
     boolean isRemote();
 
-    default <T> T getSingleObject(String cacheName, String key) {
+    @Nullable
+    default <T> T getSingleObject(@Nonnull String cacheName, @Nonnull String key) {
+        checkNotNull(cacheName);
+        checkNotNull(key);
+
         if (isRemote()) {
             throw new UnsupportedOperationException("unsupported by remote transport");
         }
         throw new UnsupportedOperationException("to be implemented");
     }
 
-    default <T> long putSingleObject(String cacheName, String key, T value, Class<T> valueClass) {
+    default <T> long putSingleObject(@Nonnull String cacheName, @Nonnull String key, @Nullable T value,
+            @Nonnull Class<T> valueClass) {
+        checkNotNull(cacheName);
+        checkNotNull(key);
+        checkNotNull(valueClass);
+
         if (isRemote()) {
             throw new UnsupportedOperationException("unsupported by remote transport");
         }

@@ -25,17 +25,27 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class LettuceTransport extends AbstractShutdownable implements Transport {
 
+    @Nonnull
     private StatefulRedisConnection<String, byte[]> connection;
 
+    @Nonnull
     private final RedisClient client;
 
+    @Nonnull
     private final LettuceConfig config;
 
-    public LettuceTransport(LettuceConfig config, RedisClient client, ShutdownManager shutdownManager) {
+    public LettuceTransport(@Nonnull LettuceConfig config, @Nonnull RedisClient client,
+            @Nullable ShutdownManager shutdownManager) {
         super(config.getTarget(), shutdownManager);
+
+        checkNotNull(client);
 
         this.config = config;
         this.client = client;
@@ -57,26 +67,36 @@ public class LettuceTransport extends AbstractShutdownable implements Transport 
     }
 
     @Override
-    public void onShutdown(ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
+    public void onShutdown(@Nonnull ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(shutdownLogger);
+
         var conn = getConnection();
         if (conn != null) {
             conn.close();
         }
     }
 
-    public String generateRedisKey(String cacheName, String key) {
+    public @Nonnull String generateRedisKey(@Nonnull String cacheName, @Nonnull String key) {
+        checkNotNull(cacheName);
+        checkNotNull(key);
+
         var sep = getConfig().getKeySeparator();
 
         return new StringBuilder(cacheName.length() + sep.length() + key.length()).append(cacheName).append(sep)
                 .append(key).toString();
     }
 
+    @Nonnull
     RedisCommands<String, byte[]> syncCommand() {
         return getConnection().sync();
     }
 
     @Override
-    public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
+    @Nonnull
+    public GetResult<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
+        checkNotNull(cacheName);
+        checkNotNull(key);
+
         var redisKey = generateRedisKey(cacheName, key);
 
         var cmds = syncCommand();
@@ -89,7 +109,10 @@ public class LettuceTransport extends AbstractShutdownable implements Transport 
     }
 
     @Override
-    public long putSingle(String cacheName, String key, byte[] value) {
+    public long putSingle(@Nonnull String cacheName, @Nonnull String key, byte[] value) {
+        checkNotNull(cacheName);
+        checkNotNull(key);
+
         var redisKey = generateRedisKey(cacheName, key);
 
         var cmds = syncCommand();

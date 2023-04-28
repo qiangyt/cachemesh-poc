@@ -33,6 +33,9 @@ import com.google.protobuf.ByteString;
 import cachemesh.common.err.BadStateException;
 import cachemesh.common.misc.StringHelper;
 import lombok.Getter;
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 @Getter
 @ThreadSafe
@@ -40,19 +43,23 @@ public class Jackson {
 
     public static final Jackson DEFAULT = new Jackson(buildDefaultMapper());
 
+    @Nonnull
     public final ObjectMapper mapper;
 
-    public Jackson(ObjectMapper mapper) {
-        this.mapper = mapper;
+    public Jackson(@Nonnull ObjectMapper mapper) {
+        this.mapper = checkNotNull(mapper);
     }
 
+    @Nonnull
     public static ObjectMapper buildDefaultMapper() {
         var r = new ObjectMapper();
         initDefaultMapper(r);
         return r;
     }
 
-    public static void initDefaultMapper(ObjectMapper mapper) {
+    public static void initDefaultMapper(@Nonnull ObjectMapper mapper) {
+        checkNotNull(mapper);
+
         var dateModule = new SimpleModule();
         dateModule.addSerializer(Date.class, new DateSerializer());
         dateModule.addDeserializer(Date.class, new DateDeserialize());
@@ -65,7 +72,10 @@ public class Jackson {
         mapper.configure(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS, true);
     }
 
-    public <T> T from(String text, Class<T> clazz) {
+    @Nullable
+    public <T> T from(@Nullable String text, @Nonnull Class<T> clazz) {
+        checkNotNull(clazz);
+
         if (StringHelper.isBlank(text)) {
             return null;
         }
@@ -77,7 +87,10 @@ public class Jackson {
         }
     }
 
-    public <T> T from(ByteString buf, Class<T> clazz) {
+    @Nullable
+    public <T> T from(@Nullable ByteString buf, @Nonnull Class<T> clazz) {
+        checkNotNull(clazz);
+
         if (buf == null) {
             return null;
         }
@@ -89,7 +102,10 @@ public class Jackson {
         }
     }
 
-    public <T> T from(ByteBuffer buf, Class<T> clazz) {
+    @Nullable
+    public <T> T from(@Nullable ByteBuffer buf, @Nonnull Class<T> clazz) {
+        checkNotNull(clazz);
+
         if (buf == null) {
             return null;
         }
@@ -108,7 +124,10 @@ public class Jackson {
         }
     }
 
-    public <T> T from(byte[] bytes, Class<T> clazz) {
+    @Nullable
+    public <T> T from(@Nullable byte[] bytes, @Nonnull Class<T> clazz) {
+        checkNotNull(clazz);
+
         if (bytes == null) {
             return null;
         }
@@ -120,7 +139,10 @@ public class Jackson {
         }
     }
 
-    public <T> T from(String text, TypeReference<T> typeReference) {
+    @Nullable
+    public <T> T from(@Nullable String text, @Nonnull TypeReference<T> typeReference) {
+        checkNotNull(typeReference);
+
         if (StringHelper.isBlank(text)) {
             return null;
         }
@@ -132,7 +154,10 @@ public class Jackson {
         }
     }
 
-    public <T> T from(ByteString buf, TypeReference<T> typeReference) {
+    @Nullable
+    public <T> T from(@Nullable ByteString buf, @Nonnull TypeReference<T> typeReference) {
+        checkNotNull(typeReference);
+
         if (buf == null) {
             return null;
         }
@@ -144,7 +169,10 @@ public class Jackson {
         }
     }
 
-    public <T> T from(ByteBuffer buf, TypeReference<T> typeReference) {
+    @Nullable
+    public <T> T from(@Nullable ByteBuffer buf, @Nonnull TypeReference<T> typeReference) {
+        checkNotNull(typeReference);
+
         if (buf == null) {
             return null;
         }
@@ -163,7 +191,10 @@ public class Jackson {
         }
     }
 
-    public <T> T from(byte[] bytes, TypeReference<T> typeReference) {
+    @Nullable
+    public <T> T from(@Nullable byte[] bytes, @Nonnull TypeReference<T> typeReference) {
+        checkNotNull(typeReference);
+
         if (bytes == null) {
             return null;
         }
@@ -175,27 +206,33 @@ public class Jackson {
         }
     }
 
-    public String pretty(Object object) {
+    @Nullable
+    public String pretty(@Nullable Object object) {
         return toString(object, true);
     }
 
-    public String toString(Object object) {
+    @Nullable
+    public String toString(@Nullable Object object) {
         return toString(object, false);
     }
 
-    public byte[] toBytes(Object object) {
+    @Nullable
+    public byte[] toBytes(@Nullable Object object) {
         return toBytes(object, false);
     }
 
-    public ByteString toByteString(Object object) {
+    @Nullable
+    public ByteString toByteString(@Nullable Object object) {
         return toByteString(object, false);
     }
 
-    public ByteBuffer toByteBuffer(Object object) {
+    @Nullable
+    public ByteBuffer toByteBuffer(@Nullable Object object) {
         return toByteBuffer(object, false);
     }
 
-    public String toString(Object object, boolean pretty) {
+    @Nullable
+    public String toString(@Nullable Object object, boolean pretty) {
         if (object == null) {
             return null;
         }
@@ -210,21 +247,24 @@ public class Jackson {
         }
     }
 
-    public ByteString toByteString(Object object, boolean pretty) {
+    @Nullable
+    public ByteString toByteString(@Nullable Object object, boolean pretty) {
         if (object == null) {
             return null;
         }
         return ByteString.copyFrom(toByteBuffer(object, pretty));
     }
 
-    public byte[] toBytes(Object object, boolean pretty) {
+    @Nullable
+    public byte[] toBytes(@Nullable Object object, boolean pretty) {
         if (object == null) {
             return null;
         }
         return toByteBuffer(object, pretty).array();
     }
 
-    public ByteBuffer toByteBuffer(Object object, boolean pretty) {
+    @Nullable
+    public ByteBuffer toByteBuffer(@Nullable Object object, boolean pretty) {
         if (object == null) {
             return null;
         }

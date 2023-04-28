@@ -20,9 +20,13 @@ import java.time.Duration;
 import cachemesh.common.registry.Manager;
 import io.lettuce.core.RedisClient;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 public class DedicatedRedisClientProvider extends Manager<LettuceConfig, RedisClient> implements RedisClientProvider {
 
     @Override
+    @Nonnull
     public String getValueName() {
         return "redis client";
     }
@@ -30,12 +34,19 @@ public class DedicatedRedisClientProvider extends Manager<LettuceConfig, RedisCl
     public static final DedicatedRedisClientProvider DEFAULT = new DedicatedRedisClientProvider();
 
     @Override
-    protected RedisClient doCreate(LettuceConfig config) {
+    @Nonnull
+    protected RedisClient doCreate(@Nonnull LettuceConfig config) {
+        checkNotNull(config);
+
         return RedisClient.create(config.getTarget());
     }
 
     @Override
-    protected void doDestroy(LettuceConfig config, RedisClient client, int timeoutSeconds) throws InterruptedException {
+    protected void doDestroy(@Nonnull LettuceConfig config, @Nonnull RedisClient client, int timeoutSeconds)
+            throws InterruptedException {
+        checkNotNull(config);
+        checkNotNull(client);
+
         var timeout = Duration.ofSeconds(timeoutSeconds);
         client.shutdown(timeout, timeout);
     }

@@ -15,10 +15,15 @@
  */
 package cachemesh.common.misc;
 
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+
 public interface Serderializer {
 
-    byte[] serialize(Object obj);
+    @Nullable
+    byte[] serialize(@Nullable Object obj);
 
-    <T> T deserialize(byte[] bytes, Class<T> clazz);
+    @Nullable
+    <T> T deserialize(@Nullable byte[] bytes, @Nonnull Class<T> clazz);
 
 }

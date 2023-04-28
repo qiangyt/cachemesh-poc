@@ -21,11 +21,18 @@ import org.jgroups.Receiver;
 import org.jgroups.View;
 import org.jgroups.util.Util;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 public class JGroupsHello {
 
+    @Nonnull
     protected JChannel ch;
 
-    public void start(String name) throws Exception {
+    @Nonnull
+    public void start(@Nonnull String name) throws Exception {
+        checkNotNull(name);
+
         this.ch = new JChannel("jgroups.xml").name(name).setReceiver(new MyReceiver(name)).connect("demo-cluster");
         int counter = 1;
         for (;;) {
@@ -39,17 +46,24 @@ public class JGroupsHello {
     }
 
     protected static class MyReceiver implements Receiver {
+        @Nonnull
         protected final String name;
 
-        protected MyReceiver(String name) {
+        protected MyReceiver(@Nonnull String name) {
+            checkNotNull(name);
+
             this.name = name;
         }
 
-        public void receive(Message msg) {
+        public void receive(@Nonnull Message msg) {
+            checkNotNull(msg);
+
             System.out.printf("-- [%s] msg from %s: %s\n", name, msg.src(), msg.getObject());
         }
 
-        public void viewAccepted(View v) {
+        public void viewAccepted(@Nonnull View v) {
+            checkNotNull(v);
+
             System.out.printf("-- [%s] new view: %s\n", name, v);
         }
     }

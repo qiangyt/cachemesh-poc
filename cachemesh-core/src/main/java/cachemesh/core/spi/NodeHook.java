@@ -17,18 +17,29 @@ package cachemesh.core.spi;
 
 import cachemesh.core.MeshNode;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 public interface NodeHook {
 
-    default void beforeNodeStart(MeshNode node, int timeoutSeconds) throws InterruptedException {
+    @Nonnull
+    default void beforeNodeStart(@Nonnull MeshNode node, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(node);
     }
 
-    default void afterNodeStart(MeshNode node, int timeoutSeconds) throws InterruptedException {
+    @Nonnull
+    default void afterNodeStart(@Nonnull MeshNode node, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(node);
     }
 
-    default void beforeNodeStop(MeshNode node, int timeoutSeconds) throws InterruptedException {
+    @Nonnull
+    default void beforeNodeStop(@Nonnull MeshNode node, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(node);
     }
 
-    default void afterNodeStop(MeshNode node, int timeoutSeconds) throws InterruptedException {
+    @Nonnull
+    default void afterNodeStop(@Nonnull MeshNode node, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(node);
     }
 
 }

@@ -23,6 +23,8 @@ import cachemesh.common.config.types.SimpleUrlType;
 import cachemesh.common.config.types.StringType;
 import cachemesh.common.registry.Registry;
 
+import javax.annotation.Nonnull;
+
 public class TypeRegistry extends Registry<Class<?>, Type<?>> {
 
     public static final TypeRegistry DEFAULT = new TypeRegistry(null);
@@ -37,7 +39,7 @@ public class TypeRegistry extends Registry<Class<?>, Type<?>> {
         r.register(Boolean.class, StringType.DEFAULT);
     }
 
-    public TypeRegistry(TypeRegistry parent) {
+    public TypeRegistry(@Nonnull TypeRegistry parent) {
         super(parent);
     }
 

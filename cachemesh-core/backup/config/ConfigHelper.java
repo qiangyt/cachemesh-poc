@@ -20,11 +20,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
+
 public class ConfigHelper {
 
     public static Iterable<Prop<?>> props(Prop<?>... array) {
         var list = Arrays.asList(array);
-        return Collections.unmodifiableList(list);
+        return ImmutableList.copyOf(array);
     }
 
     public static Iterable<Prop<?>> props(Iterable<Prop<?>> supers, Prop<?>... array) {
@@ -35,7 +38,7 @@ public class ConfigHelper {
         }
 
         list.addAll(Arrays.asList(array));
-        return Collections.unmodifiableList(list);
+        return ImmutableList.copyOf(list);
     }
 
     public static final Iterable<Class<?>> STRING = convertables(String.class);
@@ -47,7 +50,7 @@ public class ConfigHelper {
         for (var type : types) {
             r.add(type);
         }
-        return Collections.unmodifiableCollection(r);
+        return ImmutableCollection.copyOf(r);
     }
 
 }

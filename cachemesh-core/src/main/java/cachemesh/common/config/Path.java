@@ -16,6 +16,9 @@
 package cachemesh.common.config;
 
 import java.util.ArrayList;
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 import lombok.Getter;
 
@@ -118,13 +121,17 @@ public class Path {
     };
 
     @Getter
+    @Nullable
     private final Path parent;
 
     @Getter
+    @Nonnull
     private final String name;
 
+    @Nullable
     private String str;
 
+    @Nullable
     protected ArrayList<Path> chain;
 
     @Getter
@@ -133,9 +140,9 @@ public class Path {
     @Getter
     private int index;
 
-    private Path(Path parent, String name) {
+    private Path(@Nullable Path parent, @Nonnull String name) {
         this.parent = parent;
-        this.name = name;
+        this.name = checkNotNull(name);
 
         if (parent == null) {
             this.absolute = isRoot();
@@ -148,6 +155,8 @@ public class Path {
 
     private Path(Path parent, int index) {
         this(parent, String.format("[%d]", index));
+
+        checkArgument(index >= 0);
         this.index = index;
     }
 
@@ -155,6 +164,7 @@ public class Path {
         return false;
     }
 
+    @Nonnull
     public ArrayList<Path> toChain() {
         ArrayList<Path> r = this.chain;
         if (r != null) {
@@ -227,19 +237,28 @@ public class Path {
         return getIndex() >= 0;
     }
 
+    @Nonnull
     public static Path of(int index) {
+        checkArgument(index >= 0);
         return of(KEEP, index);
     }
 
-    public static Path of(String path) {
+    @Nonnull
+    public static Path of(@Nonnull String path) {
         return of(KEEP, path);
     }
 
-    public static Path of(Path current, int index) {
+    @Nonnull
+    public static Path of(@Nonnull Path current, int index) {
+        checkArgument(index >= 0);
         return new Path(current, index);
     }
 
-    public static Path of(Path current, String path) {
+    @Nonnull
+    public static Path of(@Nonnull Path current, @Nonnull String path) {
+        checkNotNull(current);
+        checkNotNull(path);
+
         int len = path.length();
 
         if (len == 0) {

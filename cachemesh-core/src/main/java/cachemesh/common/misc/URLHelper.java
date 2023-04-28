@@ -22,6 +22,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Splitter;
+
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 import cachemesh.common.err.BadValueException;
 
 public class URLHelper {
@@ -30,13 +36,15 @@ public class URLHelper {
 
     // https://github.com/anthonynsimon/jurl/tree/master/src/main/java/com/anthonynsimon/url
     // this is not a standard-compliant URL query parser.
-    public static Map<String, String> parseQuery(String query) {
+    @Nonnull
+    public static Map<String, String> parseQuery(@Nullable String query) {
         if (StringHelper.isBlank(query)) {
             return new HashMap<>();
         }
 
         var r = new HashMap<String, String>();
-        String[] pairs = query.split("&");
+
+        var pairs = Splitter.on('&').trimResults().omitEmptyStrings().split(query);
         for (var pair : pairs) {
             int pos = pair.indexOf('=');
             if (pos > 0) {
@@ -48,7 +56,9 @@ public class URLHelper {
         return r;
     }
 
-    public static void registerHandler(Class<? extends URLStreamHandler> handlerClass) {
+    public static void registerHandler(@Nonnull Class<? extends URLStreamHandler> handlerClass) {
+        checkNotNull(handlerClass);
+
         if (handlerClass.getName().equals("Handler")) {
             throw new BadValueException("handler class must be named 'Handler'");
         }

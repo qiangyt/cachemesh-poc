@@ -24,27 +24,39 @@ import org.jgroups.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 import cachemesh.common.err.GeneralException;
 
 public class MessageReceiver implements Receiver {
 
+    @Nonnull
     private static final Logger LOG = LoggerFactory.getLogger(MessageReceiver.class);
 
     // private View currentView;
 
+    @Nonnull
     private final JGroupsMembers members;
 
+    @Nonnull
     private final JGroupsListener listener;
 
+    @Nonnull
     private final Map<String, String> nodes = new ConcurrentHashMap<>();
 
-    MessageReceiver(JGroupsMembers members, JGroupsListener listener) {
+    MessageReceiver(@Nonnull JGroupsMembers members, @Nonnull JGroupsListener listener) {
+        checkNotNull(members);
+        checkNotNull(listener);
+
         this.members = members;
         this.listener = listener;
     }
 
     @Override
-    public void receive(Message msg) {
+    public void receive(@Nonnull Message msg) {
+        checkNotNull(msg);
+
         LOG.info("got message. from={}", msg.getSrc());
 
         String text = msg.getObject();
@@ -101,7 +113,8 @@ public class MessageReceiver implements Receiver {
     }
 
     @Override
-    public void viewAccepted(View v) {
+    public void viewAccepted(@Nonnull View v) {
+        checkNotNull(v);
         // this.currentView = v;
     }
 

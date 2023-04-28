@@ -15,51 +15,78 @@
  */
 package cachemesh.common.config.types;
 
-import java.util.Collections;
 import java.util.Map;
 
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.TypeRegistry;
+import cachemesh.common.err.BadStateException;
 import lombok.Getter;
+
+import javax.annotation.Nonnull;
+
+import com.google.common.collect.ImmutableMap;
+
+import static com.google.common.base.Preconditions.*;
 
 @Getter
 public abstract class DynamicBeanType<T> extends BeanType<T> {
 
+    @Nonnull
     private final TypeRegistry typeRegistry;
 
+    @Nonnull
     private Map<Object, BeanType<? extends T>> mapping;
 
-    public DynamicBeanType(TypeRegistry typeRegistry, Class<T> klass) {
+    public DynamicBeanType(@Nonnull TypeRegistry typeRegistry, @Nonnull Class<T> klass) {
         super(klass);
-        this.typeRegistry = typeRegistry;
+        this.typeRegistry = checkNotNull(typeRegistry);
     }
 
+    @Nonnull
     Map<Object, BeanType<? extends T>> getMapping() {
         if (this.mapping == null) {
             var m = createMapping(typeRegistry);
-            this.mapping = Collections.unmodifiableMap(m);
+            this.mapping = ImmutableMap.copyOf(m);
         }
         return this.mapping;
     }
 
     @Override
-    public abstract Object extractKind(ConfigContext ctx, Map<String, Object> propValues);
+    @Nonnull
+    public abstract Object extractKind(@Nonnull ConfigContext ctx, @Nonnull Map<String, Object> propValues);
 
-    public abstract Map<String, BeanType<? extends T>> createMapping(TypeRegistry typeRegistry);
+    @Nonnull
+    public abstract Map<String, BeanType<? extends T>> createMapping(@Nonnull TypeRegistry typeRegistry);
 
     @Override
-    public T newInstance(ConfigContext ctx, Object kind) {
+    @Nonnull
+    public T newInstance(@Nonnull ConfigContext ctx, @Nonnull Object kind) {
+        checkNotNull(ctx);
+        checkNotNull(kind);
+
         var type = determineConcreteType(ctx, kind);
         return type.newInstance(ctx, kind);
     }
 
-    public BeanType<? extends T> determineConcreteType(ConfigContext ctx, Object kind) {
-        return getMapping().get(kind);
+    @Nonnull
+    public BeanType<? extends T> determineConcreteType(@Nonnull ConfigContext ctx, @Nonnull Object kind) {
+        checkNotNull(ctx);
+        checkNotNull(kind);
+
+        var r = getMapping().get(kind);
+        if (r == null) {
+            throw new BadStateException("cannot determine concrete %s type for kind=%s", getKlass(), kind);
+        }
+        return r;
     }
 
     @Override
-    public Map<String, Property<?, ?>> getProperties(ConfigContext ctx, Object kind) {
+    @Nonnull
+    public Map<String, Property<?, ?>> getProperties(@Nonnull ConfigContext ctx, @Nonnull Object kind) {
+        checkNotNull(ctx);
+        checkNotNull(kind);
+
         var type = determineConcreteType(ctx, kind);
         return type.getProperties(ctx, kind);
     }

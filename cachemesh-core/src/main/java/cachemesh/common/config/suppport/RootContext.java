@@ -24,40 +24,51 @@ import java.util.Deque;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.err.BadValueException;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
+import static com.google.common.base.Preconditions.*;
 
 @Getter
 public class RootContext extends AbstractContext {
 
     private final Map<Path, Object> cachedValues = new HashMap<>();
 
-    public RootContext(ClassCache classCache, TypeRegistry typeRegistry, Map<String, Object> rootValue) {
+    public RootContext(@Nonnull ClassCache classCache, @Nonnull TypeRegistry typeRegistry,
+            @Nonnull Map<String, Object> rootValue) {
         super(classCache, typeRegistry, rootValue);
     }
 
     @Override
+    @Nonnull
     public Path getPath() {
         return Path.ROOT;
     }
 
     @Override
+    @Nullable
     public ConfigContext getParent() {
         return null;
     }
 
     @Override
+    @Nonnull
     public ConfigContext getRoot() {
         return this;
     }
 
     @Override
     @SuppressWarnings("all")
-    public Object setValue(Path relative, Object newValue) {
+    @Nullable
+    public Object setValue(@Nonnull Path relative, @Nullable Object newValue) {
+        checkNotNull(relative);
+
         return getCachedValues().compute(relative, (k, oldValue) -> {
             var chain = normalizeChain(relative);
 
@@ -109,7 +120,10 @@ public class RootContext extends AbstractContext {
         });
     }
 
-    Deque<Path> normalizeChain(Path relative) {
+    @Nonnull
+    Deque<Path> normalizeChain(@Nonnull Path relative) {
+        checkNotNull(relative);
+
         var chain = getPath().toChain();
         chain.addAll(relative.toChain());
 
@@ -137,7 +151,10 @@ public class RootContext extends AbstractContext {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public Object getValue(Path relative) {
+    @Nullable
+    public Object getValue(@Nonnull Path relative) {
+        checkNotNull(relative);
+
         return getCachedValues().computeIfAbsent(relative, k -> {
             var chain = normalizeChain(relative);
 

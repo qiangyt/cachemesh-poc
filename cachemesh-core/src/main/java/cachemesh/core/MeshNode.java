@@ -29,23 +29,34 @@ import cachemesh.core.spi.Transport;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class MeshNode implements HasKey {
 
+    @Nonnull
     protected final Logger logger;
 
+    @Nonnull
     private final NodeConfig config;
 
     private final int hashCode;
 
+    @Nonnull
     private final Transport transport;
 
     @Getter(AccessLevel.PROTECTED)
+    @Nonnull
     private final List<NodeHook> hooks = new ArrayList<>();
 
+    @Nonnull
     private final LifeStage lifeStage;
 
-    public MeshNode(NodeConfig config, Transport transport) {
+    public MeshNode(@Nonnull NodeConfig config, @Nonnull Transport transport) {
+        checkNotNull(config);
+        checkNotNull(transport);
+
         this.config = config;
         this.transport = transport;
 
@@ -58,11 +69,14 @@ public class MeshNode implements HasKey {
     }
 
     @Override
+    @Nonnull
     public String getKey() {
         return getConfig().getTarget();
     }
 
-    public void addHook(NodeHook hook) {
+    public void addHook(@Nonnull NodeHook hook) {
+        checkNotNull(hook);
+
         getHooks().add(hook);
     }
 

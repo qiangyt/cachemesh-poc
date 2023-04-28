@@ -19,6 +19,9 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 import cachemesh.common.annotation.ADefaultBoolean;
 import cachemesh.common.annotation.ADefaultInt;
 import cachemesh.common.annotation.AProperty;
@@ -40,6 +43,7 @@ public abstract class NodeConfig implements Dumpable {
 
     public static final int DEFAULT_STOP_TIMEOUT = 2;
 
+    @Nonnull
     private SimpleURL url;
 
     // @Builder.Default
@@ -57,11 +61,13 @@ public abstract class NodeConfig implements Dumpable {
     @ADefaultInt(DEFAULT_STOP_TIMEOUT)
     private int stopTimeout = DEFAULT_STOP_TIMEOUT;
 
-    protected NodeConfig(SimpleURL url) {
+    protected NodeConfig(@Nonnull SimpleURL url) {
+        checkNotNull(url);
+
         setUrl(url);
     }
 
-    public NodeConfig(SimpleURL url, boolean local, int startTimeout, int stopTimeout) {
+    public NodeConfig(@Nonnull SimpleURL url, boolean local, int startTimeout, int stopTimeout) {
         this(url);
 
         this.local = local;
@@ -75,12 +81,15 @@ public abstract class NodeConfig implements Dumpable {
         this.stopTimeout = stopTimeout;
     }
 
+    @Nonnull
     public String getProtocol() {
         return getUrl().getProtocol();
     }
 
+    @Nonnull
     public abstract String getTarget();
 
+    @Nonnull
     public SimpleURL getUrl() {
         if (this.url == null) {
             try {
@@ -92,11 +101,14 @@ public abstract class NodeConfig implements Dumpable {
         return this.url;
     }
 
+    @Nonnull
     protected SimpleURL buildUrl() throws MalformedURLException {
         return new SimpleURL(String.format("%s://%s", getProtocol(), getTarget()));
     }
 
-    public void setUrl(SimpleURL url) {
+    public void setUrl(@Nonnull SimpleURL url) {
+        checkNotNull(url);
+
         var query = url.getQuery();
 
         if (query.containsKey("startTimeout")) {
@@ -116,6 +128,7 @@ public abstract class NodeConfig implements Dumpable {
     }
 
     @Override
+    @Nonnull
     public Map<String, Object> toMap() {
         var r = new HashMap<String, Object>();
 

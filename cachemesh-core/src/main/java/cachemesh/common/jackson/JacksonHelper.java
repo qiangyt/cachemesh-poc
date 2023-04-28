@@ -16,24 +16,33 @@
 package cachemesh.common.jackson;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 public class JacksonHelper {
 
     public static final Jackson JACKSON = Jackson.DEFAULT;
 
-    public static String pretty(Object object) {
+    @Nullable
+    public static String pretty(@Nullable Object object) {
         return JACKSON.pretty(object);
     }
 
-    public static String to(Object object) {
+    @Nullable
+    public static String to(@Nullable Object object) {
         return JACKSON.toString(object, false);
     }
 
-    public static <T> T from(String json, Class<T> clazz) {
+    @Nullable
+    public static <T> T from(@Nullable String json, @Nonnull Class<T> clazz) {
+        checkNotNull(clazz);
         return JACKSON.from(json, clazz);
     }
 
-    public static <T> T from(String json, TypeReference<T> typeReference) {
+    @Nullable
+    public static <T> T from(@Nullable String json, @Nonnull TypeReference<T> typeReference) {
+        checkNotNull(typeReference);
         return JACKSON.from(json, typeReference);
     }
 

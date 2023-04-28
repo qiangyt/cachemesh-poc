@@ -15,17 +15,19 @@
  */
 package cachemesh.common.err;
 
+import javax.annotation.Nonnull;
+
 public class GeneralException extends RuntimeException {
 
-    public GeneralException(String messageFormat, Object... messageArgs) {
+    public GeneralException(@Nonnull String messageFormat, @Nonnull Object... messageArgs) {
         super(String.format(messageFormat, messageArgs));
     }
 
-    public GeneralException(Throwable cause) {
+    public GeneralException(@Nonnull Throwable cause) {
         super(cause);
     }
 
-    public GeneralException(Throwable cause, String messageFormat, Object... messageArgs) {
+    public GeneralException(@Nonnull Throwable cause, @Nonnull String messageFormat, @Nonnull Object... messageArgs) {
         super(String.format(messageFormat, messageArgs), cause);
     }
 

@@ -17,18 +17,23 @@ package cachemesh.common.config.suppport;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import cachemesh.common.config.ConfigContext;
-import cachemesh.common.config.BadTypeException;
 import cachemesh.common.config.Type;
 import cachemesh.common.err.BadValueException;
+import static com.google.common.base.Preconditions.*;
 
 public abstract class AbstractType<T> implements Type<T> {
 
+    @Nullable
     public Iterable<Class<?>> convertableClasses() {
         return null;
     }
 
     @Override
+    @Nullable
     public Type<?> getElementType() {
         return null;
     }
@@ -55,7 +60,10 @@ public abstract class AbstractType<T> implements Type<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public T convert(ConfigContext ctx, Object value) {
+    @Nullable
+    public T convert(@Nonnull ConfigContext ctx, @Nullable Object value) {
+        checkNotNull(ctx);
+
         if (value == null) {
             return null;
         }
@@ -71,7 +79,7 @@ public abstract class AbstractType<T> implements Type<T> {
         return doConvert(ctx, value);
     }
 
-    public boolean isConvertable(Object value) {
+    public boolean isConvertable(@Nullable Object value) {
         var classes = convertableClasses();
         if (classes == null) {
             return false;
@@ -87,9 +95,14 @@ public abstract class AbstractType<T> implements Type<T> {
         return false;
     }
 
-    protected abstract T doConvert(ConfigContext ctx, Object value);
+    @Nullable
+    protected abstract T doConvert(@Nonnull ConfigContext ctx, @Nonnull Object value);
 
-    public BadValueException badValueClassError(ConfigContext ctx, Class<?> actual) {
+    @Nonnull
+    public BadValueException badValueClassError(@Nonnull ConfigContext ctx, @Nonnull Class<?> actual) {
+        checkNotNull(ctx);
+        checkNotNull(actual);
+
         var expected = new ArrayList<Class<?>>();
         expected.add(getKlass());
 

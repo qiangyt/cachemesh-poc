@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cachemesh.common.err.BadValueException;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 public class ClassCache {
 
@@ -30,11 +32,15 @@ public class ClassCache {
         return this.cache.size();
     }
 
+    @Nonnull
     public ClassLoader getClassLoader() {
         return Thread.currentThread().getContextClassLoader();
     }
 
-    public Class<?> resolve(String className) {
+    @Nonnull
+    public Class<?> resolve(@Nonnull String className) {
+        checkNotNull(className);
+
         return this.cache.computeIfAbsent(className, key -> {
             try {
                 return getClassLoader().loadClass(className);

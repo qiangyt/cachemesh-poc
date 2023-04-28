@@ -27,17 +27,27 @@ import cachemesh.core.config.LocalCacheProviderRegistry;
 import cachemesh.core.config.LocalConfig;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class LocalCacheConfigType extends KindPathingDynamicBeanType<LocalCacheConfig> {
 
+    @Nonnull
     private final LocalCacheProviderRegistry localCacheRegistry;
 
-    public LocalCacheConfigType(LocalCacheProviderRegistry localCacheRegistry, TypeRegistry typeRegistry, Path path) {
+    public LocalCacheConfigType(@Nonnull LocalCacheProviderRegistry localCacheRegistry,
+            @Nonnull TypeRegistry typeRegistry, @Nonnull Path path) {
         super(typeRegistry, LocalCacheConfig.class, path, LocalConfig.DEFAULT_KIND);
+
+        checkNotNull(localCacheRegistry);
         this.localCacheRegistry = localCacheRegistry;
     }
 
-    public Map<String, BeanType<? extends LocalCacheConfig>> createMapping(TypeRegistry typeRegistry) {
+    @Nonnull
+    public Map<String, BeanType<? extends LocalCacheConfig>> createMapping(@Nonnull TypeRegistry typeRegistry) {
+        checkNotNull(typeRegistry);
+
         var r = new HashMap<String, BeanType<? extends LocalCacheConfig>>();
 
         for (var entry : getLocalCacheRegistry().getAll().entrySet()) {

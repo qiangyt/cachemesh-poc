@@ -16,6 +16,7 @@
 package cachemesh.core.cache.bean;
 
 import cachemesh.common.misc.Serderializer;
+import javax.annotation.Nonnull;
 
 public interface Value {
 
@@ -29,11 +30,11 @@ public interface Value {
 
     boolean isNullValue();
 
-    <T> T getObject(Serderializer serder, Class<?> valueClass);
+    <T> T getObject(@Nonnull Serderializer serder, @Nonnull Class<?> valueClass);
 
     <T> T getObject();
 
-    byte[] getBytes(Serderializer serder);
+    byte[] getBytes(@Nonnull Serderializer serder);
 
     byte[] getBytes();
 

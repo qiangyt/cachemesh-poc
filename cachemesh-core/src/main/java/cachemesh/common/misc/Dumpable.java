@@ -18,12 +18,20 @@ package cachemesh.common.misc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 public interface Dumpable {
 
+    @Nonnull
     Map<String, Object> toMap();
 
-    static List<Map<String, Object>> toMap(List<? extends Dumpable> list) {
+    @Nullable
+    static List<Map<String, Object>> toMap(@Nullable List<? extends Dumpable> list) {
+        if (list == null) {
+            return null;
+        }
+
         var r = new ArrayList<Map<String, Object>>(list.size());
 
         for (var element : list) {

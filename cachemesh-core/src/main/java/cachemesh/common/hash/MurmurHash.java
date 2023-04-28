@@ -13,6 +13,8 @@ package cachemesh.common.hash;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Copy of github.com/redis/jedis: redis.clients.jedis.util.MurmurHash
@@ -55,7 +57,9 @@ public class MurmurHash implements Hashing {
      *
      * @return The 32-bit hash of the data in question.
      */
-    public static int hash(byte[] data, int offset, int length, int seed) {
+    public static int hash(@Nonnull byte[] data, int offset, int length, int seed) {
+        checkNotNull(data);
+
         return hash(ByteBuffer.wrap(data, offset, length), seed);
     }
 
@@ -69,7 +73,9 @@ public class MurmurHash implements Hashing {
      *
      * @return The 32 bit murmur hash of the bytes in the buffer.
      */
-    public static int hash(ByteBuffer buf, int seed) {
+    public static int hash(@Nonnull ByteBuffer buf, int seed) {
+        checkNotNull(buf);
+
         // save byte order for later restoration
         ByteOrder byteOrder = buf.order();
         buf.order(ByteOrder.LITTLE_ENDIAN);
@@ -108,15 +114,21 @@ public class MurmurHash implements Hashing {
         return h;
     }
 
-    public static long hash64A(byte[] data, int seed) {
+    public static long hash64A(@Nonnull byte[] data, int seed) {
+        checkNotNull(data);
+
         return hash64A(ByteBuffer.wrap(data), seed);
     }
 
-    public static long hash64A(byte[] data, int offset, int length, int seed) {
+    public static long hash64A(@Nonnull byte[] data, int offset, int length, int seed) {
+        checkNotNull(data);
+
         return hash64A(ByteBuffer.wrap(data, offset, length), seed);
     }
 
-    public static long hash64A(ByteBuffer buf, int seed) {
+    public static long hash64A(@Nonnull ByteBuffer buf, int seed) {
+        checkNotNull(buf);
+
         ByteOrder byteOrder = buf.order();
         buf.order(ByteOrder.LITTLE_ENDIAN);
 
@@ -155,12 +167,14 @@ public class MurmurHash implements Hashing {
     }
 
     @Override
-    public long hash(byte[] key) {
+    public long hash(@Nonnull byte[] key) {
+        checkNotNull(key);
         return hash64A(key, 0x1234ABCD);
     }
 
     @Override
-    public long hash(ByteBuffer buf) {
+    public long hash(@Nonnull ByteBuffer buf) {
+        checkNotNull(buf);
         return hash(buf, 0x1234ABCD);
     }
 

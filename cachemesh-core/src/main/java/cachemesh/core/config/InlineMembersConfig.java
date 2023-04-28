@@ -28,6 +28,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Singular;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 @Setter
 public class InlineMembersConfig extends MembersConfig {
@@ -36,10 +39,13 @@ public class InlineMembersConfig extends MembersConfig {
 
     @Singular(KIND)
     @AElement(NodeConfig.class)
+    @Nonnull
     private List<NodeConfig> inline;
 
     @Builder
-    public InlineMembersConfig(List<NodeConfig> inline) {
+    public InlineMembersConfig(@Nonnull List<NodeConfig> inline) {
+        checkNotNull(inline);
+
         setKind(KIND);
         this.inline = inline;
     }
@@ -49,11 +55,13 @@ public class InlineMembersConfig extends MembersConfig {
     }
 
     @Override
+    @Nonnull
     public List<NodeConfig> nodes() {
         return getInline();
     }
 
     @Override
+    @Nonnull
     public Map<String, Object> toMap() {
         var r = super.toMap();
         r.put("inilne", Dumpable.toMap(getInline()));
@@ -61,7 +69,10 @@ public class InlineMembersConfig extends MembersConfig {
     }
 
     @SuppressWarnings("unchecked")
-    public static BeanType<InlineMembersConfig> of(TypeRegistry typeRegistry) {
+    @Nonnull
+    public static BeanType<InlineMembersConfig> of(@Nonnull TypeRegistry typeRegistry) {
+        checkNotNull(typeRegistry);
+
         var r = typeRegistry.resolve(InlineMembersConfig.class, k -> {
             return ReflectBeanType.of(typeRegistry, InlineMembersConfig.class);
         });

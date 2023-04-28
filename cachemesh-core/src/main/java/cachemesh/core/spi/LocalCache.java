@@ -23,22 +23,29 @@ import cachemesh.common.shutdown.Shutdownable;
 import cachemesh.core.cache.bean.Value;
 import cachemesh.core.config.LocalCacheConfig;
 
+import javax.annotation.Nonnull;
+
 public interface LocalCache extends Shutdownable {
 
+    @Nonnull
     LocalCacheConfig getConfig();
 
-    void invalidateSingle(String key);
+    void invalidateSingle(@Nonnull String key);
 
-    void invalidateMultiple(Collection<String> keys);
+    void invalidateMultiple(@Nonnull Collection<String> keys);
 
-    Value getSingle(String key);
+    @Nonnull
+    Value getSingle(@Nonnull String key);
 
-    Map<String, Value> getMultiple(Collection<String> keys);
+    @Nonnull
+    Map<String, Value> getMultiple(@Nonnull Collection<String> keys);
 
-    Value putSingle(String key, BiFunction<String, Value, Value> mapper);
+    @Nonnull
+    Value putSingle(@Nonnull String key, @Nonnull BiFunction<String, Value, Value> mapper);
 
     // void putMultiple(Collection<LocalCacheEntry<T>> entries);
 
+    @Nonnull
     Collection<String> getAllKeys();
 
 }

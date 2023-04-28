@@ -17,16 +17,19 @@ package cachemesh.transport.grpc;
 
 import io.grpc.BindableService;
 
+import javax.annotation.Nonnull;
+
 public interface GrpcServer {
 
     void start(int timeoutSeconds);
 
     void stop(int timeoutSeconds) throws InterruptedException;
 
-    void addService(BindableService service);
+    void addService(@Nonnull BindableService service);
 
     boolean isStarted();
 
+    @Nonnull
     GrpcConfig getConfig();
 
 }

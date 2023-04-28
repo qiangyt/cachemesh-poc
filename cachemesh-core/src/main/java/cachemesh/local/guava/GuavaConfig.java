@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.local.caffeine;
+package cachemesh.local.guava;
 
 import java.time.Duration;
 import java.util.Map;
@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
 @Getter
 @Setter
 @SuperBuilder(toBuilder = true)
-public class CaffeineConfig extends LocalCacheConfig {
+public class GuavaConfig extends LocalCacheConfig {
 
     public static final int DEFAULT_MAXIMUM_SIZE = 100_000;
 
@@ -47,7 +47,7 @@ public class CaffeineConfig extends LocalCacheConfig {
     @Nonnull
     private Duration expireAfterWrite = DurationHelper.parse(DEFAULT_EXPIRE_AFTER_WIRTER);
 
-    public CaffeineConfig() {
+    public GuavaConfig() {
     }
 
     @Override

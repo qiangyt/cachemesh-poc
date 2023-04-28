@@ -21,12 +21,19 @@ import cachemesh.core.spi.LocalCache;
 import cachemesh.core.spi.Transport;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class LocalTransport implements Transport {
 
+    @Nonnull
     private final LocalCacheManager localCacheManager;
 
-    public LocalTransport(LocalCacheManager localCacheManager) {
+    public LocalTransport(@Nonnull LocalCacheManager localCacheManager) {
+        checkNotNull(localCacheManager);
+
         this.localCacheManager = localCacheManager;
     }
 
@@ -46,7 +53,11 @@ public class LocalTransport implements Transport {
     }
 
     @Override
-    public GetResult<byte[]> getSingle(String cacheName, String key, long version) {
+    @Nonnull
+    public GetResult<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
+        checkNotNull(cacheName);
+        checkNotNull(key);
+
         var cache = getLocalCacheManager().get(cacheName);
         if (cache == null) {
             return GetResult.notFound();
@@ -69,7 +80,10 @@ public class LocalTransport implements Transport {
     }
 
     @Override
-    public long putSingle(String cacheName, String key, byte[] value) {
+    public long putSingle(@Nonnull String cacheName, @Nonnull String key, @Nullable byte[] value) {
+        checkNotNull(cacheName);
+        checkNotNull(key);
+
         LocalCache cache = getLocalCacheManager().resolve(cacheName, byte[].class);
 
         var r = cache.putSingle(key, (k, entry) -> {
@@ -81,7 +95,11 @@ public class LocalTransport implements Transport {
     }
 
     @Override
-    public <T> T getSingleObject(String cacheName, String key) {
+    @Nullable
+    public <T> T getSingleObject(@Nonnull String cacheName, @Nonnull String key) {
+        checkNotNull(cacheName);
+        checkNotNull(key);
+
         var cache = getLocalCacheManager().get(cacheName);
         if (cache == null) {
             return null;
@@ -98,7 +116,12 @@ public class LocalTransport implements Transport {
     }
 
     @Override
-    public <T> long putSingleObject(String cacheName, String key, T value, Class<T> valueClass) {
+    public <T> long putSingleObject(@Nonnull String cacheName, @Nonnull String key, T value,
+            @Nonnull Class<T> valueClass) {
+        checkNotNull(cacheName);
+        checkNotNull(key);
+        checkNotNull(valueClass);
+
         LocalCache cache = getLocalCacheManager().resolve(cacheName, valueClass);
 
         var r = cache.putSingle(key, (k, entry) -> {

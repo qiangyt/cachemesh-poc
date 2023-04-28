@@ -24,20 +24,30 @@ import cachemesh.core.cache.LocalTransport;
 import cachemesh.core.spi.support.AbstractTransportProvider;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class GrpcTransportProvider extends AbstractTransportProvider<GrpcTransport, GrpcConfig> {
 
+    @Nonnull
     private final GrpcServerProvider serverProvider;
 
-    public GrpcTransportProvider(TypeRegistry typeRegistry, GrpcServerProvider serverProvider,
-            ShutdownManager shutdownManager) {
+    public GrpcTransportProvider(@Nonnull TypeRegistry typeRegistry, @Nonnull GrpcServerProvider serverProvider,
+            @Nonnull ShutdownManager shutdownManager) {
+
         super(ReflectBeanType.of(typeRegistry, GrpcConfig.class), shutdownManager);
+
+        checkNotNull(serverProvider);
+
         this.serverProvider = serverProvider;
 
     }
 
     @Override
-    public void beforeNodeStart(MeshNode node, int timeoutSeconds) throws InterruptedException {
+    public void beforeNodeStart(@Nonnull MeshNode node, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(node);
+
         var cfg = (GrpcConfig) node.getConfig();
         if (cfg.isLocal() == false) {
             return;
@@ -48,7 +58,10 @@ public class GrpcTransportProvider extends AbstractTransportProvider<GrpcTranspo
     }
 
     @Override
-    protected boolean doBindLocalTransport(GrpcConfig config, LocalTransport localTranport) {
+    protected boolean doBindLocalTransport(@Nonnull GrpcConfig config, @Nonnull LocalTransport localTranport) {
+        checkNotNull(config);
+        checkNotNull(localTranport);
+
         var server = new DedicatedGrpcServer(config, getShutdownManager());
 
         if (server.isStarted()) {
@@ -61,7 +74,10 @@ public class GrpcTransportProvider extends AbstractTransportProvider<GrpcTranspo
     }
 
     @Override
-    protected GrpcTransport doCreateRemoteTransport(GrpcConfig config) {
+    @Nonnull
+    protected GrpcTransport doCreateRemoteTransport(@Nonnull GrpcConfig config) {
+        checkNotNull(config);
+
         return new GrpcTransport(config, getShutdownManager());
     }
 

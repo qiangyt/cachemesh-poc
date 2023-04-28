@@ -20,14 +20,22 @@ import cachemesh.common.config.types.BeanType;
 import cachemesh.core.cache.LocalTransport;
 import cachemesh.core.config.NodeConfig;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 public interface TransportProvider extends NodeHook {
 
-    default boolean bindLocalTransport(NodeConfig nodeConfig, LocalTransport localTranport) {
+    default boolean bindLocalTransport(@Nonnull NodeConfig nodeConfig, @Nonnull LocalTransport localTranport) {
+        checkNotNull(nodeConfig);
+        checkNotNull(localTranport);
+
         return false;
     }
 
-    Transport createRemoteTransport(NodeConfig nodeConfig);
+    @Nonnull
+    Transport createRemoteTransport(@Nonnull NodeConfig nodeConfig);
 
-    BeanType<? extends NodeConfig> resolveConfigType(TypeRegistry typeRegistry);
+    @Nonnull
+    BeanType<? extends NodeConfig> resolveConfigType(@Nonnull TypeRegistry typeRegistry);
 
 }

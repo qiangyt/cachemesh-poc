@@ -25,13 +25,19 @@ import cachemesh.common.config.types.KindPathingDynamicBeanType;
 import cachemesh.core.config.InlineMembersConfig;
 import cachemesh.core.config.MembersConfig;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 public class MembersConfigType extends KindPathingDynamicBeanType<MembersConfig> {
 
-    public MembersConfigType(TypeRegistry typeRegistry) {
+    public MembersConfigType(@Nonnull TypeRegistry typeRegistry) {
         super(typeRegistry, MembersConfig.class, Path.of("./kind"), null);
     }
 
-    public Map<String, BeanType<? extends MembersConfig>> createMapping(TypeRegistry typeRegistry) {
+    @Nonnull
+    public Map<String, BeanType<? extends MembersConfig>> createMapping(@Nonnull TypeRegistry typeRegistry) {
+        checkNotNull(typeRegistry);
+
         var r = new HashMap<String, BeanType<? extends MembersConfig>>();
         r.put(InlineMembersConfig.KIND, InlineMembersConfig.of(typeRegistry));
         return r;

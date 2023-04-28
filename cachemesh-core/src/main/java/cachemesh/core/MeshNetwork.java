@@ -27,25 +27,39 @@ import lombok.Getter;
 import cachemesh.common.misc.LifeStage;
 import cachemesh.common.misc.LogHelper;
 
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class MeshNetwork implements Shutdownable {
 
+    @Nonnull
     private final Logger logger;
 
+    @Nonnull
     private final MeshConfig config;
 
+    @Nonnull
     private final LifeStage lifeStage;
 
+    @Nonnull
     private final MeshCacheService cacheService;
 
-    public MeshNetwork(MeshConfig config, MeshCacheService cacheService) {
+    public MeshNetwork(@Nonnull MeshConfig config, @Nonnull MeshCacheService cacheService) {
+        checkNotNull(config);
+        checkNotNull(cacheService);
+
         this.logger = LogHelper.getLogger(getClass(), config.getName());
         this.config = config;
         this.lifeStage = new LifeStage("meshnetwork", config.getName(), getLogger());
         this.cacheService = cacheService;
     }
 
-    public <T> MeshCache<T> resolveCache(String cacheName, Class<T> valueClass) {
+    @Nonnull
+    public <T> MeshCache<T> resolveCache(@Nonnull String cacheName, @Nonnull Class<T> valueClass) {
+        checkNotNull(cacheName);
+        checkNotNull(valueClass);
+
         return getCacheService().resolveCache(cacheName, valueClass);
     }
 
@@ -66,15 +80,24 @@ public class MeshNetwork implements Shutdownable {
         getLifeStage().stopped();
     }
 
-    public MeshNode findNode(String key) {
+    @Nonnull
+    public MeshNode findNode(@Nonnull String key) {
+        checkNotNull(key);
+
         return getCacheService().findNode(key);
     }
 
-    public MeshNode addLocalNode(String url) throws MalformedURLException {
+    @Nonnull
+    public MeshNode addLocalNode(@Nonnull String url) throws MalformedURLException {
+        checkNotNull(url);
+
         return getCacheService().addLocalNode(url);
     }
 
-    public MeshNode addRemoteNode(String url) throws MalformedURLException {
+    @Nonnull
+    public MeshNode addRemoteNode(@Nonnull String url) throws MalformedURLException {
+        checkNotNull(url);
+
         return getCacheService().addRemoteNode(url);
     }
 

@@ -26,8 +26,7 @@ public class IntegerType extends AbstractType<Integer> {
 
     public static final IntegerType DEFAULT = new IntegerType();
 
-    public static final Iterable<Class<?>> CONVERTABLES = Collections
-            .unmodifiableCollection(List.of(Character.class, Number.class, String.class));
+    public static final Iterable<Class<?>> CONVERTABLES = ImmutableCollection.of(Character.class, Number.class, String.class);
 
     @Override
     public Class<?> klass() {

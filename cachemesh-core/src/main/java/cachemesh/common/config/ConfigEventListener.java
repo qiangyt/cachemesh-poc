@@ -13,22 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.err;
+package cachemesh.common.config;
 
-import javax.annotation.Nonnull;
-
-public class ToDoException extends GeneralException {
-
-    public ToDoException(@Nonnull String messageFormat, @Nonnull Object... messageArgs) {
-        super(messageFormat, messageArgs);
-    }
-
-    public ToDoException(@Nonnull Throwable cause) {
-        super(cause);
-    }
-
-    public ToDoException(@Nonnull Throwable cause, @Nonnull String messageFormat, @Nonnull Object... messageArgs) {
-        super(cause, messageFormat, messageArgs);
-    }
+public interface ConfigEventListener {
 
 }

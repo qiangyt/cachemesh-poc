@@ -20,13 +20,20 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static com.google.common.base.Preconditions.*;
+
 public class Handler extends URLStreamHandler {
 
     public Handler() {
     }
 
     @Override
-    protected URLConnection openConnection(URL url) throws IOException {
+    @Nullable
+    protected URLConnection openConnection(@Nonnull URL url) throws IOException {
+        checkNotNull(url);
         return null;
     }
 }

@@ -22,25 +22,38 @@ import cachemesh.core.MeshNode;
 import cachemesh.core.spi.support.AbstractTransportProvider;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class LettuceTransportProvider extends AbstractTransportProvider<LettuceTransport, LettuceConfig> {
 
+    @Nonnull
     private final RedisClientProvider clientProvider;
 
-    public LettuceTransportProvider(TypeRegistry typeRegistry, RedisClientProvider clientProvider,
-            ShutdownManager shutdownManager) {
+    public LettuceTransportProvider(@Nonnull TypeRegistry typeRegistry, @Nonnull RedisClientProvider clientProvider,
+            @Nullable ShutdownManager shutdownManager) {
         super(ReflectBeanType.of(typeRegistry, LettuceConfig.class), shutdownManager);
+
+        checkNotNull(clientProvider);
+
         this.clientProvider = clientProvider;
     }
 
     @Override
-    public void afterNodeStop(MeshNode node, int timeoutSeconds) throws InterruptedException {
+    public void afterNodeStop(@Nonnull MeshNode node, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(node);
+
         var tp = (LettuceTransport) node.getTransport();
         getClientProvider().destroy(tp.getConfig(), timeoutSeconds);
     }
 
     @Override
-    protected LettuceTransport doCreateRemoteTransport(LettuceConfig config) {
+    @Nonnull
+    protected LettuceTransport doCreateRemoteTransport(@Nonnull LettuceConfig config) {
+        checkNotNull(config);
+
         var client = getClientProvider().resolve(config);
         return new LettuceTransport(config, client, getShutdownManager());
     }

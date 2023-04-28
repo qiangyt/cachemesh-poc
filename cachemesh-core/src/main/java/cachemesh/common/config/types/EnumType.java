@@ -19,14 +19,17 @@ import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.suppport.AbstractType;
 import cachemesh.common.config.suppport.ConfigHelper;
 import lombok.Getter;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 @Getter
 public class EnumType<T extends Enum<T>> extends AbstractType<T> {
 
+    @Nonnull
     private final Class<T> enumClass;
 
-    public EnumType(Class<T> enumClass) {
-        this.enumClass = enumClass;
+    public EnumType(@Nonnull Class<T> enumClass) {
+        this.enumClass = checkNotNull(enumClass);
     }
 
     @Override

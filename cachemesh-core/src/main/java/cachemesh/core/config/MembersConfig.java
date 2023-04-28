@@ -23,15 +23,20 @@ import cachemesh.common.misc.Dumpable;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Nonnull;
+
 @Getter
 @Setter
 public abstract class MembersConfig implements Dumpable {
 
+    @Nonnull
     private String kind;
 
+    @Nonnull
     public abstract List<NodeConfig> nodes();
 
     @Override
+    @Nonnull
     public Map<String, Object> toMap() {
         var r = new HashMap<String, Object>();
 

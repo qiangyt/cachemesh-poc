@@ -16,14 +16,22 @@
 package cachemesh.common.registry;
 
 import cachemesh.common.err.BadValueException;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 public abstract class Manager<KIND, VALUE> extends Registry<KIND, VALUE> {
 
-    public VALUE resolve(KIND kind) {
+    @Nonnull
+    public VALUE resolve(@Nonnull KIND kind) {
+        checkNotNull(kind);
+
         return getLocalMap().computeIfAbsent(kind, k -> doCreate(kind));
     }
 
-    public VALUE create(KIND kind) {
+    @Nonnull
+    public VALUE create(@Nonnull KIND kind) {
+        checkNotNull(kind);
+
         return getLocalMap().compute(kind, (k, existing) -> {
             if (existing != null) {
                 throw new BadValueException("duplicated %s: %s", getValueName(), kind);
@@ -32,7 +40,10 @@ public abstract class Manager<KIND, VALUE> extends Registry<KIND, VALUE> {
         });
     }
 
-    public VALUE destroy(KIND kind, int timeoutSeconds) throws InterruptedException {
+    @Nonnull
+    public VALUE destroy(@Nonnull KIND kind, int timeoutSeconds) throws InterruptedException {
+        checkNotNull(kind);
+
         VALUE r = unregister(kind);
         if (r != null) {
             doDestroy(kind, r, timeoutSeconds);
@@ -40,8 +51,11 @@ public abstract class Manager<KIND, VALUE> extends Registry<KIND, VALUE> {
         return r;
     }
 
-    protected abstract VALUE doCreate(KIND kind);
+    @Nonnull
+    protected abstract VALUE doCreate(@Nonnull KIND kind);
 
-    protected abstract void doDestroy(KIND kind, VALUE value, int timeoutSeconds) throws InterruptedException;
+    @Nonnull
+    protected abstract void doDestroy(@Nonnull KIND kind, @Nonnull VALUE value, int timeoutSeconds)
+            throws InterruptedException;
 
 }

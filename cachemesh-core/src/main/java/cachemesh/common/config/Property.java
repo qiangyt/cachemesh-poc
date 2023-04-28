@@ -15,16 +15,23 @@
  */
 package cachemesh.common.config;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public interface Property<B, T> {
 
+    @Nullable
     T getDevault();
 
+    @Nonnull
     String getName();
 
+    @Nonnull
     Type<T> getType();
 
-    T get(B bean);
+    @Nullable
+    T get(@Nonnull B bean);
 
-    void set(B bean, T value);
+    void set(@Nonnull B bean, @Nullable T value);
 
 }

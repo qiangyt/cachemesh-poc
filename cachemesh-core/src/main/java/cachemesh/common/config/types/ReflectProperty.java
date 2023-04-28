@@ -38,32 +38,43 @@ import cachemesh.common.config.suppport.AbstractProperty;
 import cachemesh.common.misc.DurationHelper;
 import cachemesh.common.misc.Reflect;
 import lombok.Getter;
+import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 @Getter
 public class ReflectProperty<B, T> extends AbstractProperty<B, T> {
 
+    @Nonnull
     private final Method setter;
 
+    @Nonnull
     private final Method getter;
 
-    protected ReflectProperty(String name, Type<T> fieldType, T devault, Method getter, Method setter) {
+    protected ReflectProperty(@Nonnull String name, @Nonnull Type<T> fieldType, @Nullable T devault,
+            @Nonnull Method getter, @Nonnull Method setter) {
         super(name, fieldType, devault);
-        this.getter = getter;
-        this.setter = setter;
+        this.getter = checkNotNull(getter);
+        this.setter = checkNotNull(setter);
     }
 
     @Override
-    public void set(B bean, T value) {
+    public void set(@Nonnull B bean, @Nullable T value) {
         Reflect.set(getSetter(), bean, value);
     }
 
     @Override
-    public T get(B bean) {
+    @Nullable
+    public T get(@Nonnull B bean) {
         return Reflect.get(getGetter(), bean);
     }
 
     @SuppressWarnings("unchecked")
-    public static <B> Map<String, Property<B, ?>> of(TypeRegistry typeRegistry, Class<B> klass) {
+    @Nonnull
+    public static <B> Map<String, Property<B, ?>> of(@Nonnull TypeRegistry typeRegistry, @Nonnull Class<B> klass) {
+        checkNotNull(typeRegistry);
+        checkNotNull(klass);
+
         var r = new HashMap<String, Property<B, ?>>();
 
         for (var f : klass.getDeclaredFields()) {
@@ -77,7 +88,11 @@ public class ReflectProperty<B, T> extends AbstractProperty<B, T> {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static ReflectProperty<?, ?> of(TypeRegistry typeRegistry, Field field) {
+    @Nonnull
+    public static ReflectProperty<?, ?> of(@Nonnull TypeRegistry typeRegistry, @Nonnull Field field) {
+        checkNotNull(typeRegistry);
+        checkNotNull(field);
+
         String propName = null;
         String setterName = null;
         String getterName = null;
@@ -123,7 +138,11 @@ public class ReflectProperty<B, T> extends AbstractProperty<B, T> {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    static <T> Object defaultValue(Field field, Type<T> fType) {
+    @Nullable
+    static <T> Object defaultValue(@Nonnull Field field, @Nonnull Type<T> fType) {
+        checkNotNull(field);
+        checkNotNull(fType);
+
         Class<T> fClass = (Class<T>) field.getType();
 
         if (fClass == Boolean.class || fClass == boolean.class) {

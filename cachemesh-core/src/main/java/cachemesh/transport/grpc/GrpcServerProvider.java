@@ -19,28 +19,40 @@ import cachemesh.common.registry.Manager;
 import cachemesh.common.shutdown.ShutdownManager;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
+
 @Getter
 public class GrpcServerProvider extends Manager<GrpcConfig, GrpcServer> {
 
     public static final GrpcServerProvider DEFAULT = new GrpcServerProvider(ShutdownManager.DEFAULT);
 
+    @Nullable
     private final ShutdownManager shutdownManager;
 
-    public GrpcServerProvider(ShutdownManager shutdownManager) {
+    public GrpcServerProvider(@Nullable ShutdownManager shutdownManager) {
         this.shutdownManager = shutdownManager;
     }
 
     @Override
-    protected GrpcServer doCreate(GrpcConfig config) {
+    @Nonnull
+    protected GrpcServer doCreate(@Nonnull GrpcConfig config) {
+        checkNotNull(config);
         return new DedicatedGrpcServer(config, getShutdownManager());
     }
 
     @Override
-    protected void doDestroy(GrpcConfig config, GrpcServer server, int timeoutSeconds) throws InterruptedException {
+    protected void doDestroy(@Nonnull GrpcConfig config, @Nonnull GrpcServer server, int timeoutSeconds)
+            throws InterruptedException {
+        checkNotNull(config);
+        checkNotNull(server);
+
         server.stop(timeoutSeconds);
     }
 
     @Override
+    @Nonnull
     public String getValueName() {
         return "grpc server";
     }

@@ -15,19 +15,18 @@
  */
 package cachemesh.core.cache.spi;
 
-import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.types.BeanType;
-import cachemesh.core.cache.node.NodeHook;
-import cachemesh.core.config.NodeConfig;
-
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public interface TransportProvider<CACHE extends Transport, CONFIG extends NodeConfig> extends NodeHook {
+import cachemesh.core.cache.bean.BytesValue;
 
-    @Nonnull
-    Transport resolveTransport(@Nonnull CONFIG nodeConfig);
+public interface BytesStore {
 
-    @Nonnull
-    BeanType<CONFIG> resolveConfigType(@Nonnull TypeRegistry typeRegistry);
+    @Nullable
+    BytesValue getSingle(@Nonnull String key, long version);
+
+    void putSingle(@Nonnull String key, @Nullable BytesValue value);
+
+    void removeSingle(@Nonnull String key);
 
 }

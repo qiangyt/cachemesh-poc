@@ -17,10 +17,12 @@ package cachemesh.core.cache.bean;
 
 import javax.annotation.Nonnull;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import lombok.Getter;
 
 @Getter
-public class RemoteValue {
+public class BytesValue {
 
     public static enum Status {
         NULL, OK, NO_CHANGE,
@@ -29,14 +31,32 @@ public class RemoteValue {
     @Nonnull
     private final Status status;
 
-    private final byte[] bytes;
+    private final byte[] data;
 
     private final long version;
 
-    public RemoteValue(@Nonnull Status status, byte[] bytes, long version) {
+    public BytesValue(@Nonnull Status status, byte[] data, long version) {
+        checkNotNull(status);
+
         this.status = status;
-        this.bytes = bytes;
+        this.data = data;
         this.version = version;
+    }
+
+    public boolean isNull() {
+        return getStatus() == Status.NULL;
+    }
+
+    public static final BytesValue NO_CHANGE = new BytesValue(Status.NO_CHANGE, null, 0);
+
+    @Nonnull
+    public static BytesValue Null(long version) {
+        return new BytesValue(Status.NULL, null, version);
+    }
+
+    @Nonnull
+    public static BytesValue Ok(byte[] data, long version) {
+        return new BytesValue(Status.OK, data, version);
     }
 
 }

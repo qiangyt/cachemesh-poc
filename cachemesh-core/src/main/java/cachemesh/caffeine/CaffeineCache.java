@@ -21,77 +21,68 @@ import java.util.function.BiFunction;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.Getter;
-import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.cache.bean.LocalValue;
-import cachemesh.core.cache.local.LocalCache;
+import cachemesh.core.cache.local.AbstractLocalCache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.*;
 
 @Getter
-public class CaffeineCache extends AbstractShutdownable implements LocalCache {
+public class CaffeineCache<T> extends AbstractLocalCache<T, CaffeineConfig> {
 
     @Nonnull
-    private final CaffeineConfig config;
+    private final Cache<String, LocalValue<T>> caffeineInstance;
 
-    @Nonnull
-    private final Cache<String, LocalValue> instance;
+    public CaffeineCache(@Nonnull CaffeineProvider provider, 
+                         @Nonnull CaffeineConfig config,
+                         @Nullable ShutdownManager shutdownManager,
+                         @Nonnull Cache<String, LocalValue<T>> caffeineInstance) {
+        super(provider, config, shutdownManager);
 
-    public CaffeineCache(@Nonnull CaffeineConfig config, @Nonnull Cache<String, LocalValue> instance,
-            @Nullable ShutdownManager shutdownManager) {
-        super(config.getName(), shutdownManager);
-
-        checkNotNull(instance);
-
-        this.config = config;
-        this.instance = instance;
-    }
-
-    @Override
-    public String toString() {
-        return getConfig().toString();
+        checkNotNull(caffeineInstance);
+        this.caffeineInstance = caffeineInstance;
     }
 
     @Override
     public void onShutdown(@Nonnull ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
         checkNotNull(shutdownLogger);
-        this.instance.cleanUp();
+        this.caffeineInstance.cleanUp();
     }
 
     @Override
     public void invalidateSingle(@Nonnull String key) {
         checkNotNull(key);
-        this.instance.invalidate(key);
+        this.caffeineInstance.invalidate(key);
     }
 
     @Override
     public void invalidateMultiple(@Nonnull Collection<String> keys) {
         checkNotNull(keys);
-        this.instance.invalidateAll(keys);
+        this.caffeineInstance.invalidateAll(keys);
     }
 
     @Override
-    public LocalValue getSingle(@Nonnull String key) {
+    public LocalValue<T> getSingle(@Nonnull String key) {
         checkNotNull(key);
-        return this.instance.getIfPresent(key);
+        return this.caffeineInstance.getIfPresent(key);
     }
 
     @Override
     @Nonnull
-    public LocalValue putSingle(@Nonnull String key, @Nonnull BiFunction<String, LocalValue, LocalValue> mapper) {
+    public LocalValue<T> putSingle(@Nonnull String key, @Nonnull BiFunction<String, LocalValue<T>, LocalValue<T>> mapper) {
         checkNotNull(key);
         checkNotNull(mapper);
-        return this.instance.asMap().compute(key, mapper);
+        return this.caffeineInstance.asMap().compute(key, mapper);
     }
 
     @Override
     @Nonnull
-    public Map<String, LocalValue> getMultiple(@Nonnull Collection<String> keys) {
+    public Map<String, LocalValue<T>> getMultiple(@Nonnull Collection<String> keys) {
         checkNotNull(keys);
-        return this.instance.getAllPresent(keys);
+        return this.caffeineInstance.getAllPresent(keys);
     }
 
     // @Override
@@ -102,7 +93,7 @@ public class CaffeineCache extends AbstractShutdownable implements LocalCache {
     @Override
     @Nonnull
     public Collection<String> getAllKeys() {
-        return this.instance.asMap().keySet();
+        return this.caffeineInstance.asMap().keySet();
     }
 
 }

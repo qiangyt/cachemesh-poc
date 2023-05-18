@@ -18,6 +18,7 @@ package cachemesh.core.cache.transport;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
 import cachemesh.common.shutdown.ShutdownManager;
+import cachemesh.core.cache.spi.Transport;
 import cachemesh.core.cache.spi.TransportProvider;
 import cachemesh.core.config.NodeConfig;
 import lombok.Getter;
@@ -27,8 +28,8 @@ import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.*;
 
 @Getter
-public abstract class AbstractTransportProvider<TRANSPORT extends GenericCache, CONFIG extends NodeConfig>
-        implements TransportProvider<TRANSPORT, CONFIG> {
+public abstract class AbstractTransportProvider<CACHE extends Transport, CONFIG extends NodeConfig>
+        implements TransportProvider<CACHE, CONFIG> {
 
     @Nullable
     private final ShutdownManager shutdownManager;

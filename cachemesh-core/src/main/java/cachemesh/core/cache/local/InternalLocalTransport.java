@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.cache.spi;
+package cachemesh.core.cache.local;
 
-import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.types.BeanType;
-import cachemesh.core.cache.node.NodeHook;
-import cachemesh.core.config.NodeConfig;
+import cachemesh.core.cache.bean.BytesValue;
+import cachemesh.core.cache.spi.LocalCache;
+import cachemesh.core.cache.spi.Transport;
 
-import javax.annotation.Nonnull;
+public class InternalLocalTransport<T> {
 
-public interface TransportProvider<CACHE extends Transport, CONFIG extends NodeConfig> extends NodeHook {
+    private final LocalCache<T> cache;
 
-    @Nonnull
-    Transport resolveTransport(@Nonnull CONFIG nodeConfig);
+    public BytesValue getSingle(String key, long version) {
 
-    @Nonnull
-    BeanType<CONFIG> resolveConfigType(@Nonnull TypeRegistry typeRegistry);
+    }
+
+    @Override
+    public void putSingle(String key, byte[] bytes) {
+
+    }
 
 }

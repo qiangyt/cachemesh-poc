@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.cache.local;
+package cachemesh.core.cache.spi;
 
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
@@ -31,10 +31,10 @@ public interface LocalCacheProvider {
     BeanType<? extends LocalCacheConfig> resolveConfigType(@Nonnull TypeRegistry typeRegistry);
 
     @Nonnull
-    LocalCache createCache(@Nonnull LocalCacheConfig config);
+    LocalCache<?> createCache(@Nonnull LocalCacheConfig config);
 
     @Nonnull
-    default LocalCache createDefaultCache(@Nonnull String name, @Nonnull Class<?> valueClass) {
+    default LocalCache<?> createDefaultCache(@Nonnull String name, @Nonnull Class<?> valueClass) {
         checkNotNull(name);
         checkNotNull(valueClass);
 

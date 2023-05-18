@@ -15,9 +15,10 @@
  */
 package cachemesh.core.cache.local;
 
-import cachemesh.core.cache.bean.RemoteValue;
+import cachemesh.core.cache.bean.BytesValue;
 import cachemesh.core.cache.bean.ValueImpl;
-import cachemesh.core.cache.transport.GenericCache;
+import cachemesh.core.cache.spi.LocalCache;
+import cachemesh.core.cache.spi.Transport;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;
@@ -25,12 +26,12 @@ import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.*;
 
 @Getter
-public class LocalTransport implements GenericCache {
+public class LocalTransportProvider implements Transport {
 
     @Nonnull
     private final LocalCacheManager localCacheManager;
 
-    public LocalTransport(@Nonnull LocalCacheManager localCacheManager) {
+    public LocalTransportProvider(@Nonnull LocalCacheManager localCacheManager) {
         checkNotNull(localCacheManager);
 
         this.localCacheManager = localCacheManager;
@@ -53,29 +54,29 @@ public class LocalTransport implements GenericCache {
 
     @Override
     @Nonnull
-    public RemoteValue<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
+    public BytesValue<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
         checkNotNull(cacheName);
         checkNotNull(key);
 
         var cache = getLocalCacheManager().get(cacheName);
         if (cache == null) {
-            return RemoteValue.notFound();
+            return BytesValue.notFound();
         }
 
         var v = cache.getSingle(key);
         if (v == null || v.hasValue() == false) {
-            return RemoteValue.notFound();
+            return BytesValue.notFound();
         }
 
         long dataVer = v.getVersion();
         if (dataVer == version) {
-            return RemoteValue.noChange();
+            return BytesValue.noChange();
         }
 
         var cfg = cache.getConfig();
         var serder = cfg.getSerder().getKind().instance;
         var data = v.isNullValue() ? null : v.getBytes(serder);
-        return RemoteValue.ok(data, dataVer);
+        return BytesValue.ok(data, dataVer);
     }
 
     @Override

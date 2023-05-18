@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.cache.transport;
+package cachemesh.core.cache.spi;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -34,8 +34,11 @@ public interface LocalCache<T> extends Shutdownable {
     void open(int timeoutSeconds) throws InterruptedException;
 
     @Nonnull
+    BytesStore getBytesStore();
+
+    @Nonnull
     LocalCacheConfig getConfig();
-    
+
     void invalidateSingle(@Nonnull String key);
 
     void invalidateMultiple(@Nonnull Collection<String> keys);

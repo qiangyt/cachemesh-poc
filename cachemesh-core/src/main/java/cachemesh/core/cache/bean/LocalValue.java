@@ -17,20 +17,12 @@ package cachemesh.core.cache.bean;
 
 import lombok.Getter;
 
-
 @Getter
 public class LocalValue<T> {
-
-    public static final Object NULL = new Object();
 
     private final T data;
 
     private final long version;
-
-    @SuppressWarnings("unchecked")
-    public static <T> LocalValue<T> Null(long version) {
-        return new LocalValue<>((T)NULL, version);
-    }
 
     public LocalValue(T data, long version) {
         this.data = data;
@@ -39,6 +31,13 @@ public class LocalValue<T> {
 
     public boolean isNull() {
         return NULL == this;
+    }
+
+    public static final Object NULL = new Object();
+
+    @SuppressWarnings("unchecked")
+    public static <T> LocalValue<T> Null(long version) {
+        return new LocalValue<>((T) NULL, version);
     }
 
 }

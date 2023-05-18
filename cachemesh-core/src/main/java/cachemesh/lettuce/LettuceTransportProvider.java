@@ -19,7 +19,7 @@ import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.ReflectBeanType;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.MeshNode;
-import cachemesh.core.cache.local.LocalTransport;
+import cachemesh.core.cache.local.LocalTransportProvider;
 import cachemesh.core.cache.transport.AbstractTransportProvider;
 import lombok.Getter;
 
@@ -61,7 +61,8 @@ public class LettuceTransportProvider extends AbstractTransportProvider<LettuceT
 
     @Override
     @Nonnull
-    public boolean bindLocalTransport(@Nonnull LettuceConfig nodeConfig, @Nonnull LocalTransport localTranport) {
+    public boolean bindLocalTransport(@Nonnull LettuceConfig nodeConfig,
+            @Nonnull LocalTransportProvider localTranport) {
         checkNotNull(nodeConfig);
         checkNotNull(localTranport);
 

@@ -20,7 +20,7 @@ import cachemesh.core.cache.spi.TransportProvider;
 
 import javax.annotation.Nonnull;
 
-public class TransportRegistry extends Registry<String, TransportProvider> {
+public class TransportRegistry extends Registry<String, TransportProvider<?, ?>> {
 
     public static final TransportRegistry DEFAULT = new TransportRegistry();
 

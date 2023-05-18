@@ -20,11 +20,10 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import lombok.Getter;
-import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.cache.bean.LocalValue;
-import cachemesh.core.cache.local.LocalCache;
+import cachemesh.core.cache.local.AbstractLocalCache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,27 +33,19 @@ import com.google.common.cache.Cache;
 import static com.google.common.base.Preconditions.*;
 
 @Getter
-public class GuavaCache extends AbstractShutdownable implements LocalCache {
+public class GuavaCache<T> extends AbstractLocalCache<T, GuavaConfig> {
 
     @Nonnull
-    private final GuavaConfig config;
+    private final Cache<String, LocalValue<T>> instance;
 
-    @Nonnull
-    private final Cache<String, LocalValue> instance;
-
-    public GuavaCache(@Nonnull GuavaConfig config, @Nonnull Cache<String, LocalValue> instance,
-            @Nullable ShutdownManager shutdownManager) {
-        super(config.getName(), shutdownManager);
+    public GuavaCache(@Nonnull GuavaProvider provider, 
+                      @Nonnull GuavaConfig config, 
+                      @Nullable ShutdownManager shutdownManager,
+                      @Nonnull Cache<String, LocalValue<T>> instance) {
+        super(provider, config, shutdownManager);
 
         checkNotNull(instance);
-
-        this.config = config;
         this.instance = instance;
-    }
-
-    @Override
-    public String toString() {
-        return getConfig().toString();
     }
 
     @Override
@@ -76,14 +67,14 @@ public class GuavaCache extends AbstractShutdownable implements LocalCache {
     }
 
     @Override
-    public LocalValue getSingle(@Nonnull String key) {
+    public LocalValue<T> getSingle(@Nonnull String key) {
         checkNotNull(key);
         return this.instance.getIfPresent(key);
     }
 
     @Override
     @Nonnull
-    public LocalValue putSingle(@Nonnull String key, @Nonnull BiFunction<String, LocalValue, LocalValue> mapper) {
+    public LocalValue<T> putSingle(@Nonnull String key, @Nonnull BiFunction<String, LocalValue<T>, LocalValue<T>> mapper) {
         checkNotNull(key);
         checkNotNull(mapper);
         return this.instance.asMap().compute(key, mapper);
@@ -91,7 +82,7 @@ public class GuavaCache extends AbstractShutdownable implements LocalCache {
 
     @Override
     @Nonnull
-    public Map<String, LocalValue> getMultiple(@Nonnull Collection<String> keys) {
+    public Map<String, LocalValue<T>> getMultiple(@Nonnull Collection<String> keys) {
         checkNotNull(keys);
         return this.instance.getAllPresent(keys);
     }

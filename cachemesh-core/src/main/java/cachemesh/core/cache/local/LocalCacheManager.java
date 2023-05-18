@@ -28,6 +28,8 @@ import cachemesh.common.misc.LogHelper;
 import cachemesh.common.shutdown.ManagedShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
+import cachemesh.core.cache.spi.LocalCache;
+import cachemesh.core.cache.spi.LocalCacheProvider;
 import cachemesh.core.config.LocalConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -44,13 +46,13 @@ public class LocalCacheManager implements ManagedShutdownable {
 
     @Getter(AccessLevel.PROTECTED)
     @Nonnull
-    private final Map<String, LocalCache> caches;
+    private final Map<String, LocalCache<?>> caches;
 
     @Nonnull
-    private final LocalConfig localConfig;
+    private final LocalConfig config;
 
     @Nonnull
-    private final LocalCacheProvider localCacheProvider;
+    private final LocalCacheProvider provider;
 
     @Nullable
     private final ShutdownManager shutdownManager;
@@ -58,18 +60,18 @@ public class LocalCacheManager implements ManagedShutdownable {
     @Nonnull
     private final String name;
 
-    public LocalCacheManager(@Nonnull String name, @Nonnull LocalConfig localConfig,
-            @Nonnull LocalCacheProviderRegistry localCacheProviderRegistry, @Nullable ShutdownManager shutdownManager) {
+    public LocalCacheManager(@Nonnull String name, @Nonnull LocalConfig config,
+            @Nonnull LocalCacheProviderRegistry providerRegistry, @Nullable ShutdownManager shutdownManager) {
 
         checkNotNull(name);
-        checkNotNull(localConfig);
-        checkNotNull(localCacheProviderRegistry);
+        checkNotNull(config);
+        checkNotNull(providerRegistry);
 
         this.name = name;
-        this.localConfig = localConfig;
-        this.localCacheProvider = localCacheProviderRegistry.get(localConfig.getKind());
+        this.config = config;
+        this.provider = providerRegistry.get(config.getKind());
 
-        this.caches = initLocalCaches(this.localCacheProvider, localConfig);
+        this.caches = initLocalCaches(this.provider, config);
 
         this.shutdownManager = shutdownManager;
         if (shutdownManager != null) {
@@ -77,9 +79,9 @@ public class LocalCacheManager implements ManagedShutdownable {
         }
     }
 
-    protected Map<String, LocalCache> initLocalCaches(@Nonnull LocalCacheProvider localCacheProvider,
+    protected Map<String, LocalCache<?>> initLocalCaches(@Nonnull LocalCacheProvider localCacheProvider,
             @Nonnull LocalConfig localConfig) {
-        var r = new ConcurrentHashMap<String, LocalCache>();
+        var r = new ConcurrentHashMap<String, LocalCache<?>>();
 
         localConfig.getCaches().forEach(cfg -> {
             var cache = localCacheProvider.createCache(cfg);
@@ -90,19 +92,19 @@ public class LocalCacheManager implements ManagedShutdownable {
     }
 
     @Nullable
-    public LocalCache get(@Nonnull String name) {
+    public LocalCache<?> get(@Nonnull String name) {
         checkNotNull(name);
         return getCaches().get(name);
     }
 
     @Nonnull
-    public LocalCache resolve(@Nonnull String name, @Nonnull Class<?> valueClass) {
+    public LocalCache<?> resolve(@Nonnull String name, @Nonnull Class<?> valueClass) {
         checkNotNull(name);
         checkNotNull(valueClass);
 
         return getCaches().compute(name, (n, cache) -> {
             if (cache == null) {
-                cache = getLocalCacheProvider().createDefaultCache(name, valueClass);
+                cache = getProvider().createDefaultCache(name, valueClass);
 
                 if (this.logger.isDebugEnabled()) {
                     this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", cache.getConfig()));
@@ -134,7 +136,7 @@ public class LocalCacheManager implements ManagedShutdownable {
 
     @Override
     public void onShutdown(@Nonnull ShutdownLogger shutdownLogger, int timeoutSeconds) throws InterruptedException {
-        var copy = new ArrayList<LocalCache>(getCaches().values());
+        var copy = new ArrayList<LocalCache<?>>(getCaches().values());
         for (var cache : copy) {
             if (cache != null) {
                 cache.shutdown(timeoutSeconds);

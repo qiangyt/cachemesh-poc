@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 import lombok.Getter;
-import cachemesh.core.cache.local.LocalTransport;
+import cachemesh.core.cache.local.LocalTransportProvider;
 import cachemesh.grpc.cache.CacheServiceGrpc;
 import cachemesh.grpc.cache.GetSingleRequest;
 import cachemesh.grpc.cache.GetSingleResponse;
@@ -38,12 +38,12 @@ public class GrpcService extends CacheServiceGrpc.CacheServiceImplBase {
     private static final Logger LOG = LoggerFactory.getLogger(GrpcService.class);
 
     @Nonnull
-    private final LocalTransport localTransport;
+    private final LocalTransportProvider localTransport;
 
     @Nonnull
     private final GrpcConfig config;
 
-    public GrpcService(@Nonnull GrpcConfig config, @Nonnull LocalTransport localTransport) {
+    public GrpcService(@Nonnull GrpcConfig config, @Nonnull LocalTransportProvider localTransport) {
         checkNotNull(config);
         checkNotNull(localTransport);
 

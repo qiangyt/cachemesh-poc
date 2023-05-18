@@ -26,7 +26,7 @@ import cachemesh.common.misc.LogHelper;
 import cachemesh.common.misc.SimpleURL;
 import cachemesh.core.MeshNode;
 import cachemesh.core.cache.local.LocalCacheManager;
-import cachemesh.core.cache.local.LocalTransport;
+import cachemesh.core.cache.local.LocalTransportProvider;
 import cachemesh.core.cache.spi.TransportProvider;
 import cachemesh.core.cache.transport.GenericCache;
 import cachemesh.core.config.MeshConfigService;
@@ -118,12 +118,12 @@ public class MeshCacheService {
     }
 
     @Nonnull
-    protected MeshNode addLocalNode(@Nonnull NodeConfig nodeConfig, @Nonnull LocalTransport localTransport) {
+    protected MeshNode addLocalNode(@Nonnull NodeConfig nodeConfig, @Nonnull LocalTransportProvider localTransport) {
         checkNotNull(nodeConfig);
         checkNotNull(localTransport);
 
         var pdr = loadTransportProvider(nodeConfig.getProtocol());
-        var tp = new LocalTransport(getLocalCacheManager());
+        var tp = new LocalTransportProvider(getLocalCacheManager());
 
         if (pdr.bindLocalTransport(nodeConfig, tp) == false) {
             throw new BadValueException("transport %a doesn't support local node", nodeConfig.getProtocol());

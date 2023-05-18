@@ -16,6 +16,7 @@
 package cachemesh.core.cache.local;
 
 import cachemesh.common.registry.Registry;
+import cachemesh.core.cache.spi.LocalCacheProvider;
 
 import javax.annotation.Nonnull;
 

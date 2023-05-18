@@ -22,12 +22,14 @@ import cachemesh.common.annotation.ADefaultDuration;
 import cachemesh.common.annotation.ADefaultInt;
 import cachemesh.common.misc.DurationHelper;
 import cachemesh.core.config.LocalCacheConfig;
+import cachemesh.core.config.SerderConfig;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.*;
 
 @Getter
 @Setter
@@ -50,6 +52,15 @@ public class GuavaConfig extends LocalCacheConfig {
     public GuavaConfig() {
     }
 
+    public GuavaConfig(@Nonnull String name, @Nonnull Class<?> valueClass, @Nonnull SerderConfig serder, boolean cacheBytes, int maximumSize, @Nonnull Duration expireAfterWrite) {
+        super(name, valueClass, serder, cacheBytes);
+
+        setMaximumSize(maximumSize);
+
+        checkNotNull(expireAfterWrite);
+        setExpireAfterWrite(expireAfterWrite);
+    }
+
     @Override
     @Nonnull
     public Map<String, Object> toMap() {
@@ -59,6 +70,13 @@ public class GuavaConfig extends LocalCacheConfig {
         r.put("expireAfterWrite", getExpireAfterWrite());
 
         return r;
+    }
+
+
+    @Override
+    @Nonnull
+    public LocalCacheConfig createAnother(@Nonnull String name, @Nonnull Class<?> valueClass) {
+        return new GuavaConfig(name, valueClass, getSerder(), isCacheBytes(), getMaximumSize(), getExpireAfterWrite());
     }
 
 }

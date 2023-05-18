@@ -46,10 +46,14 @@ public abstract class LocalCacheConfig implements Dumpable {
     @Nonnull
     private SerderConfig serder = SerderConfig.builder().build();
 
+    @AProperty
+    private boolean cacheBytes;
+
+
     protected LocalCacheConfig() {
     }
 
-    protected LocalCacheConfig(@Nonnull String name, @Nonnull Class<?> valueClass, @Nonnull SerderConfig serder) {
+    protected LocalCacheConfig(@Nonnull String name, @Nonnull Class<?> valueClass, @Nonnull SerderConfig serder, boolean cacheBytes) {
         checkNotNull(name);
         checkNotNull(valueClass);
         checkNotNull(serder);
@@ -57,7 +61,10 @@ public abstract class LocalCacheConfig implements Dumpable {
         this.name = name;
         this.valueClass = valueClass;
         this.serder = serder;
+        this.cacheBytes = cacheBytes;
     }
+
+    public abstract LocalCacheConfig createAnother(@Nonnull String name, @Nonnull Class<?> valueClass);
 
     @Override
     @Nonnull
@@ -67,6 +74,7 @@ public abstract class LocalCacheConfig implements Dumpable {
         r.put("name", getName());
         r.put("valueClass", getValueClass().getCanonicalName());
         r.put("serder", getSerder().toMap());
+        r.put("cacheBytes", isCacheBytes());
 
         return r;
     }

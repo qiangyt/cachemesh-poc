@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.*;
 
 @Getter
-public class CaffeineProvider extends AbstractLocalCacheProvider<CaffeineCache, CaffeineConfig> {
+public class CaffeineProvider extends AbstractLocalCacheProvider<CaffeineCache<?>, CaffeineConfig> {
 
     public CaffeineProvider(@Nonnull TypeRegistry typeRegistry, @Nullable ShutdownManager shutdownManager) {
         super(ReflectBeanType.of(typeRegistry, CaffeineConfig.class), shutdownManager);
@@ -38,14 +38,15 @@ public class CaffeineProvider extends AbstractLocalCacheProvider<CaffeineCache, 
 
     @Override
     @Nonnull
-    protected CaffeineCache doCreateCache(@Nonnull CaffeineConfig config) {
+    @SuppressWarnings("all")
+    protected CaffeineCache<?> doCreateCache(@Nonnull CaffeineConfig config) {
         checkNotNull(config);
 
         var bldr = Caffeine.newBuilder();
         bldr.maximumSize(config.getMaximumSize()).expireAfterWrite(config.getExpireAfterWrite());
 
-        Cache<String, LocalValue> i = bldr.build();
-        return new CaffeineCache(config, i, getShutdownManager());
+        Cache<String, LocalValue<?>> i = bldr.build();
+        return new CaffeineCache(this, config, getShutdownManager(), i);
     }
 
 }

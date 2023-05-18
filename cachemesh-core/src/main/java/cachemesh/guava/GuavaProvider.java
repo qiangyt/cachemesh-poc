@@ -31,7 +31,7 @@ import com.google.common.cache.CacheBuilder;
 import static com.google.common.base.Preconditions.*;
 
 @Getter
-public class GuavaProvider extends AbstractLocalCacheProvider<GuavaCache, GuavaConfig> {
+public class GuavaProvider extends AbstractLocalCacheProvider<GuavaCache<?>, GuavaConfig> {
 
     public GuavaProvider(@Nonnull TypeRegistry typeRegistry, @Nullable ShutdownManager shutdownManager) {
         super(ReflectBeanType.of(typeRegistry, GuavaConfig.class), shutdownManager);
@@ -39,6 +39,7 @@ public class GuavaProvider extends AbstractLocalCacheProvider<GuavaCache, GuavaC
 
     @Override
     @Nonnull
+    @SuppressWarnings("all")
     protected GuavaCache doCreateCache(@Nonnull GuavaConfig config) {
         checkNotNull(config);
 
@@ -46,7 +47,7 @@ public class GuavaProvider extends AbstractLocalCacheProvider<GuavaCache, GuavaC
         bldr.maximumSize(config.getMaximumSize()).expireAfterWrite(config.getExpireAfterWrite());
 
         Cache<String, LocalValue> i = bldr.build();
-        return new GuavaCache(config, i, getShutdownManager());
+        return new GuavaCache(this, config, getShutdownManager(), i);
     }
 
 }

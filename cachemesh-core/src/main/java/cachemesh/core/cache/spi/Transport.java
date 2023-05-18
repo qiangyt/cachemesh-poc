@@ -15,19 +15,21 @@
  */
 package cachemesh.core.cache.spi;
 
-import cachemesh.common.config.TypeRegistry;
-import cachemesh.common.config.types.BeanType;
-import cachemesh.core.cache.node.NodeHook;
-import cachemesh.core.config.NodeConfig;
-
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public interface TransportProvider<CACHE extends Transport, CONFIG extends NodeConfig> extends NodeHook {
+import cachemesh.common.shutdown.Shutdownable;
+import cachemesh.core.cache.bean.BytesValue;
 
-    @Nonnull
-    Transport resolveTransport(@Nonnull CONFIG nodeConfig);
+public interface Transport extends Shutdownable {
 
-    @Nonnull
-    BeanType<CONFIG> resolveConfigType(@Nonnull TypeRegistry typeRegistry);
+    void open(int timeoutSeconds) throws InterruptedException;
+
+    boolean isRemote();
+
+    @Nullable
+    BytesValue getSingle(@Nonnull String cacheName, @Nonnull String key, long version);
+
+    void putSingle(@Nonnull String cacheName, @Nonnull String key, @Nullable byte[] bytes);
 
 }

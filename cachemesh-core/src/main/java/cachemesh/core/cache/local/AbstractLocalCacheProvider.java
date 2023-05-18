@@ -18,6 +18,8 @@ package cachemesh.core.cache.local;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.BeanType;
 import cachemesh.common.shutdown.ShutdownManager;
+import cachemesh.core.cache.spi.LocalCache;
+import cachemesh.core.cache.spi.LocalCacheProvider;
 import cachemesh.core.config.LocalCacheConfig;
 import lombok.Getter;
 
@@ -26,16 +28,17 @@ import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.*;
 
 @Getter
-public abstract class AbstractLocalCacheProvider<T extends LocalCache, C extends LocalCacheConfig>
+public abstract class AbstractLocalCacheProvider<CACHE extends LocalCache<?>, CONFIG extends LocalCacheConfig>
         implements LocalCacheProvider {
 
     @Nullable
     private final ShutdownManager shutdownManager;
 
     @Nonnull
-    private final BeanType<C> configType;
+    private final BeanType<CONFIG> configType;
 
-    protected AbstractLocalCacheProvider(@Nonnull BeanType<C> configType, @Nullable ShutdownManager shutdownManager) {
+    protected AbstractLocalCacheProvider(@Nonnull BeanType<CONFIG> configType,
+            @Nullable ShutdownManager shutdownManager) {
         checkNotNull(configType);
 
         this.shutdownManager = shutdownManager;
@@ -43,15 +46,15 @@ public abstract class AbstractLocalCacheProvider<T extends LocalCache, C extends
     }
 
     @Nonnull
-    protected abstract T doCreateCache(@Nonnull C config);
+    protected abstract CACHE doCreateCache(@Nonnull CONFIG config);
 
     @Override
     @SuppressWarnings("unchecked")
     @Nonnull
-    public LocalCache createCache(@Nonnull LocalCacheConfig config) {
+    public LocalCache<?> createCache(@Nonnull LocalCacheConfig config) {
         checkNotNull(config);
 
-        var c = (C) config;
+        var c = (CONFIG) config;
         return doCreateCache(c);
     }
 

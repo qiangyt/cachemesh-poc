@@ -52,7 +52,8 @@ public class GuavaConfig extends LocalCacheConfig {
     public GuavaConfig() {
     }
 
-    public GuavaConfig(@Nonnull String name, @Nonnull Class<?> valueClass, @Nonnull SerderConfig serder, boolean cacheBytes, int maximumSize, @Nonnull Duration expireAfterWrite) {
+    public GuavaConfig(@Nonnull String name, @Nonnull Class<?> valueClass, @Nonnull SerderConfig serder,
+            boolean cacheBytes, int maximumSize, @Nonnull Duration expireAfterWrite) {
         super(name, valueClass, serder, cacheBytes);
 
         setMaximumSize(maximumSize);
@@ -71,7 +72,6 @@ public class GuavaConfig extends LocalCacheConfig {
 
         return r;
     }
-
 
     @Override
     @Nonnull

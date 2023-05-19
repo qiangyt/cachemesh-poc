@@ -19,6 +19,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import cachemesh.common.shutdown.Shutdownable;
 import cachemesh.core.cache.bean.LocalValue;
+import cachemesh.core.cache.store.BytesStore;
 import cachemesh.core.config.LocalCacheConfig;
 
 import java.util.Collection;

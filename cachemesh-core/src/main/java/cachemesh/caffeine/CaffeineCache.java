@@ -36,10 +36,8 @@ public class CaffeineCache<T> extends AbstractLocalCache<T, CaffeineConfig> {
     @Nonnull
     private final Cache<String, LocalValue<T>> caffeineInstance;
 
-    public CaffeineCache(@Nonnull CaffeineProvider provider, 
-                         @Nonnull CaffeineConfig config,
-                         @Nullable ShutdownManager shutdownManager,
-                         @Nonnull Cache<String, LocalValue<T>> caffeineInstance) {
+    public CaffeineCache(@Nonnull CaffeineProvider provider, @Nonnull CaffeineConfig config,
+            @Nullable ShutdownManager shutdownManager, @Nonnull Cache<String, LocalValue<T>> caffeineInstance) {
         super(provider, config, shutdownManager);
 
         checkNotNull(caffeineInstance);
@@ -72,7 +70,8 @@ public class CaffeineCache<T> extends AbstractLocalCache<T, CaffeineConfig> {
 
     @Override
     @Nonnull
-    public LocalValue<T> putSingle(@Nonnull String key, @Nonnull BiFunction<String, LocalValue<T>, LocalValue<T>> mapper) {
+    public LocalValue<T> putSingle(@Nonnull String key,
+            @Nonnull BiFunction<String, LocalValue<T>, LocalValue<T>> mapper) {
         checkNotNull(key);
         checkNotNull(mapper);
         return this.caffeineInstance.asMap().compute(key, mapper);

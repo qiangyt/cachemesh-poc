@@ -49,11 +49,11 @@ public abstract class LocalCacheConfig implements Dumpable {
     @AProperty
     private boolean cacheBytes;
 
-
     protected LocalCacheConfig() {
     }
 
-    protected LocalCacheConfig(@Nonnull String name, @Nonnull Class<?> valueClass, @Nonnull SerderConfig serder, boolean cacheBytes) {
+    protected LocalCacheConfig(@Nonnull String name, @Nonnull Class<?> valueClass, @Nonnull SerderConfig serder,
+            boolean cacheBytes) {
         checkNotNull(name);
         checkNotNull(valueClass);
         checkNotNull(serder);

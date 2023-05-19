@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.cache.local;
+package cachemesh.core.cache.store;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,7 +21,6 @@ import javax.annotation.Nullable;
 import cachemesh.core.cache.bean.LocalValue;
 import cachemesh.core.cache.bean.BytesValue;
 import cachemesh.core.cache.spi.LocalCache;
-import cachemesh.core.cache.spi.BytesStore;
 import lombok.Getter;
 
 import static com.google.common.base.Preconditions.checkNotNull;

@@ -52,7 +52,8 @@ public class CaffeineConfig extends LocalCacheConfig {
     public CaffeineConfig() {
     }
 
-    public CaffeineConfig(@Nonnull String name, @Nonnull Class<?> valueClass, @Nonnull SerderConfig serder, boolean cacheBytes, int maximumSize, @Nonnull Duration expireAfterWrite) {
+    public CaffeineConfig(@Nonnull String name, @Nonnull Class<?> valueClass, @Nonnull SerderConfig serder,
+            boolean cacheBytes, int maximumSize, @Nonnull Duration expireAfterWrite) {
         super(name, valueClass, serder, cacheBytes);
 
         setMaximumSize(maximumSize);
@@ -75,7 +76,8 @@ public class CaffeineConfig extends LocalCacheConfig {
     @Override
     @Nonnull
     public LocalCacheConfig createAnother(@Nonnull String name, @Nonnull Class<?> valueClass) {
-        return new CaffeineConfig(name, valueClass, getSerder(), isCacheBytes(), getMaximumSize(), getExpireAfterWrite());
+        return new CaffeineConfig(name, valueClass, getSerder(), isCacheBytes(), getMaximumSize(),
+                getExpireAfterWrite());
     }
 
 }

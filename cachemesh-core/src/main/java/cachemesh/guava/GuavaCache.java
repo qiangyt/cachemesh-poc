@@ -38,10 +38,8 @@ public class GuavaCache<T> extends AbstractLocalCache<T, GuavaConfig> {
     @Nonnull
     private final Cache<String, LocalValue<T>> instance;
 
-    public GuavaCache(@Nonnull GuavaProvider provider, 
-                      @Nonnull GuavaConfig config, 
-                      @Nullable ShutdownManager shutdownManager,
-                      @Nonnull Cache<String, LocalValue<T>> instance) {
+    public GuavaCache(@Nonnull GuavaProvider provider, @Nonnull GuavaConfig config,
+            @Nullable ShutdownManager shutdownManager, @Nonnull Cache<String, LocalValue<T>> instance) {
         super(provider, config, shutdownManager);
 
         checkNotNull(instance);
@@ -74,7 +72,8 @@ public class GuavaCache<T> extends AbstractLocalCache<T, GuavaConfig> {
 
     @Override
     @Nonnull
-    public LocalValue<T> putSingle(@Nonnull String key, @Nonnull BiFunction<String, LocalValue<T>, LocalValue<T>> mapper) {
+    public LocalValue<T> putSingle(@Nonnull String key,
+            @Nonnull BiFunction<String, LocalValue<T>, LocalValue<T>> mapper) {
         checkNotNull(key);
         checkNotNull(mapper);
         return this.instance.asMap().compute(key, mapper);

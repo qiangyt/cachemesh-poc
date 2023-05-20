@@ -23,7 +23,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import lombok.Getter;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.cache.bean.LocalValue;
+import cachemesh.core.cache.bean.Value;
 import cachemesh.core.cache.local.AbstractLocalCache;
 
 import javax.annotation.Nonnull;
@@ -34,10 +34,10 @@ import static com.google.common.base.Preconditions.*;
 public class CaffeineCache<T> extends AbstractLocalCache<T, CaffeineConfig> {
 
     @Nonnull
-    private final Cache<String, LocalValue<T>> caffeineInstance;
+    private final Cache<String, Value<T>> caffeineInstance;
 
     public CaffeineCache(@Nonnull CaffeineProvider provider, @Nonnull CaffeineConfig config,
-            @Nullable ShutdownManager shutdownManager, @Nonnull Cache<String, LocalValue<T>> caffeineInstance) {
+            @Nullable ShutdownManager shutdownManager, @Nonnull Cache<String, Value<T>> caffeineInstance) {
         super(provider, config, shutdownManager);
 
         checkNotNull(caffeineInstance);
@@ -63,15 +63,15 @@ public class CaffeineCache<T> extends AbstractLocalCache<T, CaffeineConfig> {
     }
 
     @Override
-    public LocalValue<T> getSingle(@Nonnull String key) {
+    public Value<T> getSingle(@Nonnull String key) {
         checkNotNull(key);
         return this.caffeineInstance.getIfPresent(key);
     }
 
     @Override
     @Nonnull
-    public LocalValue<T> putSingle(@Nonnull String key,
-            @Nonnull BiFunction<String, LocalValue<T>, LocalValue<T>> mapper) {
+    public Value<T> putSingle(@Nonnull String key,
+            @Nonnull BiFunction<String, Value<T>, Value<T>> mapper) {
         checkNotNull(key);
         checkNotNull(mapper);
         return this.caffeineInstance.asMap().compute(key, mapper);
@@ -79,7 +79,7 @@ public class CaffeineCache<T> extends AbstractLocalCache<T, CaffeineConfig> {
 
     @Override
     @Nonnull
-    public Map<String, LocalValue<T>> getMultiple(@Nonnull Collection<String> keys) {
+    public Map<String, Value<T>> getMultiple(@Nonnull Collection<String> keys) {
         checkNotNull(keys);
         return this.caffeineInstance.getAllPresent(keys);
     }

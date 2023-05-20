@@ -18,8 +18,9 @@ package cachemesh.core.cache.store;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import cachemesh.core.cache.bean.LocalValue;
-import cachemesh.core.cache.bean.BytesValue;
+import cachemesh.core.cache.bean.Value;
+import cachemesh.core.cache.bean.ValueStatus;
+import cachemesh.core.cache.bean.ValueResult;
 import cachemesh.core.cache.spi.LocalCache;
 import lombok.Getter;
 
@@ -39,7 +40,7 @@ public class ObjectBytesStore implements BytesStore {
 
     @Override
     @Nullable
-    public BytesValue getSingle(@Nonnull String key, long version) {
+    public ValueResult getSingle(@Nonnull String key, long version) {
         checkNotNull(key);
 
         var oc = getObjectCache();
@@ -53,37 +54,37 @@ public class ObjectBytesStore implements BytesStore {
         long storedVer = v.getVersion();
         if (version > 0) {
             if (storedVer == version) {
-                return BytesValue.NO_CHANGE;
+                return ValueResult.NO_CHANGE;
             }
         }
 
         if (v.isNull()) {
-            return BytesValue.Null(storedVer);
+            return ValueResult.Null(storedVer);
         }
 
         var serder = cfg.getSerder().getKind().instance;
 
         var data = v.getData();
         byte[] dataBytes = serder.serialize(data);
-        return BytesValue.Ok(dataBytes, storedVer);
+        return ValueResult.Ok(dataBytes, storedVer);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void putSingle(@Nonnull String key, @Nullable BytesValue value) {
+    public void putSingle(@Nonnull String key, @Nullable ValueResult value) {
         checkNotNull(key);
         checkNotNull(value);
 
         var oc = getObjectCache();
         var cfg = objectCache.getConfig();
 
-        LocalValue<Object> lVal;
-        if (value.isNull()) {
-            lVal = LocalValue.Null(value.getVersion());
+        Value<Object> lVal;
+        if (value.getStatus() == ValueStatus.NULL) {
+            lVal = Value.Null(value.getVersion());
         } else {
             var serder = cfg.getSerder().getKind().instance;
             Object data = serder.deserialize(value.getData(), cfg.getValueClass());
-            lVal = new LocalValue<>(data, value.getVersion());
+            lVal = new Value<>(data, value.getVersion());
         }
 
         ((LocalCache<Object>) oc).putSingle(key, (k, v) -> lVal);

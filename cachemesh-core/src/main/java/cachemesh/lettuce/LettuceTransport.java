@@ -19,7 +19,7 @@ import io.lettuce.core.api.sync.RedisCommands;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.cache.bean.BytesValue;
+import cachemesh.core.cache.bean.ValueResult;
 import cachemesh.core.cache.transport.GenericCache;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -93,7 +93,7 @@ public class LettuceTransport extends AbstractShutdownable implements GenericCac
 
     @Override
     @Nonnull
-    public BytesValue<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
+    public ValueResult<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
         checkNotNull(cacheName);
         checkNotNull(key);
 
@@ -102,10 +102,10 @@ public class LettuceTransport extends AbstractShutdownable implements GenericCac
         var cmds = syncCommand();
         var value = cmds.get(redisKey);
         if (value == null) {// TODO: how to indicate we do have the value but the value is null
-            return BytesValue.notFound();
+            return ValueResult.notFound();
         }
 
-        return BytesValue.ok(value, 0);
+        return ValueResult.ok(value, 0);
     }
 
     @Override

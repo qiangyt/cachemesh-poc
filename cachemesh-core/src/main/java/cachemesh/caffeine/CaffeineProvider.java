@@ -21,7 +21,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.ReflectBeanType;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.cache.bean.LocalValue;
+import cachemesh.core.cache.bean.Value;
 import cachemesh.core.cache.local.AbstractLocalCacheProvider;
 import lombok.Getter;
 
@@ -45,7 +45,7 @@ public class CaffeineProvider extends AbstractLocalCacheProvider<CaffeineCache<?
         var bldr = Caffeine.newBuilder();
         bldr.maximumSize(config.getMaximumSize()).expireAfterWrite(config.getExpireAfterWrite());
 
-        Cache<String, LocalValue<?>> i = bldr.build();
+        Cache<String, Value<?>> i = bldr.build();
         return new CaffeineCache(this, config, getShutdownManager(), i);
     }
 

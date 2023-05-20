@@ -25,7 +25,7 @@ import static com.google.common.base.Preconditions.*;
 public interface LocalCacheProvider {
 
     @Nonnull
-    LocalCacheConfig createDefaultConfig(@Nonnull String name, @Nonnull Class<?> valueClass);
+    LocalCacheConfig createDefaultConfig(@Nonnull String name);
 
     @Nonnull
     BeanType<? extends LocalCacheConfig> resolveConfigType(@Nonnull TypeRegistry typeRegistry);
@@ -34,11 +34,10 @@ public interface LocalCacheProvider {
     LocalCache<?> createCache(@Nonnull LocalCacheConfig config);
 
     @Nonnull
-    default LocalCache<?> createDefaultCache(@Nonnull String name, @Nonnull Class<?> valueClass) {
+    default LocalCache<?> createDefaultCache(@Nonnull String name) {
         checkNotNull(name);
-        checkNotNull(valueClass);
 
-        var cfg = createDefaultConfig(name, valueClass);
+        var cfg = createDefaultConfig(name);
         return createCache(cfg);
     }
 

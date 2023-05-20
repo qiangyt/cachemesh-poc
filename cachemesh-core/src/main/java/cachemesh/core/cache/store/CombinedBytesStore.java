@@ -18,7 +18,7 @@ package cachemesh.core.cache.store;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import cachemesh.core.cache.bean.BytesValue;
+import cachemesh.core.cache.bean.ValueResult;
 import lombok.Getter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -42,7 +42,7 @@ public class CombinedBytesStore implements BytesStore {
 
     @Override
     @Nullable
-    public BytesValue getSingle(@Nonnull String key, long version) {
+    public ValueResult getSingle(@Nonnull String key, long version) {
         checkNotNull(key);
 
         var dstore = getDirectStore();
@@ -78,9 +78,8 @@ public class CombinedBytesStore implements BytesStore {
     }
 
     @Override
-    public void putSingle(@Nonnull String key, @Nullable BytesValue value) {
+    public void putSingle(@Nonnull String key, @Nullable byte[] value[]) {
         checkNotNull(key);
-        checkNotNull(value);
 
         getObjectStore().putSingle(key, value);
         getDirectStore().putSingle(key, value);

@@ -22,12 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 import lombok.Getter;
-import cachemesh.core.cache.local.LocalTransportProvider;
-import cachemesh.grpc.cache.CacheServiceGrpc;
-import cachemesh.grpc.cache.GetSingleRequest;
-import cachemesh.grpc.cache.GetSingleResponse;
-import cachemesh.grpc.cache.PutSingleRequest;
-import cachemesh.grpc.cache.PutSingleResponse;
+import cachemesh.core.cache.local.LocalCacheManager;
+import cachemesh.grpc.proto.*;
 
 import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.*;
@@ -38,21 +34,22 @@ public class GrpcService extends CacheServiceGrpc.CacheServiceImplBase {
     private static final Logger LOG = LoggerFactory.getLogger(GrpcService.class);
 
     @Nonnull
-    private final LocalTransportProvider localTransport;
+    private final LocalCacheManager localCacheManager;
 
     @Nonnull
     private final GrpcConfig config;
 
-    public GrpcService(@Nonnull GrpcConfig config, @Nonnull LocalTransportProvider localTransport) {
+    public GrpcService(@Nonnull GrpcConfig config, @Nonnull LocalCacheManager localCacheManager) {
         checkNotNull(config);
-        checkNotNull(localTransport);
+        checkNotNull(localCacheManager);
 
         this.config = config;
-        this.localTransport = localTransport;
+        this.localCacheManager = localCacheManager;
     }
 
     @Override
-    public void getSingle(@Nonnull GetSingleRequest req, @Nonnull StreamObserver<GetSingleResponse> respObserver) {
+    public void getSingle(@Nonnull CacheServiceGetSingleRequest req,
+            @Nonnull StreamObserver<CacheServiceGetSingleResponse> respObserver) {
         checkNotNull(req);
         checkNotNull(respObserver);
 
@@ -65,25 +62,48 @@ public class GrpcService extends CacheServiceGrpc.CacheServiceImplBase {
             LOG.debug("getSingle(): cache name={}, key={}, version={}", cacheName, key, ver);
         }
 
-        var resp = getLocalTransport().getSingle(cacheName, key, ver);
+        var resp = CacheServiceGetSingleResponse.newBuilder();
+
+        var store = getLocalCacheManager().getBytesStore(cacheName);
+        if (store == null) {
+            resp.setStatus(CacheServiceValueStatus.NotFound);
+        } else {
+            var value = store.getSingle(key, ver);
+            if (value == null) {
+                resp.setStatus(CacheServiceValueStatus.NotFound);
+            } else {
+                switch (value.getStatus()) {
+                case NULL: {
+                    resp.setStatus(CacheServiceValueStatus.Null);
+                    resp.setVersion(value.getVersion());
+                }
+                    break;
+                case OK: {
+                    resp.setStatus(CacheServiceValueStatus.Ok);
+                    resp.setValue(ByteString.copyFrom(value.getData()));
+                    resp.setVersion(value.getVersion());
+                }
+                    break;
+                case NO_CHANGE: {
+                    resp.setStatus(CacheServiceValueStatus.NoChange);
+                }
+                    break;
+                default: {
+                    throw new IllegalStateException("unexpected status: " + value.getStatus());
+                }
+            }
+        }
+
         if (debug) {
             LOG.debug("getSingle(): resp={}", resp);
         }
 
-        var respBuilder = GetSingleResponse.newBuilder();
-        respBuilder.setStatus(GrpcHelper.convertStatus(resp.getStatus()));
-        respBuilder.setVersion(resp.getVersion());
-
-        var value = resp.getValue();
-        if (value != null) {
-            respBuilder.setValue(ByteString.copyFrom(value));
-        }
-
-        GrpcHelper.complete(respObserver, respBuilder.build());
+        GrpcHelper.complete(respObserver, resp.build());
     }
 
     @Override
-    public void putSingle(@Nonnull PutSingleRequest req, @Nonnull StreamObserver<PutSingleResponse> respObserver) {
+    public void putSingle(@Nonnull CacheServicePutSingleRequest req,
+            @Nonnull StreamObserver<CacheServicePutSingleResponse> respObserver) {
         checkNotNull(req);
         checkNotNull(respObserver);
 
@@ -95,8 +115,21 @@ public class GrpcService extends CacheServiceGrpc.CacheServiceImplBase {
             LOG.debug("putSingle(): cache name={}, key={}", cacheName, key);
         }
 
+
+        var cache = getLocalCacheManager().resolve(cacheName);
+        var store = cache.getBytesStore();
+        
         var reqV = req.getValue();
         var value = (reqV == null) ? null : reqV.toByteArray();
+
+        if (value == null) {
+
+        }
+        var resp = CacheServicePutSingleResponse.newBuilder();
+
+        resp.setVersion(CacheServiceValueStatus.NotFound);
+        
+        
 
         var ver = getLocalTransport().putSingle(cacheName, key, value);
         if (debug) {

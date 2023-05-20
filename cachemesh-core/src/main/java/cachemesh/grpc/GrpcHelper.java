@@ -16,7 +16,7 @@
 package cachemesh.grpc;
 
 import cachemesh.common.err.BadValueException;
-import cachemesh.core.cache.bean.LocalValue.Status;
+import cachemesh.core.cache.bean.Value.Status;
 import cachemesh.grpc.cache.ValueStatus;
 import io.grpc.stub.StreamObserver;
 
@@ -35,25 +35,25 @@ public class GrpcHelper {
     }
 
     @Nonnull
-    public static Status convertStatus(@Nonnull ValueStatus status) {
+    public static ValueStatus convertStatus(@Nonnull ValueStatus status) {
         checkNotNull(status);
 
         switch (status) {
         case NotFound:
-            return Status.NOT_FOUND;
+            return ValueStatus.NOT_FOUND;
         case Ok:
-            return Status.OK;
+            return ValueStatus.OK;
         case NoChange:
-            return Status.NO_CHANGE;
+            return ValueStatus.NO_CHANGE;
         case Redirect:
-            return Status.REDIRECT;
+            return ValueStatus.REDIRECT;
         default:
             throw new BadValueException("unrecognized remote value status: %d", status);
         }
     }
 
     @Nonnull
-    public static ValueStatus convertStatus(@Nonnull Status status) {
+    public static ValueStatus convertStatus(@Nonnull ValueStatus status) {
         checkNotNull(status);
 
         switch (status) {

@@ -22,7 +22,7 @@ import java.util.function.BiFunction;
 import lombok.Getter;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.cache.bean.LocalValue;
+import cachemesh.core.cache.bean.Value;
 import cachemesh.core.cache.local.AbstractLocalCache;
 
 import javax.annotation.Nonnull;
@@ -36,10 +36,10 @@ import static com.google.common.base.Preconditions.*;
 public class GuavaCache<T> extends AbstractLocalCache<T, GuavaConfig> {
 
     @Nonnull
-    private final Cache<String, LocalValue<T>> instance;
+    private final Cache<String, Value<T>> instance;
 
     public GuavaCache(@Nonnull GuavaProvider provider, @Nonnull GuavaConfig config,
-            @Nullable ShutdownManager shutdownManager, @Nonnull Cache<String, LocalValue<T>> instance) {
+            @Nullable ShutdownManager shutdownManager, @Nonnull Cache<String, Value<T>> instance) {
         super(provider, config, shutdownManager);
 
         checkNotNull(instance);
@@ -65,15 +65,15 @@ public class GuavaCache<T> extends AbstractLocalCache<T, GuavaConfig> {
     }
 
     @Override
-    public LocalValue<T> getSingle(@Nonnull String key) {
+    public Value<T> getSingle(@Nonnull String key) {
         checkNotNull(key);
         return this.instance.getIfPresent(key);
     }
 
     @Override
     @Nonnull
-    public LocalValue<T> putSingle(@Nonnull String key,
-            @Nonnull BiFunction<String, LocalValue<T>, LocalValue<T>> mapper) {
+    public Value<T> putSingle(@Nonnull String key,
+            @Nonnull BiFunction<String, Value<T>, Value<T>> mapper) {
         checkNotNull(key);
         checkNotNull(mapper);
         return this.instance.asMap().compute(key, mapper);
@@ -81,7 +81,7 @@ public class GuavaCache<T> extends AbstractLocalCache<T, GuavaConfig> {
 
     @Override
     @Nonnull
-    public Map<String, LocalValue<T>> getMultiple(@Nonnull Collection<String> keys) {
+    public Map<String, Value<T>> getMultiple(@Nonnull Collection<String> keys) {
         checkNotNull(keys);
         return this.instance.getAllPresent(keys);
     }

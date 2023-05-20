@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option go_package = "cachemesh/grpc/proto";
+option java_multiple_files = true;
+option java_package = "cachemesh.grpc.proto";
+option java_outer_classname = "CacheServiceProto";
+
+package cache;
+
+// The service definition.
+service CacheService {
+  rpc GetSingle (CacheServiceGetSingleRequest) returns (CacheServiceGetSingleResponse) {}
+  rpc PutSingle (CacheServicePutSingleRequest) returns (CacheServicePutSingleResponse) {}
+}
+
+message CacheServiceGetSingleRequest {
+  string cacheName = 1;
+  string key = 2;
+	int64 version = 3;
+}
+
+enum CacheServiceValueStatus {
+	NotFound = 0;
+	Ok = 1;
+	Null = 2;
+	NoChange = 3;
+}
+
+message CacheServiceGetSingleResponse {
+  CacheServiceValueStatus status = 1;
+  bytes value = 2;
+  int64 version = 3;
+}
+
+message CacheServicePutSingleRequest {
+  string cacheName = 1;
+  string key = 2;
+  bytes value = 3;
+}
+
+message CacheServicePutSingleResponse {
+  int64 version = 1;
+}

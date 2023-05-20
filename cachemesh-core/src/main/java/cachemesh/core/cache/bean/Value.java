@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.cache.local;
+package cachemesh.core.cache.bean;
 
-import cachemesh.core.cache.bean.BytesValue;
-import cachemesh.core.cache.spi.LocalCache;
-import cachemesh.core.cache.spi.Transport;
+import lombok.Getter;
 
-public class InternalLocalTransport<T> {
+@Getter
+public class Value<T> {
 
-    private final LocalCache<T> cache;
+    private final T data;
 
-    public BytesValue getSingle(String key, long version) {
+    private final long version;
 
-    }
-
-    @Override
-    public void putSingle(String key, byte[] bytes) {
-
+    public Value(T data, long version) {
+        this.data = data;
+        this.version = version;
     }
 
 }

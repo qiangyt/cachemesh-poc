@@ -18,14 +18,14 @@ package cachemesh.core.cache.store;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import cachemesh.core.cache.bean.BytesValue;
+import cachemesh.core.cache.bean.ValueResult;
 
 public interface BytesStore {
 
     @Nullable
-    BytesValue getSingle(@Nonnull String key, long version);
+    ValueResult getSingle(@Nonnull String key, long version);
 
-    void putSingle(@Nonnull String key, @Nullable BytesValue value);
+    void putSingle(@Nonnull String key, @Nonnull Value<byte[]> value);
 
     void removeSingle(@Nonnull String key);
 

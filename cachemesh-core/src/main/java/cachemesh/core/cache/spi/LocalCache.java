@@ -18,7 +18,7 @@ package cachemesh.core.cache.spi;
 import javax.annotation.concurrent.ThreadSafe;
 
 import cachemesh.common.shutdown.Shutdownable;
-import cachemesh.core.cache.bean.LocalValue;
+import cachemesh.core.cache.bean.Value;
 import cachemesh.core.cache.store.BytesStore;
 import cachemesh.core.config.LocalCacheConfig;
 
@@ -45,12 +45,12 @@ public interface LocalCache<T> extends Shutdownable {
     void invalidateMultiple(@Nonnull Collection<String> keys);
 
     @Nullable
-    LocalValue<T> getSingle(@Nonnull String key);
+    Value<T> getSingle(@Nonnull String key);
 
     @Nonnull
-    Map<String, LocalValue<T>> getMultiple(@Nonnull Collection<String> keys);
+    Map<String, Value<T>> getMultiple(@Nonnull Collection<String> keys);
 
-    LocalValue<T> putSingle(@Nonnull String key, @Nonnull BiFunction<String, LocalValue<T>, LocalValue<T>> mapper);
+    Value<T> putSingle(@Nonnull String key, @Nonnull BiFunction<String, Value<T>, Value<T>> mapper);
 
     // void putMultiple(Collection<LocalCacheEntry<T>> entries);
 

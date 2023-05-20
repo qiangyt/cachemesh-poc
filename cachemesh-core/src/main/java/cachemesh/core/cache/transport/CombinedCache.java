@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import cachemesh.common.err.BadStateException;
 import cachemesh.common.misc.Serderializer;
 import cachemesh.common.shutdown.Shutdownable;
-import cachemesh.core.cache.bean.LocalValue;
+import cachemesh.core.cache.bean.Value;
 import cachemesh.core.cache.spi.LocalCache;
 import cachemesh.core.cache.spi.Transport;
 
@@ -81,7 +81,7 @@ public class CombinedCache<T> implements Shutdownable {
     }
 
     @Nullable
-    public LocalValue<T> getSingle(@Nonnull String key) {
+    public Value<T> getSingle(@Nonnull String key) {
         checkNotNull(key);
 
         var lCache = getLocalCache();
@@ -104,12 +104,12 @@ public class CombinedCache<T> implements Shutdownable {
             switch (status) {
             case OK: {
                 T data = getSerder().deserialize(rVal.getBytes(), getValueClass());
-                return lCache.putSingle(key, (k, v) -> new LocalValue<T>(data, rVal.getVersion()));
+                return lCache.putSingle(key, (k, v) -> new Value<T>(data, rVal.getVersion()));
             }
             case NO_CHANGE:
                 return r;
             case NULL: {
-                return lCache.putSingle(key, (k, v) -> LocalValue.Null(rVal.getVersion()));
+                return lCache.putSingle(key, (k, v) -> Value.Null(rVal.getVersion()));
             }
             default:
                 throw new BadStateException("unexpected status: %s", status);

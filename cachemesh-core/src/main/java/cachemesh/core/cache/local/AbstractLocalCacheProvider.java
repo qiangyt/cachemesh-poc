@@ -60,13 +60,12 @@ public abstract class AbstractLocalCacheProvider<CACHE extends LocalCache<?>, CO
 
     @Override
     @Nonnull
-    public LocalCacheConfig createDefaultConfig(@Nonnull String name, @Nonnull Class<?> valueClass) {
+    public LocalCacheConfig createDefaultConfig(@Nonnull String name) {
         checkNotNull(name);
-        checkNotNull(valueClass);
 
-        var r = getConfigType().convert(null, valueClass);
+        var r = getConfigType().convert(null, byte[].class);
         r.setName(name);
-        r.setValueClass(valueClass);
+        r.setValueClass(byte[].class);
         return r;
     }
 

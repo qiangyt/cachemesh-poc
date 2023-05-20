@@ -18,8 +18,8 @@ package cachemesh.core.cache.store;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import cachemesh.core.cache.bean.LocalValue;
-import cachemesh.core.cache.bean.BytesValue;
+import cachemesh.core.cache.bean.Value;
+import cachemesh.core.cache.bean.ValueResult;
 import cachemesh.core.cache.spi.LocalCache;
 import lombok.Getter;
 
@@ -39,7 +39,7 @@ public class DirectBytesStore implements BytesStore {
 
     @Override
     @Nullable
-    public BytesValue getSingle(@Nonnull String key, long version) {
+    public ValueResult getSingle(@Nonnull String key, long version) {
         checkNotNull(key);
 
         var v = getBytesCache().getSingle(key);
@@ -50,29 +50,29 @@ public class DirectBytesStore implements BytesStore {
         long storedVer = v.getVersion();
         if (version > 0) {
             if (storedVer == version) {
-                return BytesValue.NO_CHANGE;
+                return ValueResult.NO_CHANGE;
             }
         }
 
         if (v.isNull()) {
-            return BytesValue.Null(storedVer);
+            return ValueResult.Null(storedVer);
         }
 
         byte[] dataBytes = v.getData();
-        return BytesValue.Ok(dataBytes, storedVer);
+        return ValueResult.Ok(dataBytes, storedVer);
     }
 
     @Override
-    public void putSingle(@Nonnull String key, @Nullable BytesValue value) {
+    public void putSingle(@Nonnull String key, @Nonnull ValueResult value) {
         checkNotNull(key);
         checkNotNull(value);
 
-        LocalValue<byte[]> lVal;
+        Value<byte[]> lVal;
         if (value.isNull()) {
-            lVal = LocalValue.Null(value.getVersion());
+            lVal = Value.Null(value.getVersion());
         } else {
             byte[] data = value.getData();
-            lVal = new LocalValue<>(data, value.getVersion());
+            lVal = new Value<>(data, value.getVersion());
         }
 
         getBytesCache().putSingle(key, (k, v) -> lVal);

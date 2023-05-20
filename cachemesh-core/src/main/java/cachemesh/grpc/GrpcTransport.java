@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.cache.bean.BytesValue;
+import cachemesh.core.cache.bean.ValueResult;
 import cachemesh.core.cache.transport.GenericCache;
 import io.grpc.ManagedChannel;
 import lombok.Getter;
@@ -82,7 +82,7 @@ public class GrpcTransport extends AbstractShutdownable implements GenericCache 
 
     @Override
     @Nonnull
-    public BytesValue<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
+    public ValueResult<byte[]> getSingle(@Nonnull String cacheName, @Nonnull String key, long version) {
         checkNotNull(cacheName);
         checkNotNull(key);
 
@@ -97,7 +97,7 @@ public class GrpcTransport extends AbstractShutdownable implements GenericCache 
         // TODO: how to indicate we do have the value but the value is null
         var respV = resp.getValue();
         var v = (respV == null) ? null : respV.toByteArray();
-        return new BytesValue<>(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersion());
+        return new ValueResult<>(GrpcHelper.convertStatus(resp.getStatus()), v, resp.getVersion());
     }
 
     @Override

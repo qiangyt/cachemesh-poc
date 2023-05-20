@@ -30,6 +30,7 @@ import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
 import cachemesh.core.cache.spi.LocalCache;
 import cachemesh.core.cache.spi.LocalCacheProvider;
+import cachemesh.core.cache.store.BytesStore;
 import cachemesh.core.config.LocalConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -46,7 +47,7 @@ public class LocalCacheManager implements ManagedShutdownable {
 
     @Getter(AccessLevel.PROTECTED)
     @Nonnull
-    private final Map<String, LocalCache<?>> caches;
+    private final Map<String, LocalCache<?>> caches = new ConcurrentHashMap<String, LocalCache<?>>();
 
     @Nonnull
     private final LocalConfig config;
@@ -71,7 +72,7 @@ public class LocalCacheManager implements ManagedShutdownable {
         this.config = config;
         this.provider = providerRegistry.get(config.getKind());
 
-        this.caches = initLocalCaches(this.provider, config);
+        initLocalCaches();
 
         this.shutdownManager = shutdownManager;
         if (shutdownManager != null) {
@@ -79,32 +80,42 @@ public class LocalCacheManager implements ManagedShutdownable {
         }
     }
 
-    protected Map<String, LocalCache<?>> initLocalCaches(@Nonnull LocalCacheProvider localCacheProvider,
-            @Nonnull LocalConfig localConfig) {
-        var r = new ConcurrentHashMap<String, LocalCache<?>>();
-
-        localConfig.getCaches().forEach(cfg -> {
-            var cache = localCacheProvider.createCache(cfg);
-            r.put(cfg.getName(), cache);
+    protected void initLocalCaches() {
+        this.config.getCaches().forEach(cfg -> {
+            var cache = this.provider.createCache(cfg);
+            this.caches.put(cfg.getName(), cache);
         });
-
-        return r;
     }
 
     @Nullable
     public LocalCache<?> get(@Nonnull String name) {
         checkNotNull(name);
+        return doGet(name);
+    }
+
+    @Nullable
+    protected LocalCache<?> doGet(@Nonnull String name) {
         return getCaches().get(name);
     }
 
-    @Nonnull
-    public LocalCache<?> resolve(@Nonnull String name, @Nonnull Class<?> valueClass) {
+    @Nullable
+    public BytesStore getBytesStore(@Nonnull String name) {
         checkNotNull(name);
-        checkNotNull(valueClass);
+        var c = doGet(name);
+        return (c == null) ? null : c.getBytesStore();
+    }
 
+    @Nonnull
+    public LocalCache<?> resolve(@Nonnull String name) {
+        checkNotNull(name);
+        return doResolve(name);
+    }
+
+    @Nonnull
+    protected LocalCache<?> doResolve(@Nonnull String name) {
         return getCaches().compute(name, (n, cache) -> {
             if (cache == null) {
-                cache = getProvider().createDefaultCache(name, valueClass);
+                cache = getProvider().createDefaultCache(name);
 
                 if (this.logger.isDebugEnabled()) {
                     this.logger.debug("cache not found, so create it: {}", LogHelper.kv("config", cache.getConfig()));
@@ -113,6 +124,13 @@ public class LocalCacheManager implements ManagedShutdownable {
 
             return cache;
         });
+    }
+
+    @Nonnull
+    public BytesStore resolveByteStore(@Nonnull String name) {
+        checkNotNull(name);
+        var c = doResolve(name);
+        return c.getBytesStore();
     }
 
     @Override

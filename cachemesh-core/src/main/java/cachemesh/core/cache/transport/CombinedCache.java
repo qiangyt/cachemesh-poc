@@ -21,9 +21,9 @@ import javax.annotation.Nullable;
 import cachemesh.common.err.BadStateException;
 import cachemesh.common.misc.Serderializer;
 import cachemesh.common.shutdown.Shutdownable;
-import cachemesh.core.cache.bean.Value;
 import cachemesh.core.cache.spi.LocalCache;
 import cachemesh.core.cache.spi.Transport;
+import cachemesh.core.cache.store.Value;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

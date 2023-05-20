@@ -18,7 +18,6 @@ package cachemesh.core.cache.store;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import cachemesh.core.cache.bean.ValueResult;
 import lombok.Getter;
 
 import static com.google.common.base.Preconditions.checkNotNull;

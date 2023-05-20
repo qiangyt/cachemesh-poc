@@ -16,7 +16,7 @@
 package cachemesh.grpc;
 
 import cachemesh.common.err.BadValueException;
-import cachemesh.core.cache.bean.Value.Status;
+import cachemesh.core.cache.store.Value.Status;
 import cachemesh.grpc.cache.ValueStatus;
 import io.grpc.stub.StreamObserver;
 

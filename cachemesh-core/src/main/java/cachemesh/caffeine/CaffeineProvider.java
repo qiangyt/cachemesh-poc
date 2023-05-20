@@ -21,8 +21,8 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.types.ReflectBeanType;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.cache.bean.Value;
 import cachemesh.core.cache.local.AbstractLocalCacheProvider;
+import cachemesh.core.cache.store.Value;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;

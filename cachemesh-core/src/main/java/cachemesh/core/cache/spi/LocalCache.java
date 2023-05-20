@@ -18,8 +18,8 @@ package cachemesh.core.cache.spi;
 import javax.annotation.concurrent.ThreadSafe;
 
 import cachemesh.common.shutdown.Shutdownable;
-import cachemesh.core.cache.bean.Value;
 import cachemesh.core.cache.store.BytesStore;
+import cachemesh.core.cache.store.Value;
 import cachemesh.core.config.LocalCacheConfig;
 
 import java.util.Collection;

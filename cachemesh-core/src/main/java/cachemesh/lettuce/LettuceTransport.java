@@ -19,7 +19,7 @@ import io.lettuce.core.api.sync.RedisCommands;
 import cachemesh.common.shutdown.AbstractShutdownable;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.cache.bean.ValueResult;
+import cachemesh.core.cache.store.ValueResult;
 import cachemesh.core.cache.transport.GenericCache;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;

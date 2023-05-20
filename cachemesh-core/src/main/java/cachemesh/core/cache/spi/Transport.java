@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import cachemesh.common.shutdown.Shutdownable;
-import cachemesh.core.cache.bean.ValueResult;
+import cachemesh.core.cache.store.ValueResult;
 
 public interface Transport extends Shutdownable {
 

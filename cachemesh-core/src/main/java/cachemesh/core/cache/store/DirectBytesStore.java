@@ -18,8 +18,6 @@ package cachemesh.core.cache.store;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import cachemesh.core.cache.bean.Value;
-import cachemesh.core.cache.bean.ValueResult;
 import cachemesh.core.cache.spi.LocalCache;
 import lombok.Getter;
 

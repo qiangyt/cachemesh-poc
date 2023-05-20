@@ -22,8 +22,8 @@ import java.util.function.BiFunction;
 import lombok.Getter;
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.cache.bean.Value;
 import cachemesh.core.cache.local.AbstractLocalCache;
+import cachemesh.core.cache.store.Value;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

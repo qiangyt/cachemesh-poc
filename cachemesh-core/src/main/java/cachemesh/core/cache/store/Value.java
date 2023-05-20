@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.cache.bean;
+package cachemesh.core.cache.store;
 
 import lombok.Getter;
 

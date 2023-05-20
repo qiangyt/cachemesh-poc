@@ -18,8 +18,6 @@ package cachemesh.core.cache.store;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import cachemesh.core.cache.bean.ValueResult;
-
 public interface BytesStore {
 
     @Nullable

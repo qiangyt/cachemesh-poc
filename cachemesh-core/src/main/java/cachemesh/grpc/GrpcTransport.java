@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import cachemesh.common.shutdown.ShutdownLogger;
 import cachemesh.common.shutdown.ShutdownManager;
-import cachemesh.core.cache.bean.ValueResult;
+import cachemesh.core.cache.store.ValueResult;
 import cachemesh.core.cache.transport.GenericCache;
 import io.grpc.ManagedChannel;
 import lombok.Getter;

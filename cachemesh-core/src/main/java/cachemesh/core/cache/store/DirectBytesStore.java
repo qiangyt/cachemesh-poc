@@ -57,11 +57,14 @@ public class DirectBytesStore implements BytesStore {
     }
 
     @Override
-    public void putSingle(@Nonnull String key, @Nonnull Value<byte[]> value) {
+    public void putSingle(@Nonnull String key, @Nullable byte[] value) {
         checkNotNull(key);
         checkNotNull(value);
 
-        getCache().putSingle(key, (k, v) -> value);
+        getCache().putSingle(key, (k, oldValue) -> {
+            long ver = (oldValue == null) ? 1 : oldValue.getVersion();
+            return new Value<byte[]>(value, ver);
+        });
     }
 
     @Override

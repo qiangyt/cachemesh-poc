@@ -23,7 +23,7 @@ public interface BytesStore {
     @Nullable
     ValueResult<byte[]> getSingle(@Nonnull String key, long version);
 
-    void putSingle(@Nonnull String key, @Nonnull Value<byte[]> value);
+    void putSingle(@Nonnull String key, @Nullable byte[] value);
 
     void removeSingle(@Nonnull String key);
 

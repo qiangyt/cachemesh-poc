@@ -22,8 +22,7 @@ message CacheServiceGetSingleRequest {
 enum CacheServiceValueStatus {
 	NotFound = 0;
 	Ok = 1;
-	Null = 2;
-	NoChange = 3;
+	NoChange = 2;
 }
 
 message CacheServiceGetSingleResponse {

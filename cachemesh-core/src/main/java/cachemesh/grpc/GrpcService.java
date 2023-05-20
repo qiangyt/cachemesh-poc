@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.google.protobuf.ByteString;
 import lombok.Getter;
 import cachemesh.core.cache.local.LocalCacheManager;
+import cachemesh.core.cache.store.ValueStatus;
 import cachemesh.grpc.proto.*;
 
 import javax.annotation.Nonnull;
@@ -53,52 +54,44 @@ public class GrpcService extends CacheServiceGrpc.CacheServiceImplBase {
         checkNotNull(req);
         checkNotNull(respObserver);
 
-        var cacheName = req.getCacheName();
-        var key = req.getKey();
+        var n = req.getCacheName();
+        var k = req.getKey();
         var ver = req.getVersion();
-        var debug = LOG.isDebugEnabled();
 
+        var debug = LOG.isDebugEnabled();
         if (debug) {
-            LOG.debug("getSingle(): cache name={}, key={}, version={}", cacheName, key, ver);
+            LOG.debug("getSingle(): cache name={}, key={}, version={}", n, k, ver);
         }
 
-        var resp = CacheServiceGetSingleResponse.newBuilder();
+        var r = CacheServiceGetSingleResponse.newBuilder();
 
-        var store = getLocalCacheManager().getBytesStore(cacheName);
+        var store = getLocalCacheManager().getBytesStore(n);
         if (store == null) {
-            resp.setStatus(CacheServiceValueStatus.NotFound);
+            r.setStatus(CacheServiceValueStatus.NotFound);
         } else {
-            var value = store.getSingle(key, ver);
-            if (value == null) {
-                resp.setStatus(CacheServiceValueStatus.NotFound);
+            var v = store.getSingle(k, ver);
+            if (v == null) {
+                r.setStatus(CacheServiceValueStatus.NotFound);
             } else {
-                switch (value.getStatus()) {
-                case NULL: {
-                    resp.setStatus(CacheServiceValueStatus.Null);
-                    resp.setVersion(value.getVersion());
+                var st = v.getStatus();
+                if (st == ValueStatus.NO_CHANGE) {
+                    r.setStatus(CacheServiceValueStatus.NoChange);
+                } else if (st == ValueStatus.OK) {
+                    r.setStatus(CacheServiceValueStatus.Ok);
+
+                    var vv = v.getValue();
+                    r.setValue(ByteString.copyFrom(vv.getData()));
+                    r.setVersion(vv.getVersion());
                 }
-                    break;
-                case OK: {
-                    resp.setStatus(CacheServiceValueStatus.Ok);
-                    resp.setValue(ByteString.copyFrom(value.getData()));
-                    resp.setVersion(value.getVersion());
-                }
-                    break;
-                case NO_CHANGE: {
-                    resp.setStatus(CacheServiceValueStatus.NoChange);
-                }
-                    break;
-                default: {
-                    throw new IllegalStateException("unexpected status: " + value.getStatus());
-                }
+                throw new IllegalStateException("unexpected status: " + st);
             }
         }
 
         if (debug) {
-            LOG.debug("getSingle(): resp={}", resp);
+            LOG.debug("getSingle(): resp={}", r);
         }
 
-        GrpcHelper.complete(respObserver, resp.build());
+        GrpcHelper.complete(respObserver, r.build());
     }
 
     @Override
@@ -107,30 +100,29 @@ public class GrpcService extends CacheServiceGrpc.CacheServiceImplBase {
         checkNotNull(req);
         checkNotNull(respObserver);
 
-        var cacheName = req.getCacheName();
-        var key = req.getKey();
+        var n = req.getCacheName();
+        var k = req.getKey();
+        var reqv = req.getValue();
+        var bytev = (reqv == null) ? null : reqv.toByteArray();
+
         var debug = LOG.isDebugEnabled();
-
         if (debug) {
-            LOG.debug("putSingle(): cache name={}, key={}", cacheName, key);
+            LOG.debug("putSingle(): cache name={}, key={}, value={}", n, k, bytev);
         }
 
-        var cache = getLocalCacheManager().resolve(cacheName);
-        var store = cache.getBytesStore();
+        var r = CacheServicePutSingleResponse.newBuilder();
 
-        var reqV = req.getValue();
-        var value = (reqV == null) ? null : reqV.toByteArray();
-
-        if (value == null) {
-
-        }
-        var resp = CacheServicePutSingleResponse.newBuilder();
-
-        resp.setVersion(CacheServiceValueStatus.NotFound);
-
-        var ver = getLocalTransport().putSingle(cacheName, key, value);
+        var store = getLocalCacheManager().resolveBytesStore(n);
+        var oldv = store.getSingle(k, 0);
         if (debug) {
             LOG.debug("putSingle(): version={}", ver);
+        }
+
+        long version;
+        if (oldv == null) {
+            version = 1;
+        } else {
+            version = oldv.getValue()
         }
 
         var respBuilder = PutSingleResponse.newBuilder();

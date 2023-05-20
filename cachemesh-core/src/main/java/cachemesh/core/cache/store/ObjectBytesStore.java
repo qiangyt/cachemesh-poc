@@ -27,9 +27,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ObjectBytesStore implements BytesStore {
 
     @Nonnull
-    private final LocalCache<?> cache;
+    private final LocalCache<Object> cache;
 
-    public ObjectBytesStore(@Nonnull LocalCache<?> cache) {
+    public ObjectBytesStore(@Nonnull LocalCache<Object> cache) {
         checkNotNull(cache);
 
         this.cache = cache;
@@ -70,26 +70,23 @@ public class ObjectBytesStore implements BytesStore {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void putSingle(@Nonnull String key, @Nonnull Value<byte[]> value) {
+    public void putSingle(@Nonnull String key, @Nullable byte[] value) {
         checkNotNull(key);
-        checkNotNull(value);
 
         var c = getCache();
 
-        Value<Object> cv;
+        c.putSingle(key, (k, oldValue) -> {
+            long ver = (oldValue == null) ? 1 : oldValue.getVersion();
+            
+            if (value == null) {
+                return new Value<>(null, ver);
+            }
 
-        var dataBytes = value.getData();
-        if (dataBytes == null) {
-            cv = new Value<>(null, value.getVersion());
-        } else {
             var cfg = c.getConfig();
             var serder = cfg.getSerder().getKind().instance;
-            var data = serder.deserialize(dataBytes, cfg.getValueClass());
-            cv = new Value<>(data, value.getVersion());
-        }
-
-        ((LocalCache<Object>) c).putSingle(key, (k, v) -> cv);
+            var data = serder.deserialize(value, cfg.getValueClass());
+            return new Value<>(data, ver);
+        });
     }
 
     @Override

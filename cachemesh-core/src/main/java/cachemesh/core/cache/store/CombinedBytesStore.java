@@ -51,8 +51,8 @@ public class CombinedBytesStore implements BytesStore {
         if (dv != null && dv.getStatus() == ValueStatus.OK) {
             version = dv.getValue().getVersion();
         }
-        
-        var r = ostore.getSingle(key, version);   
+
+        var r = ostore.getSingle(key, version);
         if (r == null) {
             dstore.removeSingle(key);
             return null;

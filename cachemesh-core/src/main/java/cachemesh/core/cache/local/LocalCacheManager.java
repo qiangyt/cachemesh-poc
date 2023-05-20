@@ -127,7 +127,7 @@ public class LocalCacheManager implements ManagedShutdownable {
     }
 
     @Nonnull
-    public BytesStore resolveByteStore(@Nonnull String name) {
+    public BytesStore resolveBytesStore(@Nonnull String name) {
         checkNotNull(name);
         var c = doResolve(name);
         return c.getBytesStore();

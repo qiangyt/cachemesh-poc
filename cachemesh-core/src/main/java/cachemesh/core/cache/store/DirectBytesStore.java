@@ -27,59 +27,47 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class DirectBytesStore implements BytesStore {
 
     @Nonnull
-    private final LocalCache<byte[]> bytesCache;
+    private final LocalCache<byte[]> cache;
 
-    public DirectBytesStore(@Nonnull LocalCache<byte[]> bytesCache) {
-        checkNotNull(bytesCache);
+    public DirectBytesStore(@Nonnull LocalCache<byte[]> cache) {
+        checkNotNull(cache);
 
-        this.bytesCache = bytesCache;
+        this.cache = cache;
     }
 
     @Override
     @Nullable
-    public ValueResult getSingle(@Nonnull String key, long version) {
+    @SuppressWarnings("unchecked")
+    public ValueResult<byte[]> getSingle(@Nonnull String key, long version) {
         checkNotNull(key);
 
-        var v = getBytesCache().getSingle(key);
-        if (v == null) {
+        var cv = getCache().getSingle(key);
+        if (cv == null) {
             return null;
         }
 
-        long storedVer = v.getVersion();
+        long storedVer = cv.getVersion();
         if (version > 0) {
             if (storedVer == version) {
-                return ValueResult.NO_CHANGE;
+                return (ValueResult<byte[]>) ValueResult.NO_CHANGE;
             }
         }
 
-        if (v.isNull()) {
-            return ValueResult.Null(storedVer);
-        }
-
-        byte[] dataBytes = v.getData();
-        return ValueResult.Ok(dataBytes, storedVer);
+        return new ValueResult<>(ValueStatus.OK, cv);
     }
 
     @Override
-    public void putSingle(@Nonnull String key, @Nonnull ValueResult value) {
+    public void putSingle(@Nonnull String key, @Nonnull Value<byte[]> value) {
         checkNotNull(key);
         checkNotNull(value);
 
-        Value<byte[]> lVal;
-        if (value.isNull()) {
-            lVal = Value.Null(value.getVersion());
-        } else {
-            byte[] data = value.getData();
-            lVal = new Value<>(data, value.getVersion());
-        }
-
-        getBytesCache().putSingle(key, (k, v) -> lVal);
+        getCache().putSingle(key, (k, v) -> value);
     }
 
     @Override
     public void removeSingle(@Nonnull String key) {
         checkNotNull(key);
-        getBytesCache().invalidateSingle(key);
+        getCache().invalidateSingle(key);
     }
 
 }

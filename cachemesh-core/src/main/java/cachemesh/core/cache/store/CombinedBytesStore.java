@@ -41,43 +41,31 @@ public class CombinedBytesStore implements BytesStore {
 
     @Override
     @Nullable
-    public ValueResult getSingle(@Nonnull String key, long version) {
+    public ValueResult<byte[]> getSingle(@Nonnull String key, long version) {
         checkNotNull(key);
 
         var dstore = getDirectStore();
         var ostore = getObjectStore();
 
         var dv = dstore.getSingle(key, version);
-        if (dv == null) {
-            var ov = ostore.getSingle(key, version);
-            if (ov == null) {
-                return null;
-            }
-            dstore.putSingle(key, ov);
-            return ov;
+        if (dv != null && dv.getStatus() == ValueStatus.OK) {
+            version = dv.getValue().getVersion();
         }
-
-        if (version <= 0) {
-            version = dv.getVersion();
-        } else {
-            version = Math.max(version, dv.getVersion());
-        }
-
-        var ov = ostore.getSingle(key, version);
-        if (ov == null) {
+        
+        var r = ostore.getSingle(key, version);   
+        if (r == null) {
             dstore.removeSingle(key);
             return null;
         }
 
-        if (ov.getVersion() > dv.getVersion()) {
-            dstore.putSingle(key, ov);
+        if (r.getStatus() == ValueStatus.OK) {
+            dstore.putSingle(key, r.getValue());
         }
-
-        return ov;
+        return r;
     }
 
     @Override
-    public void putSingle(@Nonnull String key, @Nullable byte[] value[]) {
+    public void putSingle(@Nonnull String key, @Nonnull Value<byte[]> value) {
         checkNotNull(key);
 
         getObjectStore().putSingle(key, value);

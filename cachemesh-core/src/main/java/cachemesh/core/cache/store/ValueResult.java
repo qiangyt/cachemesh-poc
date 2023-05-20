@@ -23,21 +23,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import lombok.Getter;
 
 @Getter
-public class ValueResult {
+public class ValueResult<T> {
 
     @Nonnull
     private final ValueStatus status;
 
-    @Nullable
-    private final Value<byte[]> value;
+    @Nullable // null only if status is NO_CHANGE
+    private final Value<T> value;
 
-    public ValueResult(@Nonnull ValueStatus status, @Nullable Value<byte[]> value) {
+    public ValueResult(@Nonnull ValueStatus status, @Nullable Value<T> value) {
         checkNotNull(status);
 
         this.status = status;
         this.value = value;
     }
 
-    public static final ValueResult NO_CHANGE = new ValueResult(ValueStatus.NO_CHANGE, null);
+    public static final ValueResult<?> NO_CHANGE = new ValueResult<>(ValueStatus.NO_CHANGE, null);
 
 }

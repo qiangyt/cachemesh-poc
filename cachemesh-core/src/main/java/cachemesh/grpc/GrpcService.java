@@ -115,10 +115,9 @@ public class GrpcService extends CacheServiceGrpc.CacheServiceImplBase {
             LOG.debug("putSingle(): cache name={}, key={}", cacheName, key);
         }
 
-
         var cache = getLocalCacheManager().resolve(cacheName);
         var store = cache.getBytesStore();
-        
+
         var reqV = req.getValue();
         var value = (reqV == null) ? null : reqV.toByteArray();
 
@@ -128,8 +127,6 @@ public class GrpcService extends CacheServiceGrpc.CacheServiceImplBase {
         var resp = CacheServicePutSingleResponse.newBuilder();
 
         resp.setVersion(CacheServiceValueStatus.NotFound);
-        
-        
 
         var ver = getLocalTransport().putSingle(cacheName, key, value);
         if (debug) {

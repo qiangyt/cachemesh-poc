@@ -27,70 +27,75 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ObjectBytesStore implements BytesStore {
 
     @Nonnull
-    private final LocalCache<?> objectCache;
+    private final LocalCache<?> cache;
 
-    public ObjectBytesStore(@Nonnull LocalCache<?> objectCache) {
-        checkNotNull(objectCache);
+    public ObjectBytesStore(@Nonnull LocalCache<?> cache) {
+        checkNotNull(cache);
 
-        this.objectCache = objectCache;
+        this.cache = cache;
     }
 
     @Override
     @Nullable
-    public ValueResult getSingle(@Nonnull String key, long version) {
+    @SuppressWarnings("unchecked")
+    public ValueResult<byte[]> getSingle(@Nonnull String key, long version) {
         checkNotNull(key);
 
-        var oc = getObjectCache();
-        var cfg = objectCache.getConfig();
+        var c = getCache();
 
-        var v = oc.getSingle(key);
-        if (v == null) {
+        var objV = c.getSingle(key);
+        if (objV == null) {
             return null;
         }
 
-        long storedVer = v.getVersion();
+        long storeVer = objV.getVersion();
         if (version > 0) {
-            if (storedVer == version) {
-                return ValueResult.NO_CHANGE;
+            if (storeVer == version) {
+                return (ValueResult<byte[]>) ValueResult.NO_CHANGE;
             }
         }
 
-        if (v.isNull()) {
-            return ValueResult.Null(storedVer);
+        Value<byte[]> v;
+
+        var data = objV.getData();
+        if (data == null) {
+            v = new Value<>(null, storeVer);
+        } else {
+            var serder = c.getConfig().getSerder().getKind().instance;
+            var dataBytes = serder.serialize(data);
+            v = new Value<>(dataBytes, storeVer);
         }
 
-        var serder = cfg.getSerder().getKind().instance;
-
-        var data = v.getData();
-        byte[] dataBytes = serder.serialize(data);
-        return ValueResult.Ok(dataBytes, storedVer);
+        return new ValueResult<>(ValueStatus.OK, v);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void putSingle(@Nonnull String key, @Nullable ValueResult value) {
+    public void putSingle(@Nonnull String key, @Nonnull Value<byte[]> value) {
         checkNotNull(key);
         checkNotNull(value);
 
-        var oc = getObjectCache();
-        var cfg = objectCache.getConfig();
+        var c = getCache();
 
-        Value<Object> lVal;
-        if (value.getStatus() == ValueStatus.NULL) {
-            lVal = Value.Null(value.getVersion());
+        Value<Object> cv;
+
+        var dataBytes = value.getData();
+        if (dataBytes == null) {
+            cv = new Value<>(null, value.getVersion());
         } else {
+            var cfg = c.getConfig();
             var serder = cfg.getSerder().getKind().instance;
-            Object data = serder.deserialize(value.getData(), cfg.getValueClass());
-            lVal = new Value<>(data, value.getVersion());
+            var data = serder.deserialize(dataBytes, cfg.getValueClass());
+            cv = new Value<>(data, value.getVersion());
         }
 
-        ((LocalCache<Object>) oc).putSingle(key, (k, v) -> lVal);
+        ((LocalCache<Object>) c).putSingle(key, (k, v) -> cv);
     }
 
     @Override
     public void removeSingle(@Nonnull String key) {
         checkNotNull(key);
-        getObjectCache().invalidateSingle(key);
+        getCache().invalidateSingle(key);
     }
 
 }

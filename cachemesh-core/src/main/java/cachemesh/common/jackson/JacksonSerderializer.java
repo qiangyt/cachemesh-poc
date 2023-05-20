@@ -48,13 +48,13 @@ public class JacksonSerderializer implements Serderializer {
 
     @Override
     @Nullable
-    public byte[] serialize(@Nullable Object obj) {
+    public byte[] serialize(@Nonnull Object obj) {
         return this.jackson.toBytes(obj);
     }
 
     @Override
     @Nullable
-    public <T> T deserialize(@Nullable byte[] bytes, @Nonnull Class<T> clazz) {
+    public <T> T deserialize(@Nonnull byte[] bytes, @Nonnull Class<T> clazz) {
         return this.jackson.from(bytes, clazz);
     }
 

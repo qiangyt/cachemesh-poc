@@ -70,8 +70,7 @@ public class CaffeineCache<T> extends AbstractLocalCache<T, CaffeineConfig> {
 
     @Override
     @Nonnull
-    public Value<T> putSingle(@Nonnull String key,
-            @Nonnull BiFunction<String, Value<T>, Value<T>> mapper) {
+    public Value<T> putSingle(@Nonnull String key, @Nonnull BiFunction<String, Value<T>, Value<T>> mapper) {
         checkNotNull(key);
         checkNotNull(mapper);
         return this.caffeineInstance.asMap().compute(key, mapper);

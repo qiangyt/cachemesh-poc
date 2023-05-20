@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 public interface BytesStore {
 
     @Nullable
-    ValueResult getSingle(@Nonnull String key, long version);
+    ValueResult<byte[]> getSingle(@Nonnull String key, long version);
 
     void putSingle(@Nonnull String key, @Nonnull Value<byte[]> value);
 

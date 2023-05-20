@@ -72,8 +72,7 @@ public class GuavaCache<T> extends AbstractLocalCache<T, GuavaConfig> {
 
     @Override
     @Nonnull
-    public Value<T> putSingle(@Nonnull String key,
-            @Nonnull BiFunction<String, Value<T>, Value<T>> mapper) {
+    public Value<T> putSingle(@Nonnull String key, @Nonnull BiFunction<String, Value<T>, Value<T>> mapper) {
         checkNotNull(key);
         checkNotNull(mapper);
         return this.instance.asMap().compute(key, mapper);

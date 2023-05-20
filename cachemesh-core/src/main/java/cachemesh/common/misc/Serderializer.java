@@ -21,9 +21,9 @@ import javax.annotation.Nonnull;
 public interface Serderializer {
 
     @Nullable
-    byte[] serialize(@Nullable Object obj);
+    byte[] serialize(@Nonnull Object obj);
 
     @Nullable
-    <T> T deserialize(@Nullable byte[] bytes, @Nonnull Class<T> clazz);
+    <T> T deserialize(@Nonnull byte[] bytes, @Nonnull Class<T> clazz);
 
 }

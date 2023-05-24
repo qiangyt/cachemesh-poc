@@ -23,6 +23,8 @@ import lombok.Getter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.function.Function;
+
 @Getter
 public class DirectBytesStore implements BytesStore {
 
@@ -38,10 +40,11 @@ public class DirectBytesStore implements BytesStore {
     @Override
     @Nullable
     @SuppressWarnings("unchecked")
-    public ValueResult<byte[]> getSingle(@Nonnull String key, long version) {
+    public ValueResult<byte[]> getSingle(@Nonnull String key, long version,
+            @Nullable Function<String, Value<byte[]>> loader) {
         checkNotNull(key);
 
-        var cv = getCache().getSingle(key);
+        var cv = getCache().getSingle(key, loader);
         if (cv == null) {
             return null;
         }

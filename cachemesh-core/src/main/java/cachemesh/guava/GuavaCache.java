@@ -18,6 +18,7 @@ package cachemesh.guava;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import lombok.Getter;
 import cachemesh.common.shutdown.ShutdownLogger;
@@ -65,9 +66,9 @@ public class GuavaCache<T> extends AbstractLocalCache<T, GuavaConfig> {
     }
 
     @Override
-    public Value<T> getSingle(@Nonnull String key) {
+    public Value<T> getSingle(@Nonnull String key, @Nonnull Function<String, Value<T>> mapper) {
         checkNotNull(key);
-        return this.instance.getIfPresent(key);
+        return this.instance.get(key, mapper);
     }
 
     @Override

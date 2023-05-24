@@ -18,6 +18,7 @@ package cachemesh.caffeine;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import lombok.Getter;
@@ -63,9 +64,13 @@ public class CaffeineCache<T> extends AbstractLocalCache<T, CaffeineConfig> {
     }
 
     @Override
-    public Value<T> getSingle(@Nonnull String key) {
+    public Value<T> getSingle(@Nonnull String key, @Nullable Function<String, Value<T>> loader) {
         checkNotNull(key);
-        return this.caffeineInstance.getIfPresent(key);
+
+        if (loader == null) {
+            return this.caffeineInstance.getIfPresent(key);
+        }
+        return this.caffeineInstance.get(key, loader);
     }
 
     @Override

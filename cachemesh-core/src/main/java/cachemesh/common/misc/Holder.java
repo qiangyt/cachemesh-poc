@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.core.cache.store;
+package cachemesh.common.misc;
 
-import java.util.function.Function;
+public class Holder<T> {
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+    private T value;
 
-public interface BytesStore {
+    public void set(T value) {
+        this.value = value;
+    }
 
-    @Nullable
-    ValueResult<byte[]> getSingle(@Nonnull String key, long version, @Nonnull Function<String, Value<byte[]>> mapper);
-
-    void putSingle(@Nonnull String key, @Nullable byte[] value);
-
-    void removeSingle(@Nonnull String key);
+    public T get() {
+        return this.value;
+    }
 
 }

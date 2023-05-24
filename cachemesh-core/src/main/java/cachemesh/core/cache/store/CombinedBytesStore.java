@@ -18,9 +18,12 @@ package cachemesh.core.cache.store;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import cachemesh.common.misc.Holder;
 import lombok.Getter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.function.Function;
 
 @Getter
 public class CombinedBytesStore implements BytesStore {
@@ -41,20 +44,34 @@ public class CombinedBytesStore implements BytesStore {
 
     @Override
     @Nullable
-    public ValueResult<byte[]> getSingle(@Nonnull String key, long version) {
+    public ValueResult<byte[]> getSingle(@Nonnull String key, long version,
+            @Nullable Function<String, Value<byte[]>> loader) {
         checkNotNull(key);
 
         var dstore = getDirectStore();
         var ostore = getObjectStore();
 
-        var dv = dstore.getSingle(key, version);
+        var dv = dstore.getSingle(key, version, k1 -> {
+            var vholder = new Holder<Value<byte[]>>();
+            var r = ostore.getSingle(key, version, loader);
+            if (r == null) {
+                return null;
+            }
+            return r.getValue();
+        });
+
         if (dv != null && dv.getStatus() == ValueStatus.OK) {
             version = dv.getValue().getVersion();
         }
 
-        var r = ostore.getSingle(key, version);
+        var r = ostore.getSingle(key, version, k -> {
+
+            return null;
+        });
         if (r == null) {
-            dstore.removeSingle(key);
+            if (dv != null) {
+                dstore.removeSingle(key);
+            }
             return null;
         }
 
@@ -65,7 +82,7 @@ public class CombinedBytesStore implements BytesStore {
     }
 
     @Override
-    public void putSingle(@Nonnull String key, @Nonnull Value<byte[]> value) {
+    public void putSingle(@Nonnull String key, @Nullable byte[] value) {
         checkNotNull(key);
 
         getObjectStore().putSingle(key, value);

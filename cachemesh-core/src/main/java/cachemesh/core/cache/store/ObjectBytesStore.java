@@ -18,10 +18,13 @@ package cachemesh.core.cache.store;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import cachemesh.common.misc.Holder;
 import cachemesh.core.cache.spi.LocalCache;
 import lombok.Getter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.function.Function;
 
 @Getter
 public class ObjectBytesStore implements BytesStore {
@@ -38,12 +41,46 @@ public class ObjectBytesStore implements BytesStore {
     @Override
     @Nullable
     @SuppressWarnings("unchecked")
-    public ValueResult<byte[]> getSingle(@Nonnull String key, long version) {
+    public ValueResult<byte[]> getSingle(@Nonnull String key, long version,
+            @Nullable Function<String, Value<byte[]>> loader) {
         checkNotNull(key);
 
-        var c = getCache();
+        var ch = getCache();
+        var cfg = ch.getConfig();
+        var serder = cfg.getSerder().getKind().instance;
 
-        var objV = c.getSingle(key);
+        Value<Object> objV;
+
+        if (loader == null) {
+            objV = ch.getSingle(key, null);
+        } else {
+            var vholder = new Holder<Value<byte[]>>();
+            objV = ch.getSingle(key, k -> {
+                var v = loader.apply(k);
+                if (v == null) {
+                    return null;
+                }
+                vholder.set(v);
+
+                Value<Object> newObjV;
+
+                var newBytes = v.getData();
+                if (newBytes == null) {
+                    newObjV = new Value<>(null, v.getVersion());
+                } else {
+                    var newObj = serder.deserialize(newBytes, cfg.getValueClass());
+                    newObjV = new Value<>(newObj, v.getVersion());
+                }
+
+                return newObjV;
+            });
+
+            var v = vholder.get();
+            if (v != null) {
+                return new ValueResult<>(ValueStatus.OK, v);
+            }
+        }
+
         if (objV == null) {
             return null;
         }
@@ -61,7 +98,6 @@ public class ObjectBytesStore implements BytesStore {
         if (data == null) {
             v = new Value<>(null, storeVer);
         } else {
-            var serder = c.getConfig().getSerder().getKind().instance;
             var dataBytes = serder.serialize(data);
             v = new Value<>(dataBytes, storeVer);
         }
@@ -77,7 +113,7 @@ public class ObjectBytesStore implements BytesStore {
 
         c.putSingle(key, (k, oldValue) -> {
             long ver = (oldValue == null) ? 1 : oldValue.getVersion();
-            
+
             if (value == null) {
                 return new Value<>(null, ver);
             }

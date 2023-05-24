@@ -25,6 +25,7 @@ import cachemesh.core.config.LocalCacheConfig;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,7 +46,7 @@ public interface LocalCache<T> extends Shutdownable {
     void invalidateMultiple(@Nonnull Collection<String> keys);
 
     @Nullable
-    Value<T> getSingle(@Nonnull String key);
+    Value<T> getSingle(@Nonnull String key, @Nullable Function<String, Value<T>> loader);
 
     @Nonnull
     Map<String, Value<T>> getMultiple(@Nonnull Collection<String> keys);

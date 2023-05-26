@@ -17,13 +17,13 @@ package cachemesh.common.config.types;
 
 import java.util.HashMap;
 import java.util.Map;
+import static java.util.Objects.requireNonNull;
 
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
 
 @Getter
 public class MapType<T> extends ContainerType<Map<String, T>, T> {
@@ -54,7 +54,7 @@ public class MapType<T> extends ContainerType<Map<String, T>, T> {
 
     @Nonnull
     public static <E> MapType<E> of(@Nonnull Type<E> elementType) {
-        checkNotNull(elementType);
+        requireNonNull(elementType);
 
         return new MapType<>(elementType);
     }

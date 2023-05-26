@@ -17,6 +17,7 @@ package cachemesh.common.config.types;
 
 import java.util.ArrayList;
 import java.util.List;
+import static java.util.Objects.requireNonNull;
 
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
@@ -24,7 +25,6 @@ import cachemesh.common.config.suppport.ConfigHelper;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
 
 @Getter
 public class ListType<T> extends ContainerType<List<T>, T> {
@@ -57,7 +57,7 @@ public class ListType<T> extends ContainerType<List<T>, T> {
 
     @Nonnull
     public static <E> ListType<E> of(@Nonnull Type<E> elementType) {
-        checkNotNull(elementType);
+        requireNonNull(elementType);
 
         return new ListType<>(elementType);
     }

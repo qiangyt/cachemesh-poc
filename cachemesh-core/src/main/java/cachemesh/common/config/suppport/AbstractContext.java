@@ -22,10 +22,9 @@ import cachemesh.common.config.Path;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
-
+import static java.util.Objects.requireNonNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import static com.google.common.base.Preconditions.*;
 
 @Getter
 public abstract class AbstractContext implements ConfigContext {
@@ -41,9 +40,9 @@ public abstract class AbstractContext implements ConfigContext {
 
     public AbstractContext(@Nonnull ClassCache classCache, @Nonnull TypeRegistry typeRegistry,
             @Nonnull Map<String, Object> rootValue) {
-        this.classCache = checkNotNull(classCache);
-        this.typeRegistry = checkNotNull(typeRegistry);
-        this.rootValue = checkNotNull(rootValue);
+        this.classCache = requireNonNull(classCache);
+        this.typeRegistry = requireNonNull(typeRegistry);
+        this.rootValue = requireNonNull(rootValue);
     }
 
     @Override

@@ -26,7 +26,7 @@ import cachemesh.common.misc.LogHelper;
 import lombok.Getter;
 import lombok.Setter;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 public class ShutdownLogger {
 
@@ -44,7 +44,7 @@ public class ShutdownLogger {
     }
 
     public ShutdownLogger(@Nonnull Logger logger) {
-        this.logger = checkNotNull(logger);
+        this.logger = requireNonNull(logger);
     }
 
     public String getName() {
@@ -52,8 +52,8 @@ public class ShutdownLogger {
     }
 
     public void info(@Nonnull String msgFormat, @Nonnull Object... args) {
-        checkNotNull(msgFormat);
-        checkNotNull(args);
+        requireNonNull(msgFormat);
+        requireNonNull(args);
 
         String msg = String.format(msgFormat, args);
 
@@ -66,9 +66,9 @@ public class ShutdownLogger {
     }
 
     public void error(@Nonnull Throwable cause, @Nonnull String msgFormat, @Nonnull Object... args) {
-        checkNotNull(cause);
-        checkNotNull(msgFormat);
-        checkNotNull(args);
+        requireNonNull(cause);
+        requireNonNull(msgFormat);
+        requireNonNull(args);
 
         String msg = String.format(msgFormat, args);
 

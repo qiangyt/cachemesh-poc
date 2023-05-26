@@ -16,7 +16,8 @@
 package cachemesh.common.config;
 
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+
+import static java.util.Objects.requireNonNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,26 +39,26 @@ public class ConfigEventHub {// implements SubscriberExceptionHandler {
     }
 
     public ConfigEventHub(@Nonnull EventBus bus) {
-        checkNotNull(bus);
+        requireNonNull(bus);
 
         this.bus = bus;
         this.log = LoggerFactory.getLogger(getBus().identifier());
     }
 
     public void register(@Nonnull ConfigEventListener listener) {
-        checkNotNull(listener);
+        requireNonNull(listener);
 
         getBus().register(listener);
     }
 
     public void unregister(@Nonnull ConfigEventListener listener) {
-        checkNotNull(listener);
+        requireNonNull(listener);
 
         getBus().unregister(listener);
     }
 
     public <T> void post(@Nonnull ConfigEvent<T> event) {
-        checkNotNull(event);
+        requireNonNull(event);
 
         getBus().unregister(event);
     }

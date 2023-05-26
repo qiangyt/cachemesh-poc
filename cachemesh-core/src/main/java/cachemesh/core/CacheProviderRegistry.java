@@ -13,32 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config.suppport;
+package cachemesh.core;
 
-import cachemesh.common.config.Property;
-import cachemesh.common.config.Type;
-import lombok.Getter;
+import cachemesh.common.registry.Registry;
+import cachemesh.core.spi.CacheProvider;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import static java.util.Objects.requireNonNull;
 
-@Getter
-public abstract class AbstractProperty<B, T> implements Property<B, T> {
+public class CacheProviderRegistry extends Registry<String, CacheProvider> {
 
+    public static final CacheProviderRegistry DEFAULT = new CacheProviderRegistry();
+
+    @Override
     @Nonnull
-    private final String name;
-
-    @Nonnull
-    private final Type<T> type;
-
-    @Nullable
-    private final T devault;
-
-    public AbstractProperty(@Nonnull String name, @Nonnull Type<T> type, @Nullable T devault) {
-        this.name = requireNonNull(name);
-        this.type = requireNonNull(type);
-        this.devault = devault;
+    public String getValueName() {
+        return "local cache provider";
     }
 
 }

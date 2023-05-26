@@ -17,6 +17,7 @@ package cachemesh.common.config.types;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
+import static java.util.Objects.requireNonNull;
 
 import javax.annotation.Nonnull;
 
@@ -24,7 +25,6 @@ import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
 import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.config.suppport.ConfigHelper;
-import static com.google.common.base.Preconditions.*;
 
 public class ArrayType<T> extends ContainerType<T[], T> {
 
@@ -64,8 +64,8 @@ public class ArrayType<T> extends ContainerType<T[], T> {
 
     @Nonnull
     public static <E> ArrayType<E> of(@Nonnull TypeRegistry registry, @Nonnull Class<E[]> klass) {
-        checkNotNull(registry);
-        checkNotNull(klass);
+        requireNonNull(registry);
+        requireNonNull(klass);
         return new ArrayType<>(registry, klass);
     }
 

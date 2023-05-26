@@ -16,6 +16,7 @@
 package cachemesh.common.config.types;
 
 import java.util.Map;
+import static java.util.Objects.requireNonNull;
 
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Property;
@@ -26,8 +27,6 @@ import lombok.Getter;
 import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableMap;
-
-import static com.google.common.base.Preconditions.*;
 
 @Getter
 public abstract class DynamicBeanType<T> extends BeanType<T> {
@@ -40,7 +39,7 @@ public abstract class DynamicBeanType<T> extends BeanType<T> {
 
     public DynamicBeanType(@Nonnull TypeRegistry typeRegistry, @Nonnull Class<T> klass) {
         super(klass);
-        this.typeRegistry = checkNotNull(typeRegistry);
+        this.typeRegistry = requireNonNull(typeRegistry);
     }
 
     @Nonnull
@@ -62,8 +61,8 @@ public abstract class DynamicBeanType<T> extends BeanType<T> {
     @Override
     @Nonnull
     public T newInstance(@Nonnull ConfigContext ctx, @Nonnull Object kind) {
-        checkNotNull(ctx);
-        checkNotNull(kind);
+        requireNonNull(ctx);
+        requireNonNull(kind);
 
         var type = determineConcreteType(ctx, kind);
         return type.newInstance(ctx, kind);
@@ -71,8 +70,8 @@ public abstract class DynamicBeanType<T> extends BeanType<T> {
 
     @Nonnull
     public BeanType<? extends T> determineConcreteType(@Nonnull ConfigContext ctx, @Nonnull Object kind) {
-        checkNotNull(ctx);
-        checkNotNull(kind);
+        requireNonNull(ctx);
+        requireNonNull(kind);
 
         var r = getMapping().get(kind);
         if (r == null) {
@@ -84,8 +83,8 @@ public abstract class DynamicBeanType<T> extends BeanType<T> {
     @Override
     @Nonnull
     public Map<String, Property<?, ?>> getProperties(@Nonnull ConfigContext ctx, @Nonnull Object kind) {
-        checkNotNull(ctx);
-        checkNotNull(kind);
+        requireNonNull(ctx);
+        requireNonNull(kind);
 
         var type = determineConcreteType(ctx, kind);
         return type.getProperties(ctx, kind);

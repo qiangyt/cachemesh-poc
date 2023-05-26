@@ -16,6 +16,7 @@
 package cachemesh.common.config;
 
 import java.util.ArrayList;
+import static java.util.Objects.requireNonNull;
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.*;
@@ -142,7 +143,7 @@ public class Path {
 
     private Path(@Nullable Path parent, @Nonnull String name) {
         this.parent = parent;
-        this.name = checkNotNull(name);
+        this.name = requireNonNull(name);
 
         if (parent == null) {
             this.absolute = isRoot();
@@ -256,8 +257,8 @@ public class Path {
 
     @Nonnull
     public static Path of(@Nonnull Path current, @Nonnull String path) {
-        checkNotNull(current);
-        checkNotNull(path);
+        requireNonNull(current);
+        requireNonNull(path);
 
         int len = path.length();
 

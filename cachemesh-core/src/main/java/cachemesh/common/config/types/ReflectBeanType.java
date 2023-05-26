@@ -17,6 +17,7 @@ package cachemesh.common.config.types;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
+import static java.util.Objects.requireNonNull;
 
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Property;
@@ -28,7 +29,6 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
 
 public class ReflectBeanType<T> extends BeanType<T> {
 
@@ -43,14 +43,14 @@ public class ReflectBeanType<T> extends BeanType<T> {
             @Nonnull Map<String, Property<T, ?>> properties) {
         super(klass);
 
-        this.ctor = checkNotNull(ctor);
-        this.properties = ImmutableMap.copyOf(checkNotNull(properties));
+        this.ctor = requireNonNull(ctor);
+        this.properties = ImmutableMap.copyOf(requireNonNull(properties));
     }
 
     @Override
     @Nonnull
     public T newInstance(@Nonnull ConfigContext ctx, @Nullable Object kind) {
-        checkNotNull(ctx);
+        requireNonNull(ctx);
 
         return Reflect.newInstance(getCtor());
     }
@@ -58,8 +58,8 @@ public class ReflectBeanType<T> extends BeanType<T> {
     @SuppressWarnings("unchecked")
     @Nonnull
     public static <T> BeanType<T> of(@Nonnull TypeRegistry typeRegistry, @Nonnull Class<T> klass) {
-        checkNotNull(typeRegistry);
-        checkNotNull(klass);
+        requireNonNull(typeRegistry);
+        requireNonNull(klass);
 
         return (BeanType<T>) typeRegistry.resolve(klass, k -> {
             var props = ReflectProperty.of(typeRegistry, klass);

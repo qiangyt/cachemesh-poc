@@ -19,13 +19,13 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import static java.util.Objects.requireNonNull;
 
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Property;
 import cachemesh.common.config.suppport.AbstractType;
 import cachemesh.common.config.suppport.ConfigHelper;
 import cachemesh.common.err.BadValueException;
-import static com.google.common.base.Preconditions.*;
 import lombok.Getter;
 
 @Getter
@@ -36,7 +36,7 @@ public abstract class BeanType<T> extends AbstractType<T> {
     private final Class<T> klass;
 
     public BeanType(@Nonnull Class<T> klass) {
-        this.klass = checkNotNull(klass);
+        this.klass = requireNonNull(klass);
     }
 
     @Override
@@ -58,9 +58,9 @@ public abstract class BeanType<T> extends AbstractType<T> {
     @SuppressWarnings("unchecked")
     public void populate(@Nonnull ConfigContext ctx, @Nonnull T bean, @Nullable Object kind,
             @Nonnull Map<String, Object> propValues) {
-        checkNotNull(ctx);
-        checkNotNull(bean);
-        checkNotNull(propValues);
+        requireNonNull(ctx);
+        requireNonNull(bean);
+        requireNonNull(propValues);
 
         var props = getProperties(ctx, kind);
 

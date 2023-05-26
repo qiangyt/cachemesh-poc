@@ -16,6 +16,7 @@
 package cachemesh.common.config.suppport;
 
 import java.util.ArrayList;
+import static java.util.Objects.requireNonNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,7 +24,6 @@ import javax.annotation.Nullable;
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
 import cachemesh.common.err.BadValueException;
-import static com.google.common.base.Preconditions.*;
 
 public abstract class AbstractType<T> implements Type<T> {
 
@@ -62,7 +62,7 @@ public abstract class AbstractType<T> implements Type<T> {
     @SuppressWarnings("unchecked")
     @Nullable
     public T convert(@Nonnull ConfigContext ctx, @Nullable Object value) {
-        checkNotNull(ctx);
+        requireNonNull(ctx);
 
         if (value == null) {
             return null;
@@ -100,8 +100,8 @@ public abstract class AbstractType<T> implements Type<T> {
 
     @Nonnull
     public BadValueException badValueClassError(@Nonnull ConfigContext ctx, @Nonnull Class<?> actual) {
-        checkNotNull(ctx);
-        checkNotNull(actual);
+        requireNonNull(ctx);
+        requireNonNull(actual);
 
         var expected = new ArrayList<Class<?>>();
         expected.add(getKlass());

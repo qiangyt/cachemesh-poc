@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 import java.util.Map;
 
@@ -66,8 +66,8 @@ public abstract class Registry<KIND, VALUE> {
     }
 
     public void register(@Nonnull KIND kind, @Nonnull VALUE value) {
-        checkNotNull(kind);
-        checkNotNull(value);
+        requireNonNull(kind);
+        requireNonNull(value);
 
         getLocalMap().compute(kind, (k, existing) -> {
             if (existing != null) {
@@ -79,8 +79,8 @@ public abstract class Registry<KIND, VALUE> {
 
     @Nonnull
     public VALUE resolve(@Nonnull KIND kind, @Nonnull Function<KIND, VALUE> creator) {
-        checkNotNull(kind);
-        checkNotNull(creator);
+        requireNonNull(kind);
+        requireNonNull(creator);
 
         var p = getParent();
         if (p != null) {
@@ -95,14 +95,14 @@ public abstract class Registry<KIND, VALUE> {
 
     @Nullable
     public VALUE unregister(@Nonnull KIND kind) {
-        checkNotNull(kind);
+        requireNonNull(kind);
 
         return getLocalMap().remove(kind);
     }
 
     @Nonnull
     public VALUE load(@Nonnull KIND kind) {
-        checkNotNull(kind);
+        requireNonNull(kind);
 
         VALUE r = get(kind);
         if (r == null) {
@@ -113,7 +113,7 @@ public abstract class Registry<KIND, VALUE> {
 
     @Nullable
     public VALUE get(@Nonnull KIND kind) {
-        checkNotNull(kind);
+        requireNonNull(kind);
 
         var p = getParent();
         if (p != null) {

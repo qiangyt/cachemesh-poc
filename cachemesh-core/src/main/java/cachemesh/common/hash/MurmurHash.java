@@ -14,7 +14,7 @@ package cachemesh.common.hash;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Copy of github.com/redis/jedis: redis.clients.jedis.util.MurmurHash
@@ -58,7 +58,7 @@ public class MurmurHash implements Hashing {
      * @return The 32-bit hash of the data in question.
      */
     public static int hash(@Nonnull byte[] data, int offset, int length, int seed) {
-        checkNotNull(data);
+        requireNonNull(data);
 
         return hash(ByteBuffer.wrap(data, offset, length), seed);
     }
@@ -74,7 +74,7 @@ public class MurmurHash implements Hashing {
      * @return The 32 bit murmur hash of the bytes in the buffer.
      */
     public static int hash(@Nonnull ByteBuffer buf, int seed) {
-        checkNotNull(buf);
+        requireNonNull(buf);
 
         // save byte order for later restoration
         ByteOrder byteOrder = buf.order();
@@ -115,19 +115,19 @@ public class MurmurHash implements Hashing {
     }
 
     public static long hash64A(@Nonnull byte[] data, int seed) {
-        checkNotNull(data);
+        requireNonNull(data);
 
         return hash64A(ByteBuffer.wrap(data), seed);
     }
 
     public static long hash64A(@Nonnull byte[] data, int offset, int length, int seed) {
-        checkNotNull(data);
+        requireNonNull(data);
 
         return hash64A(ByteBuffer.wrap(data, offset, length), seed);
     }
 
     public static long hash64A(@Nonnull ByteBuffer buf, int seed) {
-        checkNotNull(buf);
+        requireNonNull(buf);
 
         ByteOrder byteOrder = buf.order();
         buf.order(ByteOrder.LITTLE_ENDIAN);
@@ -168,13 +168,13 @@ public class MurmurHash implements Hashing {
 
     @Override
     public long hash(@Nonnull byte[] key) {
-        checkNotNull(key);
+        requireNonNull(key);
         return hash64A(key, 0x1234ABCD);
     }
 
     @Override
     public long hash(@Nonnull ByteBuffer buf) {
-        checkNotNull(buf);
+        requireNonNull(buf);
         return hash(buf, 0x1234ABCD);
     }
 

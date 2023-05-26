@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import cachemesh.common.err.BadValueException;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 public class ClassCache {
 
@@ -39,7 +39,7 @@ public class ClassCache {
 
     @Nonnull
     public Class<?> resolve(@Nonnull String className) {
-        checkNotNull(className);
+        requireNonNull(className);
 
         return this.cache.computeIfAbsent(className, key -> {
             try {

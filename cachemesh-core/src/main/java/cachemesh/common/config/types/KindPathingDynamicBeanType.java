@@ -16,6 +16,7 @@
 package cachemesh.common.config.types;
 
 import java.util.Map;
+import static java.util.Objects.requireNonNull;
 
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Path;
@@ -24,8 +25,6 @@ import cachemesh.common.err.BadStateException;
 import lombok.Getter;
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
-
 @Getter
 public abstract class KindPathingDynamicBeanType<T> extends DynamicBeanType<T> {
 
@@ -39,15 +38,15 @@ public abstract class KindPathingDynamicBeanType<T> extends DynamicBeanType<T> {
             @Nonnull Path kindPath, @Nullable Object defaultKind) {
         super(typeRegistry, klass);
 
-        this.kindPath = checkNotNull(kindPath);
+        this.kindPath = requireNonNull(kindPath);
         this.defaultKind = defaultKind;
     }
 
     @Override
     @Nonnull
     public Object extractKind(@Nonnull ConfigContext ctx, @Nonnull Map<String, Object> propValues) {
-        checkNotNull(ctx);
-        checkNotNull(propValues);
+        requireNonNull(ctx);
+        requireNonNull(propValues);
 
         var r = ctx.getValue(getKindPath());
         if (r == null) {

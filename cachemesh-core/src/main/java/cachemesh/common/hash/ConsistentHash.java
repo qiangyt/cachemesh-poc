@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 import cachemesh.common.err.BadValueException;
 
@@ -28,7 +28,7 @@ public class ConsistentHash<T extends HasKey> {
         private final long hash;
 
         public VirtualNode(@Nonnull T realNode, int index, @Nonnull String key, long hash) {
-            this.realNode = checkNotNull(realNode);
+            this.realNode = requireNonNull(realNode);
             this.index = index;
             this.key = key;
             this.hash = hash;
@@ -65,14 +65,14 @@ public class ConsistentHash<T extends HasKey> {
     }
 
     public void join(@Nonnull List<T> nodes) {
-        checkNotNull(nodes);
+        requireNonNull(nodes);
 
         LOG.info("got {} nodes to join", nodes.size());
         nodes.forEach(this::join);
     }
 
     public void join(@Nonnull T node) {
-        checkNotNull(node);
+        requireNonNull(node);
 
         boolean debug = LOG.isDebugEnabled();
 
@@ -110,7 +110,7 @@ public class ConsistentHash<T extends HasKey> {
 
     @Nullable
     public VirtualNode<T> virtualNodeFor(@Nonnull String key) {
-        checkNotNull(key);
+        requireNonNull(key);
 
         long h = hash(key);
         return key != null ? virtualNodeFor(h) : null;
@@ -132,7 +132,7 @@ public class ConsistentHash<T extends HasKey> {
 
     @Nullable
     public T findNode(String key) {
-        checkNotNull(key);
+        requireNonNull(key);
 
         long hash = hash(key);
         var virtualNode = virtualNodeFor(hash);

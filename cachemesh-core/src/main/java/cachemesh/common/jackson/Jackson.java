@@ -35,7 +35,7 @@ import cachemesh.common.misc.StringHelper;
 import lombok.Getter;
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 @Getter
 @ThreadSafe
@@ -47,7 +47,7 @@ public class Jackson {
     public final ObjectMapper mapper;
 
     public Jackson(@Nonnull ObjectMapper mapper) {
-        this.mapper = checkNotNull(mapper);
+        this.mapper = requireNonNull(mapper);
     }
 
     @Nonnull
@@ -58,7 +58,7 @@ public class Jackson {
     }
 
     public static void initDefaultMapper(@Nonnull ObjectMapper mapper) {
-        checkNotNull(mapper);
+        requireNonNull(mapper);
 
         var dateModule = new SimpleModule();
         dateModule.addSerializer(Date.class, new DateSerializer());
@@ -74,7 +74,7 @@ public class Jackson {
 
     @Nullable
     public <T> T from(@Nullable String text, @Nonnull Class<T> clazz) {
-        checkNotNull(clazz);
+        requireNonNull(clazz);
 
         if (StringHelper.isBlank(text)) {
             return null;
@@ -89,7 +89,7 @@ public class Jackson {
 
     @Nullable
     public <T> T from(@Nullable ByteString buf, @Nonnull Class<T> clazz) {
-        checkNotNull(clazz);
+        requireNonNull(clazz);
 
         if (buf == null) {
             return null;
@@ -104,7 +104,7 @@ public class Jackson {
 
     @Nullable
     public <T> T from(@Nullable ByteBuffer buf, @Nonnull Class<T> clazz) {
-        checkNotNull(clazz);
+        requireNonNull(clazz);
 
         if (buf == null) {
             return null;
@@ -126,7 +126,7 @@ public class Jackson {
 
     @Nullable
     public <T> T from(@Nullable byte[] bytes, @Nonnull Class<T> clazz) {
-        checkNotNull(clazz);
+        requireNonNull(clazz);
 
         if (bytes == null) {
             return null;
@@ -141,7 +141,7 @@ public class Jackson {
 
     @Nullable
     public <T> T from(@Nullable String text, @Nonnull TypeReference<T> typeReference) {
-        checkNotNull(typeReference);
+        requireNonNull(typeReference);
 
         if (StringHelper.isBlank(text)) {
             return null;
@@ -156,7 +156,7 @@ public class Jackson {
 
     @Nullable
     public <T> T from(@Nullable ByteString buf, @Nonnull TypeReference<T> typeReference) {
-        checkNotNull(typeReference);
+        requireNonNull(typeReference);
 
         if (buf == null) {
             return null;
@@ -171,7 +171,7 @@ public class Jackson {
 
     @Nullable
     public <T> T from(@Nullable ByteBuffer buf, @Nonnull TypeReference<T> typeReference) {
-        checkNotNull(typeReference);
+        requireNonNull(typeReference);
 
         if (buf == null) {
             return null;
@@ -193,7 +193,7 @@ public class Jackson {
 
     @Nullable
     public <T> T from(@Nullable byte[] bytes, @Nonnull TypeReference<T> typeReference) {
-        checkNotNull(typeReference);
+        requireNonNull(typeReference);
 
         if (bytes == null) {
             return null;

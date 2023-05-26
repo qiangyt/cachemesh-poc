@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 import cachemesh.common.err.BadStateException;
 
@@ -41,25 +41,25 @@ public class ShutdownManager {
     private final ShutdownLogger logger = new ShutdownLogger(ShutdownManager.class, "default");
 
     public void register(@Nonnull ManagedShutdownable target) {
-        checkNotNull(target);
+        requireNonNull(target);
 
         register(target, DEFAULT_TIMEOUT_SECONDS);
     }
 
     public void register(@Nonnull Iterable<? extends ManagedShutdownable> targets) {
-        checkNotNull(targets);
+        requireNonNull(targets);
 
         targets.forEach(this::register);
     }
 
     public void register(@Nonnull Iterable<? extends ManagedShutdownable> targets, int timeoutSeconds) {
-        checkNotNull(targets);
+        requireNonNull(targets);
 
         targets.forEach(target -> register(target, timeoutSeconds));
     }
 
     public void register(@Nonnull ManagedShutdownable target, int timeoutSeconds) {
-        checkNotNull(target);
+        requireNonNull(target);
         var name = target.getName();
 
         this.items.compute(name, (k, existing) -> {
@@ -75,7 +75,7 @@ public class ShutdownManager {
     }
 
     public void unregister(@Nonnull ManagedShutdownable target) {
-        checkNotNull(target);
+        requireNonNull(target);
         var name = target.getName();
 
         this.items.compute(name, (k, existing) -> {
@@ -131,7 +131,7 @@ public class ShutdownManager {
     }
 
     public void shutdown(@Nonnull ManagedShutdownable target, int timeoutSeconds) {
-        checkNotNull(target);
+        requireNonNull(target);
 
         String name = target.getName();
         if (target.isShutdownNeeded() == false) {

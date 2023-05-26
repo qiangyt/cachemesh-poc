@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import cachemesh.common.err.BadStateException;
 import lombok.Getter;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 @Getter
 public class LifeStage {
@@ -47,13 +47,13 @@ public class LifeStage {
     }
 
     public LifeStage(@Nonnull String hintKey, @Nonnull String hintValue, @Nonnull Logger logger) {
-        this.hintKey = checkNotNull(hintKey);
-        this.hintValue = checkNotNull(hintValue);
-        this.logger = checkNotNull(logger);
+        this.hintKey = requireNonNull(hintKey);
+        this.hintValue = requireNonNull(hintValue);
+        this.logger = requireNonNull(logger);
     }
 
     public void expect(@Nonnull Stage expectedType) {
-        checkNotNull(expectedType);
+        requireNonNull(expectedType);
 
         var t = getStage();
         if (t != expectedType) {
@@ -63,7 +63,7 @@ public class LifeStage {
     }
 
     public void expectNot(@Nonnull Stage... expectedTypes) {
-        checkNotNull(expectedTypes);
+        requireNonNull(expectedTypes);
 
         var t = getStage();
         for (var expectedType : expectedTypes) {
@@ -90,8 +90,8 @@ public class LifeStage {
     }
 
     public void step(@Nonnull Stage current, @Nonnull Stage next) {
-        checkNotNull(current);
-        checkNotNull(next);
+        requireNonNull(current);
+        requireNonNull(next);
 
         expect(current);
         getLogger().info(next.name());

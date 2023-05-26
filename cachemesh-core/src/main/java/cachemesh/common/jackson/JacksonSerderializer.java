@@ -22,7 +22,7 @@ import cachemesh.common.misc.Serderializer;
 import lombok.Getter;
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 @Getter
 public class JacksonSerderializer implements Serderializer {
@@ -42,8 +42,8 @@ public class JacksonSerderializer implements Serderializer {
     }
 
     public JacksonSerderializer(@Nonnull Jackson jackson, @Nonnull Charset charset) {
-        this.jackson = checkNotNull(jackson);
-        this.charset = checkNotNull(charset);
+        this.jackson = requireNonNull(jackson);
+        this.charset = requireNonNull(charset);
     }
 
     @Override

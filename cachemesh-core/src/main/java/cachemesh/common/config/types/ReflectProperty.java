@@ -40,7 +40,7 @@ import cachemesh.common.misc.Reflect;
 import lombok.Getter;
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 @Getter
 public class ReflectProperty<B, T> extends AbstractProperty<B, T> {
@@ -54,8 +54,8 @@ public class ReflectProperty<B, T> extends AbstractProperty<B, T> {
     protected ReflectProperty(@Nonnull String name, @Nonnull Type<T> fieldType, @Nullable T devault,
             @Nonnull Method getter, @Nonnull Method setter) {
         super(name, fieldType, devault);
-        this.getter = checkNotNull(getter);
-        this.setter = checkNotNull(setter);
+        this.getter = requireNonNull(getter);
+        this.setter = requireNonNull(setter);
     }
 
     @Override
@@ -72,8 +72,8 @@ public class ReflectProperty<B, T> extends AbstractProperty<B, T> {
     @SuppressWarnings("unchecked")
     @Nonnull
     public static <B> Map<String, Property<B, ?>> of(@Nonnull TypeRegistry typeRegistry, @Nonnull Class<B> klass) {
-        checkNotNull(typeRegistry);
-        checkNotNull(klass);
+        requireNonNull(typeRegistry);
+        requireNonNull(klass);
 
         var r = new HashMap<String, Property<B, ?>>();
 
@@ -90,8 +90,8 @@ public class ReflectProperty<B, T> extends AbstractProperty<B, T> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Nonnull
     public static ReflectProperty<?, ?> of(@Nonnull TypeRegistry typeRegistry, @Nonnull Field field) {
-        checkNotNull(typeRegistry);
-        checkNotNull(field);
+        requireNonNull(typeRegistry);
+        requireNonNull(field);
 
         String propName = null;
         String setterName = null;
@@ -140,8 +140,8 @@ public class ReflectProperty<B, T> extends AbstractProperty<B, T> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Nullable
     static <T> Object defaultValue(@Nonnull Field field, @Nonnull Type<T> fType) {
-        checkNotNull(field);
-        checkNotNull(fType);
+        requireNonNull(field);
+        requireNonNull(fType);
 
         Class<T> fClass = (Class<T>) field.getType();
 

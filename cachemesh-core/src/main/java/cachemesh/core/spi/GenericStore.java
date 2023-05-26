@@ -13,32 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config.suppport;
-
-import cachemesh.common.config.Property;
-import cachemesh.common.config.Type;
-import lombok.Getter;
+package cachemesh.core.spi;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import static java.util.Objects.requireNonNull;
 
-@Getter
-public abstract class AbstractProperty<B, T> implements Property<B, T> {
+import cachemesh.core.bean.ValueResult;
+import cachemesh.core.config.CacheConfig;
 
-    @Nonnull
-    private final String name;
+public interface GenericStore<T> {
 
-    @Nonnull
-    private final Type<T> type;
+    @Nonnull CacheConfig getConfig();
 
-    @Nullable
-    private final T devault;
+    @Nullable ValueResult<T> getSingle(@Nonnull String key, long version, @Nullable ValueLoader loader);
 
-    public AbstractProperty(@Nonnull String name, @Nonnull Type<T> type, @Nullable T devault) {
-        this.name = requireNonNull(name);
-        this.type = requireNonNull(type);
-        this.devault = devault;
-    }
+    void putSingle(@Nonnull String key, @Nullable T value);
+
+    void removeSingle(@Nonnull String key);
 
 }

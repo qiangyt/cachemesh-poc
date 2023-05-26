@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 import cachemesh.common.err.BadStateException;
 
@@ -28,7 +28,7 @@ public class Reflect {
 
     @Nonnull
     public static String propertyName(@Nonnull Field field, @Nullable String propertyName) {
-        checkNotNull(field);
+        requireNonNull(field);
 
         if (StringHelper.isBlank(propertyName)) {
             propertyName = field.getName().toLowerCase();
@@ -38,7 +38,7 @@ public class Reflect {
 
     @Nonnull
     public static <T> Constructor<T> defaultConstructor(@Nonnull Class<T> klass) {
-        checkNotNull(klass);
+        requireNonNull(klass);
 
         Constructor<T> r;
         try {
@@ -52,7 +52,7 @@ public class Reflect {
 
     @Nonnull
     public static <T> T newInstance(@Nonnull Constructor<T> ctor) {
-        checkNotNull(ctor);
+        requireNonNull(ctor);
 
         try {
             return ctor.newInstance();
@@ -63,8 +63,8 @@ public class Reflect {
 
     @Nonnull
     public static <T> T newInstance(@Nonnull Constructor<T> ctor, @Nonnull Object... args) {
-        checkNotNull(ctor);
-        checkNotNull(args);
+        requireNonNull(ctor);
+        requireNonNull(args);
 
         try {
             return ctor.newInstance(args);
@@ -76,8 +76,8 @@ public class Reflect {
     @SuppressWarnings("unchecked")
     @Nullable
     public static <T> T get(@Nonnull Method getter, @Nonnull Object object) {
-        checkNotNull(getter);
-        checkNotNull(object);
+        requireNonNull(getter);
+        requireNonNull(object);
 
         try {
             return (T) getter.invoke(object);
@@ -88,8 +88,8 @@ public class Reflect {
 
     @Nonnull
     public static void set(@Nonnull Method setter, @Nonnull Object object, @Nullable Object value) {
-        checkNotNull(setter);
-        checkNotNull(object);
+        requireNonNull(setter);
+        requireNonNull(object);
 
         try {
             setter.invoke(object, value);
@@ -100,9 +100,9 @@ public class Reflect {
 
     @Nullable
     public static Method method(@Nonnull Class<?> klass, @Nonnull String name, @Nonnull Class<?>... paramTypes) {
-        checkNotNull(klass);
-        checkNotNull(name);
-        checkNotNull(paramTypes);
+        requireNonNull(klass);
+        requireNonNull(name);
+        requireNonNull(paramTypes);
 
         try {
             return klass.getMethod(name, paramTypes);
@@ -114,9 +114,9 @@ public class Reflect {
     @Nonnull
     public static Method setter(@Nonnull Class<?> beanClass, @Nonnull String propName, @Nonnull Class<?> propClass,
             @Nullable String setterName) {
-        checkNotNull(beanClass);
-        checkNotNull(propName);
-        checkNotNull(propClass);
+        requireNonNull(beanClass);
+        requireNonNull(propName);
+        requireNonNull(propClass);
 
         if (StringHelper.isBlank(setterName)) {
             setterName = "set" + StringHelper.capitalize(propName);
@@ -136,9 +136,9 @@ public class Reflect {
     @Nonnull
     public static Method getter(@Nonnull Class<?> beanClass, @Nonnull String propName, @Nonnull Class<?> propClass,
             @Nullable String getterName) {
-        checkNotNull(beanClass);
-        checkNotNull(propName);
-        checkNotNull(propClass);
+        requireNonNull(beanClass);
+        requireNonNull(propName);
+        requireNonNull(propClass);
 
         if (StringHelper.isBlank(getterName)) {
             String propCapName = StringHelper.capitalize(propName);

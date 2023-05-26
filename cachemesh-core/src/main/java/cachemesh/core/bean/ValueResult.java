@@ -13,32 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config.suppport;
-
-import cachemesh.common.config.Property;
-import cachemesh.common.config.Type;
-import lombok.Getter;
+package cachemesh.core.bean;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import static java.util.Objects.requireNonNull;
 
+import lombok.Getter;
+
 @Getter
-public abstract class AbstractProperty<B, T> implements Property<B, T> {
+public class ValueResult<T> {
 
     @Nonnull
-    private final String name;
+    private final ValueStatus status;
 
-    @Nonnull
-    private final Type<T> type;
+    @Nullable // null only if status is NO_CHANGE
+    private final Value<T> value;
 
-    @Nullable
-    private final T devault;
+    public ValueResult(@Nonnull ValueStatus status, @Nullable Value<T> value) {
+        requireNonNull(status);
 
-    public AbstractProperty(@Nonnull String name, @Nonnull Type<T> type, @Nullable T devault) {
-        this.name = requireNonNull(name);
-        this.type = requireNonNull(type);
-        this.devault = devault;
+        this.status = status;
+        this.value = value;
     }
+
+    public static final ValueResult<?> NO_CHANGE = new ValueResult<>(ValueStatus.NO_CHANGE, null);
 
 }

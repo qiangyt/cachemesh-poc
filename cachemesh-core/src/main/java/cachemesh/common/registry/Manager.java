@@ -17,20 +17,20 @@ package cachemesh.common.registry;
 
 import cachemesh.common.err.BadValueException;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 public abstract class Manager<KIND, VALUE> extends Registry<KIND, VALUE> {
 
     @Nonnull
     public VALUE resolve(@Nonnull KIND kind) {
-        checkNotNull(kind);
+        requireNonNull(kind);
 
         return getLocalMap().computeIfAbsent(kind, k -> doCreate(kind));
     }
 
     @Nonnull
     public VALUE create(@Nonnull KIND kind) {
-        checkNotNull(kind);
+        requireNonNull(kind);
 
         return getLocalMap().compute(kind, (k, existing) -> {
             if (existing != null) {
@@ -42,7 +42,7 @@ public abstract class Manager<KIND, VALUE> extends Registry<KIND, VALUE> {
 
     @Nonnull
     public VALUE destroy(@Nonnull KIND kind, int timeoutSeconds) throws InterruptedException {
-        checkNotNull(kind);
+        requireNonNull(kind);
 
         VALUE r = unregister(kind);
         if (r != null) {

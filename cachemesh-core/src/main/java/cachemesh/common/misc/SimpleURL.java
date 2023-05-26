@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 import lombok.Getter;
 
@@ -37,7 +37,7 @@ public class SimpleURL {
     private final Map<String, String> query;
 
     public SimpleURL(@Nonnull URL url) {
-        this.url = checkNotNull(url);
+        this.url = requireNonNull(url);
 
         var query = URLHelper.parseQuery(url.getQuery());
         this.query = ImmutableMap.copyOf(query);

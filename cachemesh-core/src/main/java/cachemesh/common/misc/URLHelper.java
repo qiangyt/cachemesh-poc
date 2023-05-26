@@ -26,7 +26,7 @@ import com.google.common.base.Splitter;
 
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 import cachemesh.common.err.BadValueException;
 
@@ -57,7 +57,7 @@ public class URLHelper {
     }
 
     public static void registerHandler(@Nonnull Class<? extends URLStreamHandler> handlerClass) {
-        checkNotNull(handlerClass);
+        requireNonNull(handlerClass);
 
         if (handlerClass.getName().equals("Handler")) {
             throw new BadValueException("handler class must be named 'Handler'");

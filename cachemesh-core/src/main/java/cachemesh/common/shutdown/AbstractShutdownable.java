@@ -22,7 +22,7 @@ import cachemesh.common.misc.LogHelper;
 import lombok.Getter;
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 @Getter
 public abstract class AbstractShutdownable implements ManagedShutdownable {
@@ -42,7 +42,7 @@ public abstract class AbstractShutdownable implements ManagedShutdownable {
 
     protected AbstractShutdownable(@Nonnull String name, @Nullable ShutdownManager shutdownManager,
             int shutdownTimeoutSeconds) {
-        this.name = checkNotNull(name);
+        this.name = requireNonNull(name);
         this.logger = LogHelper.getLogger(getClass(), name);
 
         this.shutdownManager = shutdownManager;

@@ -13,32 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config.suppport;
+package cachemesh.core.spi.support;
 
-import cachemesh.common.config.Property;
-import cachemesh.common.config.Type;
+import cachemesh.core.spi.CacheProvider;
+import cachemesh.common.shutdown.ShutdownManager;
 import lombok.Getter;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import static java.util.Objects.requireNonNull;
 
 @Getter
-public abstract class AbstractProperty<B, T> implements Property<B, T> {
-
-    @Nonnull
-    private final String name;
-
-    @Nonnull
-    private final Type<T> type;
+public abstract class AbstractCacheProvider implements CacheProvider {
 
     @Nullable
-    private final T devault;
+    private final ShutdownManager shutdownManager;
 
-    public AbstractProperty(@Nonnull String name, @Nonnull Type<T> type, @Nullable T devault) {
-        this.name = requireNonNull(name);
-        this.type = requireNonNull(type);
-        this.devault = devault;
+    protected AbstractCacheProvider(@Nullable ShutdownManager shutdownManager) {
+        this.shutdownManager = shutdownManager;
     }
 
 }

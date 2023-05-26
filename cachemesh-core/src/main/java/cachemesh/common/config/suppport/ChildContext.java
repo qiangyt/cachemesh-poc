@@ -16,11 +16,10 @@
 package cachemesh.common.config.suppport;
 
 import javax.annotation.Nonnull;
-
+import static java.util.Objects.requireNonNull;
 import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Path;
 import lombok.Getter;
-import static com.google.common.base.Preconditions.*;
 
 @Getter
 public class ChildContext extends AbstractContext {
@@ -46,7 +45,7 @@ public class ChildContext extends AbstractContext {
         super(parent.getClassCache(), parent.getTypeRegistry(), parent.getRootValue());
 
         this.parent = parent;
-        this.path = checkNotNull(path);
+        this.path = requireNonNull(path);
         this.root = parent.getRoot();
     }
 

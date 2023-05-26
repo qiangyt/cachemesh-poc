@@ -13,38 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cachemesh.common.config.types;
+package cachemesh.core.spi.support;
 
-import cachemesh.common.config.ConfigContext;
-import cachemesh.common.config.suppport.AbstractType;
-import cachemesh.common.config.suppport.ConfigHelper;
+import cachemesh.core.config.CacheConfig;
+import cachemesh.core.spi.Cache;
 import lombok.Getter;
+import cachemesh.common.shutdown.AbstractShutdownable;
+import cachemesh.common.shutdown.ShutdownManager;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import static java.util.Objects.requireNonNull;
 
 @Getter
-public class EnumType<T extends Enum<T>> extends AbstractType<T> {
+public abstract class AbstractCache extends AbstractShutdownable implements Cache  {
 
     @Nonnull
-    private final Class<T> enumClass;
+    private final CacheConfig config;
 
-    public EnumType(@Nonnull Class<T> enumClass) {
-        this.enumClass = requireNonNull(enumClass);
+    public AbstractCache(@Nonnull CacheConfig config, @Nullable ShutdownManager shutdownManager) {
+        super(config.getName(), shutdownManager);
+
+        requireNonNull(config);
+        this.config = config;
     }
 
     @Override
-    public Class<?> getKlass() {
-        return this.enumClass;
+    public String toString() {
+        return getConfig().toString();
     }
 
     @Override
-    public Iterable<Class<?>> convertableClasses() {
-        return ConfigHelper.STRING;
-    }
-
-    @Override
-    protected T doConvert(ConfigContext ctx, Object value) {
-        return Enum.valueOf(getEnumClass(), (String) value);
+    public void open(int timeoutSeconds) throws InterruptedException {
+        // no nothing by default
     }
 
 }

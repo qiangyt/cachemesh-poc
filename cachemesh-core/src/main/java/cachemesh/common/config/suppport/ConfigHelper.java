@@ -16,10 +16,10 @@
 package cachemesh.common.config.suppport;
 
 import java.util.Map;
+import static java.util.Objects.requireNonNull;
+
 //import net.logstash.logback.argument.StructuredArgument;
 //import net.logstash.logback.argument.StructuredArguments;
-
-import static com.google.common.base.Preconditions.*;
 
 import javax.annotation.Nonnull;
 
@@ -33,7 +33,7 @@ public class ConfigHelper {
 
     @Nonnull
     public static Iterable<Class<?>> convertables(@Nonnull Class<?>... types) {
-        checkNotNull(types);
+        requireNonNull(types);
 
         return ImmutableList.copyOf(types);
     }

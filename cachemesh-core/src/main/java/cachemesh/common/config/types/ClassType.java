@@ -20,9 +20,9 @@ import cachemesh.common.config.suppport.AbstractType;
 import cachemesh.common.config.suppport.ConfigHelper;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
-import static com.google.common.base.Preconditions.*;
 
 import javax.annotation.Nonnull;
+import static java.util.Objects.requireNonNull;
 
 @Getter
 public class ClassType extends AbstractType<Class<?>> {
@@ -33,7 +33,7 @@ public class ClassType extends AbstractType<Class<?>> {
     private final ClassCache classCache;
 
     public ClassType(@Nonnull ClassCache classCache) {
-        this.classCache = checkNotNull(classCache);
+        this.classCache = requireNonNull(classCache);
     }
 
     @Override

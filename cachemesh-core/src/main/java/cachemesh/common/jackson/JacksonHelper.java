@@ -18,7 +18,7 @@ package cachemesh.common.jackson;
 import com.fasterxml.jackson.core.type.TypeReference;
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 public class JacksonHelper {
 
@@ -36,13 +36,13 @@ public class JacksonHelper {
 
     @Nullable
     public static <T> T from(@Nullable String json, @Nonnull Class<T> clazz) {
-        checkNotNull(clazz);
+        requireNonNull(clazz);
         return JACKSON.from(json, clazz);
     }
 
     @Nullable
     public static <T> T from(@Nullable String json, @Nonnull TypeReference<T> typeReference) {
-        checkNotNull(typeReference);
+        requireNonNull(typeReference);
         return JACKSON.from(json, typeReference);
     }
 

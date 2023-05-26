@@ -22,21 +22,21 @@ import net.logstash.logback.argument.StructuredArguments;
 
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 public class LogHelper {
 
     @Nonnull
     public static Logger getLogger(@Nonnull Class<?> klass, @Nonnull String name) {
-        checkNotNull(klass);
-        checkNotNull(name);
+        requireNonNull(klass);
+        requireNonNull(name);
 
         return LoggerFactory.getLogger(name + "@" + klass.getCanonicalName());
     }
 
     @Nonnull
     public static StructuredArgument entries(@Nonnull Dumpable dumpable) {
-        checkNotNull(dumpable);
+        requireNonNull(dumpable);
 
         var map = dumpable.toMap();
         return StructuredArguments.entries(map);
@@ -44,7 +44,7 @@ public class LogHelper {
 
     @Nonnull
     public static StructuredArgument kv(@Nonnull String key, @Nullable Dumpable dumpable) {
-        checkNotNull(key);
+        requireNonNull(key);
 
         var map = (dumpable == null) ? null : dumpable.toMap();
         return StructuredArguments.kv(key, map);

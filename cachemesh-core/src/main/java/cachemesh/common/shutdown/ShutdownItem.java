@@ -18,7 +18,7 @@ package cachemesh.common.shutdown;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;
-import static com.google.common.base.Preconditions.*;
+import static java.util.Objects.requireNonNull;
 
 @Getter
 public class ShutdownItem {
@@ -37,10 +37,10 @@ public class ShutdownItem {
     private final ShutdownLogger logger;
 
     public ShutdownItem(@Nonnull ShutdownManager support, @Nonnull ManagedShutdownable target, int timeoutSeconds) {
-        this.target = checkNotNull(target);
+        this.target = requireNonNull(target);
         this.timeoutSeconds = timeoutSeconds;
         this.shutdowned = false;
-        this.support = checkNotNull(support);
+        this.support = requireNonNull(support);
 
         if (target instanceof AbstractShutdownable) {
             this.logger = ((AbstractShutdownable) target).createShutdownLogger();

@@ -20,6 +20,7 @@ import java.util.Map;
 
 import java.lang.reflect.Array;
 import java.util.ArrayDeque;
+import static java.util.Objects.requireNonNull;
 import java.util.Deque;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,7 +34,6 @@ import cachemesh.common.config.TypeRegistry;
 import cachemesh.common.err.BadValueException;
 import cachemesh.common.misc.ClassCache;
 import lombok.Getter;
-import static com.google.common.base.Preconditions.*;
 
 @Getter
 public class RootContext extends AbstractContext {
@@ -67,7 +67,7 @@ public class RootContext extends AbstractContext {
     @SuppressWarnings("all")
     @Nullable
     public Object setValue(@Nonnull Path relative, @Nullable Object newValue) {
-        checkNotNull(relative);
+        requireNonNull(relative);
 
         return getCachedValues().compute(relative, (k, oldValue) -> {
             var chain = normalizeChain(relative);
@@ -122,7 +122,7 @@ public class RootContext extends AbstractContext {
 
     @Nonnull
     Deque<Path> normalizeChain(@Nonnull Path relative) {
-        checkNotNull(relative);
+        requireNonNull(relative);
 
         var chain = getPath().toChain();
         chain.addAll(relative.toChain());
@@ -153,7 +153,7 @@ public class RootContext extends AbstractContext {
     @SuppressWarnings("rawtypes")
     @Nullable
     public Object getValue(@Nonnull Path relative) {
-        checkNotNull(relative);
+        requireNonNull(relative);
 
         return getCachedValues().computeIfAbsent(relative, k -> {
             var chain = normalizeChain(relative);

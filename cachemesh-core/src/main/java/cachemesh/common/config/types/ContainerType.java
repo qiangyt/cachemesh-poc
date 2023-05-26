@@ -19,10 +19,10 @@ import cachemesh.common.config.ConfigContext;
 import cachemesh.common.config.Type;
 import cachemesh.common.config.suppport.AbstractType;
 import lombok.Getter;
-import static com.google.common.base.Preconditions.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import static java.util.Objects.requireNonNull;
 
 @Getter
 public abstract class ContainerType<T, E> extends AbstractType<T> {
@@ -34,14 +34,14 @@ public abstract class ContainerType<T, E> extends AbstractType<T> {
     private final Class<?> klass;
 
     protected ContainerType(@Nonnull Class<?> klass, @Nonnull Type<E> elementType) {
-        this.klass = checkNotNull(klass);
-        this.elementType = checkNotNull(elementType);
+        this.klass = requireNonNull(klass);
+        this.elementType = requireNonNull(elementType);
     }
 
     @Override
     @Nullable
     public T convert(@Nonnull ConfigContext ctx, @Nullable Object value) {
-        checkNotNull(ctx);
+        requireNonNull(ctx);
 
         if (value == null) {
             return null;

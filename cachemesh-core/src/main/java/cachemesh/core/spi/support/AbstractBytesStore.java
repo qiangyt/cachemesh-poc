@@ -15,25 +15,38 @@
  */
 package cachemesh.core.spi.support;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import cachemesh.core.bean.Value;
 import cachemesh.core.bean.ValueResult;
+import cachemesh.core.config.CacheConfig;
 import cachemesh.core.bean.ValueStatus;
 import cachemesh.core.spi.BytesStore;
-import cachemesh.core.spi.ValueLoader;
 
-import java.util.function.BiFunction;
-import static java.util.Objects.requireNonNull;
+public abstract class AbstractBytesStore implements BytesStore {
 
-public abstract class AbstractStore implements BytesStore {
+    private final CacheConfig config;
+
+    public AbstractBytesStore(CacheConfig config) {
+        this.config = config;
+    }
+
+    @Override
+    @Nonnull 
+    public CacheConfig getConfig() {
+        return this.config;
+    }
 
     @Override
     @Nullable
     @SuppressWarnings("unchecked")
-    public ValueResult<byte[]> getSingle(@Nonnull String key, long version,
-            @Nullable ValueLoader loader) {
+    public ValueResult<byte[]> getSingle(@Nonnull String key, long version, @Nullable Function<String, Value<byte[]>> loader) {
         requireNonNull(key);
 
         var cv = doGetSingle(key, loader);
@@ -52,16 +65,15 @@ public abstract class AbstractStore implements BytesStore {
     }
 
     @Nullable 
-    protected abstract Value<byte[]> doGetSingle(@Nonnull String key, @Nullable ValueLoader loader);
+    protected abstract Value<byte[]> doGetSingle(@Nonnull String key, @Nullable Function<String, Value<byte[]>> loader);
 
     @Override
     public void putSingle(@Nonnull String key, @Nullable byte[] value) {
         requireNonNull(key);
-        requireNonNull(value);
 
         doPutSingle(key, (k, oldValue) -> {
             long ver = (oldValue == null) ? 1 : oldValue.getVersion();
-            return new Value<byte[]>(value, ver);
+            return new Value<>(value, ver);
         });
     }
 

@@ -15,7 +15,24 @@
  */
 package cachemesh.core.spi;
 
-public interface ObjectStore extends GenericStore<Object> {
+import java.util.function.Function;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import cachemesh.core.bean.Value;
+import cachemesh.core.bean.ValueResult;
+import cachemesh.core.config.CacheConfig;
+
+public interface ObjectStore {
+
+    @Nonnull CacheConfig getConfig();
+
+    @Nullable ValueResult<Object> getSingle(@Nonnull String key, long version, @Nullable Function<String, Value<Object>> loader);
+
+    void putSingle(@Nonnull String key, @Nullable Object value);
+
+    void removeSingle(@Nonnull String key);
 
 
 }

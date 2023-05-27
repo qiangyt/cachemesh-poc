@@ -19,27 +19,57 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import cachemesh.common.misc.Holder;
+import cachemesh.core.bean.Value;
+import cachemesh.core.bean.ValueResult;
+import cachemesh.core.bean.ValueStatus;
+import cachemesh.core.config.CacheConfig;
+import cachemesh.core.spi.BytesStore;
+import cachemesh.core.spi.Cache;
+import cachemesh.core.spi.ObjectStore;
 import lombok.Getter;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @Getter
 public class CombinedBytesStore implements BytesStore {
 
-    @Nonnull
-    private final ObjectBytesStore objectStore;
+    private final ObjectStore objectStore;
 
-    @Nonnull
-    private final AbstractGenericStore directStore;
+    private final AbstractBytesStore bytesStoreAsCache;
 
-    public CombinedBytesStore(@Nonnull ObjectBytesStore objectStore, AbstractGenericStore directStore) {
+    public CombinedBytesStore(ObjectStore objectStore) {
         requireNonNull(objectStore);
-        requireNonNull(directStore);
-
+        
         this.objectStore = objectStore;
-        this.directStore = directStore;
+
+        this.bytesStoreAsCache = new AbstractBytesStore(getConfig()) {
+            @Override
+            protected Value<byte[]> doGetSingle(String key, Function<String, Value<byte[]>> loader) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'doGetSingle'");
+            }
+
+            @Override
+            protected void doPutSingle(String key, BiFunction<String, Value<byte[]>, Value<byte[]>> mapper) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'doPutSingle'");
+            }
+
+            @Override
+            protected void doRemoveSingle(String key) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'doRemoveSingle'");
+            }
+        };
+    }
+
+    @Override
+    @Nonnull 
+    public CacheConfig getConfig() {
+        return getObjectStore().getConfig();
     }
 
     @Override

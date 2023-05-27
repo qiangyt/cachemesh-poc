@@ -15,40 +15,36 @@
  */
 package cachemesh.core.spi.support;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import cachemesh.core.bean.Value;
-import cachemesh.core.bean.ValueResult;
-import cachemesh.core.bean.ValueStatus;
 import cachemesh.core.config.CacheConfig;
-import cachemesh.core.spi.GenericStore;
-import cachemesh.core.spi.ValueLoader;
-import cachemesh.core.spi.ValueMapper;
+import cachemesh.core.spi.ObjectStore;
+import lombok.Getter;
 
 import static java.util.Objects.requireNonNull;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public abstract class AbstractGenericStore<T> implements GenericStore<T> {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import cachemesh.core.bean.Value;
+import cachemesh.core.bean.ValueResult;
+import cachemesh.core.bean.ValueStatus;
+import cachemesh.core.spi.ObjectMapper;
+
+@Getter
+public abstract class AbstractObjectStore implements ObjectStore {
 
     private final CacheConfig config;
 
-    public AbstractGenericStore(CacheConfig config) {
+    public AbstractObjectStore(CacheConfig config) {
         this.config = config;
-    }
-
-    @Override
-    @Nonnull 
-    public CacheConfig getConfig() {
-        return this.config;
     }
 
     @Override
     @Nullable
     @SuppressWarnings("unchecked")
-    public ValueResult<T> getSingle(@Nonnull String key, long version, @Nullable ValueLoader loader) {
+    public ValueResult<Object> getSingle(@Nonnull String key, long version, @Nullable Function<String, Value<Object>> loader) {
         requireNonNull(key);
 
         var cv = doGetSingle(key, loader);
@@ -59,7 +55,7 @@ public abstract class AbstractGenericStore<T> implements GenericStore<T> {
         long storedVer = cv.getVersion();
         if (version > 0) {
             if (storedVer == version) {
-                return (ValueResult<T>) ValueResult.NO_CHANGE;
+                return (ValueResult<Object>) ValueResult.NO_CHANGE;
             }
         }
 
@@ -67,20 +63,19 @@ public abstract class AbstractGenericStore<T> implements GenericStore<T> {
     }
 
     @Nullable 
-    protected abstract Value<T> doGetSingle(@Nonnull String key, @Nullable ValueLoader loader);
+    protected abstract Value<Object> doGetSingle(@Nonnull String key, @Nullable Function<String, Value<Object>> loader);
 
     @Override
-    public void putSingle(@Nonnull String key, @Nullable T value) {
+    public void putSingle(@Nonnull String key, @Nullable Object value) {
         requireNonNull(key);
-        requireNonNull(value);
 
-        doPutSingle(key, (k, oldValue) -> {
+        doPutSingle(key, ObjectMapper.of(getConfig().getValueClass(), (k, oldValue) -> {
             long ver = (oldValue == null) ? 1 : oldValue.getVersion();
-            return new Value<T>(value, ver);
-        });
+            return new Value<Object>(value, ver);
+        }));
     }
 
-    protected abstract void doPutSingle(@Nonnull String key, @Nonnull ValueMapper mapper);
+    protected abstract void doPutSingle(@Nonnull String key, @Nonnull BiFunction<String, Value<Object>, Value<Object>> mapper);
 
     @Override
     public void removeSingle(@Nonnull String key) {

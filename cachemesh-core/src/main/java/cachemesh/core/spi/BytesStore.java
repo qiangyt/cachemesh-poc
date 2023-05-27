@@ -15,8 +15,23 @@
  */
 package cachemesh.core.spi;
 
+import java.util.function.Function;
 
-public interface BytesStore extends GenericStore<byte[]> {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import cachemesh.core.bean.Value;
+import cachemesh.core.bean.ValueResult;
+import cachemesh.core.config.CacheConfig;
+
+public interface BytesStore {
+
+    @Nonnull CacheConfig getConfig();
+
+    @Nullable ValueResult<byte[]> getSingle(@Nonnull String key, long version, @Nullable Function<String, Value<byte[]>> loader);
+
+    void putSingle(@Nonnull String key, @Nullable byte[] value);
+
+    void removeSingle(@Nonnull String key);
 
 }

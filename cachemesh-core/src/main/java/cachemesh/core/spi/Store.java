@@ -22,17 +22,13 @@ import javax.annotation.Nullable;
 
 import cachemesh.core.bean.Value;
 import cachemesh.core.bean.ValueResult;
-import cachemesh.core.config.CacheConfig;
 
-public interface ObjectStore {
+public interface Store<T> {
 
-    @Nonnull CacheConfig getConfig();
+    @Nullable ValueResult<T> getSingle(@Nonnull String key, long version, @Nullable Function<String, Value<T>> loader);
 
-    @Nullable ValueResult<Object> getSingle(@Nonnull String key, long version, @Nullable Function<String, Value<Object>> loader);
-
-    void putSingle(@Nonnull String key, @Nullable Object value);
+    Value<T> putSingle(@Nonnull String key, @Nullable T value);
 
     void removeSingle(@Nonnull String key);
-
 
 }

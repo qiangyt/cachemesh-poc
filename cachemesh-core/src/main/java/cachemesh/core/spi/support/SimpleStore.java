@@ -15,7 +15,6 @@
  */
 package cachemesh.core.spi.support;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
@@ -25,31 +24,28 @@ import javax.annotation.Nullable;
 
 import cachemesh.core.bean.Value;
 import cachemesh.core.bean.ValueResult;
-import cachemesh.core.config.CacheConfig;
 import cachemesh.core.bean.ValueStatus;
-import cachemesh.core.spi.BytesStore;
+import cachemesh.core.spi.Cache;
+import cachemesh.core.spi.InternalStore;
+import lombok.Getter;
 
-public abstract class AbstractBytesStore implements BytesStore {
+@Getter
+public class SimpleStore<T> implements InternalStore<T> {
 
-    private final CacheConfig config;
+    @Nonnull
+    private final Cache<T> cache;
 
-    public AbstractBytesStore(CacheConfig config) {
-        this.config = config;
-    }
-
-    @Override
-    @Nonnull 
-    public CacheConfig getConfig() {
-        return this.config;
+    public SimpleStore(Cache<T> cache) {
+        this.cache = requireNonNull(cache);
     }
 
     @Override
     @Nullable
     @SuppressWarnings("unchecked")
-    public ValueResult<byte[]> getSingle(@Nonnull String key, long version, @Nullable Function<String, Value<byte[]>> loader) {
+    public ValueResult<T> getSingle(@Nonnull String key, long version, @Nullable Function<String, Value<T>> loader) {
         requireNonNull(key);
 
-        var cv = doGetSingle(key, loader);
+        var cv = getCache().getSingle(key, loader);
         if (cv == null) {
             return null;
         }
@@ -57,34 +53,37 @@ public abstract class AbstractBytesStore implements BytesStore {
         long storedVer = cv.getVersion();
         if (version > 0) {
             if (storedVer == version) {
-                return (ValueResult<byte[]>) ValueResult.NO_CHANGE;
+                return (ValueResult<T>) ValueResult.NO_CHANGE;
             }
         }
 
         return new ValueResult<>(ValueStatus.OK, cv);
     }
 
-    @Nullable 
-    protected abstract Value<byte[]> doGetSingle(@Nonnull String key, @Nullable Function<String, Value<byte[]>> loader);
-
     @Override
-    public void putSingle(@Nonnull String key, @Nullable byte[] value) {
+    public Value<T> putSingle(@Nonnull String key, @Nullable T value) {
         requireNonNull(key);
 
-        doPutSingle(key, (k, oldValue) -> {
-            long ver = (oldValue == null) ? 1 : oldValue.getVersion();
+        return getCache().putSingle(key, (k, oldValue) -> {
+            long ver = (oldValue == null) ? System.currentTimeMillis() : oldValue.getVersion() + 1;
             return new Value<>(value, ver);
         });
     }
 
-    protected abstract void doPutSingle(@Nonnull String key, @Nonnull BiFunction<String, Value<byte[]>, Value<byte[]>> mapper);
+    @Override
+    public void putSingleInternal(@Nonnull String key, @Nonnull Value<T> value) {
+        requireNonNull(key);
+        requireNonNull(value);
+
+        getCache().putSingle(key, (k, oldValue) -> {
+            return new Value<>(value.getData(), value.getVersion());
+        });
+    }
 
     @Override
     public void removeSingle(@Nonnull String key) {
         requireNonNull(key);
-        doRemoveSingle(key);
+        getCache().removeSingle(key);
     }
-
-    protected abstract void doRemoveSingle(@Nonnull String key);
 
 }

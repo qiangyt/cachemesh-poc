@@ -15,23 +15,12 @@
  */
 package cachemesh.core.spi;
 
-import java.util.function.Function;
-
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import cachemesh.core.bean.Value;
-import cachemesh.core.bean.ValueResult;
-import cachemesh.core.config.CacheConfig;
 
-public interface BytesStore {
+public interface InternalStore<T> extends Store<T> {
 
-    @Nonnull CacheConfig getConfig();
-
-    @Nullable ValueResult<byte[]> getSingle(@Nonnull String key, long version, @Nullable Function<String, Value<byte[]>> loader);
-
-    void putSingle(@Nonnull String key, @Nullable byte[] value);
-
-    void removeSingle(@Nonnull String key);
+    void putSingleInternal(@Nonnull String key, @Nonnull Value<T> value);
 
 }

@@ -8,9 +8,9 @@ import javax.annotation.Nonnull;
 public interface CacheProvider {
     
     @Nonnull
-    Cache createCache(@Nonnull CacheConfig config);
+    Cache<Object> createObjectCache(@Nonnull CacheConfig config);
 
     @Nonnull
-    Cache createDefaultCache(@Nonnull String name);
+    Cache<byte[]> createBytesCache(@Nonnull CacheConfig config);
 
 }
